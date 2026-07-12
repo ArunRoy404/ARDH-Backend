@@ -6,4 +6,5 @@ public interface ICurrentUser
 {
     Guid GetCurrentUserId();
     string GetCurrentStringUserId();
+    bool IsRememberMe();
 }

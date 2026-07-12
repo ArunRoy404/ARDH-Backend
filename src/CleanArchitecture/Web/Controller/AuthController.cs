@@ -20,18 +20,6 @@ public class AuthController(IAuthService authService) : BaseController
         => Ok(await _authService.SignIn(request));
 
     /// <summary>
-    /// Sign up a new user.
-    /// </summary>
-    [HttpPost("sign-up")]
-    [SwaggerResponse(200, "User registered successfully.")]
-    [SwaggerResponse(400, "User already exists or validation failed.")]
-    public async Task<IActionResult> SignUp([FromBody] UserSignUpRequest request, CancellationToken token)
-    {
-        await _authService.SignUp(request, token);
-        return Ok(new { message = "User registered successfully." });
-    }
-
-    /// <summary>
     /// Request a password reset OTP.
     /// </summary>
     [HttpPost("forgot-password")]
@@ -83,13 +71,16 @@ public class AuthController(IAuthService authService) : BaseController
     }
 
     /// <summary>
-    /// Refresh the JWT authentication token.
+    /// Resend a password reset OTP.
     /// </summary>
-    [HttpGet("refresh")]
-    [SwaggerResponse(200, "Token refreshed successfully.", typeof(string))]
-    [SwaggerResponse(401, "Token is invalid or expired.")]
-    public async Task<IActionResult> RefreshToken()
-        => Ok(await _authService.RefreshToken());
+    [HttpPost("resend-otp")]
+    [SwaggerResponse(200, "OTP code resent and logged successfully.")]
+    [SwaggerResponse(400, "User not found.")]
+    public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request, CancellationToken token)
+    {
+        await _authService.ResendOtp(request, token);
+        return Ok(new { message = "Password reset OTP sent to email." });
+    }
 
     /// <summary>
     /// Get the logged-in user profile.

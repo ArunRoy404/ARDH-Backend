@@ -5,10 +5,6 @@ namespace CleanArchitecture.Shared.Domain.Enums;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum UserRole
 {
-    Admin,
-    PropertyManager,
-    Accountant,
-    Security,
-    Technician,
-    Viewer
+    SuperAdmin,
+    Admin
 }

@@ -1,0 +1,429 @@
+{
+	"info": {
+		"_postman_id": "9a38f321-4bcf-4f9e-a0e2-2a54b38dcd2b",
+		"name": "Ardh Property Management API (Cookie Auth)",
+		"description": "Postman Collection for ARDH Backend APIs relying strictly on HTTP-only cookies for authentication. No Bearer token headers required.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "1. Sign In (Login)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"P@ssw0rd\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/sign-in",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"sign-in"
+							]
+						},
+						"description": "Authenticate user credentials. Backend sets the HTTP-only cookie 'token_key' upon success."
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get Current Profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "Get current profile of the logged-in user. Relies entirely on the 'token_key' cookie."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Refresh Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						},
+						"description": "Request a refreshed token cookie using the HTTP-only cookie context."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Forgot Password (OTP)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"forgot-password"
+							]
+						},
+						"description": "Request a password reset OTP code. The OTP prints to the backend terminal log."
+					},
+					"response": []
+				},
+				{
+					"name": "5. Verify OTP",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/verify-otp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify-otp"
+							]
+						},
+						"description": "Verify the reset OTP code sent to your terminal."
+					},
+					"response": []
+				},
+				{
+					"name": "6. Reset Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewSecretP@ss123\",\n    \"confirmNewPassword\": \"NewSecretP@ss123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"reset-password"
+							]
+						},
+						"description": "Reset user password using verified OTP code."
+					},
+					"response": []
+				},
+				{
+					"name": "7. Logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Log out from the system and clear cookies."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "U-01. List Users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users?page=1&pageSize=10&search=&role=&is_active=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by name, email, or phone"
+								},
+								{
+									"key": "role",
+									"value": "",
+									"description": "SuperAdmin or Admin"
+								},
+								{
+									"key": "is_active",
+									"value": "",
+									"description": "true or false"
+								}
+							]
+						},
+						"description": "Retrieve all users with support for pagination, keyword search, and role/is_active filters."
+					},
+					"response": []
+				},
+				{
+					"name": "U-02. Get User By ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier"
+								}
+							]
+						},
+						"description": "Obtain single user record by their Unique ID."
+					},
+					"response": []
+				},
+				{
+					"name": "U-03. Create User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rajesh Kumar\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"password\": \"P@ssw0rd\",\n    \"confirmPassword\": \"P@ssw0rd\",\n    \"address\": \"Bangalore\",\n    \"role\": \"Admin\",\n    \"permissions\": \"read:billing,write:billing\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Creates a new user profile in the database. Accessible by SuperAdmin/Admin roles."
+					},
+					"response": []
+				},
+				{
+					"name": "U-04. Update User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"address\": \"Bangalore North\",\n    \"role\": \"Admin\",\n    \"isActive\": true,\n    \"permissions\": \"read:billing\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-user-uuid"
+								}
+							]
+						},
+						"description": "Updates details for an existing user record."
+					},
+					"response": []
+				},
+				{
+					"name": "U-05. Soft Delete User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-user-uuid"
+								}
+							]
+						},
+						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp."
+					},
+					"response": []
+				},
+				{
+					"name": "U-06. Toggle User Status",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/:id/toggle-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								":id",
+								"toggle-status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-user-uuid"
+								}
+							]
+						},
+						"description": "Toggles status of the user between Active and Inactive."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5240",
+			"type": "string"
+		}
+	]
+}

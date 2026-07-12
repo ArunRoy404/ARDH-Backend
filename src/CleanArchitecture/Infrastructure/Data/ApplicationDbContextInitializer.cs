@@ -43,7 +43,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                         Email = "admin@gmail.com",
                         Phone = "1234567890",
                         PasswordHash = "P@ssw0rd".Hash(),
-                        Role = UserRole.Admin,
+                        Role = UserRole.SuperAdmin,
                         IsActive = true,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
@@ -51,11 +51,11 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     new User
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Property Manager",
+                        Name = "Admin",
                         Email = "manager@gmail.com",
                         Phone = "0987654321",
                         PasswordHash = "P@ssw0rd".Hash(),
-                        Role = UserRole.PropertyManager,
+                        Role = UserRole.Admin,
                         IsActive = true,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow

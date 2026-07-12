@@ -3,12 +3,13 @@ using System.Linq;
 using System.Security.Claims;
 using CleanArchitecture.Application.Common.Interfaces;
 
+using Microsoft.AspNetCore.Http;
+
 namespace CleanArchitecture.Web.Services;
 
-public class CurrentUser(ITokenService tokenService, ICookieService cookieService) : ICurrentUser
+public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {
-    private readonly ITokenService _tokenService = tokenService;
-    private readonly ICookieService _cookieService = cookieService;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public Guid GetCurrentUserId()
     {
@@ -18,15 +19,15 @@ public class CurrentUser(ITokenService tokenService, ICookieService cookieServic
 
     public string GetCurrentStringUserId()
     {
-        var jwtCookie = _cookieService.Get();
-        if (string.IsNullOrEmpty(jwtCookie))
-        {
-            return string.Empty;
-        }
-
-        var token = _tokenService.ValidateToken(jwtCookie);
-        var userIdClaim = token?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-
+        var user = _httpContextAccessor.HttpContext?.User;
+        var userIdClaim = user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
         return userIdClaim?.Value ?? string.Empty;
+    }
+
+    public bool IsRememberMe()
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+        var claim = user?.Claims.FirstOrDefault(x => x.Type == "remember_me");
+        return claim != null && bool.TryParse(claim.Value, out var rememberMe) && rememberMe;
     }
 }
