@@ -23,4 +23,11 @@ public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUse
         var userIdClaim = user?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
         return userIdClaim?.Value ?? string.Empty;
     }
+
+    public bool IsRememberMe()
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+        var claim = user?.Claims.FirstOrDefault(x => x.Type == "remember_me");
+        return claim != null && bool.TryParse(claim.Value, out var rememberMe) && rememberMe;
+    }
 }

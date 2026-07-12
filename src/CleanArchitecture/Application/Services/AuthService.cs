@@ -44,13 +44,10 @@ public class AuthService(
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(default);
 
-        var token = _tokenService.GenerateToken(user);
-        _cookieService.Set(token);
+        var token = _tokenService.GenerateToken(user, request.RememberMe);
+        _cookieService.Set(token, request.RememberMe);
 
-        var response = _mapper.Map<UserSignInResponse>(user);
-        response.Token = token;
-
-        return response;
+        return new UserSignInResponse { Message = "Successfully signed in." };
     }
 
     public async Task ForgotPassword(ForgotPasswordRequest request, CancellationToken token)
@@ -155,8 +152,9 @@ public class AuthService(
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
             ?? throw UserException.BadRequestException(UserErrorMessage.UserNotExist);
 
-        var accessToken = _tokenService.GenerateToken(user);
-        _cookieService.Set(accessToken);
+        var rememberMe = _currentUser.IsRememberMe();
+        var accessToken = _tokenService.GenerateToken(user, rememberMe);
+        _cookieService.Set(accessToken, rememberMe);
 
         return accessToken;
     }

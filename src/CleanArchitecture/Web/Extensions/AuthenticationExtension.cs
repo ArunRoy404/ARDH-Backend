@@ -107,7 +107,7 @@ public static class AuthenticationExtensions
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidateLifetime = false,
+                ValidateLifetime = true,
                 ValidateAudience = true,
                 ValidIssuer = identitySettings.Issuer,
                 ValidAudience = identitySettings.Audience,
