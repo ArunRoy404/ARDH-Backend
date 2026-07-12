@@ -24,9 +24,15 @@ public class CurrentUser(ITokenService tokenService, ICookieService cookieServic
             return string.Empty;
         }
 
-        var token = _tokenService.ValidateToken(jwtCookie);
-        var userIdClaim = token?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-
-        return userIdClaim?.Value ?? string.Empty;
+        try
+        {
+            var token = _tokenService.ValidateToken(jwtCookie);
+            var userIdClaim = token?.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            return userIdClaim?.Value ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 }

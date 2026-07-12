@@ -32,8 +32,6 @@ public class UserCreateRequest
 
     public string? Permissions { get; set; }
 
-    public string? AvatarUrl { get; set; }
-
     [JsonPropertyName("avatarURL")]
-    public string? AvatarURL { get => AvatarUrl; set => AvatarUrl = value; }
+    public string? AvatarUrl { get; set; }
 }

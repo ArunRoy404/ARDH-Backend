@@ -12,10 +12,8 @@ public class UserViewModel
     public string Phone { get; set; } = string.Empty;
     public string? Address { get; set; }
     public UserRole Role { get; set; }
-    public string? AvatarUrl { get; set; }
-
     [JsonPropertyName("avatarURL")]
-    public string? AvatarURL { get => AvatarUrl; set => AvatarUrl = value; }
+    public string? AvatarUrl { get; set; }
 
     public string? City => Address;
     public bool IsActive { get; set; }
