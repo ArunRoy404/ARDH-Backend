@@ -7,14 +7,19 @@ public class CookieService(IHttpContextAccessor httpContextAccessor) : ICookieSe
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     public void Set(string token)
-        => _httpContextAccessor.HttpContext?.Response.Cookies.Append("token_key", token,
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.None,
-                    Secure = true,
-                    MaxAge = TimeSpan.FromMinutes(30)
-                });
+    {
+        var context = _httpContextAccessor.HttpContext;
+        var isHttps = context?.Request.IsHttps ?? false;
+
+        context?.Response.Cookies.Append("token_key", token,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = isHttps ? SameSiteMode.None : SameSiteMode.Lax,
+                Secure = isHttps,
+                MaxAge = TimeSpan.FromMinutes(30)
+            });
+    }
 
     public void Delete() => _httpContextAccessor.HttpContext?.Response.Cookies.Delete("token_key");
 

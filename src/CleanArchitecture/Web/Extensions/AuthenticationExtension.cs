@@ -24,6 +24,21 @@ public static class AuthenticationExtensions
             };
             options.Authority = identitySettings.Issuer;
             options.RequireHttpsMetadata = identitySettings.ValidateHttps;
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    if (string.IsNullOrEmpty(context.Token))
+                    {
+                        var jwtCookie = context.Request.Cookies["token_key"];
+                        if (!string.IsNullOrEmpty(jwtCookie))
+                        {
+                            context.Token = jwtCookie;
+                        }
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         //custom policy scheme using AddPolicyScheme in ASP.NET Core, it allows you to dynamically choose an authentication scheme based on the incoming request. This is useful if you have multiple authentication methods (e.g., JWT Bearer, Cookies, etc.)
@@ -76,6 +91,21 @@ public static class AuthenticationExtensions
             };
             options.Authority = identitySettings.Issuer;
             options.RequireHttpsMetadata = identitySettings.ValidateHttps;
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    if (string.IsNullOrEmpty(context.Token))
+                    {
+                        var jwtCookie = context.Request.Cookies["token_key"];
+                        if (!string.IsNullOrEmpty(jwtCookie))
+                        {
+                            context.Token = jwtCookie;
+                        }
+                    }
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         //custom policy scheme using AddPolicyScheme in ASP.NET Core, it allows you to dynamically choose an authentication scheme based on the incoming request. This is useful if you have multiple authentication methods (e.g., JWT Bearer, Cookies, etc.)
