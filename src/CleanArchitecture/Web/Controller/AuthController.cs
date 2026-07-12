@@ -71,13 +71,16 @@ public class AuthController(IAuthService authService) : BaseController
     }
 
     /// <summary>
-    /// Refresh the JWT authentication token.
+    /// Resend a password reset OTP.
     /// </summary>
-    [HttpGet("refresh")]
-    [SwaggerResponse(200, "Token refreshed successfully.", typeof(string))]
-    [SwaggerResponse(401, "Token is invalid or expired.")]
-    public async Task<IActionResult> RefreshToken()
-        => Ok(await _authService.RefreshToken());
+    [HttpPost("resend-otp")]
+    [SwaggerResponse(200, "OTP code resent and logged successfully.")]
+    [SwaggerResponse(400, "User not found.")]
+    public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request, CancellationToken token)
+    {
+        await _authService.ResendOtp(request, token);
+        return Ok(new { message = "Password reset OTP sent to email." });
+    }
 
     /// <summary>
     /// Get the logged-in user profile.

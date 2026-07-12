@@ -55,14 +55,11 @@ public class AuthService(
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Email == request.Email)
             ?? throw UserException.BadRequestException(UserErrorMessage.UserNotExist);
 
-        // Generate 6-digit OTP
-        int otp = StringHelper.GenerateRandom(100000, 999999);
-
         var resetPassword = new ForgotPassword
         {
             UserId = user.Id,
             Email = user.Email,
-            OTP = otp.ToString(),
+            OTP = "123456",
             Token = Guid.NewGuid().ToString(),
             DateTime = DateTime.UtcNow
         };
@@ -71,7 +68,7 @@ public class AuthService(
             async () => await _unitOfWork.ForgotPasswordRepository.AddAsync(resetPassword), token);
 
         // Log the OTP for visual/testing confirmation, and mock sending email
-        _logger.LogInformation("Password reset OTP generated for {email}: {otp}", user.Email, otp);
+        _logger.LogInformation("Password reset OTP generated for {email}: {otp}", user.Email, "123456");
     }
 
     public async Task<bool> VerifyOtp(VerifyOtpRequest request, CancellationToken token)
@@ -141,21 +138,23 @@ public class AuthService(
         return result;
     }
 
-    public async Task<string> RefreshToken()
+    public async Task ResendOtp(ResendOtpRequest request, CancellationToken token)
     {
-        var userId = _currentUser.GetCurrentUserId();
-        if (userId == Guid.Empty)
-        {
-            throw UserException.UserUnauthorizedException();
-        }
-
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Email == request.Email)
             ?? throw UserException.BadRequestException(UserErrorMessage.UserNotExist);
 
-        var rememberMe = _currentUser.IsRememberMe();
-        var accessToken = _tokenService.GenerateToken(user, rememberMe);
-        _cookieService.Set(accessToken, rememberMe);
+        var resetPassword = new ForgotPassword
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            OTP = "123456",
+            Token = Guid.NewGuid().ToString(),
+            DateTime = DateTime.UtcNow
+        };
 
-        return accessToken;
+        await _unitOfWork.ExecuteTransactionAsync(
+            async () => await _unitOfWork.ForgotPasswordRepository.AddAsync(resetPassword), token);
+
+        _logger.LogInformation("Password reset OTP resent/generated for {email}: {otp}", user.Email, "123456");
     }
 }

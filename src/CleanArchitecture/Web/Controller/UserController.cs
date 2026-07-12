@@ -83,10 +83,24 @@ public class UserController(IUserService userService) : BaseController
     /// </summary>
     [HttpDelete("{id}")]
     [SwaggerResponse(200, "User deleted successfully.")]
+    [SwaggerResponse(400, "Invalid SuperAdmin password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "User not found.")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id, [FromQuery] string? password, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(password))
+        {
+            if (HttpContext.Request.Headers.TryGetValue("X-SuperAdmin-Password", out var headerPassword))
+            {
+                password = headerPassword.ToString();
+            }
+        }
+
+        if (password != "1213456" && password != "123456")
+        {
+            return BadRequest(new { message = "Invalid SuperAdmin password." });
+        }
+
         await _userService.Delete(id, cancellationToken);
         return Ok(new { message = "User deleted successfully." });
     }

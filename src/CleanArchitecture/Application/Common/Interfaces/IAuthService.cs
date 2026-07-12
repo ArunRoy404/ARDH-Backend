@@ -9,6 +9,6 @@ public interface IAuthService
     Task<bool> VerifyOtp(VerifyOtpRequest request, CancellationToken token);
     Task ResetPassword(ResetPasswordRequest request, CancellationToken token);
     void Logout();
-    Task<string> RefreshToken();
+    Task ResendOtp(ResendOtpRequest request, CancellationToken token);
     Task<UserProfileResponse> GetProfile();
 }
