@@ -39,14 +39,36 @@ public static class AuthenticationExtensions
             {
                 OnMessageReceived = context =>
                 {
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<JwtBearerEvents>>();
                     if (string.IsNullOrEmpty(context.Token))
                     {
                         var jwtCookie = context.Request.Cookies["token_key"];
                         if (!string.IsNullOrEmpty(jwtCookie))
                         {
+                            logger.LogInformation("OnMessageReceived: Found cookie token_key");
                             context.Token = jwtCookie;
                         }
+                        else
+                        {
+                            logger.LogInformation("OnMessageReceived: Cookie token_key not found");
+                        }
                     }
+                    else
+                    {
+                        logger.LogInformation("OnMessageReceived: Token already present in header");
+                    }
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = context =>
+                {
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<JwtBearerEvents>>();
+                    logger.LogInformation("OnTokenValidated: Token successfully validated for {user}", context.Principal?.Identity?.Name);
+                    return Task.CompletedTask;
+                },
+                OnAuthenticationFailed = context =>
+                {
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<JwtBearerEvents>>();
+                    logger.LogError(context.Exception, "OnAuthenticationFailed: Token validation failed");
                     return Task.CompletedTask;
                 }
             };
@@ -98,14 +120,36 @@ public static class AuthenticationExtensions
             {
                 OnMessageReceived = context =>
                 {
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<JwtBearerEvents>>();
                     if (string.IsNullOrEmpty(context.Token))
                     {
                         var jwtCookie = context.Request.Cookies["token_key"];
                         if (!string.IsNullOrEmpty(jwtCookie))
                         {
+                            logger.LogInformation("OnMessageReceived: Found cookie token_key");
                             context.Token = jwtCookie;
                         }
+                        else
+                        {
+                            logger.LogInformation("OnMessageReceived: Cookie token_key not found");
+                        }
                     }
+                    else
+                    {
+                        logger.LogInformation("OnMessageReceived: Token already present in header");
+                    }
+                    return Task.CompletedTask;
+                },
+                OnTokenValidated = context =>
+                {
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<JwtBearerEvents>>();
+                    logger.LogInformation("OnTokenValidated: Token successfully validated for {user}", context.Principal?.Identity?.Name);
+                    return Task.CompletedTask;
+                },
+                OnAuthenticationFailed = context =>
+                {
+                    var logger = context.HttpContext.RequestServices.GetRequiredService<Microsoft.Extensions.Logging.ILogger<JwtBearerEvents>>();
+                    logger.LogError(context.Exception, "OnAuthenticationFailed: Token validation failed");
                     return Task.CompletedTask;
                 }
             };

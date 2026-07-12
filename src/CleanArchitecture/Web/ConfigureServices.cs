@@ -16,6 +16,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddWebAPIService(this IServiceCollection services, AppSettings appSettings)
     {
+        services.AddHttpContextAccessor();
         services.AddEndpointsApiExplorer();
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
