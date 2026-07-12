@@ -20,18 +20,6 @@ public class AuthController(IAuthService authService) : BaseController
         => Ok(await _authService.SignIn(request));
 
     /// <summary>
-    /// Sign up a new user.
-    /// </summary>
-    [HttpPost("sign-up")]
-    [SwaggerResponse(200, "User registered successfully.")]
-    [SwaggerResponse(400, "User already exists or validation failed.")]
-    public async Task<IActionResult> SignUp([FromBody] UserSignUpRequest request, CancellationToken token)
-    {
-        await _authService.SignUp(request, token);
-        return Ok(new { message = "User registered successfully." });
-    }
-
-    /// <summary>
     /// Request a password reset OTP.
     /// </summary>
     [HttpPost("forgot-password")]

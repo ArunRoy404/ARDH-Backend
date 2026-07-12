@@ -53,31 +53,6 @@ public class AuthService(
         return response;
     }
 
-    public async Task SignUp(UserSignUpRequest request, CancellationToken token)
-    {
-        var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email);
-        if (isEmailExist)
-        {
-            throw UserException.UserAlreadyExistsException(request.Email);
-        }
-
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            Name = request.Name,
-            Email = request.Email,
-            Phone = request.Phone,
-            PasswordHash = request.Password.Hash(),
-            Address = request.Address,
-            Role = UserRole.Viewer,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.UserRepository.AddAsync(user), token);
-    }
-
     public async Task ForgotPassword(ForgotPasswordRequest request, CancellationToken token)
     {
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Email == request.Email)

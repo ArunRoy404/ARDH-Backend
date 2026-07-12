@@ -79,26 +79,7 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 2. Sign Up
-- **Route**: `POST /api/auth/sign-up`
-- **Request Body**:
-```json
-{
-  "name": "Arun Roy",
-  "email": "arun.roy@gmail.com",
-  "phone": "+123456789",
-  "password": "password123",
-  "address": "123 Ardh St, Property City"
-}
-```
-- **Response (200 OK)**:
-```json
-{
-  "message": "User registered successfully."
-}
-```
-
-#### 3. Forgot Password (Request OTP)
+#### 2. Forgot Password (Request OTP)
 - **Route**: `POST /api/auth/forgot-password`
 - **Request Body**:
 ```json
@@ -114,7 +95,7 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 4. Verify OTP
+#### 3. Verify OTP
 - **Route**: `POST /api/auth/verify-otp`
 - **Request Body**:
 ```json
@@ -130,7 +111,7 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 5. Reset Password
+#### 4. Reset Password
 - **Route**: `POST /api/auth/reset-password`
 - **Request Body**:
 ```json
@@ -148,14 +129,14 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 6. Refresh Token
+#### 5. Refresh Token
 - **Route**: `GET /api/auth/refresh`
 - **Response (200 OK)**:
 ```json
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
-#### 7. Get Current User Profile
+#### 6. Get Current User Profile
 - **Route**: `GET /api/auth/profile`
 - **Headers**: `Authorization: Bearer <token>`
 - **Response (200 OK)**:
@@ -174,7 +155,7 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 8. Logout
+#### 7. Logout
 - **Route**: `DELETE /api/auth/logout`
 - **Response (200 OK)**:
 ```json
