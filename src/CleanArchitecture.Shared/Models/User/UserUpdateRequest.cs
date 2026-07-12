@@ -20,15 +20,18 @@ public class UserUpdateRequest
     [Phone]
     public string Phone { get; set; } = string.Empty;
 
-    public string? Address { get; set; }
+    [Required]
+    public string Address { get; set; } = string.Empty;
 
     [Required]
     public UserRole Role { get; set; }
 
     public bool IsActive { get; set; } = true;
 
-    public string? Permissions { get; set; }
+    [Required]
+    public string Permissions { get; set; } = string.Empty;
 
+    [Required]
     [JsonPropertyName("avatarURL")]
-    public string? AvatarUrl { get; set; }
+    public string AvatarUrl { get; set; } = string.Empty;
 }

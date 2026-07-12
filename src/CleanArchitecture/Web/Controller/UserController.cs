@@ -96,7 +96,7 @@ public class UserController(IUserService userService) : BaseController
             }
         }
 
-        if (password != "1213456" && password != "123456")
+        if (password != "123456")
         {
             return BadRequest(new { message = "Invalid SuperAdmin password." });
         }

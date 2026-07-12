@@ -65,25 +65,34 @@
 					"response": []
 				},
 				{
-					"name": "3. Refresh Token",
+					"name": "3. Resend OTP",
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
-						"method": "GET",
-						"header": [],
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\"\n}"
+						},
 						"url": {
-							"raw": "{{baseUrl}}/api/auth/refresh",
+							"raw": "{{baseUrl}}/api/auth/resend-otp",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"auth",
-								"refresh"
+								"resend-otp"
 							]
 						},
-						"description": "Request a refreshed token cookie using the HTTP-only cookie context."
+						"description": "Resend a password reset OTP code. The OTP is set to 123456 by default."
 					},
 					"response": []
 				},
@@ -364,9 +373,14 @@
 							"type": "noauth"
 						},
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{
+								"key": "X-SuperAdmin-Password",
+								"value": "123456"
+							}
+						],
 						"url": {
-							"raw": "{{baseUrl}}/api/users/:id",
+							"raw": "{{baseUrl}}/api/users/:id?password=123456",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -375,6 +389,13 @@
 								"users",
 								":id"
 							],
+							"query": [
+								{
+									"key": "password",
+									"value": "123456",
+									"description": "SuperAdmin Password"
+								}
+							],
 							"variable": [
 								{
 									"key": "id",
@@ -382,7 +403,7 @@
 								}
 							]
 						},
-						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp."
+						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp. Requires the SuperAdmin password."
 					},
 					"response": []
 				},
