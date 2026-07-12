@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Infrastructure.Interface;
@@ -20,7 +24,7 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
         await _dbSet.AddRangeAsync(entities);
     }
 
-    #region  Read
+    #region Read
 
     public async Task<bool> AnyAsync(Expression<Func<T, bool>> filter)
     {
@@ -105,7 +109,18 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
         return await query.FirstOrDefaultAsync();
     }
 
+    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null)
+    {
+        IQueryable<T> query = _dbSet.AsNoTracking();
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
+        return await query.ToListAsync();
+    }
+
     #endregion
+
     #region Update & delete
 
     public void Update(T entity)
@@ -133,5 +148,6 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
         T entity = await GetByIdAsync(id);
         Delete(entity);
     }
+
     #endregion
 }

@@ -1,0 +1,775 @@
+// =============================================================================
+// ARDH PROPERTY MANAGEMENT SYSTEM — COMPLETE DATABASE SCHEMA
+// =============================================================================
+// Project: ARDH — Property Management Admin Platform
+// Visualization: Copy/paste this file into https://dbml.dbdiagram.io
+// =============================================================================
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ENUM DOMAINS
+// ─────────────────────────────────────────────────────────────────────────────
+
+Enum building_status {
+  Active
+  Inactive [note: "Building is no longer managed"]
+}
+
+Enum apartment_type {
+  "1BHK"
+  "2BHK"
+  "3BHK"
+  "4BHK"
+  Penthouse
+  Studio
+}
+
+Enum occupancy_status {
+  Occupied
+  Vacant
+  Maintenance [note: "Under maintenance/unavailable"]
+  Reserved
+}
+
+Enum tenant_status {
+  Active
+  Pending
+  "Moved Out"
+}
+
+Enum owner_status {
+  Active
+  Inactive
+  Pending
+}
+
+Enum income_type {
+  Rent
+  Maintenance [note: "Maintenance fee collected"]
+  Parking
+  "Late Fee"
+  "Security Deposit"
+  Other
+}
+
+Enum income_status {
+  Paid
+  Pending
+  Overdue
+}
+
+Enum expense_category {
+  Utilities
+  Supplies
+  Maintenance
+  Repair
+  Cleaning
+  Salary
+  Insurance
+  Renovation
+  Security
+  "Pest Control"
+  "Waste Management"
+  Other
+}
+
+Enum expense_nature {
+  Recurring
+  "One Time"
+  Urgent
+}
+
+Enum expense_entity_level {
+  "Building level"
+  "Apartment level"
+}
+
+Enum expense_status {
+  Paid
+  Pending
+  Overdue
+  Cancelled
+}
+
+Enum payment_method {
+  "Bank Transfer"
+  Cash
+  UPI
+  Cheque
+  "Credit Card"
+  "Debit Card"
+  Other
+}
+
+Enum maintenance_category {
+  Plumbing
+  HVAC
+  Electrical
+  Painting
+  Security
+  Carpentry
+  Glazing
+  Safety
+  Structural
+  General
+  Other
+}
+
+Enum maintenance_priority {
+  High
+  Medium
+  Low
+}
+
+Enum maintenance_status {
+  Open
+  "In Progress"
+  Complete
+  Cancelled
+  "On Hold"
+}
+
+Enum equipment_status {
+  Operational
+  "Under Maintenance"
+  "Out of Order"
+  Retired
+}
+
+Enum amc_contract_type {
+  Equipment
+  "Fire Safety"
+  Security
+  HVAC
+  Electrical
+  Sanitation
+  "Pest Control"
+  Elevator
+  Generator
+  "Water Pump"
+  Other
+}
+
+Enum amc_frequency {
+  Monthly
+  Quarterly
+  "Half-Yearly"
+  Yearly
+  "One Time"
+}
+
+Enum amc_status {
+  Active
+  Expiring [note: "Expiring within 30 days"]
+  Expired
+  Cancelled
+}
+
+Enum vendor_type {
+  Plumbing
+  Electrical
+  HVAC
+  Elevator
+  Security
+  Painting
+  "Pest Control"
+  Sanitation
+  Landscaping
+  Masonry
+  "Waste Disposal"
+  Other
+}
+
+Enum vendor_status {
+  Active
+  Inactive
+  Pending
+}
+
+Enum user_role {
+  Admin
+  "Property Manager"
+  Accountant
+  Security
+  Technician
+  Viewer
+}
+
+Enum id_type {
+  Aadhar
+  "Pan Card"
+  Passport
+  "Driver License"
+  VoterID
+  Other
+}
+
+// finance_method enum removed — merged into payment_method above
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: users — System staff & admin users
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table users {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  name VARCHAR(255) [not null]
+  email VARCHAR(255) [unique, not null, note: "Login credential"]
+  phone VARCHAR(20) [not null]
+  password_hash VARCHAR(255) [not null, note: "bcrypt hashed"]
+  address TEXT
+  role user_role [not null, default: 'Viewer']
+  permissions TEXT [note: "Comma-separated permission keys or JSON"]
+  avatar_url VARCHAR(500)
+  is_active BOOLEAN [default: true]
+  last_login_at TIMESTAMP
+  refresh_token TEXT [note: "JWT refresh token"]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP [note: "Soft delete"]
+
+  indexes {
+    (email) [unique]
+    (role)
+    (is_active)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: buildings — Property buildings
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table buildings {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  building_name VARCHAR(255) [not null]
+  address TEXT [not null]
+  city VARCHAR(100) [not null]
+  state VARCHAR(100) [not null]
+  country VARCHAR(100) [not null, default: 'India']
+  pincode VARCHAR(10)
+  google_map_link TEXT
+  total_floors INTEGER [not null]
+  parking_details TEXT [note: "e.g. 'Underground parking for 30 cars'"]
+  status building_status [not null, default: 'Active']
+  description TEXT
+  image_url VARCHAR(500)
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (building_name)
+    (city, state)
+    (status)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: owners — Property owners
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table owners {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  full_name VARCHAR(255) [not null]
+  phone VARCHAR(20) [not null]
+  email VARCHAR(255) [not null]
+  city VARCHAR(100)
+  address TEXT
+  id_type id_type [not null, default: 'Aadhar']
+  id_number VARCHAR(100) [not null, note: "Government-issued ID number"]
+  bank_name VARCHAR(255) [not null, note: "For rent payout"]
+  account_number VARCHAR(50) [not null]
+  ifsc_code VARCHAR(20) [not null]
+  status owner_status [default: 'Active']
+  notes TEXT
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (email)
+    (phone)
+    (status)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: apartments — Individual units within buildings
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table apartments {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  building_id UUID [not null, ref: - buildings.id]
+  owner_id UUID [not null, ref: - owners.id]
+  nestaway_id VARCHAR(50) [note: "External system identifier"]
+  flat_number VARCHAR(20) [not null]
+  floor INTEGER [not null]
+  apartment_type apartment_type [not null]
+  area_sqft DECIMAL(10,2) [note: "Total area in square feet"]
+  bedrooms INTEGER [not null]
+  bathrooms INTEGER [not null]
+  has_balcony BOOLEAN [default: false]
+  parking_slot VARCHAR(50)
+  expected_rent DECIMAL(12,2) [not null]
+  maintenance_charge DECIMAL(12,2) [not null]
+  water_charge DECIMAL(12,2) [default: 0]
+  occupancy_status occupancy_status [default: 'Vacant']
+  current_tenant_id UUID [ref: - tenants.id, note: "Current occupying tenant"]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (building_id)
+    (owner_id)
+    (flat_number, building_id) [unique]
+    (occupancy_status)
+    (current_tenant_id)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: tenants — People renting apartments
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table tenants {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  apartment_id UUID [not null, ref: - apartments.id]
+  full_name VARCHAR(255) [not null]
+  phone VARCHAR(20) [not null]
+  email VARCHAR(255) [not null]
+  id_type id_type [not null]
+  id_number VARCHAR(100) [not null]
+  move_in_date DATE [not null]
+  lease_start_date DATE [not null]
+  lease_end_date DATE [note: "NULL = ongoing / no fixed end"]
+  monthly_rent DECIMAL(12,2) [not null]
+  security_deposit DECIMAL(12,2) [default: 0]
+  emergency_contact_name VARCHAR(255)
+  emergency_contact_phone VARCHAR(20)
+  status tenant_status [default: 'Active']
+  notes TEXT
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (apartment_id)
+    (email)
+    (phone)
+    (status)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: tenant_move_out_records — Move-out transactions
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table tenant_move_out_records {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  tenant_id UUID [not null, unique, ref: - tenants.id]
+  apartment_id UUID [not null, ref: - apartments.id]
+  move_out_date DATE [not null]
+  pending_rent DECIMAL(12,2) [default: 0]
+  damage_amount DECIMAL(12,2) [default: 0, note: "Deductions for damages"]
+  refund_amount DECIMAL(12,2) [default: 0, note: "Security deposit refund"]
+  id_number_returned BOOLEAN [default: false, note: "ID proof returned to tenant"]
+  handover_note TEXT
+  processed_by UUID [ref: - users.id, note: "Staff who processed move-out"]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (tenant_id) [unique]
+    (apartment_id)
+    (move_out_date)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: vendors — External service providers
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table vendors {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  name VARCHAR(255) [not null]
+  company_name VARCHAR(255) [note: "Company/business name"]
+  phone VARCHAR(20) [not null]
+  email VARCHAR(255) [not null]
+  vendor_type vendor_type [not null, note: "Primary service category"]
+  gst_number VARCHAR(50) [note: "GSTIN for invoicing"]
+  address TEXT
+  status vendor_status [default: 'Active']
+  notes TEXT
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (email)
+    (phone)
+    (vendor_type)
+    (status)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: equipment — Building equipment & assets
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table equipment {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  building_id UUID [not null, ref: - buildings.id]
+  name VARCHAR(255) [not null]
+  type VARCHAR(100) [not null, note: "e.g. Lift, CCTV, Pump, Generator"]
+  brand VARCHAR(255)
+  model VARCHAR(255)
+  serial_number VARCHAR(255) [note: "Manufacturer serial number"]
+  install_date DATE
+  warranty_expiry_date DATE
+  amc_vendor_id UUID [ref: - vendors.id, note: "AMC vendor for this equipment"]
+  amc_expiry_date DATE
+  last_service_date DATE
+  next_service_date DATE
+  status equipment_status [not null, default: 'Operational']
+  notes TEXT
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (building_id)
+    (type)
+    (status)
+    (next_service_date)
+    (amc_vendor_id)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: amc_contracts — Annual Maintenance Contracts
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table amc_contracts {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  amc_code VARCHAR(50) [unique, not null]
+  contract_number VARCHAR(100) [not null]
+  contract_title VARCHAR(255) [not null]
+  contract_type amc_contract_type [not null]
+  vendor_id UUID [not null, ref: - vendors.id]
+  contract_amount DECIMAL(14,2) [not null]
+  payment_terms TEXT [note: "e.g. 'Net 30', milestone-based"]
+  service_frequency amc_frequency [not null]
+  start_date DATE [not null]
+  end_date DATE [not null]
+  next_service_due DATE
+  status amc_status [not null, default: 'Active']
+  coverage_details TEXT [note: "What is covered under this AMC"]
+  document_link VARCHAR(500) [note: "URL to contract document"]
+  remarks TEXT
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (amc_code) [unique]
+    (vendor_id)
+    (status)
+    (start_date, end_date)
+    (next_service_due)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: amc_contract_equipment_link — M:N link between AMCs & Equipment
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table amc_contract_equipment {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  amc_contract_id UUID [not null, ref: - amc_contracts.id]
+  equipment_id UUID [not null, ref: - equipment.id]
+  notes TEXT
+  created_at TIMESTAMP [default: `now()`]
+
+  indexes {
+    (amc_contract_id, equipment_id) [unique]
+    (equipment_id)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: maintenance_requests — Maintenance/service tickets
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table maintenance_requests {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  building_id UUID [not null, ref: - buildings.id]
+  apartment_id UUID [ref: - apartments.id, note: "NULL if building-level issue"]
+  tenant_id UUID [ref: - tenants.id, note: "Reporting tenant, if applicable"]
+  equipment_id UUID [ref: - equipment.id, note: "Related equipment, if any"]
+  vendor_id UUID [ref: - vendors.id, note: "Assigned vendor/service provider"]
+  title VARCHAR(255) [not null]
+  description TEXT [not null]
+  category maintenance_category [not null]
+  priority maintenance_priority [not null]
+  status maintenance_status [not null, default: 'Open']
+  estimated_cost DECIMAL(12,2)
+  annual_cost DECIMAL(12,2) [note: "For recurring maintenance"]
+  actual_cost DECIMAL(12,2) [note: "Final cost after completion"]
+  scheduled_date DATE
+  completed_date DATE
+  assigned_to UUID [ref: - users.id, note: "Staff assigned"]
+  created_by UUID [ref: - users.id, note: "Staff who created ticket"]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (building_id)
+    (apartment_id)
+    (vendor_id)
+    (equipment_id)
+    (status, priority)
+    (created_at)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: income_records — All incoming payments
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table income_records {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  tenant_id UUID [not null, ref: - tenants.id]
+  building_id UUID [not null, ref: - buildings.id]
+  apartment_id UUID [not null, ref: - apartments.id]
+  income_type income_type [not null]
+  income_entity VARCHAR(50) [not null, default: 'Apartment level', note: "e.g. 'Building level', 'Apartment level' — see expense_entity_level enum"]
+  amount DECIMAL(12,2) [not null]
+  period VARCHAR(50) [note: "e.g. 'May 2026', '2026-05'"]
+  payment_date DATE [not null]
+  payment_method payment_method [not null]
+  transaction_reference VARCHAR(255) [note: "Transaction ID / cheque number"]
+  status income_status [not null, default: 'Pending']
+  notes TEXT
+  recorded_by UUID [ref: - users.id, note: "Staff who recorded"]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (tenant_id)
+    (building_id)
+    (apartment_id)
+    (payment_date)
+    (income_type)
+    (status)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: expense_records — All outgoing payments
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table expense_records {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  building_id UUID [not null, ref: - buildings.id]
+  apartment_id UUID [ref: - apartments.id, note: "NULL if building-level expense"]
+  vendor_id UUID [ref: - vendors.id, note: "Payee vendor, if applicable"]
+  category expense_category [not null]
+  expense_head VARCHAR(255) [not null, note: "e.g. 'Watchman Salary'"]
+  specific_item VARCHAR(255) [not null, note: "e.g. 'Monthly Salary'"]
+  nature expense_nature
+  entity_level expense_entity_level [not null, default: 'Building level']
+  amount DECIMAL(12,2) [not null]
+  description TEXT
+  expense_date DATE [not null]
+  payment_method payment_method
+  reference VARCHAR(255) [note: "Invoice/bill reference number"]
+  status expense_status [not null, default: 'Pending']
+  // Water tanker specific fields (conditional on specific_item == 'Water Tanker')
+  tanker_number VARCHAR(50)
+  time_of_delivery TIME
+  delivery_driver_name VARCHAR(255)
+  manager_in_attendance VARCHAR(255)
+  liters_filled DECIMAL(10,2)
+  recorded_by UUID [ref: - users.id]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+  deleted_at TIMESTAMP
+
+  indexes {
+    (building_id)
+    (apartment_id)
+    (vendor_id)
+    (category)
+    (expense_date)
+    (status)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: expense_categories — Configurable expense categories
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table expense_categories {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  name VARCHAR(100) [unique, not null]
+  description TEXT
+  is_active BOOLEAN [default: true]
+  sort_order INTEGER [default: 0]
+  created_at TIMESTAMP [default: `now()`]
+  updated_at TIMESTAMP [default: `now()`]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: notifications — System notifications & alerts
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table notifications {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  type VARCHAR(50) [not null, note: "e.g. 'vacant', 'critical', 'maintenance-info', 'payment', 'lease-expiring'"]
+  title VARCHAR(255) [not null]
+  detail TEXT
+  is_read BOOLEAN [default: false]
+  target_user_id UUID [ref: - users.id, note: "NULL = broadcast to all"]
+  related_entity_type VARCHAR(50) [note: "e.g. 'maintenance', 'income', 'apartment'"]
+  related_entity_id UUID [note: "ID of the related record"]
+  created_at TIMESTAMP [default: `now()`]
+  read_at TIMESTAMP
+
+  indexes {
+    (target_user_id)
+    (type)
+    (is_read)
+    (created_at)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: activities — Audit log of user actions
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table activities {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  user_id UUID [ref: - users.id, note: "Who performed the action"]
+  action_type VARCHAR(50) [not null, note: "e.g. 'create', 'update', 'delete', 'move-in', 'payment'"]
+  entity_type VARCHAR(50) [not null, note: "e.g. 'building', 'apartment', 'tenant'"]
+  entity_id UUID [not null]
+  description TEXT [not null]
+  metadata JSONB [note: "Additional context as JSON"]
+  created_at TIMESTAMP [default: `now()`]
+
+  indexes {
+    (user_id)
+    (entity_type, entity_id)
+    (action_type)
+    (created_at)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: deleted_history — Soft-delete audit trail
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table deleted_history {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  entity_type VARCHAR(50) [not null, note: "e.g. 'income', 'expense', 'tenant', 'vendor'"]
+  entity_id UUID [not null]
+  entity_title TEXT [not null, note: "Human-readable title of deleted item"]
+  deleted_by UUID [ref: - users.id]
+  deleted_at TIMESTAMP [default: `now()`]
+  restored_at TIMESTAMP [note: "If restored"]
+  restored_by UUID [ref: - users.id]
+  metadata JSONB [note: "Snapshot of deleted record data"]
+
+  indexes {
+    (entity_type)
+    (deleted_by)
+    (deleted_at)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: reports — Generated/filtered report snapshots
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table reports {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  report_type VARCHAR(50) [not null, note: "e.g. 'income', 'expense', 'maintenance', 'occupancy'"]
+  title VARCHAR(255) [not null]
+  date_range_start DATE
+  date_range_end DATE
+  filters JSONB [note: "Applied filters as JSON"]
+  summary_data JSONB [note: "Aggregated result data"]
+  generated_by UUID [ref: - users.id]
+  generated_at TIMESTAMP [default: `now()`]
+  is_archived BOOLEAN [default: false]
+
+  indexes {
+    (report_type)
+    (generated_by)
+    (generated_at)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: settings — Application settings
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table settings {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  company_name VARCHAR(255) [not null, default: 'ARDH Properties']
+  company_email VARCHAR(255) [not null]
+  phone VARCHAR(20)
+  address TEXT
+  currency VARCHAR(10) [default: 'INR']
+  date_format VARCHAR(20) [default: 'DD/MM/YYYY']
+  timezone VARCHAR(50) [default: 'Asia/Kolkata']
+  updated_by UUID [ref: - users.id]
+  updated_at TIMESTAMP [default: `now()`]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE: password_reset_tokens — For "Forgot Password" flow
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table password_reset_tokens {
+  id UUID [primary key, default: `gen_random_uuid()`]
+  user_id UUID [not null, ref: - users.id]
+  token VARCHAR(500) [not null, unique, note: "Hashed reset token"]
+  expires_at TIMESTAMP [not null]
+  is_used BOOLEAN [default: false]
+  created_at TIMESTAMP [default: `now()`]
+  used_at TIMESTAMP
+
+  indexes {
+    (user_id)
+    (token) [unique]
+    (expires_at)
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// REFERENCE / RELATIONSHIP DIAGRAM NOTES
+// ─────────────────────────────────────────────────────────────────────────────
+// Legend:
+//   1 ──< N   : One-to-Many
+//   N ──> N   : Many-to-Many (via junction table)
+//
+// Core Hierarchy:
+//   buildings ──< apartments ──< tenants
+//   owners ──< apartments
+//   buildings ──< equipment
+//   apartments ──< maintenance_requests
+//   buildings ──< income_records
+//   buildings ──< expense_records
+//   vendors ──< amc_contracts
+//   vendors ──< maintenance_requests
+//   vendors ──< equipment (as amc_vendor)
+//   amc_contracts ──> amc_contract_equipment ──< equipment (M:N)
+//   tenants ──< income_records (as payer)
+//   tenants ──< tenant_move_out_records (1:1)
+//   users ──< activities (as actor)
+//   users ──< deleted_history (as deleter)
+//   users ──< notifications (as target)
+// =============================================================================

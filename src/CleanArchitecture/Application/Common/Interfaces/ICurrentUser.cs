@@ -1,7 +1,9 @@
+using System;
+
 namespace CleanArchitecture.Application.Common.Interfaces;
 
 public interface ICurrentUser
 {
-    public int GetCurrentUserId();
-    public string GetCurrentStringUserId();
+    Guid GetCurrentUserId();
+    string GetCurrentStringUserId();
 }

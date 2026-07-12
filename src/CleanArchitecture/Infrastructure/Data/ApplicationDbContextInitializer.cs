@@ -1,10 +1,11 @@
 using CleanArchitecture.Application.Common.Utilities;
+using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Shared.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Infrastructure.Data;
-/// <summary>
-/// Another way to seed data use DbContext
-/// </summary>
+
 public class ApplicationDbContextInitializer(ApplicationDbContext context, ILoggerFactory logger)
 {
     private readonly ApplicationDbContext _context = context;
@@ -14,36 +15,54 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     {
         try
         {
-            await _context.Database.MigrateAsync();
+            // Apply migrations (in-memory db ignores migrations but will still run SeedUser in local dev mode)
+            if (_context.Database.IsRelational())
+            {
+                await _context.Database.MigrateAsync();
+            }
             await SeedUser();
         }
         catch (Exception exception)
         {
-            _logger.LogError("Migration error {exception}", exception);
+            _logger.LogError("Migration/seeding error {exception}", exception);
             throw;
         }
     }
 
     public async Task SeedUser()
     {
-        await _context.Users.AddRangeAsync(
-        new List<User>{
-                new User
+        if (!await _context.Users.AnyAsync())
+        {
+            await _context.Users.AddRangeAsync(
+                new List<User>
                 {
-                    UserName = "superAdmin",
-                    Email = "admin@gmail.com",
-                    Password = "P@ssw0rd".Hash(),
-                    Role = Role.Admin
-                },
-                new User
-                {
-                    UserName = "user",
-                    Email = "user@gmail.com",
-                    Password = "P@ssw0rd".Hash(),
-                    Role = Role.User
-                },
-            }
-        );
-        await _context.SaveChangesAsync();
+                    new User
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Super Admin",
+                        Email = "admin@gmail.com",
+                        Phone = "1234567890",
+                        PasswordHash = "P@ssw0rd".Hash(),
+                        Role = UserRole.Admin,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                    new User
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "Property Manager",
+                        Email = "manager@gmail.com",
+                        Phone = "0987654321",
+                        PasswordHash = "P@ssw0rd".Hash(),
+                        Role = UserRole.PropertyManager,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }
+                }
+            );
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using CleanArchitecture.Shared.Models;
 
 namespace CleanArchitecture.Infrastructure.Interface;
@@ -29,4 +32,5 @@ public interface IGenericRepository<T> where T : class
     void Delete(T entity);
     void DeleteRange(IEnumerable<T> entities);
     Task Delete(object id);
+    Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null);
 }

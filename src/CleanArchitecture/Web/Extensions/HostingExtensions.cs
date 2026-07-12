@@ -22,11 +22,8 @@ public static class HostingExtensions
         using var loggerFactory = LoggerFactory.Create(builder => { });
         using var scope = app.Services.CreateScope();
 
-        if (!appsettings.UseInMemoryDatabase)
-        {
-            var initialize = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
-            await initialize.InitializeAsync();
-        }
+        var initialize = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
+        await initialize.InitializeAsync();
         app.UseMiddleware<GlobalExceptionMiddleware>();
         app.ConfigureExceptionHandler(loggerFactory.CreateLogger("Exceptions"));
         app.UseMiddleware<LoggingMiddleware>();

@@ -1,149 +1,129 @@
-using System.Security.Claims;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Shared.Models.AuthIdentity.File;
-using CleanArchitecture.Shared.Models.AuthIdentity.UsersIdentity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using CleanArchitecture.Application.Common.Utilities;
+using CleanArchitecture.Domain.Constants;
+using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Shared.Models.User;
 
 namespace CleanArchitecture.Application.Services;
 
-public class UserService(
-    IFileService storageService,
-    UserManager<ApplicationUser> userManager,
-    IUnitOfWork unitOfWork) : IUserService
+public class UserService(IUnitOfWork unitOfWork) : IUserService
 {
-    private readonly IFileService _storageService = storageService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly UserManager<ApplicationUser> _userManager = userManager;
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
-        var users = await _userManager.Users
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-            .Include(u => u.Avatar)
-            .ToListAsync(cancellationToken: cancellationToken);
+        var users = await _unitOfWork.UserRepository.GetAllAsync(x => x.DeletedAt == null);
 
-        List<UserViewModel> result = users.Select(x => new UserViewModel
+        return users.Select(x => new UserViewModel
         {
             Id = x.Id,
+            Name = x.Name,
             Email = x.Email,
-            UserName = x.UserName,
-            FullName = x.Name,
-            Roles = x.UserRoles.Select(ur => ur.Role.Name).ToList(),
-            Avatar = x.Avatar != null ? x.Avatar.PathMedia : null
+            Phone = x.Phone,
+            Address = x.Address,
+            Role = x.Role,
+            AvatarUrl = x.AvatarUrl,
+            IsActive = x.IsActive,
+            Permissions = x.Permissions,
+            LastLoginAt = x.LastLoginAt,
+            CreatedAt = x.CreatedAt,
+            UpdatedAt = x.UpdatedAt
         }).ToList();
+    }
 
-        return result;
+    public async Task<UserViewModel> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+            ?? throw UserException.BadRequestException("The specified user does not exist.");
+
+        return new UserViewModel
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Phone = user.Phone,
+            Address = user.Address,
+            Role = user.Role,
+            AvatarUrl = user.AvatarUrl,
+            IsActive = user.IsActive,
+            Permissions = user.Permissions,
+            LastLoginAt = user.LastLoginAt,
+            CreatedAt = user.CreatedAt,
+            UpdatedAt = user.UpdatedAt
+        };
+    }
+
+    public async Task Create(UserCreateRequest request, CancellationToken cancellationToken)
+    {
+        var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email);
+        if (isEmailExist)
+        {
+            throw UserException.UserAlreadyExistsException(request.Email);
+        }
+
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            Email = request.Email,
+            Phone = request.Phone,
+            PasswordHash = request.Password.Hash(),
+            Address = request.Address,
+            Role = request.Role,
+            Permissions = request.Permissions,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.UserRepository.AddAsync(user), cancellationToken);
     }
 
     public async Task Update(UserUpdateRequest request, CancellationToken cancellationToken)
     {
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == request.Id && x.DeletedAt == null)
+            ?? throw UserException.BadRequestException("The specified user does not exist.");
 
-        var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == request.UserId, cancellationToken: cancellationToken)
-            ?? throw AuthIdentityException.ThrowUserNotExist();
-
-        user.Email = request.Email ?? user.Email;
-        user.Name = request.Name ?? user.Name;
-
-        //Lưu Avatar vào Host
-        if (request.MediaFile != null)
+        // Check if email is updated to an existing one
+        if (user.Email != request.Email)
         {
-            var thumb = await _unitOfWork.MediaRepository.FirstOrDefaultAsync(i => i.MediaId == user.AvatarId);
-
-            //Cập nhật Avatar
-            if (thumb.PathMedia != null)
+            var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email && x.Id != request.Id);
+            if (isEmailExist)
             {
-                await _storageService.DeleteFileAsync(new DeleteFileRequest { FileName = thumb.PathMedia });
+                throw UserException.UserAlreadyExistsException(request.Email);
             }
-            var pathMedia = await _storageService.AddFileAsync(request.MediaFile);
-
-            thumb.FileSize = request.MediaFile.Length;
-            thumb.PathMedia = pathMedia.Path;
-
-            await _unitOfWork.ExecuteTransactionAsync(() => _unitOfWork.MediaRepository.Update(thumb), cancellationToken);
         }
 
-        var result = await _userManager.UpdateAsync(user);
-        if (!result.Succeeded)
-        {
-            List<IdentityError> errorList = result.Errors.ToList();
-            var errors = string.Join(", ", errorList.Select(e => e.Description));
-            throw AuthIdentityException.ThrowUpdateUnsuccessful(errors);
-        }
+        user.Name = request.Name;
+        user.Email = request.Email;
+        user.Phone = request.Phone;
+        user.Address = request.Address;
+        user.Role = request.Role;
+        user.IsActive = request.IsActive;
+        user.Permissions = request.Permissions;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        _unitOfWork.UserRepository.Update(user);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Delete(string userId, CancellationToken cancellationToken)
+    public async Task Delete(Guid userId, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(userId)
-            ?? throw AuthIdentityException.ThrowAccountDoesNotExist();
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId && x.DeletedAt == null)
+            ?? throw UserException.BadRequestException("The specified user does not exist.");
 
-        //Xoá Avatar ra khỏi Source
-        var avatar = await _unitOfWork.MediaRepository.FirstOrDefaultAsync(x => x.MediaId == user.AvatarId);
+        // Soft delete the user
+        user.DeletedAt = DateTime.UtcNow;
+        user.IsActive = false;
+        user.UpdatedAt = DateTime.UtcNow;
 
-        if (avatar != null)
-        {
-            if (avatar.PathMedia != null)
-                await _storageService.DeleteFileAsync(new DeleteFileRequest { FileName = avatar.PathMedia });
-            await _unitOfWork.ExecuteTransactionAsync(() => _unitOfWork.MediaRepository.Delete(avatar), cancellationToken);
-        }
-
-        var result = await _userManager.DeleteAsync(user);
-
-        if (!result.Succeeded)
-        {
-            List<IdentityError> errorList = result.Errors.ToList();
-            var errors = string.Join(", ", errorList.Select(e => e.Description));
-            throw AuthIdentityException.ThrowDeleteUnsuccessful();
-        }
-    }
-    // Gán quyền người dùng và cập nhật scope
-    public async Task RoleAssign(RoleAssignRequest request, CancellationToken cancellationToken)
-    {
-        var user = await _userManager.FindByIdAsync(request.UserId)
-            ?? throw AuthIdentityException.ThrowAccountDoesNotExist();
-
-        // Handle Role Removal
-        var removedRoles = request.Roles.Where(x => !x.Selected).Select(x => x.Name).ToList();
-        foreach (var roleName in removedRoles)
-        {
-            if (await _userManager.IsInRoleAsync(user, roleName))
-            {
-                await _userManager.RemoveFromRoleAsync(user, roleName);
-            }
-        }
-
-        // Handle Role Assignment
-        var addedRoles = request.Roles.Where(x => x.Selected).Select(x => x.Name).ToList();
-        foreach (var roleName in addedRoles)
-        {
-            if (!await _userManager.IsInRoleAsync(user, roleName))
-            {
-                await _userManager.AddToRoleAsync(user, roleName);
-            }
-        }
-
-        // Manage Scope Claims
-
-        // Retrieve the existing scope claim
-        var existingClaims = await _userManager.GetClaimsAsync(user);
-        var scopeClaim = existingClaims.FirstOrDefault(c => c.Type == "scope");
-
-        // Get scopes from the request
-        var newScopes = request.Scopes.Where(x => x.Selected).Select(x => x.Name).ToList();
-
-        if (scopeClaim != null)
-        {
-            // If there is an existing scope claim, remove it
-            await _userManager.RemoveClaimAsync(user, scopeClaim);
-        }
-
-        if (newScopes.Any())
-        {
-            // Add the new scope claim
-            var newScopeClaim = new Claim("scope", string.Join(" ", newScopes));
-            await _userManager.AddClaimAsync(user, newScopeClaim);
-        }
+        _unitOfWork.UserRepository.Update(user);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

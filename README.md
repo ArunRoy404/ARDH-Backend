@@ -1,127 +1,287 @@
-# Clean Architecture Web API Project
+# ARDH Property Management Backend API
 
-## About the Project
+This repository hosts the streamlined ARDH Property Management backend, refactored according to the custom schema defined in `ardh_database_schema.dbml`.
 
-This project serves as a template for building a Clean Architecture Web API in ASP.NET Core. It focuses on separation of concerns by dividing the application into distinct layers: Domain, Application, Web API, and Infrastructure.
+All redundant boilerplate (e.g., books, legacy ASP.NET Identity tables) has been removed. The authentication and user management systems have been fully customized to strictly match the property management domain structure.
 
-## Main Features
+---
 
-### **1. Core Features (Completed)**
+## 🏗️ Architecture & Tech Stack
 
-- Clean Architecture structure (Domain, Application, Web API, Infrastructure)
-- ASP.NET Core 8.0 with Entity Framework Core
-- Docker support with SQL Server integration
-- JWT Token & Authentication by Identity
-- Health Check and Logging
-- Middleware for Exception Handling and Validation
-- Unit Testing
+- **Core Framework**: ASP.NET Core 8.0 Web API
+- **Design Pattern**: Clean Architecture (Domain, Application, Web API, Infrastructure)
+- **Database Access**: Entity Framework Core with Repository Pattern and Unit of Work
+- **Security**: BCrypt hashing for password security & custom JSON Web Token (JWT) credentials
+- **API Documentation**: Swagger/OpenAPI
 
-### **2. Testing and Quality Assurance**
+---
 
-#### **2.1 Unit Testing**
+## 🚀 How to Run Locally
 
-- Write unit tests for authentication and identity code.
+### 1. Database Configuration
+By default, the application runs using an **In-Memory Database** for seamless development. 
+Settings are located in `src/CleanArchitecture/appsettings.Development.json`:
 
-#### **2.2 Integration Testing**
-
-- Set up integration tests with `HttpClient`.
-- Update GitHub Actions (GA) pipeline to include integration tests and capture Docker logs.
-
-### **3. Infrastructure and Hosting**
-
-- Host the application on AWS EC2.
-- Write Terraform scripts to initialize AWS resources.
-- Add background services.
-- Configure Hangfire for scheduled tasks.
-- Apply sidecar architecture for job execution.
-
-### **4. Enhancements and Fixes**
-
-#### **4.1 Bug Fixes**
-
-- Fix scope assignment issues.
-- Fix user flow: update and remove unused files (e.g., status, avatar).
-
-#### **4.2 Code Enhancements**
-
-- Rename all models to include `Request`/`Response` postfix.
-- Remove redundant models containing only one field.
-
-#### **4.3 Warning and Pipeline Improvements**
-
-- Fix project warnings.
-- Enhance pipeline by separating build, unit test, and integration test stages.
-
-### **6. Real-World Testing**
-
-- Add a real external service for testing.
-
-### **7. Miscellaneous**
-
-- Configure integration tests to run in Docker.
-
-## Getting Started
-
-### Prerequisites
-
-- .NET 8.0 SDK
-- Docker
-- SQL Server
-
-### Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/nhonvo/clean-architecture-net-8.0
-   ```
-
-2. Build and run:
-
-   - Docker:
-
-     ```bash
-     docker-compose up --build
-     ```
-
-   - Local: Update the connection string in `appsettings.Development.json`
-
-     and run:
-
-     ```bash
-     dotnet run ./src/CleanArchitecture/CleanArchitecture.csproj
-     ```
-
-3. Package project (Optional):
-
-```bash
-dotnet pack -o nupkg
-dotnet new install ./ --force
-# dotnet new install ./nupkg/CleanArchitecture.1.0.0.nupkg
-dotnet new cleanarch -n template-project
+```json
+{
+  "UseInMemoryDatabase": true,
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=ArdhDb;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
 ```
 
-### Usage
+To switch to a relational database like SQL Server, set `"UseInMemoryDatabase": false` and update the connection string.
 
-Access the API via:
+### 2. Startup Command
+Run the following command from the root folder:
 
-- Docker: `http://localhost:3001/swagger/index.html`
-  - Health check: `http://localhost:3001/health` & `http://localhost:3001/healthcheck-ui`
-- Local: `http://localhost:5240/swagger/index.html`
-  - Health check: `http://localhost:5240/health` & `http://localhost:5240/healthcheck-ui`
+```powershell
+dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj
+```
 
-## Roadmap
+The server will initialize, automatically apply EF migrations (if running on a relational DB), and seed development accounts.
 
-- Issue tracking and planned features can be found [here](https://github.com/nhonvo/clean-architecture-net-8.0/issues).
+---
 
-## Contributing
+## 🔑 Default Seed Credentials
+The database initializer automatically seeds the following credentials for testing:
 
-Feel free to contribute by submitting issues or pull requests.
+| Full Name | Email Address | Role | Password |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `admin@gmail.com` | `Admin` | `P@ssw0rd` |
+| **Property Manager** | `manager@gmail.com` | `PropertyManager` | `P@ssw0rd` |
 
-## License
+---
 
-This project is licensed under the MIT License.
+## 📑 API Endpoint Documentation
 
-## Contact
+### 🔓 Authentication Endpoints (`/api/auth`)
 
-For any inquiries, contact the repository owner [here](https://github.com/nhonvo).
+#### 1. Sign In
+- **Route**: `POST /api/auth/sign-in`
+- **Request Body**:
+```json
+{
+  "email": "admin@gmail.com",
+  "password": "P@ssw0rd",
+  "rememberMe": true
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Super Admin",
+  "email": "admin@gmail.com",
+  "role": "Admin",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+#### 2. Sign Up
+- **Route**: `POST /api/auth/sign-up`
+- **Request Body**:
+```json
+{
+  "name": "Arun Roy",
+  "email": "arun.roy@gmail.com",
+  "phone": "+123456789",
+  "password": "password123",
+  "address": "123 Ardh St, Property City"
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "message": "User registered successfully."
+}
+```
+
+#### 3. Forgot Password (Request OTP)
+- **Route**: `POST /api/auth/forgot-password`
+- **Request Body**:
+```json
+{
+  "email": "admin@gmail.com"
+}
+```
+- **Response (200 OK)**:
+*(Note: Generates a 6-digit OTP code, saves it to the DB with a 10-minute expiry, and prints/logs it in the backend terminal console for easy local testing).*
+```json
+{
+  "message": "Password reset OTP sent to email."
+}
+```
+
+#### 4. Verify OTP
+- **Route**: `POST /api/auth/verify-otp`
+- **Request Body**:
+```json
+{
+  "email": "admin@gmail.com",
+  "otp": "123456"
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "message": "OTP verified successfully. You can now reset your password."
+}
+```
+
+#### 5. Reset Password
+- **Route**: `POST /api/auth/reset-password`
+- **Request Body**:
+```json
+{
+  "email": "admin@gmail.com",
+  "otp": "123456",
+  "newPassword": "newPassword123",
+  "confirmNewPassword": "newPassword123"
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "message": "Password has been reset successfully."
+}
+```
+
+#### 6. Refresh Token
+- **Route**: `GET /api/auth/refresh`
+- **Response (200 OK)**:
+```json
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+#### 7. Get Current User Profile
+- **Route**: `GET /api/auth/profile`
+- **Headers**: `Authorization: Bearer <token>`
+- **Response (200 OK)**:
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Super Admin",
+  "email": "admin@gmail.com",
+  "phone": "1234567890",
+  "role": "Admin",
+  "address": null,
+  "avatarUrl": null,
+  "isActive": true,
+  "permissions": null,
+  "lastLoginAt": "2026-07-12T10:45:00Z"
+}
+```
+
+#### 8. Logout
+- **Route**: `DELETE /api/auth/logout`
+- **Response (200 OK)**:
+```json
+{
+  "message": "Successfully logged out."
+}
+```
+
+---
+
+### 🛡️ User Management Endpoints (`/api/user`)
+*All requests require a valid JWT token in the `Authorization` header.*
+
+#### 1. List Users
+- **Route**: `GET /api/user`
+- **Access**: `Admin` only
+- **Response (200 OK)**:
+```json
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "name": "Super Admin",
+    "email": "admin@gmail.com",
+    "phone": "1234567890",
+    "address": null,
+    "role": "Admin",
+    "avatarUrl": null,
+    "isActive": true,
+    "permissions": null,
+    "lastLoginAt": "2026-07-12T10:45:00Z",
+    "createdAt": "2026-07-12T10:30:00Z",
+    "updatedAt": "2026-07-12T10:45:00Z"
+  }
+]
+```
+
+#### 2. Get User By ID
+- **Route**: `GET /api/user/{id}`
+- **Response (200 OK)**:
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Super Admin",
+  "email": "admin@gmail.com",
+  "phone": "1234567890",
+  "address": null,
+  "role": "Admin",
+  "avatarUrl": null,
+  "isActive": true,
+  "permissions": null,
+  "lastLoginAt": "2026-07-12T10:45:00Z",
+  "createdAt": "2026-07-12T10:30:00Z",
+  "updatedAt": "2026-07-12T10:45:00Z"
+}
+```
+
+#### 3. Create User
+- **Route**: `POST /api/user`
+- **Access**: `Admin` only
+- **Request Body**:
+```json
+{
+  "name": "Tenant Manager",
+  "email": "tenant@gmail.com",
+  "phone": "555-0199",
+  "password": "password123",
+  "address": "Building A, Suite 4",
+  "role": "PropertyManager",
+  "permissions": "read:billing,write:billing"
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "message": "User created successfully."
+}
+```
+
+#### 4. Update User
+- **Route**: `PUT /api/user`
+- **Request Body**:
+```json
+{
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "name": "Super Admin II",
+  "email": "admin@gmail.com",
+  "phone": "1234567890",
+  "address": "New Head Office",
+  "role": "Admin",
+  "isActive": true,
+  "permissions": "all"
+}
+```
+- **Response (200 OK)**:
+```json
+{
+  "message": "User updated successfully."
+}
+```
+
+#### 5. Delete User (Soft Delete)
+- **Route**: `DELETE /api/user/{id}`
+- **Access**: `Admin` only
+- **Response (200 OK)**:
+```json
+{
+  "message": "User deleted successfully."
+}
+```
+*(Note: Performs a soft-delete by setting the `DeletedAt` timestamp and setting `IsActive` to `false`).*
