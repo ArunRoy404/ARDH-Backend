@@ -25,13 +25,16 @@ public class UserCreateRequest
     [Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
     public string ConfirmPassword { get; set; } = string.Empty;
 
-    public string? Address { get; set; }
+    [Required]
+    public string Address { get; set; } = string.Empty;
 
     [Required]
     public UserRole Role { get; set; } = UserRole.Admin;
 
-    public string? Permissions { get; set; }
+    [Required]
+    public string Permissions { get; set; } = string.Empty;
 
+    [Required]
     [JsonPropertyName("avatarURL")]
-    public string? AvatarUrl { get; set; }
+    public string AvatarUrl { get; set; } = string.Empty;
 }
