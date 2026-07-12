@@ -1,4 +1,6 @@
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Shared.Domain.Enums;
+using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,27 +12,33 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Web.Controller;
 
-[Authorize]
+[Authorize(Roles = "SuperAdmin,Admin")]
+[Route("api/users")]
 public class UserController(IUserService userService) : BaseController
 {
     private readonly IUserService _userService = userService;
 
     /// <summary>
-    /// Retrieves a list of all users.
+    /// [U-01] Retrieves a paginated, filtered list of all users.
     /// </summary>
     [HttpGet]
-    [Authorize(Roles = "Admin")]
-    [SwaggerResponse(200, "List of users retrieved successfully.", typeof(List<UserViewModel>))]
+    [SwaggerResponse(200, "List of users retrieved successfully.", typeof(PaginatedList<UserViewModel>))]
     [SwaggerResponse(401, "Unauthorized access.")]
-    [SwaggerResponse(403, "Access denied. Admin role required.")]
-    public async Task<ActionResult<List<UserViewModel>>> Get(CancellationToken cancellationToken)
+    [SwaggerResponse(403, "Access denied. SuperAdmin or Admin role required.")]
+    public async Task<ActionResult<PaginatedList<UserViewModel>>> Get(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? search = null,
+        [FromQuery] UserRole? role = null,
+        [FromQuery(Name = "is_active")] bool? isActive = null,
+        CancellationToken cancellationToken = default)
     {
-        var users = await _userService.Get(cancellationToken);
+        var users = await _userService.GetPaginated(page, pageSize, search, role, isActive, cancellationToken);
         return Ok(users);
     }
 
     /// <summary>
-    /// Retrieves a user by their ID.
+    /// [U-02] Retrieves a user by their ID.
     /// </summary>
     [HttpGet("{id}")]
     [SwaggerResponse(200, "User details retrieved successfully.", typeof(UserViewModel))]
@@ -43,14 +51,12 @@ public class UserController(IUserService userService) : BaseController
     }
 
     /// <summary>
-    /// Creates a new user. Only accessible by Admins.
+    /// [U-03] Creates a new user.
     /// </summary>
     [HttpPost]
-    [Authorize(Roles = "Admin")]
     [SwaggerResponse(200, "User created successfully.")]
     [SwaggerResponse(400, "Invalid request or email already exists.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    [SwaggerResponse(403, "Access denied. Admin role required.")]
     public async Task<IActionResult> Create([FromBody] UserCreateRequest request, CancellationToken cancellationToken)
     {
         await _userService.Create(request, cancellationToken);
@@ -58,31 +64,43 @@ public class UserController(IUserService userService) : BaseController
     }
 
     /// <summary>
-    /// Updates the details of an existing user.
+    /// [U-04] Updates the details of an existing user.
     /// </summary>
-    [HttpPut]
+    [HttpPut("{id}")]
     [SwaggerResponse(200, "User updated successfully.")]
     [SwaggerResponse(400, "Invalid request or email already exists.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "User not found.")]
-    public async Task<IActionResult> Update([FromBody] UserUpdateRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request, CancellationToken cancellationToken)
     {
+        request.Id = id;
         await _userService.Update(request, cancellationToken);
         return Ok(new { message = "User updated successfully." });
     }
 
     /// <summary>
-    /// Deletes a user by their ID. Only accessible by Admins.
+    /// [U-05] Soft-deletes a user by their ID.
     /// </summary>
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
     [SwaggerResponse(200, "User deleted successfully.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    [SwaggerResponse(403, "Access denied. Admin role required.")]
     [SwaggerResponse(404, "User not found.")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await _userService.Delete(id, cancellationToken);
         return Ok(new { message = "User deleted successfully." });
+    }
+
+    /// <summary>
+    /// [U-06] Toggles active/inactive status of a user.
+    /// </summary>
+    [HttpPatch("{id}/toggle-status")]
+    [SwaggerResponse(200, "User status toggled successfully.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(404, "User not found.")]
+    public async Task<IActionResult> ToggleStatus(Guid id, CancellationToken cancellationToken)
+    {
+        await _userService.ToggleStatus(id, cancellationToken);
+        return Ok(new { message = "User status toggled successfully." });
     }
 }

@@ -74,7 +74,7 @@ The database initializer automatically seeds the following credentials for testi
   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "name": "Super Admin",
   "email": "admin@gmail.com",
-  "role": "Admin",
+  "role": "SuperAdmin",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
@@ -146,7 +146,7 @@ The database initializer automatically seeds the following credentials for testi
   "name": "Super Admin",
   "email": "admin@gmail.com",
   "phone": "1234567890",
-  "role": "Admin",
+  "role": "SuperAdmin",
   "address": null,
   "avatarUrl": null,
   "isActive": true,
@@ -166,34 +166,45 @@ The database initializer automatically seeds the following credentials for testi
 
 ---
 
-### 🛡️ User Management Endpoints (`/api/user`)
-*All requests require a valid JWT token in the `Authorization` header.*
+### 🛡️ User Management Endpoints (`/api/users`)
+*All requests require a valid JWT token (either as HTTP-only cookie `token_key` or in the `Authorization: Bearer <token>` header). Must be authenticated as `SuperAdmin` or `Admin`.*
 
-#### 1. List Users
-- **Route**: `GET /api/user`
-- **Access**: `Admin` only
+#### 1. [U-01] List Users (with Pagination, Search, and Filtering)
+- **Route**: `GET /api/users`
+- **Query Parameters**:
+  - `page` (int, default: `1`)
+  - `pageSize` (int, default: `10`)
+  - `search` (string, optional, searches in `name`, `email`, `phone`)
+  - `role` (UserRole enum: `SuperAdmin` | `Admin`, optional)
+  - `is_active` (boolean, optional)
 - **Response (200 OK)**:
 ```json
-[
-  {
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "name": "Super Admin",
-    "email": "admin@gmail.com",
-    "phone": "1234567890",
-    "address": null,
-    "role": "Admin",
-    "avatarUrl": null,
-    "isActive": true,
-    "permissions": null,
-    "lastLoginAt": "2026-07-12T10:45:00Z",
-    "createdAt": "2026-07-12T10:30:00Z",
-    "updatedAt": "2026-07-12T10:45:00Z"
-  }
-]
+{
+  "items": [
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "name": "Super Admin",
+      "email": "admin@gmail.com",
+      "phone": "1234567890",
+      "address": "Bangalore",
+      "role": "SuperAdmin",
+      "avatarURL": "https://example.com/avatar.png",
+      "city": "Bangalore",
+      "isActive": true,
+      "permissions": "all",
+      "lastLoginAt": "2026-07-12T10:45:00Z",
+      "createdAt": "2026-07-12T10:30:00Z",
+      "updatedAt": "2026-07-12T10:45:00Z"
+    }
+  ],
+  "totalCount": 1,
+  "page": 1,
+  "pageSize": 10
+}
 ```
 
-#### 2. Get User By ID
-- **Route**: `GET /api/user/{id}`
+#### 2. [U-02] Get Single User
+- **Route**: `GET /api/users/{id}`
 - **Response (200 OK)**:
 ```json
 {
@@ -201,30 +212,32 @@ The database initializer automatically seeds the following credentials for testi
   "name": "Super Admin",
   "email": "admin@gmail.com",
   "phone": "1234567890",
-  "address": null,
-  "role": "Admin",
-  "avatarUrl": null,
+  "address": "Bangalore",
+  "role": "SuperAdmin",
+  "avatarURL": "https://example.com/avatar.png",
+  "city": "Bangalore",
   "isActive": true,
-  "permissions": null,
+  "permissions": "all",
   "lastLoginAt": "2026-07-12T10:45:00Z",
   "createdAt": "2026-07-12T10:30:00Z",
   "updatedAt": "2026-07-12T10:45:00Z"
 }
 ```
 
-#### 3. Create User
-- **Route**: `POST /api/user`
-- **Access**: `Admin` only
+#### 3. [U-03] Create User
+- **Route**: `POST /api/users`
 - **Request Body**:
 ```json
 {
-  "name": "Tenant Manager",
-  "email": "tenant@gmail.com",
+  "name": "Admin User",
+  "email": "admin2@gmail.com",
   "phone": "555-0199",
   "password": "password123",
-  "address": "Building A, Suite 4",
-  "role": "PropertyManager",
-  "permissions": "read:billing,write:billing"
+  "confirmPassword": "password123",
+  "address": "Mumbai",
+  "role": "Admin",
+  "permissions": "read:billing,write:billing",
+  "avatarURL": "https://example.com/avatar.png"
 }
 ```
 - **Response (200 OK)**:
@@ -234,19 +247,19 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 4. Update User
-- **Route**: `PUT /api/user`
+#### 4. [U-04] Update User
+- **Route**: `PUT /api/users/{id}`
 - **Request Body**:
 ```json
 {
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "name": "Super Admin II",
-  "email": "admin@gmail.com",
-  "phone": "1234567890",
-  "address": "New Head Office",
+  "name": "Admin User Updated",
+  "email": "admin2@gmail.com",
+  "phone": "555-0199",
+  "address": "Pune",
   "role": "Admin",
   "isActive": true,
-  "permissions": "all"
+  "permissions": "read:billing",
+  "avatarURL": "https://example.com/avatar.png"
 }
 ```
 - **Response (200 OK)**:
@@ -256,13 +269,22 @@ The database initializer automatically seeds the following credentials for testi
 }
 ```
 
-#### 5. Delete User (Soft Delete)
-- **Route**: `DELETE /api/user/{id}`
-- **Access**: `Admin` only
+#### 5. [U-05] Soft Delete User
+- **Route**: `DELETE /api/users/{id}`
 - **Response (200 OK)**:
 ```json
 {
   "message": "User deleted successfully."
 }
 ```
-*(Note: Performs a soft-delete by setting the `DeletedAt` timestamp and setting `IsActive` to `false`).*
+*(Note: Performs a soft-delete by setting the `DeletedAt` timestamp and setting `IsActive` to `false` without removing the record from the database).*
+
+#### 6. [U-06] Toggle User Status
+- **Route**: `PATCH /api/users/{id}/toggle-status`
+- **Response (200 OK)**:
+```json
+{
+  "message": "User status toggled successfully."
+}
+```
+*(Note: Toggles the `IsActive` flag between `true` and `false` for the specified user).*

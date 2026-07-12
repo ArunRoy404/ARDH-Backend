@@ -11,7 +11,7 @@ public class User
     public string Phone { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string? Address { get; set; }
-    public UserRole Role { get; set; } = UserRole.Viewer;
+    public UserRole Role { get; set; } = UserRole.Admin;
     public string? Permissions { get; set; }
     public string? AvatarUrl { get; set; }
     public bool IsActive { get; set; } = true;

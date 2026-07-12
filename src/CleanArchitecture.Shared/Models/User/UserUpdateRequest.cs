@@ -1,12 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using CleanArchitecture.Shared.Domain.Enums;
 
 namespace CleanArchitecture.Shared.Models.User;
 
 public class UserUpdateRequest
 {
-    [Required]
     public Guid Id { get; set; }
 
     [Required]
@@ -28,4 +28,9 @@ public class UserUpdateRequest
     public bool IsActive { get; set; } = true;
 
     public string? Permissions { get; set; }
+
+    public string? AvatarUrl { get; set; }
+
+    [JsonPropertyName("avatarURL")]
+    public string? AvatarURL { get => AvatarUrl; set => AvatarUrl = value; }
 }

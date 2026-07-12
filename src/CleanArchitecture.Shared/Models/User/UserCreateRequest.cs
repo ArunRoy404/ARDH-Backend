@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using CleanArchitecture.Shared.Domain.Enums;
 
 namespace CleanArchitecture.Shared.Models.User;
@@ -20,10 +21,19 @@ public class UserCreateRequest
     [MinLength(6)]
     public string Password { get; set; } = string.Empty;
 
+    [Required]
+    [Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
+    public string ConfirmPassword { get; set; } = string.Empty;
+
     public string? Address { get; set; }
 
     [Required]
-    public UserRole Role { get; set; } = UserRole.Viewer;
+    public UserRole Role { get; set; } = UserRole.Admin;
 
     public string? Permissions { get; set; }
+
+    public string? AvatarUrl { get; set; }
+
+    [JsonPropertyName("avatarURL")]
+    public string? AvatarURL { get => AvatarUrl; set => AvatarUrl = value; }
 }
