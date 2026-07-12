@@ -1,290 +1,319 @@
-# ARDH Property Management Backend API
+# 🏢 ARDH Property Management Backend API Documentation
 
-This repository hosts the streamlined ARDH Property Management backend, refactored according to the custom schema defined in `ardh_database_schema.dbml`.
+Welcome to the **ARDH Property Management** API documentation. This guide is designed to explain the API structure, endpoint specifications, and authentication architecture to both developers and project stakeholders.
 
-All redundant boilerplate (e.g., books, legacy ASP.NET Identity tables) has been removed. The authentication and user management systems have been fully customized to strictly match the property management domain structure.
-
----
-
-## 🏗️ Architecture & Tech Stack
-
-- **Core Framework**: ASP.NET Core 8.0 Web API
-- **Design Pattern**: Clean Architecture (Domain, Application, Web API, Infrastructure)
-- **Database Access**: Entity Framework Core with Repository Pattern and Unit of Work
-- **Security**: BCrypt hashing for password security & custom JSON Web Token (JWT) credentials
-- **API Documentation**: Swagger/OpenAPI
+The backend is built using **ASP.NET Core 8.0** following **Clean Architecture** principles.
 
 ---
 
-## 🚀 How to Run Locally
+## 🔒 Authentication Architecture: JWT & HttpOnly Cookies
 
-### 1. Database Configuration
-By default, the application runs using an **In-Memory Database** for seamless development. 
-Settings are located in `src/CleanArchitecture/appsettings.Development.json`:
+The system implements a **hybrid authentication pipeline** that combines the flexibility of **JSON Web Tokens (JWT)** with the high security of **HttpOnly Cookies**. This ensures robust defense against common web vulnerabilities while maintaining full compatibility with diverse clients (web apps, mobile apps, and third-party integrations).
 
-```json
-{
-  "UseInMemoryDatabase": true,
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=ArdhDb;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
+### 1. Dual-Token Delivery Model
+When a user logs in via `/api/auth/sign-in` or requests a token renewal via `/api/auth/refresh`, the API delivers the JWT in two ways simultaneously:
+1. **JSON Response Body**: Returns the JWT string as `token` in the response payload.
+2. **HttpOnly Cookie**: Automatically appends a cookie named `token_key` containing the token to the HTTP response headers.
+
+### 2. Cookie Security Attributes
+To prevent unauthorized access and theft of user sessions, the `token_key` cookie is configured with the following industry-standard security flags:
+
+*   **`HttpOnly = true`**: The cookie cannot be accessed via client-side JavaScript (e.g., `document.cookie`). This completely mitigates **Cross-Site Scripting (XSS)** token theft.
+*   **`Secure = true` (HTTPS only)**: The cookie is only transmitted over encrypted connections, shielding it from **Man-in-the-Middle (MITM)** sniffing.
+*   **`SameSite = None` (HTTPS) / `Lax` (HTTP Dev)**: Under HTTPS, `SameSite=None` allows the frontend client hosted on a different domain to send the credential cookie seamlessly during cross-origin API calls. During local development over HTTP, it falls back to `Lax` to allow standard request flows.
+*   **`MaxAge = 30 minutes`**: Limits the token lifespan to prevent session hijacking from abandoned devices.
+
+### 3. Smart Extraction Pipeline
+Our backend authorization middleware automatically resolves user identity by checking for credentials in two locations in order of priority:
+
+```mermaid
+flowchart TD
+    A[Incoming Request] --> B{Bearer Token in Authorization Header?}
+    B -- Yes --> C[Use Authorization Header Token]
+    B -- No --> D{HttpOnly Cookie 'token_key' Present?}
+    D -- Yes --> E[Extract Token from Cookie]
+    D -- No --> F[Mark Request as Anonymous/Unauthorized]
+    C --> G[Validate JWT Signature, Expiry, Issuer, & Audience]
+    E --> G
+    G -- Valid --> H[Authenticate User & Bind Roles/Claims]
+    G -- Invalid/Expired --> I[Return 401 Unauthorized]
 ```
 
-To switch to a relational database like SQL Server, set `"UseInMemoryDatabase": false` and update the connection string.
+---
 
-### 2. Startup Command
-Run the following command from the root folder:
+## 🔄 Authentication Flow Sequence
 
-```powershell
-dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj
+The sequence diagram below visualizes how the frontend client interacts with the API during sign-in, profile retrieval, and sign-out:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Frontend Web/Mobile Client
+    participant API as ASP.NET Core API
+    participant DB as Database
+
+    Note over Client, API: 1. Authentication Phase
+    Client->>+API: POST /api/auth/sign-in<br/>(Email & Password)
+    API->>+DB: Retrieve user details & verify hashed password (BCrypt)
+    DB-->>-API: Validation Succeeded
+    API->>API: Generate JWT containing User Claims (ID, Name, Email, Role)
+    API->>Client: Response Status 200 OK<br/>- JSON Payload (with Token)<br/>- Sets HttpOnly Cookie: token_key
+    deactivate API
+
+    Note over Client, API: 2. Authorized Query Phase (Automatic Cookies)
+    Client->>+API: GET /api/auth/profile<br/>(Sends HttpOnly Cookie automatically)
+    API->>API: Middleware extracts and validates token signature
+    API-->>-Client: Returns User Profile Data (200 OK)
+
+    Note over Client, API: 3. Session Termination
+    Client->>+API: DELETE /api/auth/logout
+    API->>API: Deletes "token_key" cookie from client browser
+    API-->>-Client: Returns Logout Message (200 OK)
 ```
-
-The server will initialize, automatically apply EF migrations (if running on a relational DB), and seed development accounts.
 
 ---
 
-## 🔑 Default Seed Credentials
-The database initializer automatically seeds the following credentials for testing:
+## 📑 API Endpoint Catalog
+
+---
+
+### 🔓 Group 1: Authentication Endpoints (`/api/auth`)
+These endpoints manage user sessions, profile details, and password recovery.
+
+#### 1. Sign In (Login)
+*   **Route**: `POST /api/auth/sign-in`
+*   **Access**: Public
+*   **Description**: Authenticates user credentials. Sets the `token_key` cookie and returns the token details.
+*   **Request Body (`UserSignInRequest`)**:
+    ```json
+    {
+      "email": "admin@gmail.com",
+      "password": "P@ssw0rd",
+      "rememberMe": true
+    }
+    ```
+*   **Response (200 OK - `UserSignInResponse`)**:
+    ```json
+    {
+      "id": "a3f5b721-39c4-42b8-bd29-c8be5d491f24",
+      "name": "Super Admin",
+      "email": "admin@gmail.com",
+      "role": "Admin",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+    ```
+
+#### 2. Get Current Profile
+*   **Route**: `GET /api/auth/profile`
+*   **Access**: Authenticated (Requires valid JWT Cookie or Bearer Token)
+*   **Description**: Returns details about the currently signed-in user.
+*   **Response (200 OK - `UserProfileResponse`)**:
+    ```json
+    {
+      "id": "a3f5b721-39c4-42b8-bd29-c8be5d491f24",
+      "name": "Super Admin",
+      "email": "admin@gmail.com",
+      "phone": "+1234567890",
+      "role": "Admin",
+      "address": "123 Main St",
+      "avatarUrl": "https://example.com/avatar.png",
+      "isActive": true,
+      "permissions": "read:all",
+      "lastLoginAt": "2026-07-12T19:54:27Z"
+    }
+    ```
+
+#### 3. Refresh Token
+*   **Route**: `GET /api/auth/refresh`
+*   **Access**: Authenticated
+*   **Description**: Regenerates a fresh JWT and updates the HttpOnly session cookie, extending the session.
+*   **Response (200 OK)**:
+    ```json
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    ```
+
+#### 4. Forgot Password (Request OTP)
+*   **Route**: `POST /api/auth/forgot-password`
+*   **Access**: Public
+*   **Description**: Generates a temporary 6-digit numeric OTP for password recovery, valid for 10 minutes.
+*   **Request Body (`ForgotPasswordRequest`)**:
+    ```json
+    {
+      "email": "user@gmail.com"
+    }
+    ```
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "Password reset OTP sent to email."
+    }
+    ```
+    > [!NOTE]
+    > For local development, the generated OTP is logged to the backend console application log to bypass SMTP email requirements.
+
+#### 5. Verify OTP
+*   **Route**: `POST /api/auth/verify-otp`
+*   **Access**: Public
+*   **Description**: Validates that the submitted OTP is correct and has not expired.
+*   **Request Body (`VerifyOtpRequest`)**:
+    ```json
+    {
+      "email": "user@gmail.com",
+      "otp": "654321"
+    }
+    ```
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "OTP verified successfully. You can now reset your password."
+    }
+    ```
+
+#### 6. Reset Password
+*   **Route**: `POST /api/auth/reset-password`
+*   **Access**: Public
+*   **Description**: Resets the password if the OTP validation succeeds.
+*   **Request Body (`ResetPasswordRequest`)**:
+    ```json
+    {
+      "email": "user@gmail.com",
+      "otp": "654321",
+      "newPassword": "newSecurePassword123!",
+      "confirmNewPassword": "newSecurePassword123!"
+    }
+    ```
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "Password has been reset successfully."
+    }
+    ```
+
+#### 7. Logout
+*   **Route**: `DELETE /api/auth/logout`
+*   **Access**: Public / Authenticated
+*   **Description**: Clears the authentication state by requesting client browsers to delete the `token_key` cookie.
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "Successfully logged out."
+    }
+    ```
+
+---
+
+### 🛡️ Group 2: User Management Endpoints (`/api/users`)
+*All endpoints in this group require a valid administrator session (`SuperAdmin` or `Admin` role).*
+
+#### U-01. List Users
+*   **Route**: `GET /api/users`
+*   **Query Parameters**:
+    *   `page` *(integer, default: 1)*: Page number.
+    *   `pageSize` *(integer, default: 10)*: Number of items per page.
+    *   `search` *(string, optional)*: Search match for Name, Email, or Phone.
+    *   `role` *(integer enum, optional)*: Filter by role.
+    *   `is_active` *(boolean, optional)*: Filter active/inactive users.
+*   **Response (200 OK - `PaginatedList<UserViewModel>`)**:
+    ```json
+    {
+      "items": [
+        {
+          "id": "c1f7b822-29c4-52a8-ad29-c8be5d491f24",
+          "name": "Jane Doe",
+          "email": "jane@gmail.com",
+          "phone": "+1987654321",
+          "address": "456 Oak Avenue",
+          "role": "Admin",
+          "avatarURL": "https://example.com/jane.jpg",
+          "isActive": true,
+          "permissions": "read:all",
+          "lastLoginAt": "2026-07-12T18:30:00Z",
+          "createdAt": "2026-07-11T12:00:00Z",
+          "updatedAt": "2026-07-12T18:30:00Z"
+        }
+      ],
+      "page": 1,
+      "pageSize": 10,
+      "totalCount": 1
+    }
+    ```
+
+#### U-02. Get User By ID
+*   **Route**: `GET /api/users/{id}`
+*   **Response (200 OK - `UserViewModel`)**: Returns the full details of a specific user.
+
+#### U-03. Create User
+*   **Route**: `POST /api/users`
+*   **Request Body (`UserCreateRequest`)**:
+    ```json
+    {
+      "name": "John Tenant",
+      "email": "john.t@gmail.com",
+      "phone": "+15550199",
+      "password": "Password123!",
+      "confirmPassword": "Password123!",
+      "address": "Suite 4B, Plaza Towers",
+      "role": "Admin",
+      "permissions": "read:properties",
+      "avatarURL": "https://example.com/john.jpg"
+    }
+    ```
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "User created successfully."
+    }
+    ```
+
+#### U-04. Update User
+*   **Route**: `PUT /api/users/{id}`
+*   **Request Body (`UserUpdateRequest`)**:
+    ```json
+    {
+      "name": "John Tenant Updated",
+      "email": "john.t@gmail.com",
+      "phone": "+15550199",
+      "address": "Suite 5A, Plaza Towers",
+      "role": "Admin",
+      "isActive": true,
+      "permissions": "read:properties,write:properties",
+      "avatarURL": "https://example.com/john.jpg"
+    }
+    ```
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "User updated successfully."
+    }
+    ```
+
+#### U-05. Soft Delete User
+*   **Route**: `DELETE /api/users/{id}`
+*   **Description**: Marks a user account as deleted by setting a deletion timestamp and updating the state to inactive without physical deletion, preserving data auditing.
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "User deleted successfully."
+    }
+    ```
+
+#### U-06. Toggle User Status
+*   **Route**: `PATCH /api/users/{id}/toggle-status`
+*   **Description**: Instantly toggles the `IsActive` state between `true` and `false`, allowing administrators to temporarily lock/unlock user access.
+*   **Response (200 OK)**:
+    ```json
+    {
+      "message": "User status toggled successfully."
+    }
+    ```
+
+---
+
+## 🛡️ Default Seed Credentials
+
+For quick deployment and local testing, the following default accounts are seeded upon starting the database:
 
 | Full Name | Email Address | Role | Password |
 | :--- | :--- | :--- | :--- |
 | **Super Admin** | `admin@gmail.com` | `Admin` | `P@ssw0rd` |
 | **Property Manager** | `manager@gmail.com` | `PropertyManager` | `P@ssw0rd` |
-
----
-
-## 📑 API Endpoint Documentation
-
-### 🔓 Authentication Endpoints (`/api/auth`)
-
-#### 1. Sign In
-- **Route**: `POST /api/auth/sign-in`
-- **Request Body**:
-```json
-{
-  "email": "admin@gmail.com",
-  "password": "P@ssw0rd",
-  "rememberMe": true
-}
-```
-- **Response (200 OK)**:
-```json
-{
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "name": "Super Admin",
-  "email": "admin@gmail.com",
-  "role": "SuperAdmin",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-#### 2. Forgot Password (Request OTP)
-- **Route**: `POST /api/auth/forgot-password`
-- **Request Body**:
-```json
-{
-  "email": "admin@gmail.com"
-}
-```
-- **Response (200 OK)**:
-*(Note: Generates a 6-digit OTP code, saves it to the DB with a 10-minute expiry, and prints/logs it in the backend terminal console for easy local testing).*
-```json
-{
-  "message": "Password reset OTP sent to email."
-}
-```
-
-#### 3. Verify OTP
-- **Route**: `POST /api/auth/verify-otp`
-- **Request Body**:
-```json
-{
-  "email": "admin@gmail.com",
-  "otp": "123456"
-}
-```
-- **Response (200 OK)**:
-```json
-{
-  "message": "OTP verified successfully. You can now reset your password."
-}
-```
-
-#### 4. Reset Password
-- **Route**: `POST /api/auth/reset-password`
-- **Request Body**:
-```json
-{
-  "email": "admin@gmail.com",
-  "otp": "123456",
-  "newPassword": "newPassword123",
-  "confirmNewPassword": "newPassword123"
-}
-```
-- **Response (200 OK)**:
-```json
-{
-  "message": "Password has been reset successfully."
-}
-```
-
-#### 5. Refresh Token
-- **Route**: `GET /api/auth/refresh`
-- **Response (200 OK)**:
-```json
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-```
-
-#### 6. Get Current User Profile
-- **Route**: `GET /api/auth/profile`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response (200 OK)**:
-```json
-{
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "name": "Super Admin",
-  "email": "admin@gmail.com",
-  "phone": "1234567890",
-  "role": "SuperAdmin",
-  "address": null,
-  "avatarUrl": null,
-  "isActive": true,
-  "permissions": null,
-  "lastLoginAt": "2026-07-12T10:45:00Z"
-}
-```
-
-#### 7. Logout
-- **Route**: `DELETE /api/auth/logout`
-- **Response (200 OK)**:
-```json
-{
-  "message": "Successfully logged out."
-}
-```
-
----
-
-### 🛡️ User Management Endpoints (`/api/users`)
-*All requests require a valid JWT token (either as HTTP-only cookie `token_key` or in the `Authorization: Bearer <token>` header). Must be authenticated as `SuperAdmin` or `Admin`.*
-
-#### 1. [U-01] List Users (with Pagination, Search, and Filtering)
-- **Route**: `GET /api/users`
-- **Query Parameters**:
-  - `page` (int, default: `1`)
-  - `pageSize` (int, default: `10`)
-  - `search` (string, optional, searches in `name`, `email`, `phone`)
-  - `role` (UserRole enum: `SuperAdmin` | `Admin`, optional)
-  - `is_active` (boolean, optional)
-- **Response (200 OK)**:
-```json
-{
-  "items": [
-    {
-      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "name": "Super Admin",
-      "email": "admin@gmail.com",
-      "phone": "1234567890",
-      "address": "Bangalore",
-      "role": "SuperAdmin",
-      "avatarURL": "https://example.com/avatar.png",
-      "city": "Bangalore",
-      "isActive": true,
-      "permissions": "all",
-      "lastLoginAt": "2026-07-12T10:45:00Z",
-      "createdAt": "2026-07-12T10:30:00Z",
-      "updatedAt": "2026-07-12T10:45:00Z"
-    }
-  ],
-  "totalCount": 1,
-  "page": 1,
-  "pageSize": 10
-}
-```
-
-#### 2. [U-02] Get Single User
-- **Route**: `GET /api/users/{id}`
-- **Response (200 OK)**:
-```json
-{
-  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "name": "Super Admin",
-  "email": "admin@gmail.com",
-  "phone": "1234567890",
-  "address": "Bangalore",
-  "role": "SuperAdmin",
-  "avatarURL": "https://example.com/avatar.png",
-  "city": "Bangalore",
-  "isActive": true,
-  "permissions": "all",
-  "lastLoginAt": "2026-07-12T10:45:00Z",
-  "createdAt": "2026-07-12T10:30:00Z",
-  "updatedAt": "2026-07-12T10:45:00Z"
-}
-```
-
-#### 3. [U-03] Create User
-- **Route**: `POST /api/users`
-- **Request Body**:
-```json
-{
-  "name": "Admin User",
-  "email": "admin2@gmail.com",
-  "phone": "555-0199",
-  "password": "password123",
-  "confirmPassword": "password123",
-  "address": "Mumbai",
-  "role": "Admin",
-  "permissions": "read:billing,write:billing",
-  "avatarURL": "https://example.com/avatar.png"
-}
-```
-- **Response (200 OK)**:
-```json
-{
-  "message": "User created successfully."
-}
-```
-
-#### 4. [U-04] Update User
-- **Route**: `PUT /api/users/{id}`
-- **Request Body**:
-```json
-{
-  "name": "Admin User Updated",
-  "email": "admin2@gmail.com",
-  "phone": "555-0199",
-  "address": "Pune",
-  "role": "Admin",
-  "isActive": true,
-  "permissions": "read:billing",
-  "avatarURL": "https://example.com/avatar.png"
-}
-```
-- **Response (200 OK)**:
-```json
-{
-  "message": "User updated successfully."
-}
-```
-
-#### 5. [U-05] Soft Delete User
-- **Route**: `DELETE /api/users/{id}`
-- **Response (200 OK)**:
-```json
-{
-  "message": "User deleted successfully."
-}
-```
-*(Note: Performs a soft-delete by setting the `DeletedAt` timestamp and setting `IsActive` to `false` without removing the record from the database).*
-
-#### 6. [U-06] Toggle User Status
-- **Route**: `PATCH /api/users/{id}/toggle-status`
-- **Response (200 OK)**:
-```json
-{
-  "message": "User status toggled successfully."
-}
-```
-*(Note: Toggles the `IsActive` flag between `true` and `false` for the specified user).*
