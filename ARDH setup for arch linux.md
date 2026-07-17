@@ -1,86 +1,74 @@
-# 🚀 Arch Linux (Hyprland/Hyde) Setup Guide for ARDH Backend
+# 🚀 Arch Linux (Hyprland/Hyde) Setup Guide (Native Local Run)
 
-This guide outlines how to install the required packages and run the **ARDH Property Management Backend** (ASP.NET Core 8.0 with MS SQL Server) on your Arch Linux system.
+This guide outlines how to run the **ARDH Property Management Backend** natively on Arch Linux without Docker.
 
 ---
 
 ## 📦 1. Required System Packages
 
-Open your terminal and install the following using `pacman`:
+Install the .NET 8 SDK on your system:
 
 ```bash
-# Update repositories and install .NET 8 SDK + Docker
-sudo pacman -Syu dotnet-sdk-8.0 docker docker-compose
+sudo pacman -Syu dotnet-sdk-8.0
 ```
 
-> [!NOTE]
-> `dotnet-sdk-8.0` automatically includes the ASP.NET Core runtime.
-
 ---
 
-## 🐳 2. Enable and Start Docker
+## 🏃 2. Running Natively (Without Docker)
 
-Since Microsoft SQL Server does not run natively on Arch Linux without complex workarounds, running it via **Docker** is the standard approach.
+You have two options for the database when running natively:
 
-```bash
-# Enable and start the Docker daemon
-sudo systemctl enable --now docker
+### Option A: Use the Built-In In-Memory Database (Easiest)
+This project has built-in support for an in-memory database. Choosing this option requires **zero** database installations or configurations.
 
-# Optional: Add your user to the docker group so you don't need 'sudo' for docker commands
-sudo usermod -aG docker $USER
-```
-> [!IMPORTANT]
-> If you add yourself to the `docker` group, you must log out of your session and log back in (or run `newgrp docker`) for the changes to take effect.
-
----
-
-## 🏃 3. Running the Project
-
-You have two main ways to run the application:
-
-### Option A: Run everything via Docker Compose (Recommended)
-This is the easiest method and requires zero configuration changes.
-
-1. Start both the API and the SQL Server Database:
-   ```bash
-   docker compose up --build
+1. Open `src/CleanArchitecture/appsettings.Development.json` and change `UseInMemoryDatabase` to `true`:
+   ```json
+   "UseInMemoryDatabase": true,
    ```
-2. The API will be available at [http://localhost:3001](http://localhost:3001).
-3. The swagger UI will be available at [http://localhost:3001/swagger](http://localhost:3001/swagger).
+2. Run the application:
+   ```bash
+   dotnet run --project src/CleanArchitecture
+   ```
+3. The API will be available at [http://localhost:5240](http://localhost:5240) (or the port defined in `appsettings.Development.json`).
 
 ---
 
-### Option B: Run the Database in Docker & API Natively
+### Option B: Use a Local Microsoft SQL Server Instance
+If you want to persist data to a real SQL database without Docker, you can install MS SQL Server natively on Arch Linux.
 
-If you want to run and debug the API locally from your editor/IDE:
-
-1. **Start the SQL Server database in the background**:
+1. **Install MS SQL Server from the AUR**:
+   Using an AUR helper like `yay` or `paru`:
    ```bash
-   docker compose up -d sqlserver
+   yay -S mssql-server
    ```
-2. **Update your Local Connection String**:
-   Since Windows Authentication (`Trusted_Connection=True`) does not work on Linux, update your local connection string in `src/CleanArchitecture/appsettings.Development.json` to use SQL Server Authentication:
+2. **Configure and start MS SQL Server**:
+   ```bash
+   # Run the configuration script to set the SA password and edition (Developer/Express is free)
+   sudo /opt/mssql/bin/mssql-conf setup
+
+   # Start the service
+   sudo systemctl enable --now mssql-server
+   ```
+3. **Update Connection String**:
+   In `src/CleanArchitecture/appsettings.Development.json`, set your connection string to use SQL Server Authentication with the SA password you configured during setup:
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=127.0.0.1;Database=ArdhDb;User ID=SA;Password=MyPass@word;TrustServerCertificate=True;MultipleActiveResultSets=true;"
+     "DefaultConnection": "Server=localhost;Database=ArdhDb;User ID=SA;Password=YourConfiguredPassword;TrustServerCertificate=True;MultipleActiveResultSets=true;"
    }
    ```
-3. **Run the API**:
+4. **Run the API**:
    ```bash
    dotnet run --project src/CleanArchitecture
    ```
    > [!TIP]
-   > The application automatically applies database migrations and seeds default admin accounts on startup. You don't need to manually run `dotnet ef database update`.
+   > The application automatically applies database migrations and seeds default admin accounts on startup.
 
 ---
 
-## 🛠️ 4. Recommended Tools & Editor Setup
-
-Since you are running Hyprland/Hyde, you might prefer keyboard-driven environments. Here are the best toolchains:
+## 🛠️ 3. Recommended Tools & Editor Setup
 
 ### IDE / Editors
-* **Neovim**: Install LSP support for C# using `Mason` (search for `csharp-language-server` or `omnisharp`) and `netcoredbg` for debugging.
-* **JetBrains Rider**: (Highly Recommended for .NET on Linux). Available in the AUR:
+* **JetBrains Rider**: (Highly Recommended). Available in the AUR:
   ```bash
   yay -S rider
   ```
@@ -89,11 +77,10 @@ Since you are running Hyprland/Hyde, you might prefer keyboard-driven environmen
   yay -S visual-studio-code-bin
   ```
   Install the official **C#** and **C# Dev Kit** extensions.
+* **Neovim**: Install LSP support for C# using `Mason` (search for `csharp-language-server` or `omnisharp`) and `netcoredbg` for debugging.
 
 ### Database Client
-* **DBeaver** or **Azure Data Studio** to view/manage your MS SQL database:
+* **DBeaver** to view/manage your database tables:
   ```bash
   sudo pacman -S dbeaver
-  # or AUR for Azure Data Studio:
-  yay -S azuredatastudio-bin
   ```
