@@ -12,9 +12,10 @@ using CleanArchitecture.Shared.Models.Building;
 
 namespace CleanArchitecture.Application.Services;
 
-public class BuildingService(IUnitOfWork unitOfWork) : IBuildingService
+public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IBuildingService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
@@ -155,6 +156,19 @@ public class BuildingService(IUnitOfWork unitOfWork) : IBuildingService
         building.UpdatedAt = DateTime.UtcNow;
 
         _unitOfWork.BuildingRepository.Update(building);
+
+        // Record soft-delete history
+        var history = new DeletedHistory
+        {
+            Id = Guid.NewGuid(),
+            EntityType = "Building",
+            EntityId = building.Id,
+            EntityTitle = $"{building.BuildingName}-{building.City}-{building.State}-{building.CreatedAt}",
+            DeletedBy = _currentUser.GetCurrentUserId(),
+            DeletedAt = DateTime.UtcNow
+        };
+        await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

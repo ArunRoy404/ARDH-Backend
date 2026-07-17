@@ -14,9 +14,10 @@ using CleanArchitecture.Shared.Models.User;
 
 namespace CleanArchitecture.Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork) : IUserService
+public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
@@ -177,6 +178,19 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         _unitOfWork.UserRepository.Update(user);
+
+        // Record soft-delete history
+        var history = new DeletedHistory
+        {
+            Id = Guid.NewGuid(),
+            EntityType = "User",
+            EntityId = user.Id,
+            EntityTitle = $"{user.Name}-{user.Email}-{user.Phone}-{user.CreatedAt}",
+            DeletedBy = _currentUser.GetCurrentUserId(),
+            DeletedAt = DateTime.UtcNow
+        };
+        await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
