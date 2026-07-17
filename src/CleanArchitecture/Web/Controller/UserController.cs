@@ -1,3 +1,4 @@
+using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
@@ -14,9 +15,10 @@ namespace CleanArchitecture.Web.Controller;
 
 [Authorize(Roles = "admin")]
 [Route("api/users")]
-public class UserController(IUserService userService) : BaseController
+public class UserController(IUserService userService, IUnitOfWork unitOfWork) : BaseController
 {
     private readonly IUserService _userService = userService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     /// <summary>
     /// [U-01] Retrieves a paginated, filtered list of all users.
@@ -96,7 +98,8 @@ public class UserController(IUserService userService) : BaseController
             }
         }
 
-        if (password != "123456")
+        var settings = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        if (settings == null || string.IsNullOrEmpty(password) || !CleanArchitecture.Application.Common.Utilities.StringHelper.Verify(password, settings.AdminPassword))
         {
             return BadRequest(new { message = "Invalid Admin password." });
         }

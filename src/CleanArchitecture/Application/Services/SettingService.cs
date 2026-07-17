@@ -31,7 +31,6 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
             Address = setting.Address,
             Icon = setting.Icon,
             Fav = setting.Fav,
-            AdminPassword = setting.AdminPassword,
             UpdatedBy = setting.UpdatedBy,
             UpdatedAt = setting.UpdatedAt
         };
