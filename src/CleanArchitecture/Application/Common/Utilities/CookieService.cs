@@ -20,7 +20,7 @@ public class CookieService(IHttpContextAccessor httpContextAccessor) : ICookieSe
 
         if (rememberMe)
         {
-            cookieOptions.Expires = DateTimeOffset.UtcNow.AddYears(100);
+            cookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
         }
         else
         {
