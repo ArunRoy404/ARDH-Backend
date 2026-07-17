@@ -677,7 +677,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"companyName\": \"Ardh Property Management\", // Name of the company\n    \"companyEmail\": \"info@ardh.com\", // General email for the company\n    \"phone\": \"+91 1234567890\", // Phone number contact\n    \"address\": \"123 Main Street, Bangalore, India\", // Company headquarters physical address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL or base64 string for the main application icon\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL to the application favicon\n    \"adminPassword\": \"adminpassword\" // System-wide password for critical actions (e.g. soft deleting entities)\n}"
+							"raw": "{\n    \"companyName\": \"Ardh Property Management\", // Name of the company\n    \"companyEmail\": \"info@ardh.com\", // General email for the company\n    \"phone\": \"+91 1234567890\", // Phone number contact\n    \"address\": \"123 Main Street, Bangalore, India\", // Company headquarters physical address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL or base64 string for the main application icon\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL to the application favicon\n    \"adminPassword\": \"adminpassword\" // Current admin password for validation (required to save changes)\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/settings",
@@ -689,7 +689,39 @@
 								"settings"
 							]
 						},
-						"description": "Updates general settings (company name, email, phone, address, icons, and system admin delete password)."
+						"description": "Updates general settings. Requires the current admin password for validation."
+					},
+					"response": []
+				},
+				{
+					"name": "S-03. Update System Admin Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPassword\": \"adminpassword\", // The current admin password\n    \"newPassword\": \"newadminpassword\", // The new admin password (minimum 6 characters)\n    \"confirmNewPassword\": \"newadminpassword\" // Must match newPassword\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/settings/password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"settings",
+								"password"
+							]
+						},
+						"description": "Updates the system-wide admin password for deleting entities and updating settings."
 					},
 					"response": []
 				}

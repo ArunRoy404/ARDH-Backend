@@ -8,4 +8,5 @@ public interface ISettingService
 {
     Task<SettingViewModel> Get(CancellationToken cancellationToken);
     Task Update(SettingUpdateRequest request, CancellationToken cancellationToken);
+    Task UpdatePassword(SettingUpdatePasswordRequest request, CancellationToken cancellationToken);
 }

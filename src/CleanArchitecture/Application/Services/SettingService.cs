@@ -44,6 +44,22 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
             throw SettingException.NotFoundException("Application settings not found.");
         }
 
+        // Verify admin password before allowing update to general settings
+        bool isValidPassword = false;
+        try
+        {
+            isValidPassword = StringHelper.Verify(request.AdminPassword, setting.AdminPassword);
+        }
+        catch
+        {
+            // Verify might throw if it's not a valid BCrypt hash
+        }
+
+        if (!isValidPassword)
+        {
+            throw SettingException.BadRequestException("Invalid Admin password.");
+        }
+
         setting.CompanyName = request.CompanyName;
         setting.CompanyEmail = request.CompanyEmail;
         setting.Phone = request.Phone;
@@ -51,25 +67,41 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
         setting.Icon = request.Icon;
         setting.Fav = request.Fav;
 
-        // If the password provided is not already hashed and doesn't match the current hash, hash it.
-        // If they send the current hash back, we don't re-hash it.
-        if (setting.AdminPassword != request.AdminPassword)
+        var userId = _currentUser.GetCurrentUserId();
+        if (userId != Guid.Empty)
         {
-            bool isAlreadyMatched = false;
-            try
-            {
-                isAlreadyMatched = StringHelper.Verify(request.AdminPassword, setting.AdminPassword);
-            }
-            catch
-            {
-                // Verify might throw if it's not a valid BCrypt hash
-            }
-
-            if (!isAlreadyMatched)
-            {
-                setting.AdminPassword = request.AdminPassword.Hash();
-            }
+            setting.UpdatedBy = userId;
         }
+        setting.UpdatedAt = DateTime.UtcNow;
+
+        _unitOfWork.SettingRepository.Update(setting);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdatePassword(SettingUpdatePasswordRequest request, CancellationToken cancellationToken)
+    {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        if (setting == null)
+        {
+            throw SettingException.NotFoundException("Application settings not found.");
+        }
+
+        bool isValidPassword = false;
+        try
+        {
+            isValidPassword = StringHelper.Verify(request.CurrentPassword, setting.AdminPassword);
+        }
+        catch
+        {
+            // Verify might throw if it's not a valid BCrypt hash
+        }
+
+        if (!isValidPassword)
+        {
+            throw SettingException.BadRequestException("Invalid current password.");
+        }
+
+        setting.AdminPassword = request.NewPassword.Hash();
 
         var userId = _currentUser.GetCurrentUserId();
         if (userId != Guid.Empty)

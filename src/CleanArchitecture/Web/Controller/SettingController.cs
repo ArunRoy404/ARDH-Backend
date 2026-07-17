@@ -32,12 +32,26 @@ public class SettingController(ISettingService settingService) : BaseController
     /// </summary>
     [HttpPut]
     [SwaggerResponse(200, "Settings updated successfully.")]
-    [SwaggerResponse(400, "Invalid request.")]
+    [SwaggerResponse(400, "Invalid request or incorrect password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Settings not found.")]
     public async Task<IActionResult> Update([FromBody] SettingUpdateRequest request, CancellationToken cancellationToken)
     {
         await _settingService.Update(request, cancellationToken);
         return Ok(new { message = "Settings updated successfully." });
+    }
+
+    /// <summary>
+    /// [S-03] Update system admin password.
+    /// </summary>
+    [HttpPut("password")]
+    [SwaggerResponse(200, "Admin password updated successfully.")]
+    [SwaggerResponse(400, "Invalid request or incorrect current password.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(404, "Settings not found.")]
+    public async Task<IActionResult> UpdatePassword([FromBody] SettingUpdatePasswordRequest request, CancellationToken cancellationToken)
+    {
+        await _settingService.UpdatePassword(request, cancellationToken);
+        return Ok(new { message = "Admin password updated successfully." });
     }
 }

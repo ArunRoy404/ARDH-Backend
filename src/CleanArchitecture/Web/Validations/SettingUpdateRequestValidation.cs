@@ -30,7 +30,6 @@ public class SettingUpdateRequestValidation : AbstractValidator<SettingUpdateReq
             .NotEmpty().WithMessage("Favicon (fav) is required.");
 
         RuleFor(x => x.AdminPassword)
-            .NotEmpty().WithMessage("Admin password is required.")
-            .MinimumLength(6).WithMessage("Admin password must be at least 6 characters.");
+            .NotEmpty().WithMessage("Current admin password is required.");
     }
 }
