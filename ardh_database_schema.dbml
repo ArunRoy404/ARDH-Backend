@@ -10,8 +10,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 Enum building_status {
-  Active
-  Inactive [note: "Building is no longer managed"]
+  active
+  inactive [note: "Building is no longer managed"]
 }
 
 Enum apartment_type {
@@ -246,7 +246,7 @@ Table buildings {
   google_map_link TEXT
   total_floors INTEGER [not null]
   parking_details TEXT [note: "e.g. 'Underground parking for 30 cars'"]
-  status building_status [not null, default: 'Active']
+  status building_status [not null, default: 'active']
   description TEXT
   image_url VARCHAR(500)
   created_at TIMESTAMP [default: `now()`]

@@ -24,7 +24,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\", // The unique email address of the user (e.g. admin@gmail.com)\n    \"password\": \"P@ssw0rd\", // The login password of the user\n    \"rememberMe\": true // Optional flag: if true, extends token lifespan to 30 days; if false/null, session lasts 24 hours\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\", // The unique email address of the user (e.g. admin@admin.com)\n    \"password\": \"P@ssw0rd\", // The login password of the user\n    \"rememberMe\": true // Optional flag: if true, extends token lifespan to 30 days; if false/null, session lasts 24 hours\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/sign-in",
@@ -79,7 +79,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\" // The email address of the user requesting OTP resend\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\" // The email address of the user requesting OTP resend\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/resend-otp",
@@ -111,7 +111,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\" // The email address of the user requesting password reset\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\" // The email address of the user requesting password reset\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/forgot-password",
@@ -143,7 +143,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\", // The email address of the user\n    \"otp\": \"123456\" // The 6-digit OTP code sent/logged\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\", // The email address of the user\n    \"otp\": \"123456\" // The 6-digit OTP code sent/logged\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/verify-otp",
@@ -175,7 +175,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\", // The email address of the user\n    \"otp\": \"123456\", // The 6-digit OTP code verified in the previous step\n    \"newPassword\": \"NewSecretP@ss123\", // The new login password (minimum 6 characters)\n    \"confirmNewPassword\": \"NewSecretP@ss123\" // Must exactly match newPassword\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\", // The email address of the user\n    \"otp\": \"123456\", // The 6-digit OTP code verified in the previous step\n    \"newPassword\": \"NewSecretP@ss123\", // The new login password (minimum 6 characters)\n    \"confirmNewPassword\": \"NewSecretP@ss123\" // Must exactly match newPassword\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/reset-password",
@@ -440,6 +440,185 @@
 							]
 						},
 						"description": "Toggles status of the user between Active and Inactive."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Buildings Management",
+			"item": [
+				{
+					"name": "B-01. List Buildings",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings?page=1&pageSize=10&search=&status=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (defaults to 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search keyword matching building_name, city, or state"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by building status: active, inactive"
+								}
+							]
+						},
+						"description": "Retrieve all buildings with support for pagination, keyword search, and status filters."
+					},
+					"response": []
+				},
+				{
+					"name": "B-02. Get Building By ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-building-uuid",
+									"description": "Building unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Obtain single building record by its Unique ID."
+					},
+					"response": []
+				},
+				{
+					"name": "B-03. Create Building",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 24, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings"
+							]
+						},
+						"description": "Creates a new building profile. Accessible by authenticated users. All fields are mandatory."
+					},
+					"response": []
+				},
+				{
+					"name": "B-04. Update Building",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 25, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Updated description for the luxury residence building.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-building-uuid",
+									"description": "Building unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates details for an existing building record."
+					},
+					"response": []
+				},
+				{
+					"name": "B-05. Soft Delete Building",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-building-uuid",
+									"description": "Building unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Flags a building record as soft-deleted by setting the deleted_at timestamp."
 					},
 					"response": []
 				}

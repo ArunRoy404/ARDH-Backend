@@ -6,6 +6,7 @@ public interface IUnitOfWork
 {
     IUserRepository UserRepository { get; }
     IForgotPasswordRepository ForgotPasswordRepository { get; }
+    IBuildingRepository BuildingRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);

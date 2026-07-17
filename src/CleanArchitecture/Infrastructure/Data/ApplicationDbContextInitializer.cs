@@ -21,6 +21,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                 await _context.Database.MigrateAsync();
             }
             await SeedUser();
+            await SeedBuildings();
         }
         catch (Exception exception)
         {
@@ -63,6 +64,53 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                         Permissions = "dashboard,property",
                         AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
                         IsActive = true,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }
+                }
+            );
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task SeedBuildings()
+    {
+        if (!await _context.Buildings.AnyAsync())
+        {
+            await _context.Buildings.AddRangeAsync(
+                new List<Building>
+                {
+                    new Building
+                    {
+                        Id = Guid.Parse("b1f7b822-29c4-52a8-ad29-c8be5d491f24"),
+                        BuildingName = "Grand Plaza Towers",
+                        Address = "123 Skyline Boulevard",
+                        City = "New York",
+                        State = "NY",
+                        Country = "USA",
+                        GoogleMapLink = "https://maps.google.com/?q=123+Skyline+Boulevard+New+York",
+                        TotalFloors = 24,
+                        ParkingDetails = "Basement Level 1 & 2, 150 Slots Available",
+                        Status = BuildingStatus.active,
+                        Description = "Premium luxury residence building in Manhattan with scenic city views and standard amenities.",
+                        ImageUrl = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00",
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                    new Building
+                    {
+                        Id = Guid.Parse("c2f7b822-29c4-52a8-ad29-c8be5d491f25"),
+                        BuildingName = "Oakridge Residency",
+                        Address = "456 Pinecrest Heights",
+                        City = "Seattle",
+                        State = "WA",
+                        Country = "USA",
+                        GoogleMapLink = "https://maps.google.com/?q=456+Pinecrest+Heights+Seattle",
+                        TotalFloors = 10,
+                        ParkingDetails = "Ground floor open parking, 50 Slots Available",
+                        Status = BuildingStatus.active,
+                        Description = "Cozy residential complex situated in a quiet suburban neighborhood with nearby parks.",
+                        ImageUrl = "https://images.unsplash.com/photo-1564013799919-ab600027ffc6",
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
                     }

@@ -26,6 +26,7 @@ public static class ConfigureServices
         // register services
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IForgotPasswordRepository, ForgotPasswordRepository>();
+        services.AddScoped<IBuildingRepository, BuildingRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<ApplicationDbContextInitializer>();
 
