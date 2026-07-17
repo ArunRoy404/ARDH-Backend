@@ -186,12 +186,10 @@ Enum vendor_status {
 }
 
 Enum user_role {
-  Admin
-  "Property Manager"
-  Accountant
-  Security
-  Technician
-  Viewer
+  admin
+  property_manager
+  accountant
+  viewer
 }
 
 Enum id_type {

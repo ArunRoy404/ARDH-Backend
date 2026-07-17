@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Web.Controller;
 
-[Authorize(Roles = "SuperAdmin,Admin")]
+[Authorize(Roles = "admin")]
 [Route("api/users")]
 public class UserController(IUserService userService) : BaseController
 {
@@ -24,7 +24,7 @@ public class UserController(IUserService userService) : BaseController
     [HttpGet]
     [SwaggerResponse(200, "List of users retrieved successfully.", typeof(PaginatedList<UserViewModel>))]
     [SwaggerResponse(401, "Unauthorized access.")]
-    [SwaggerResponse(403, "Access denied. SuperAdmin or Admin role required.")]
+    [SwaggerResponse(403, "Access denied. Admin role required.")]
     public async Task<ActionResult<PaginatedList<UserViewModel>>> Get(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
@@ -83,14 +83,14 @@ public class UserController(IUserService userService) : BaseController
     /// </summary>
     [HttpDelete("{id}")]
     [SwaggerResponse(200, "User deleted successfully.")]
-    [SwaggerResponse(400, "Invalid SuperAdmin password.")]
+    [SwaggerResponse(400, "Invalid Admin password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "User not found.")]
     public async Task<IActionResult> Delete(Guid id, [FromQuery] string? password, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(password))
         {
-            if (HttpContext.Request.Headers.TryGetValue("X-SuperAdmin-Password", out var headerPassword))
+            if (HttpContext.Request.Headers.TryGetValue("X-Admin-Password", out var headerPassword))
             {
                 password = headerPassword.ToString();
             }
@@ -98,7 +98,7 @@ public class UserController(IUserService userService) : BaseController
 
         if (password != "123456")
         {
-            return BadRequest(new { message = "Invalid SuperAdmin password." });
+            return BadRequest(new { message = "Invalid Admin password." });
         }
 
         await _userService.Delete(id, cancellationToken);

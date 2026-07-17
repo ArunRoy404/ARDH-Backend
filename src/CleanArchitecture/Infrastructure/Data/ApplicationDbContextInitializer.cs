@@ -39,11 +39,14 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     new User
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Super Admin",
+                        Name = "Admin",
                         Email = "admin@gmail.com",
                         Phone = "1234567890",
                         PasswordHash = "P@ssw0rd".Hash(),
-                        Role = UserRole.SuperAdmin,
+                        Role = UserRole.admin,
+                        Address = "Main Admin Address",
+                        Permissions = "dashboard,property,finance,operations,admin",
+                        AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
                         IsActive = true,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow
@@ -51,11 +54,14 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     new User
                     {
                         Id = Guid.NewGuid(),
-                        Name = "Admin",
+                        Name = "Property Manager",
                         Email = "manager@gmail.com",
                         Phone = "0987654321",
                         PasswordHash = "P@ssw0rd".Hash(),
-                        Role = UserRole.Admin,
+                        Role = UserRole.property_manager,
+                        Address = "Property Manager Office",
+                        Permissions = "dashboard,property",
+                        AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
                         IsActive = true,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow

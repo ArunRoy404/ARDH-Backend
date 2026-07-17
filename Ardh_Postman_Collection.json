@@ -24,7 +24,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"P@ssw0rd\"\n}"
+							"raw": "{\n    \"email\": \"admin@gmail.com\", // The unique email address of the user (e.g. admin@gmail.com)\n    \"password\": \"P@ssw0rd\", // The login password of the user\n    \"rememberMe\": true // Optional flag: if true, extends token lifespan to 30 days; if false/null, session lasts 24 hours\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/sign-in",
@@ -79,7 +79,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\"\n}"
+							"raw": "{\n    \"email\": \"admin@gmail.com\" // The email address of the user requesting OTP resend\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/resend-otp",
@@ -111,7 +111,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\"\n}"
+							"raw": "{\n    \"email\": \"admin@gmail.com\" // The email address of the user requesting password reset\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/forgot-password",
@@ -143,7 +143,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"otp\": \"123456\"\n}"
+							"raw": "{\n    \"email\": \"admin@gmail.com\", // The email address of the user\n    \"otp\": \"123456\" // The 6-digit OTP code sent/logged\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/verify-otp",
@@ -175,7 +175,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewSecretP@ss123\",\n    \"confirmNewPassword\": \"NewSecretP@ss123\"\n}"
+							"raw": "{\n    \"email\": \"admin@gmail.com\", // The email address of the user\n    \"otp\": \"123456\", // The 6-digit OTP code verified in the previous step\n    \"newPassword\": \"NewSecretP@ss123\", // The new login password (minimum 6 characters)\n    \"confirmNewPassword\": \"NewSecretP@ss123\" // Must exactly match newPassword\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/reset-password",
@@ -240,26 +240,28 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "1",
+									"description": "Page number (defaults to 1)"
 								},
 								{
 									"key": "pageSize",
-									"value": "10"
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
 								},
 								{
 									"key": "search",
 									"value": "",
-									"description": "Search by name, email, or phone"
+									"description": "Search keyword matching Name, Email, or Phone"
 								},
 								{
 									"key": "role",
 									"value": "",
-									"description": "SuperAdmin or Admin"
+									"description": "Filter by role. Allowed values: admin, property_manager, accountant, viewer"
 								},
 								{
 									"key": "is_active",
 									"value": "",
-									"description": "true or false"
+									"description": "Filter by activity state: true or false"
 								}
 							]
 						},
@@ -289,7 +291,7 @@
 								{
 									"key": "id",
 									"value": "replace-with-user-uuid",
-									"description": "User unique identifier"
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
@@ -312,7 +314,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Rajesh Kumar\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"password\": \"P@ssw0rd\",\n    \"confirmPassword\": \"P@ssw0rd\",\n    \"address\": \"Bangalore\",\n    \"role\": \"Admin\",\n    \"permissions\": \"read:billing,write:billing\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+							"raw": "{\n    \"name\": \"Rajesh Kumar\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"password\": \"P@ssw0rd\", // Login password (minimum 6 characters)\n    \"confirmPassword\": \"P@ssw0rd\", // Must match the password field\n    \"address\": \"Bangalore\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"permissions\": \"dashboard,property\", // Comma-separated permissions from: dashboard, property, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users",
@@ -324,7 +326,7 @@
 								"users"
 							]
 						},
-						"description": "Creates a new user profile in the database. Accessible by SuperAdmin/Admin roles."
+						"description": "Creates a new user profile in the database. Accessible by Admin role."
 					},
 					"response": []
 				},
@@ -343,7 +345,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"address\": \"Bangalore North\",\n    \"role\": \"Admin\",\n    \"isActive\": true,\n    \"permissions\": \"read:billing\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"address\": \"Bangalore North\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"isActive\": true, // Set to true to activate or false to deactivate user\n    \"permissions\": \"dashboard,property\", // Comma-separated permissions from: dashboard, property, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users/:id",
@@ -358,7 +360,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "replace-with-user-uuid"
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
@@ -375,8 +378,9 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "X-SuperAdmin-Password",
-								"value": "123456"
+								"key": "X-Admin-Password",
+								"value": "123456",
+								"description": "Header to supply the admin password for deletion"
 							}
 						],
 						"url": {
@@ -393,17 +397,18 @@
 								{
 									"key": "password",
 									"value": "123456",
-									"description": "SuperAdmin Password"
+									"description": "Admin password to verify deletion (default: 123456)"
 								}
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "replace-with-user-uuid"
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
-						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp. Requires the SuperAdmin password."
+						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp. Requires the Admin password."
 					},
 					"response": []
 				},
@@ -429,7 +434,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "replace-with-user-uuid"
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
