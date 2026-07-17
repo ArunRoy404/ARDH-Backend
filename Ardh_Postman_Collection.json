@@ -726,6 +726,156 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Deleted History",
+			"item": [
+				{
+					"name": "DH-01. List Deleted History Records",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history?page=1&pageSize=10&search=&entityType=&startDate=&endDate=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (defaults to 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search keyword matching EntityTitle"
+								},
+								{
+									"key": "entityType",
+									"value": "",
+									"description": "Filter by entity type: User, Building, etc."
+								},
+								{
+									"key": "startDate",
+									"value": "",
+									"description": "Filter by start date of deletion (YYYY-MM-DD)"
+								},
+								{
+									"key": "endDate",
+									"value": "",
+									"description": "Filter by end date of deletion (YYYY-MM-DD)"
+								}
+							]
+						},
+						"description": "Retrieve all soft-deleted records with support for pagination, search, start date, end date, and type filters."
+					},
+					"response": []
+				},
+				{
+					"name": "DH-02. Restore Deleted Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history/:id/restore",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history",
+								":id",
+								"restore"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-history-uuid",
+									"description": "Unique identifier of the deleted history record (UUID)"
+								}
+							]
+						},
+						"description": "Restore a soft-deleted record back to active status."
+					},
+					"response": []
+				},
+				{
+					"name": "DH-03. Permanently Delete Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-history-uuid",
+									"description": "Unique identifier of the deleted history record (UUID)"
+								}
+							]
+						},
+						"description": "Permanently delete a deleted history record and the underlying entity."
+					},
+					"response": []
+				},
+				{
+					"name": "DH-04. Get Deleted Record Details",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-history-uuid",
+									"description": "Unique identifier of the deleted history record (UUID)"
+								}
+							]
+						},
+						"description": "Get detailed information including the serialized representation of the deleted entity."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [

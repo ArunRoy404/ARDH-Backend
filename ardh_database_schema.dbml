@@ -671,14 +671,13 @@ Table activities {
 
 Table deleted_history {
   id UUID [primary key, default: `gen_random_uuid()`]
-  entity_type VARCHAR(50) [not null, note: "e.g. 'income', 'expense', 'tenant', 'vendor'"]
+  entity_type VARCHAR(100) [not null, note: "e.g. 'User', 'Building', 'income', 'expense', 'tenant', 'vendor'"]
   entity_id UUID [not null]
-  entity_title TEXT [not null, note: "Human-readable title of deleted item"]
+  entity_title VARCHAR(1000) [not null, note: "Human-readable title of deleted item"]
   deleted_by UUID [ref: - users.id]
   deleted_at TIMESTAMP [default: `now()`]
   restored_at TIMESTAMP [note: "If restored"]
   restored_by UUID [ref: - users.id]
-  metadata JSONB [note: "Snapshot of deleted record data"]
 
   indexes {
     (entity_type)
