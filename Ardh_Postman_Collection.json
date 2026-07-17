@@ -314,7 +314,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Rajesh Kumar\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"password\": \"P@ssw0rd\", // Login password (minimum 6 characters)\n    \"confirmPassword\": \"P@ssw0rd\", // Must match the password field\n    \"address\": \"Bangalore\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"permissions\": \"dashboard,property\", // Comma-separated permissions from: dashboard, property, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
+							"raw": "{\n    \"name\": \"Rajesh Kumar\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"password\": \"P@ssw0rd\", // Login password (minimum 6 characters)\n    \"confirmPassword\": \"P@ssw0rd\", // Must match the password field\n    \"address\": \"Bangalore\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"permissions\": \"dashboard,properties\", // Comma-separated permissions from: dashboard, properties, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users",
@@ -345,7 +345,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"address\": \"Bangalore North\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"isActive\": true, // Set to true to activate or false to deactivate user\n    \"permissions\": \"dashboard,property\", // Comma-separated permissions from: dashboard, property, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
+							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"address\": \"Bangalore North\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"isActive\": true, // Set to true to activate or false to deactivate user\n    \"permissions\": \"dashboard,properties\", // Comma-separated permissions from: dashboard, properties, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users/:id",

@@ -39,7 +39,7 @@ public class UserCreateRequestValidation : AbstractValidator<UserCreateRequest>
 
         RuleFor(x => x.Permissions)
             .NotEmpty().WithMessage("Permissions are required.")
-            .Must(BeValidPermissions).WithMessage("Permissions must only contain: dashboard, property, finance, operations, admin.");
+            .Must(BeValidPermissions).WithMessage("Permissions must only contain: dashboard, properties, finance, operations, admin.");
 
         RuleFor(x => x.AvatarUrl)
             .NotEmpty().WithMessage("Avatar URL is required.")
@@ -51,12 +51,11 @@ public class UserCreateRequestValidation : AbstractValidator<UserCreateRequest>
         if (string.IsNullOrWhiteSpace(permissions))
             return false;
 
-        var allowedPermissions = new[] { "dashboard", "property", "finance", "operations", "admin" };
         var parts = permissions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         
         if (parts.Length == 0)
             return false;
 
-        return parts.All(p => allowedPermissions.Contains(p));
+        return parts.All(p => Enum.TryParse<UserPermission>(p, out _));
     }
 }
