@@ -29,7 +29,7 @@ public class UserCreateRequest
     public string Address { get; set; } = string.Empty;
 
     [Required]
-    public UserRole Role { get; set; } = UserRole.Admin;
+    public UserRole Role { get; set; } = UserRole.admin;
 
     [Required]
     public string Permissions { get; set; } = string.Empty;

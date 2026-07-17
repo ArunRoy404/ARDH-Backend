@@ -10,8 +10,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 Enum building_status {
-  Active
-  Inactive [note: "Building is no longer managed"]
+  active
+  inactive [note: "Building is no longer managed"]
 }
 
 Enum apartment_type {
@@ -186,12 +186,10 @@ Enum vendor_status {
 }
 
 Enum user_role {
-  Admin
-  "Property Manager"
-  Accountant
-  Security
-  Technician
-  Viewer
+  admin
+  property_manager
+  accountant
+  viewer
 }
 
 Enum id_type {
@@ -248,7 +246,7 @@ Table buildings {
   google_map_link TEXT
   total_floors INTEGER [not null]
   parking_details TEXT [note: "e.g. 'Underground parking for 30 cars'"]
-  status building_status [not null, default: 'Active']
+  status building_status [not null, default: 'active']
   description TEXT
   image_url VARCHAR(500)
   created_at TIMESTAMP [default: `now()`]
@@ -673,14 +671,13 @@ Table activities {
 
 Table deleted_history {
   id UUID [primary key, default: `gen_random_uuid()`]
-  entity_type VARCHAR(50) [not null, note: "e.g. 'income', 'expense', 'tenant', 'vendor'"]
+  entity_type VARCHAR(100) [not null, note: "e.g. 'User', 'Building', 'income', 'expense', 'tenant', 'vendor'"]
   entity_id UUID [not null]
-  entity_title TEXT [not null, note: "Human-readable title of deleted item"]
+  entity_title VARCHAR(1000) [not null, note: "Human-readable title of deleted item"]
   deleted_by UUID [ref: - users.id]
   deleted_at TIMESTAMP [default: `now()`]
   restored_at TIMESTAMP [note: "If restored"]
   restored_by UUID [ref: - users.id]
-  metadata JSONB [note: "Snapshot of deleted record data"]
 
   indexes {
     (entity_type)
@@ -747,6 +744,18 @@ Table password_reset_tokens {
     (token) [unique]
     (expires_at)
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VIRTUAL TABLE: uploads — Managed via Local File Storage
+// ─────────────────────────────────────────────────────────────────────────────
+
+Table uploads {
+  id UUID [primary key, note: "Generated Guid as file ID"]
+  file_name VARCHAR(255) [not null, note: "Filename on disk"]
+  file_url VARCHAR(500) [not null, note: "Publicly accessible HTTP URL"]
+  file_type VARCHAR(50) [not null, note: "image, document, or id-proof"]
+  uploaded_at TIMESTAMP [default: `now()`]
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

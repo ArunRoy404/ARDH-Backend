@@ -24,7 +24,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"P@ssw0rd\"\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\", // The unique email address of the user (e.g. admin@admin.com)\n    \"password\": \"P@ssw0rd\", // The login password of the user\n    \"rememberMe\": true // Optional flag: if true, extends token lifespan to 30 days; if false/null, session lasts 24 hours\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/sign-in",
@@ -79,7 +79,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\"\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\" // The email address of the user requesting OTP resend\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/resend-otp",
@@ -111,7 +111,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\"\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\" // The email address of the user requesting password reset\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/forgot-password",
@@ -143,7 +143,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"otp\": \"123456\"\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\", // The email address of the user\n    \"otp\": \"123456\" // The 6-digit OTP code sent/logged\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/verify-otp",
@@ -175,7 +175,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"otp\": \"123456\",\n    \"newPassword\": \"NewSecretP@ss123\",\n    \"confirmNewPassword\": \"NewSecretP@ss123\"\n}"
+							"raw": "{\n    \"email\": \"admin@admin.com\", // The email address of the user\n    \"otp\": \"123456\", // The 6-digit OTP code verified in the previous step\n    \"newPassword\": \"NewSecretP@ss123\", // The new login password (minimum 6 characters)\n    \"confirmNewPassword\": \"NewSecretP@ss123\" // Must exactly match newPassword\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/reset-password",
@@ -240,26 +240,28 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "1",
+									"description": "Page number (defaults to 1)"
 								},
 								{
 									"key": "pageSize",
-									"value": "10"
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
 								},
 								{
 									"key": "search",
 									"value": "",
-									"description": "Search by name, email, or phone"
+									"description": "Search keyword matching Name, Email, or Phone"
 								},
 								{
 									"key": "role",
 									"value": "",
-									"description": "SuperAdmin or Admin"
+									"description": "Filter by role. Allowed values: admin, property_manager, accountant, viewer"
 								},
 								{
 									"key": "is_active",
 									"value": "",
-									"description": "true or false"
+									"description": "Filter by activity state: true or false"
 								}
 							]
 						},
@@ -289,7 +291,7 @@
 								{
 									"key": "id",
 									"value": "replace-with-user-uuid",
-									"description": "User unique identifier"
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
@@ -312,7 +314,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Rajesh Kumar\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"password\": \"P@ssw0rd\",\n    \"confirmPassword\": \"P@ssw0rd\",\n    \"address\": \"Bangalore\",\n    \"role\": \"Admin\",\n    \"permissions\": \"read:billing,write:billing\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+							"raw": "{\n    \"name\": \"Rajesh Kumar\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"password\": \"P@ssw0rd\", // Login password (minimum 6 characters)\n    \"confirmPassword\": \"P@ssw0rd\", // Must match the password field\n    \"address\": \"Bangalore\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"permissions\": \"dashboard,properties\", // Comma-separated permissions from: dashboard, properties, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users",
@@ -324,7 +326,7 @@
 								"users"
 							]
 						},
-						"description": "Creates a new user profile in the database. Accessible by SuperAdmin/Admin roles."
+						"description": "Creates a new user profile in the database. Accessible by Admin role."
 					},
 					"response": []
 				},
@@ -343,7 +345,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"address\": \"Bangalore North\",\n    \"role\": \"Admin\",\n    \"isActive\": true,\n    \"permissions\": \"read:billing\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+							"raw": "{\n    \"name\": \"Rajesh Kumar Updated\", // Full name of the user\n    \"email\": \"rajesh@example.com\", // Unique email address\n    \"phone\": \"+91 9876543210\", // Contact phone number\n    \"address\": \"Bangalore North\", // Physical home/office address\n    \"role\": \"admin\", // User role: admin, property_manager, accountant, viewer\n    \"isActive\": true, // Set to true to activate or false to deactivate user\n    \"permissions\": \"dashboard,properties\", // Comma-separated permissions from: dashboard, properties, finance, operations, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // URL to avatar image\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/users/:id",
@@ -358,7 +360,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "replace-with-user-uuid"
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
@@ -375,12 +378,13 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "X-SuperAdmin-Password",
-								"value": "123456"
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply the admin password for deletion (uses the system delete password from Settings)"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/api/users/:id?password=123456",
+							"raw": "{{baseUrl}}/api/users/:id?password=adminpassword",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -392,18 +396,19 @@
 							"query": [
 								{
 									"key": "password",
-									"value": "123456",
-									"description": "SuperAdmin Password"
+									"value": "adminpassword",
+									"description": "Admin password to verify deletion (uses the system delete password from Settings)"
 								}
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": "replace-with-user-uuid"
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
-						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp. Requires the SuperAdmin password."
+						"description": "Flags a user record as soft-deleted by setting the DeletedAt timestamp. Requires the Admin password."
 					},
 					"response": []
 				},
@@ -429,11 +434,578 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "replace-with-user-uuid"
+									"value": "replace-with-user-uuid",
+									"description": "User unique identifier (UUID)"
 								}
 							]
 						},
 						"description": "Toggles status of the user between Active and Inactive."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Buildings Management",
+			"item": [
+				{
+					"name": "B-01. List Buildings",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings?page=1&pageSize=10&search=&status=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (defaults to 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search keyword matching building_name, city, or state"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by building status: active, inactive"
+								}
+							]
+						},
+						"description": "Retrieve all buildings with support for pagination, keyword search, and status filters."
+					},
+					"response": []
+				},
+				{
+					"name": "B-02. Get Building By ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-building-uuid",
+									"description": "Building unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Obtain single building record by its Unique ID."
+					},
+					"response": []
+				},
+				{
+					"name": "B-03. Create Building",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 24, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings"
+							]
+						},
+						"description": "Creates a new building profile. Accessible by authenticated users. All fields are mandatory."
+					},
+					"response": []
+				},
+				{
+					"name": "B-04. Update Building",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 25, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Updated description for the luxury residence building.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-building-uuid",
+									"description": "Building unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates details for an existing building record."
+					},
+					"response": []
+				},
+				{
+					"name": "B-05. Soft Delete Building",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply the admin password for deletion (uses the system delete password from Settings)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/buildings/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buildings",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password to verify deletion (uses the system delete password from Settings)"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-building-uuid",
+									"description": "Building unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Flags a building record as soft-deleted by setting the deleted_at timestamp (requires settings adminPassword verification)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Settings",
+			"item": [
+				{
+					"name": "S-01. Get Application Settings",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/settings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						},
+						"description": "Retrieves the current application settings."
+					},
+					"response": []
+				},
+				{
+					"name": "S-02. Update General Settings",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyName\": \"Ardh Property Management\", // Name of the company\n    \"companyEmail\": \"info@ardh.com\", // General email for the company\n    \"phone\": \"+91 1234567890\", // Phone number contact\n    \"address\": \"123 Main Street, Bangalore, India\", // Company headquarters physical address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL or base64 string for the main application icon\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL to the application favicon\n    \"adminPassword\": \"adminpassword\" // Current admin password for validation (required to save changes)\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/settings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						},
+						"description": "Updates general settings. Requires the current admin password for validation."
+					},
+					"response": []
+				},
+				{
+					"name": "S-03. Update System Admin Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPassword\": \"adminpassword\", // The current admin password\n    \"newPassword\": \"newadminpassword\", // The new admin password (minimum 6 characters)\n    \"confirmNewPassword\": \"newadminpassword\" // Must match newPassword\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/settings/password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"settings",
+								"password"
+							]
+						},
+						"description": "Updates the system-wide admin password for deleting entities and updating settings."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Deleted History",
+			"item": [
+				{
+					"name": "DH-01. List Deleted History Records",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history?page=1&pageSize=10&search=&entityType=&startDate=&endDate=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (defaults to 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search keyword matching EntityTitle"
+								},
+								{
+									"key": "entityType",
+									"value": "",
+									"description": "Filter by entity type: User, Building, etc."
+								},
+								{
+									"key": "startDate",
+									"value": "",
+									"description": "Filter by start date of deletion (YYYY-MM-DD)"
+								},
+								{
+									"key": "endDate",
+									"value": "",
+									"description": "Filter by end date of deletion (YYYY-MM-DD)"
+								}
+							]
+						},
+						"description": "Retrieve all soft-deleted records with support for pagination, search, start date, end date, and type filters."
+					},
+					"response": []
+				},
+				{
+					"name": "DH-02. Restore Deleted Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history/:id/restore",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history",
+								":id",
+								"restore"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-history-uuid",
+									"description": "Unique identifier of the deleted history record (UUID)"
+								}
+							]
+						},
+						"description": "Restore a soft-deleted record back to active status."
+					},
+					"response": []
+				},
+				{
+					"name": "DH-03. Permanently Delete Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-history-uuid",
+									"description": "Unique identifier of the deleted history record (UUID)"
+								}
+							]
+						},
+						"description": "Permanently delete a deleted history record and the underlying entity."
+					},
+					"response": []
+				},
+				{
+					"name": "DH-04. Get Deleted Record Details",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/deleted-history/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"deleted-history",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-history-uuid",
+									"description": "Unique identifier of the deleted history record (UUID)"
+								}
+							]
+						},
+						"description": "Get detailed information including the serialized representation of the deleted entity."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File Upload",
+			"item": [
+				{
+					"name": "F-01. Upload Image File",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/upload/image",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								"image"
+							]
+						},
+						"description": "Upload an image file (PNG, JPG, WEBP)."
+					},
+					"response": []
+				},
+				{
+					"name": "F-02. Upload Document File",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/upload/document",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								"document"
+							]
+						},
+						"description": "Upload a document file (PDF, DOC, DOCX, XLS, XLSX, TXT, CSV)."
+					},
+					"response": []
+				},
+				{
+					"name": "F-03. Upload ID Proof Document",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/upload/id-proof",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								"id-proof"
+							]
+						},
+						"description": "Upload a tenant ID proof document (PDF, DOC, DOCX, JPG, JPEG, PNG)."
+					},
+					"response": []
+				},
+				{
+					"name": "F-04. Delete Uploaded File",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/upload/:fileId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								":fileId"
+							],
+							"variable": [
+								{
+									"key": "fileId",
+									"value": "replace-with-file-id-or-filename",
+									"description": "The unique ID (filename without/with extension) returned on upload"
+								}
+							]
+						},
+						"description": "Delete the uploaded file from the storage directory."
 					},
 					"response": []
 				}

@@ -203,7 +203,7 @@ These endpoints manage user sessions, profile details, and password recovery.
 ---
 
 ### 🛡️ Group 2: User Management Endpoints (`/api/users`)
-*All endpoints in this group require a valid administrator session (`SuperAdmin` or `Admin` role).*
+*All endpoints in this group require a valid administrator session (`Admin` role).*
 
 #### U-01. List Users
 *   **Route**: `GET /api/users`
@@ -315,5 +315,5 @@ For quick deployment and local testing, the following default accounts are seede
 
 | Full Name | Email Address | Role | Password |
 | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin@gmail.com` | `Admin` | `P@ssw0rd` |
-| **Property Manager** | `manager@gmail.com` | `PropertyManager` | `P@ssw0rd` |
+| **Admin** | `admin@gmail.com` | `admin` | `P@ssw0rd` |
+| **Property Manager** | `manager@gmail.com` | `property_manager` | `P@ssw0rd` |

@@ -29,6 +29,18 @@ public static class HostingExtensions
         app.UseMiddleware<LoggingMiddleware>();
         app.UseMiddleware<PerformanceMiddleware>();
         app.UseHttpsRedirection();
+
+        var storagePath = System.IO.Path.Combine(app.Environment.ContentRootPath, appsettings.FileStorageSettings.Path);
+        if (!System.IO.Directory.Exists(storagePath))
+        {
+            System.IO.Directory.CreateDirectory(storagePath);
+        }
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(storagePath),
+            RequestPath = "/" + appsettings.FileStorageSettings.Path.TrimStart('/')
+        });
+
         app.UseCors("AllowSpecificOrigin");
         app.UseSwagger(appsettings);
         app.ConfigureHealthCheck();

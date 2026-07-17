@@ -12,12 +12,18 @@ public class UnitOfWork : IUnitOfWork
 
     public IUserRepository UserRepository { get; }
     public IForgotPasswordRepository ForgotPasswordRepository { get; }
+    public IBuildingRepository BuildingRepository { get; }
+    public ISettingRepository SettingRepository { get; }
+    public IDeletedHistoryRepository DeletedHistoryRepository { get; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
         _context = dbContext;
         UserRepository = new UserRepository(_context);
         ForgotPasswordRepository = new ForgotPasswordRepository(_context);
+        BuildingRepository = new BuildingRepository(_context);
+        SettingRepository = new SettingRepository(_context);
+        DeletedHistoryRepository = new DeletedHistoryRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

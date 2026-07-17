@@ -14,9 +14,10 @@ using CleanArchitecture.Shared.Models.User;
 
 namespace CleanArchitecture.Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork) : IUserService
+public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ICurrentUser _currentUser = currentUser;
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
@@ -74,11 +75,11 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
                 Name = x.Name,
                 Email = x.Email,
                 Phone = x.Phone,
-                Address = x.Address,
+                Address = x.Address ?? string.Empty,
                 Role = x.Role,
-                AvatarUrl = x.AvatarUrl,
+                AvatarUrl = x.AvatarUrl ?? string.Empty,
                 IsActive = x.IsActive,
-                Permissions = x.Permissions,
+                Permissions = x.Permissions ?? string.Empty,
                 LastLoginAt = x.LastLoginAt,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt
@@ -99,11 +100,11 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
             Name = user.Name,
             Email = user.Email,
             Phone = user.Phone,
-            Address = user.Address,
+            Address = user.Address ?? string.Empty,
             Role = user.Role,
-            AvatarUrl = user.AvatarUrl,
+            AvatarUrl = user.AvatarUrl ?? string.Empty,
             IsActive = user.IsActive,
-            Permissions = user.Permissions,
+            Permissions = user.Permissions ?? string.Empty,
             LastLoginAt = user.LastLoginAt,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt
@@ -177,6 +178,19 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
         user.UpdatedAt = DateTime.UtcNow;
 
         _unitOfWork.UserRepository.Update(user);
+
+        // Record soft-delete history
+        var history = new DeletedHistory
+        {
+            Id = Guid.NewGuid(),
+            EntityType = "User",
+            EntityId = user.Id,
+            EntityTitle = $"{user.Name}-{user.Email}-{user.Phone}-{user.CreatedAt}",
+            DeletedBy = _currentUser.GetCurrentUserId(),
+            DeletedAt = DateTime.UtcNow
+        };
+        await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 

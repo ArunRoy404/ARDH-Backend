@@ -16,6 +16,11 @@ public class NullToDefaultConverter : JsonConverter<object>
 
     public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, value, options);
+        if (value == null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+        JsonSerializer.Serialize(writer, value, value.GetType(), options);
     }
 }
