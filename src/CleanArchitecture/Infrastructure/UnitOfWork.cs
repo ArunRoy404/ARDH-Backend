@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository { get; }
     public IForgotPasswordRepository ForgotPasswordRepository { get; }
     public IBuildingRepository BuildingRepository { get; }
+    public ISettingRepository SettingRepository { get; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -20,6 +21,7 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = new UserRepository(_context);
         ForgotPasswordRepository = new ForgotPasswordRepository(_context);
         BuildingRepository = new BuildingRepository(_context);
+        SettingRepository = new SettingRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

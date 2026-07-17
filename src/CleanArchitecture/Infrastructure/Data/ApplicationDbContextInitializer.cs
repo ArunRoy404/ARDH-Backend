@@ -22,6 +22,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             }
             await SeedUser();
             await SeedBuildings();
+            await SeedSettings();
         }
         catch (Exception exception)
         {
@@ -116,6 +117,26 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     }
                 }
             );
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public async Task SeedSettings()
+    {
+        if (!await _context.Settings.AnyAsync())
+        {
+            await _context.Settings.AddAsync(new Setting
+            {
+                Id = Guid.NewGuid(),
+                CompanyName = "Ardh Property Management",
+                CompanyEmail = "info@ardh.com",
+                Phone = "+91 1234567890",
+                Address = "123 Main Street, Bangalore, India",
+                Icon = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
+                Fav = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
+                AdminPassword = "adminpassword".Hash(),
+                UpdatedAt = DateTime.UtcNow
+            });
             await _context.SaveChangesAsync();
         }
     }

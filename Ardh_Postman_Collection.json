@@ -623,6 +623,64 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Settings",
+			"item": [
+				{
+					"name": "S-01. Get Application Settings",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/settings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						},
+						"description": "Retrieves the current application settings."
+					},
+					"response": []
+				},
+				{
+					"name": "S-02. Update General Settings",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"companyName\": \"Ardh Property Management\", // Name of the company\n    \"companyEmail\": \"info@ardh.com\", // General email for the company\n    \"phone\": \"+91 1234567890\", // Phone number contact\n    \"address\": \"123 Main Street, Bangalore, India\", // Company headquarters physical address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL or base64 string for the main application icon\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // URL to the application favicon\n    \"adminPassword\": \"adminpassword\" // System-wide password for critical actions (e.g. soft deleting entities)\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/settings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"settings"
+							]
+						},
+						"description": "Updates general settings (company name, email, phone, address, icons, and system admin delete password)."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [

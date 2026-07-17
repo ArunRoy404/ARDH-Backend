@@ -15,6 +15,7 @@ public static class ConfigureServices
         services.AddTransient<IMailService, MailService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IBuildingService, BuildingService>();
+        services.AddTransient<ISettingService, SettingService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();
