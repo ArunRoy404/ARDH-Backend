@@ -6,7 +6,6 @@ namespace CleanArchitecture.Shared.Models.Building;
 
 public class BuildingUpdateRequest
 {
-    [Required]
     public Guid Id { get; set; }
 
     [Required]

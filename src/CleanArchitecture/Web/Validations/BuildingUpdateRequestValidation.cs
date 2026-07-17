@@ -7,9 +7,6 @@ public class BuildingUpdateRequestValidation : AbstractValidator<BuildingUpdateR
 {
     public BuildingUpdateRequestValidation()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Building ID is required.");
-
         RuleFor(x => x.BuildingName)
             .NotEmpty().WithMessage("Building name is required.")
             .MaximumLength(255).WithMessage("Building name must not exceed 255 characters.");
