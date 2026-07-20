@@ -22,6 +22,7 @@ public class UnitOfWork : IUnitOfWork
     public IApartmentRepository ApartmentRepository { get; }
     public ITenantRepository TenantRepository { get; }
     public ITenantMoveOutRecordRepository TenantMoveOutRecordRepository { get; }
+    public IVendorRepository VendorRepository { get; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -35,6 +36,7 @@ public class UnitOfWork : IUnitOfWork
         ApartmentRepository = new ApartmentRepository(_context);
         TenantRepository = new TenantRepository(_context);
         TenantMoveOutRecordRepository = new TenantMoveOutRecordRepository(_context);
+        VendorRepository = new VendorRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

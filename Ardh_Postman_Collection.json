@@ -1763,6 +1763,203 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Vendors Management",
+			"item": [
+				{
+					"name": "V-01. List Vendors",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vendors?page=1&pageSize=10&search=&vendorType=Plumbing&status=Active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vendors"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search term matching vendor name, company name, phone, email, GST number"
+								},
+								{
+									"key": "vendorType",
+									"value": "Plumbing",
+									"description": "Filter by vendor type: Plumbing, Electrical, HvacAc, Painting, Cleaning, PestControl, Security, Landscaping, LiftElevator, CctvSurveillance, GeneratorPower, FireSafety, WaterSystem, CivilConstruction, General, Other"
+								},
+								{
+									"key": "status",
+									"value": "Active",
+									"description": "Filter by status: Active, Inactive"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of vendors with optional search and filters."
+					},
+					"response": []
+				},
+				{
+					"name": "V-02. Get Single Vendor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/vendors/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vendors",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-vendor-uuid",
+									"description": "Vendor unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves details of a single vendor by UUID."
+					},
+					"response": []
+				},
+				{
+					"name": "V-03. Create Vendor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rajesh Kumar\", // Primary contact name of vendor\n    \"companyName\": \"AquaFix Plumbing Solutions\", // Business or company name\n    \"phone\": \"+91 9876543220\", // Primary contact phone number\n    \"email\": \"rajesh@aquafix.com\", // Contact email address\n    \"vendorType\": \"Plumbing\", // Category: Plumbing, Electrical, HvacAc, Painting, Cleaning, PestControl, Security, Landscaping, LiftElevator, CctvSurveillance, GeneratorPower, FireSafety, WaterSystem, CivilConstruction, General, Other\n    \"gstNumber\": \"29ABCDE1234F1Z5\", // GSTIN registration number for billing\n    \"address\": \"45 Industrial Layout, Koramangala, Bengaluru\", // Full physical address\n    \"status\": \"Active\", // Vendor status: Active, Inactive\n    \"notes\": \"Primary plumbing contractor for pipe replacement and general repairs\" // Internal operational notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/vendors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vendors"
+							]
+						},
+						"description": "Creates a new vendor record."
+					},
+					"response": []
+				},
+				{
+					"name": "V-04. Update Vendor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rajesh Kumar\", // Updated contact name\n    \"companyName\": \"AquaFix Plumbing Solutions Pvt Ltd\", // Updated company name\n    \"phone\": \"+91 9876543220\", // Updated phone number\n    \"email\": \"contact@aquafix.com\", // Updated email address\n    \"vendorType\": \"Plumbing\", // Category: Plumbing, Electrical, HvacAc, Painting, Cleaning, PestControl, Security, Landscaping, LiftElevator, CctvSurveillance, GeneratorPower, FireSafety, WaterSystem, CivilConstruction, General, Other\n    \"gstNumber\": \"29ABCDE1234F1Z5\", // Updated GSTIN\n    \"address\": \"45 Industrial Layout, Koramangala, Bengaluru\", // Updated address\n    \"status\": \"Active\", // Updated status: Active, Inactive\n    \"notes\": \"Updated contact email and corporate business title\" // Updated notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/vendors/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vendors",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-vendor-uuid",
+									"description": "Vendor unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates details of an existing vendor record."
+					},
+					"response": []
+				},
+				{
+					"name": "V-05. Soft-Delete Vendor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply admin password for deletion"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/vendors/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"vendors",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-vendor-uuid",
+									"description": "Vendor unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes a vendor record."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [

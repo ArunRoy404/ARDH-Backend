@@ -21,6 +21,7 @@ public static class ConfigureServices
         services.AddTransient<IApartmentService, ApartmentService>();
         services.AddTransient<ITenantService, TenantService>();
         services.AddTransient<ITenantMoveOutService, TenantMoveOutService>();
+        services.AddTransient<IVendorService, VendorService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();

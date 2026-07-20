@@ -10,6 +10,7 @@ using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.DeletedHistory;
 using CleanArchitecture.Shared.Models.User;
 using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Vendor;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -159,6 +160,15 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             moveOutRecord.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.TenantMoveOutRecordRepository.Update(moveOutRecord);
         }
+        else if (history.EntityType.Equals("Vendor", StringComparison.OrdinalIgnoreCase))
+        {
+            var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Vendor not found.");
+
+            vendor.DeletedAt = null;
+            vendor.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.VendorRepository.Update(vendor);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -230,6 +240,14 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                 _unitOfWork.TenantMoveOutRecordRepository.Delete(moveOutRecord);
             }
         }
+        else if (history.EntityType.Equals("Vendor", StringComparison.OrdinalIgnoreCase))
+        {
+            var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (vendor != null)
+            {
+                _unitOfWork.VendorRepository.Delete(vendor);
+            }
+        }
 
         _unitOfWork.DeletedHistoryRepository.Delete(history);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -287,6 +305,28 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                     ImageUrl = building.ImageUrl,
                     CreatedAt = building.CreatedAt,
                     UpdatedAt = building.UpdatedAt
+                };
+            }
+        }
+        else if (history.EntityType.Equals("Vendor", StringComparison.OrdinalIgnoreCase))
+        {
+            var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (vendor != null)
+            {
+                entityData = new VendorViewModel
+                {
+                    Id = vendor.Id,
+                    Name = vendor.Name,
+                    CompanyName = vendor.CompanyName,
+                    Phone = vendor.Phone,
+                    Email = vendor.Email,
+                    VendorType = vendor.VendorType,
+                    GstNumber = vendor.GstNumber,
+                    Address = vendor.Address,
+                    Status = vendor.Status,
+                    Notes = vendor.Notes,
+                    CreatedAt = vendor.CreatedAt,
+                    UpdatedAt = vendor.UpdatedAt
                 };
             }
         }

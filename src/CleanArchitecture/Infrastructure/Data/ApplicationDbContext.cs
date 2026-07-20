@@ -15,6 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Apartment> Apartments { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantMoveOutRecord> TenantMoveOutRecords { get; set; }
+    public DbSet<Vendor> Vendors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

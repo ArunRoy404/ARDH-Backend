@@ -51,6 +51,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
 
             var hasAdminPermission = isAdminRole || permissionList.Contains("admin");
             var hasPropertyPermission = isPropertyManagerRole || permissionList.Contains("properties") || permissionList.Contains("property") || hasAdminPermission;
+            var hasOperationsPermission = isPropertyManagerRole || permissionList.Contains("operations") || permissionList.Contains("operation") || hasAdminPermission;
 
             // Route Permission Check (Applies to ALL HTTP methods including GET)
             if (path.StartsWith("/api/users", StringComparison.OrdinalIgnoreCase) ||
@@ -71,6 +72,14 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 if (!hasPropertyPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Property permission required for this route.");
+                    return;
+                }
+            }
+            else if (path.StartsWith("/api/vendors", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!hasOperationsPermission)
+                {
+                    context.Result = CreateForbiddenResult("Access denied. Operations permission required for this route.");
                     return;
                 }
             }
