@@ -73,8 +73,7 @@ public class OwnerController(IOwnerService ownerService, IUnitOfWork unitOfWork)
     [SwaggerResponse(404, "Owner not found.")]
     public async Task<IActionResult> Update(Guid id, [FromBody] OwnerUpdateRequest request, CancellationToken cancellationToken)
     {
-        request.Id = id;
-        await _ownerService.Update(request, cancellationToken);
+        await _ownerService.Update(id, request, cancellationToken);
         return Ok(new { message = "Owner updated successfully." });
     }
 

@@ -7,9 +7,6 @@ public class OwnerUpdateRequestValidation : AbstractValidator<OwnerUpdateRequest
 {
     public OwnerUpdateRequestValidation()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Owner ID is required.");
-
         RuleFor(x => x.FullName)
             .NotEmpty().WithMessage("Full name is required.")
             .MaximumLength(255).WithMessage("Full name must not exceed 255 characters.");
