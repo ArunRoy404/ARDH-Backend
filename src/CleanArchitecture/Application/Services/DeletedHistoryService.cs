@@ -140,6 +140,11 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
         var history = await _unitOfWork.DeletedHistoryRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw DeletedHistoryException.NotFoundException("Deleted history record not found.");
 
+        if (history.RestoredAt.HasValue)
+        {
+            throw DeletedHistoryException.BadRequestException("This record has already been restored and cannot be permanently deleted.");
+        }
+
         // Delete underlying entity permanently
         if (history.EntityType.Equals("User", StringComparison.OrdinalIgnoreCase))
         {

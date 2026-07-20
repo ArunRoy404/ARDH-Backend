@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using CleanArchitecture.Domain.Utilities;
 using CleanArchitecture.Infrastructure.SchemaFilter;
+using CleanArchitecture.Web.Filters;
 using CleanArchitecture.Web.Validations;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -14,7 +15,11 @@ public static class MvcExtension
     {
         services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
-        services.AddControllers(options => options.Filters.Add(typeof(ValidateModelFilter))).AddJsonOptions(options =>
+        services.AddControllers(options =>
+        {
+            options.Filters.Add(typeof(ValidateModelFilter));
+            options.Filters.Add(typeof(PermissionAuthorizationFilter));
+        }).AddJsonOptions(options =>
         {
             // Ignore null values
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

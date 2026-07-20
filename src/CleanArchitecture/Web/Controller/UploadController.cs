@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace CleanArchitecture.Web.Controller;
 
+[Authorize] 
 [ApiController]
 [Route("api/upload")]
 public class UploadController(AppSettings appSettings, IWebHostEnvironment environment) : BaseController

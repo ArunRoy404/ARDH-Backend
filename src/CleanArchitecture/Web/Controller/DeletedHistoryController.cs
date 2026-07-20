@@ -67,6 +67,7 @@ public class DeletedHistoryController(IDeletedHistoryService deletedHistoryServi
     /// </summary>
     [HttpDelete("{id}")]
     [SwaggerResponse(200, "Deleted history record and its underlying entity permanently deleted successfully.")]
+    [SwaggerResponse(400, "Record has already been restored and cannot be permanently deleted.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Deleted history record not found.")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
