@@ -76,7 +76,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 }
             }
             else if (path.StartsWith("/api/vendors", StringComparison.OrdinalIgnoreCase) ||
-                     path.StartsWith("/api/equipment", StringComparison.OrdinalIgnoreCase))
+                     path.StartsWith("/api/equipment", StringComparison.OrdinalIgnoreCase) ||
+                     path.StartsWith("/api/amc-contracts", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasOperationsPermission)
                 {

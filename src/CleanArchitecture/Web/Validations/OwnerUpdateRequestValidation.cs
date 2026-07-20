@@ -51,3 +51,4 @@ public class OwnerUpdateRequestValidation : AbstractValidator<OwnerUpdateRequest
             .IsInEnum().WithMessage("A valid owner status is required.");
     }
 }
+ 

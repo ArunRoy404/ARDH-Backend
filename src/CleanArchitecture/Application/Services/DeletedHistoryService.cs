@@ -12,6 +12,7 @@ using CleanArchitecture.Shared.Models.User;
 using CleanArchitecture.Shared.Models.Building;
 using CleanArchitecture.Shared.Models.Vendor;
 using CleanArchitecture.Shared.Models.Equipment;
+using CleanArchitecture.Shared.Models.AmcContract;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -179,6 +180,16 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             equipment.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.EquipmentRepository.Update(equipment);
         }
+        else if (history.EntityType.Equals("AmcContract", StringComparison.OrdinalIgnoreCase))
+        {
+            var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original AMC Contract not found.");
+
+            contract.DeletedAt = null;
+            contract.UpdatedAt = DateTime.UtcNow;
+            contract.RestoredBy = _currentUser.GetCurrentUserId();
+            _unitOfWork.AmcContractRepository.Update(contract);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -264,6 +275,14 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             if (equipment != null)
             {
                 _unitOfWork.EquipmentRepository.Delete(equipment);
+            }
+        }
+        else if (history.EntityType.Equals("AmcContract", StringComparison.OrdinalIgnoreCase))
+        {
+            var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (contract != null)
+            {
+                _unitOfWork.AmcContractRepository.Delete(contract);
             }
         }
 
@@ -379,6 +398,45 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                     AttachmentUrl = equipment.AttachmentUrl,
                     CreatedAt = equipment.CreatedAt,
                     UpdatedAt = equipment.UpdatedAt
+                };
+            }
+        }
+        else if (history.EntityType.Equals("AmcContract", StringComparison.OrdinalIgnoreCase))
+        {
+            var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (contract != null)
+            {
+                var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
+                var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == contract.VendorId);
+
+                entityData = new AmcContractViewModel
+                {
+                    Id = contract.Id,
+                    AmcCode = contract.AmcCode,
+                    ContractNumber = contract.ContractNumber,
+                    ContractTitle = contract.ContractTitle,
+                    ContractType = contract.ContractType,
+                    EquipmentId = contract.EquipmentId,
+                    EquipmentName = equipment?.Name ?? "Unknown Equipment",
+                    VendorId = contract.VendorId,
+                    VendorName = vendor?.Name ?? "Unknown Vendor",
+                    VendorCompanyName = vendor?.CompanyName ?? "Unknown Vendor",
+                    StartDate = contract.StartDate,
+                    EndDate = contract.EndDate,
+                    ContractAmount = contract.ContractAmount,
+                    PaymentTerms = contract.PaymentTerms,
+                    ServiceFrequency = contract.ServiceFrequency,
+                    CoverageDetails = contract.CoverageDetails,
+                    Exclusions = contract.Exclusions,
+                    DocumentLink = contract.DocumentLink,
+                    Remarks = contract.Remarks,
+                    Status = contract.Status,
+                    CreatedAt = contract.CreatedAt,
+                    UpdatedAt = contract.UpdatedAt,
+                    CreatedBy = contract.CreatedBy,
+                    UpdatedBy = contract.UpdatedBy,
+                    DeletedBy = contract.DeletedBy,
+                    RestoredBy = contract.RestoredBy
                 };
             }
         }

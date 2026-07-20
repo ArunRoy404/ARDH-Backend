@@ -2207,6 +2207,236 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "AMC Contracts Management",
+			"item": [
+				{
+					"name": "AMC-01. List AMC Contracts",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/amc-contracts?page=1&pageSize=10&search=&status=Active&contractType=Comprehensive",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amc-contracts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search term matching AMC code, contract number, contract title, coverage, exclusions, remarks, equipment name, vendor name"
+								},
+								{
+									"key": "status",
+									"value": "Active",
+									"description": "Filter by AMC status: Active, Expiring, Expired, Cancelled"
+								},
+								{
+									"key": "contractType",
+									"value": "Comprehensive",
+									"description": "Filter by contract type: Comprehensive, Non-Comprehensive, Preventative Maintenance, Breakdown Maintenance, Operations & Maintenance, Other"
+								},
+								{
+									"key": "vendorId",
+									"value": "",
+									"description": "Filter by vendor UUID"
+								},
+								{
+									"key": "equipmentId",
+									"value": "",
+									"description": "Filter by equipment UUID"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of AMC contracts with optional search and filters."
+					},
+					"response": []
+				},
+				{
+					"name": "AMC-02. Get Single AMC Contract",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/amc-contracts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amc-contracts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-amc-contract-uuid",
+									"description": "AMC Contract unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves details of a single AMC contract by UUID."
+					},
+					"response": []
+				},
+				{
+					"name": "AMC-03. Get AMC Contract Summary Stats",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/amc-contracts/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amc-contracts",
+								"stats"
+							]
+						},
+						"description": "Retrieves summary statistics (Active count, Expiring count, Expired count, Cancelled count, Total count) for AMC contracts."
+					},
+					"response": []
+				},
+				{
+					"name": "AMC-04. Create AMC Contract",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // Unique AMC code (optional: auto-generated if omitted)\n    \"contractNumber\": \"CN-OTIS-2026-881\", // Official vendor contract number\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\", // Display title of contract\n    \"contractType\": \"Comprehensive\", // Type: Comprehensive, Non-Comprehensive, Preventative Maintenance, Breakdown Maintenance, Operations & Maintenance, Other\n    \"equipmentId\": \"replace-with-equipment-uuid\", // Associated equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // Associated vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // Contract start date\n    \"endDate\": \"2026-12-31T00:00:00Z\", // Contract end date\n    \"contractAmount\": 150000.00, // Total contract value/amount\n    \"paymentTerms\": \"Quarterly Advance\", // Payment terms: Bank Transfer, Cheque, Cash, UPI / Digital Transfer, Quarterly Advance, Monthly Postpaid, Other\n    \"serviceFrequency\": \"Quarterly\", // Service frequency: Monthly, Quarterly, Half-Yearly, Yearly, One Time\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing\", // Covered scope\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // Excluded items/scenarios\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026.pdf\", // URL to signed contract document\n    \"remarks\": \"Signed directly with Otis Regional Director\", // Internal remarks\n    \"status\": \"Active\" // Contract status: Active, Expiring, Expired, Cancelled\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/amc-contracts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amc-contracts"
+							]
+						},
+						"description": "Creates a new AMC contract record."
+					},
+					"response": []
+				},
+				{
+					"name": "AMC-05. Update AMC Contract",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contractNumber\": \"CN-OTIS-2026-881-R1\", // Updated contract number\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026 (Revised)\", // Updated title\n    \"contractType\": \"Comprehensive\", // Contract type\n    \"equipmentId\": \"replace-with-equipment-uuid\", // Equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // Vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // Start date\n    \"endDate\": \"2026-12-31T00:00:00Z\", // End date\n    \"contractAmount\": 155000.00, // Updated amount\n    \"paymentTerms\": \"Quarterly Advance\", // Payment terms\n    \"serviceFrequency\": \"Quarterly\", // Service frequency\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing plus emergency dispatch\", // Updated coverage\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // Exclusions\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026-revised.pdf\", // Updated document link\n    \"remarks\": \"Revised amount following SLA addendum\", // Updated remarks\n    \"status\": \"Active\" // Contract status: Active, Expiring, Expired, Cancelled\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/amc-contracts/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amc-contracts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-amc-contract-uuid",
+									"description": "AMC Contract unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates details of an existing AMC contract record."
+					},
+					"response": []
+				},
+				{
+					"name": "AMC-06. Soft-Delete AMC Contract",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply admin password for deletion"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"amc-contracts",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-amc-contract-uuid",
+									"description": "AMC Contract unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes an AMC contract record."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
