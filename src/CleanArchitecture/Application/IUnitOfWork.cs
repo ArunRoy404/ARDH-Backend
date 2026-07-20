@@ -11,6 +11,8 @@ public interface IUnitOfWork
     IDeletedHistoryRepository DeletedHistoryRepository { get; }
     IOwnerRepository OwnerRepository { get; }
     IApartmentRepository ApartmentRepository { get; }
+    ITenantRepository TenantRepository { get; }
+    ITenantMoveOutRecordRepository TenantMoveOutRecordRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);

@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Repositories;
@@ -17,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
     public IDeletedHistoryRepository DeletedHistoryRepository { get; }
     public IOwnerRepository OwnerRepository { get; }
     public IApartmentRepository ApartmentRepository { get; }
+    public ITenantRepository TenantRepository { get; }
+    public ITenantMoveOutRecordRepository TenantMoveOutRecordRepository { get; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -28,6 +33,8 @@ public class UnitOfWork : IUnitOfWork
         DeletedHistoryRepository = new DeletedHistoryRepository(_context);
         OwnerRepository = new OwnerRepository(_context);
         ApartmentRepository = new ApartmentRepository(_context);
+        TenantRepository = new TenantRepository(_context);
+        TenantMoveOutRecordRepository = new TenantMoveOutRecordRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

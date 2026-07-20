@@ -13,6 +13,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<DeletedHistory> DeletedHistories { get; set; }
     public DbSet<Owner> Owners { get; set; }
     public DbSet<Apartment> Apartments { get; set; }
+    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<TenantMoveOutRecord> TenantMoveOutRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

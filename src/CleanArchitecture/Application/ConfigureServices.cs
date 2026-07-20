@@ -19,6 +19,8 @@ public static class ConfigureServices
         services.AddTransient<IDeletedHistoryService, DeletedHistoryService>();
         services.AddTransient<IOwnerService, OwnerService>();
         services.AddTransient<IApartmentService, ApartmentService>();
+        services.AddTransient<ITenantService, TenantService>();
+        services.AddTransient<ITenantMoveOutService, TenantMoveOutService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();

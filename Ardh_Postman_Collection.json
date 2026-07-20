@@ -1406,6 +1406,363 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Tenants Management",
+			"item": [
+				{
+					"name": "T-01. List Tenants",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants?page=1&pageSize=10&search=&buildingId=&apartmentId=&status=Active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search term matching full name, phone, email, ID number, building name, flat number"
+								},
+								{
+									"key": "buildingId",
+									"value": "",
+									"description": "Filter tenants by building UUID"
+								},
+								{
+									"key": "apartmentId",
+									"value": "",
+									"description": "Filter tenants by apartment UUID"
+								},
+								{
+									"key": "status",
+									"value": "Active",
+									"description": "Filter tenants by status: Active, Moved Out"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of tenants with optional search and filters."
+					},
+					"response": []
+				},
+				{
+					"name": "T-02. Get Single Tenant",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves details of a single tenant by UUID."
+					},
+					"response": []
+				},
+				{
+					"name": "T-03. Create Tenant (Move-In)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"apartmentId\": \"replace-with-apartment-uuid\", // Foreign key to apartment\n    \"fullName\": \"Rahul Sharma\", // Full name of the tenant\n    \"phone\": \"+91 9876543210\", // Primary contact phone number\n    \"email\": \"rahul.sharma@example.com\", // Contact email address\n    \"idType\": \"Aadhar\", // Government ID type: Aadhar, PanCard, or Passport\n    \"idNumber\": \"1234-5678-9012\", // Government ID document number\n    \"idProofAttachmentUrl\": \"http://localhost:5240/uploads/id-proofs/sample.pdf\", // Optional attachment URL for ID proof\n    \"moveInDate\": \"2026-08-01\", // Tenant move-in date\n    \"leaseStartDate\": \"2026-08-01\", // Lease agreement start date\n    \"leaseEndDate\": \"2027-07-31\", // Lease end date (optional for ongoing leases)\n    \"monthlyRent\": 25000.00, // Monthly rent amount\n    \"securityDeposit\": 50000.00, // Refundable security deposit\n    \"emergencyContactName\": \"Vikram Sharma\", // Emergency contact full name\n    \"emergencyContactPhone\": \"+91 9876543211\", // Emergency contact phone number\n    \"status\": \"Active\", // Tenant status: Active, Moved Out\n    \"notes\": \"Initial move-in records and key handovers\" // Optional notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants"
+							]
+						},
+						"description": "Creates a new tenant move-in record."
+					},
+					"response": []
+				},
+				{
+					"name": "T-04. Update Tenant",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"apartmentId\": \"replace-with-apartment-uuid\", // Foreign key to apartment\n    \"fullName\": \"Rahul Sharma\", // Updated full name of tenant\n    \"phone\": \"+91 9876543210\", // Updated phone number\n    \"email\": \"rahul.sharma@example.com\", // Updated email address\n    \"idType\": \"Aadhar\", // Updated ID type: Aadhar, PanCard, Passport\n    \"idNumber\": \"1234-5678-9012\", // Updated document number\n    \"idProofAttachmentUrl\": \"http://localhost:5240/uploads/id-proofs/sample.pdf\", // Updated ID proof URL\n    \"moveInDate\": \"2026-08-01\", // Updated move-in date\n    \"leaseStartDate\": \"2026-08-01\", // Updated lease start date\n    \"leaseEndDate\": \"2027-07-31\", // Updated lease end date\n    \"monthlyRent\": 26000.00, // Updated monthly rent\n    \"securityDeposit\": 50000.00, // Updated security deposit\n    \"emergencyContactName\": \"Vikram Sharma\", // Updated emergency contact name\n    \"emergencyContactPhone\": \"+91 9876543211\", // Updated emergency contact phone\n    \"status\": \"Active\", // Updated tenant status: Active, Moved Out\n    \"notes\": \"Updated lease terms and rent adjustment\" // Optional updated notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates details of an existing tenant record."
+					},
+					"response": []
+				},
+				{
+					"name": "T-05. Soft-Delete Tenant",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply admin password for deletion"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes a tenant record."
+					},
+					"response": []
+				},
+				{
+					"name": "TMO-01. Create Tenant Move-Out Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"moveOutDate\": \"2027-07-31\", // Tenant move-out date\n    \"pendingRent\": 0.00, // Outstanding pending rent amount\n    \"damageAmount\": 2500.00, // Deduction for property damages\n    \"refundAmount\": 47500.00, // Final net security deposit refund amount\n    \"idNumber\": \"1234-5678-9012\", // ID document number returned/verified during checkout\n    \"handoverNote\": \"All keys, access cards, and amenities handed over in good condition.\" // Handover notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id/move-out",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id",
+								"move-out"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Creates a move-out record for a tenant and updates the tenant's status to Moved Out."
+					},
+					"response": []
+				},
+				{
+					"name": "TMO-02. Get Tenant Move-Out Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id/move-out-records",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id",
+								"move-out-records"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves the move-out record for a specific tenant."
+					},
+					"response": []
+				},
+				{
+					"name": "TMO-03. Update Move-Out Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"moveOutDate\": \"2027-07-31\", // Updated move-out date\n    \"pendingRent\": 0.00, // Updated pending rent amount\n    \"damageAmount\": 3000.00, // Updated damage deduction amount\n    \"refundAmount\": 47000.00, // Updated net refund amount\n    \"idNumber\": \"1234-5678-9012\", // Updated ID document number\n    \"handoverNote\": \"Adjusted damage deduction following final painting inspection.\" // Updated handover note\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id/move-out",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id",
+								"move-out"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates an existing move-out record for a tenant."
+					},
+					"response": []
+				},
+				{
+					"name": "TMO-04. Soft-Delete Move-Out Record",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply admin password for deletion"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/tenants/:id/move-out?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"tenants",
+								":id",
+								"move-out"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-tenant-uuid",
+									"description": "Tenant unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes a tenant move-out record."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [

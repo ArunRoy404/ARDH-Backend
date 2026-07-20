@@ -141,6 +141,24 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             apartment.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.ApartmentRepository.Update(apartment);
         }
+        else if (history.EntityType.Equals("Tenant", StringComparison.OrdinalIgnoreCase))
+        {
+            var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Tenant not found.");
+
+            tenant.DeletedAt = null;
+            tenant.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.TenantRepository.Update(tenant);
+        }
+        else if (history.EntityType.Equals("TenantMoveOutRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var moveOutRecord = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Move-out record not found.");
+
+            moveOutRecord.DeletedAt = null;
+            moveOutRecord.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.TenantMoveOutRecordRepository.Update(moveOutRecord);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -194,6 +212,22 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             if (apartment != null)
             {
                 _unitOfWork.ApartmentRepository.Delete(apartment);
+            }
+        }
+        else if (history.EntityType.Equals("Tenant", StringComparison.OrdinalIgnoreCase))
+        {
+            var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (tenant != null)
+            {
+                _unitOfWork.TenantRepository.Delete(tenant);
+            }
+        }
+        else if (history.EntityType.Equals("TenantMoveOutRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var moveOutRecord = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (moveOutRecord != null)
+            {
+                _unitOfWork.TenantMoveOutRecordRepository.Delete(moveOutRecord);
             }
         }
 
