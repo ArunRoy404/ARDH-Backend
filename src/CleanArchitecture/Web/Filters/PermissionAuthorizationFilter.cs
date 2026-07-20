@@ -64,7 +64,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 }
             }
             else if (path.StartsWith("/api/buildings", StringComparison.OrdinalIgnoreCase) ||
-                     path.StartsWith("/api/owners", StringComparison.OrdinalIgnoreCase))
+                     path.StartsWith("/api/owners", StringComparison.OrdinalIgnoreCase) ||
+                     path.StartsWith("/api/apartments", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasPropertyPermission)
                 {

@@ -16,6 +16,7 @@ public class UnitOfWork : IUnitOfWork
     public ISettingRepository SettingRepository { get; }
     public IDeletedHistoryRepository DeletedHistoryRepository { get; }
     public IOwnerRepository OwnerRepository { get; }
+    public IApartmentRepository ApartmentRepository { get; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -26,6 +27,7 @@ public class UnitOfWork : IUnitOfWork
         SettingRepository = new SettingRepository(_context);
         DeletedHistoryRepository = new DeletedHistoryRepository(_context);
         OwnerRepository = new OwnerRepository(_context);
+        ApartmentRepository = new ApartmentRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

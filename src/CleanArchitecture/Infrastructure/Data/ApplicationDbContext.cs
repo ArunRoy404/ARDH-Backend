@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Setting> Settings { get; set; }
     public DbSet<DeletedHistory> DeletedHistories { get; set; }
     public DbSet<Owner> Owners { get; set; }
+    public DbSet<Apartment> Apartments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

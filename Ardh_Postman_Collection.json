@@ -1203,6 +1203,209 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Apartments Management",
+			"description": "API endpoints for Managing Individual Apartment Units within Buildings.",
+			"item": [
+				{
+					"name": "AP-01. List All Apartments",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/apartments?page=1&pageSize=10&search=&buildingId=&ownerId=&apartmentType=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"apartments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination (defaults to 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search keyword matching flat_number, nestaway_id, parking_slot, building name, or owner name"
+								},
+								{
+									"key": "buildingId",
+									"value": "",
+									"description": "Filter by Building ID (UUID)"
+								},
+								{
+									"key": "ownerId",
+									"value": "",
+									"description": "Filter by Owner ID (UUID)"
+								},
+								{
+									"key": "apartmentType",
+									"value": "",
+									"description": "Filter by Apartment Type: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of apartments with optional keyword search and filters."
+					},
+					"response": []
+				},
+				{
+					"name": "AP-02. Get Apartment Details by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/apartments/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"apartments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-apartment-uuid",
+									"description": "Apartment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves complete details of a single apartment unit."
+					},
+					"response": []
+				},
+				{
+					"name": "AP-03. Create Apartment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // External system identifier\n    \"flatNumber\": \"A-101\", // Flat/unit number (must be unique within the building)\n    \"floor\": 1, // Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Apartment configuration: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio\n    \"areaSqft\": 1250.50, // Total carpet area in square feet\n    \"bedrooms\": 2, // Number of bedrooms\n    \"bathrooms\": 2, // Number of bathrooms\n    \"hasBalcony\": true, // Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Parking space identifier\n    \"expectedRent\": 25000.00, // Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Monthly maintenance charges\n    \"waterCharge\": 500.00 // Monthly water charges\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/apartments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"apartments"
+							]
+						},
+						"description": "Creates a new apartment unit under a specified building and owner."
+					},
+					"response": []
+				},
+				{
+					"name": "AP-04. Update Apartment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Updated external system identifier\n    \"flatNumber\": \"A-101\", // Updated flat/unit number\n    \"floor\": 1, // Updated floor number\n    \"apartmentType\": \"2BHK\", // Updated apartment type: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio\n    \"areaSqft\": 1250.50, // Updated area in sqft\n    \"bedrooms\": 2, // Updated bedroom count\n    \"bathrooms\": 2, // Updated bathroom count\n    \"hasBalcony\": true, // Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Updated parking slot\n    \"expectedRent\": 26000.00, // Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Updated maintenance charge\n    \"waterCharge\": 500.00 // Updated water charge\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/apartments/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"apartments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-apartment-uuid",
+									"description": "Apartment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates an existing apartment record."
+					},
+					"response": []
+				},
+				{
+					"name": "AP-05. Soft-Delete Apartment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply the admin password for deletion (uses system delete password from Settings)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/apartments/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"apartments",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-apartment-uuid",
+									"description": "Apartment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes an apartment record by setting deleted_at timestamp and recording soft-delete history. Requires Admin password."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
