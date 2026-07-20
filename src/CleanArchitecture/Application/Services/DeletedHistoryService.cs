@@ -11,6 +11,7 @@ using CleanArchitecture.Shared.Models.DeletedHistory;
 using CleanArchitecture.Shared.Models.User;
 using CleanArchitecture.Shared.Models.Building;
 using CleanArchitecture.Shared.Models.Vendor;
+using CleanArchitecture.Shared.Models.Equipment;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -169,6 +170,15 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             vendor.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.VendorRepository.Update(vendor);
         }
+        else if (history.EntityType.Equals("Equipment", StringComparison.OrdinalIgnoreCase))
+        {
+            var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Equipment not found.");
+
+            equipment.DeletedAt = null;
+            equipment.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.EquipmentRepository.Update(equipment);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -246,6 +256,14 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             if (vendor != null)
             {
                 _unitOfWork.VendorRepository.Delete(vendor);
+            }
+        }
+        else if (history.EntityType.Equals("Equipment", StringComparison.OrdinalIgnoreCase))
+        {
+            var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (equipment != null)
+            {
+                _unitOfWork.EquipmentRepository.Delete(equipment);
             }
         }
 
@@ -327,6 +345,40 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                     Notes = vendor.Notes,
                     CreatedAt = vendor.CreatedAt,
                     UpdatedAt = vendor.UpdatedAt
+                };
+            }
+        }
+        else if (history.EntityType.Equals("Equipment", StringComparison.OrdinalIgnoreCase))
+        {
+            var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (equipment != null)
+            {
+                var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);
+                var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == equipment.AmcVendorId);
+
+                entityData = new EquipmentViewModel
+                {
+                    Id = equipment.Id,
+                    BuildingId = equipment.BuildingId,
+                    BuildingName = building?.BuildingName ?? "Unknown Building",
+                    Name = equipment.Name,
+                    Type = equipment.Type,
+                    Brand = equipment.Brand,
+                    Model = equipment.Model,
+                    SerialNumber = equipment.SerialNumber,
+                    InstallDate = equipment.InstallDate,
+                    WarrantyExpiryDate = equipment.WarrantyExpiryDate,
+                    AmcVendorId = equipment.AmcVendorId,
+                    AmcVendorName = vendor?.Name ?? "Unknown Vendor",
+                    AmcVendorCompanyName = vendor?.CompanyName ?? "Unknown Vendor",
+                    AmcExpiryDate = equipment.AmcExpiryDate,
+                    LastServiceDate = equipment.LastServiceDate,
+                    NextServiceDate = equipment.NextServiceDate,
+                    Status = equipment.Status,
+                    Notes = equipment.Notes,
+                    AttachmentUrl = equipment.AttachmentUrl,
+                    CreatedAt = equipment.CreatedAt,
+                    UpdatedAt = equipment.UpdatedAt
                 };
             }
         }

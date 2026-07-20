@@ -1960,6 +1960,253 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Equipment Management",
+			"item": [
+				{
+					"name": "E-01. List Equipment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/equipment?page=1&pageSize=10&search=&type=Lift&status=Operational",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"equipment"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number (default: 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Items per page (default: 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search term matching equipment name, brand, model, serial number, notes, building name, vendor name"
+								},
+								{
+									"key": "buildingId",
+									"value": "",
+									"description": "Filter by building UUID"
+								},
+								{
+									"key": "type",
+									"value": "Lift",
+									"description": "Filter by equipment type: Lift, CCTV, Inverter, Pump, Generator, Fire Safety, Water System, Other"
+								},
+								{
+									"key": "status",
+									"value": "Operational",
+									"description": "Filter by equipment status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned"
+								},
+								{
+									"key": "amcVendorId",
+									"value": "",
+									"description": "Filter by AMC vendor UUID"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of equipment with optional search and filters."
+					},
+					"response": []
+				},
+				{
+					"name": "E-02. Get Single Equipment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/equipment/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-equipment-uuid",
+									"description": "Equipment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves details of a single equipment by UUID."
+					},
+					"response": []
+				},
+				{
+					"name": "E-03. Create Equipment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Building UUID where equipment is installed\n    \"name\": \"Passenger Elevator 1\", // Equipment display name\n    \"type\": \"Lift\", // Equipment type: Lift, CCTV, Inverter, Pump, Generator, Fire Safety, Water System, Other\n    \"brand\": \"Otis\", // Manufacturer or brand name\n    \"model\": \"Gen2 Life\", // Equipment model number/name\n    \"serial_number\": \"OT-2024-99881\", // Unique manufacturer serial number\n    \"installDate\": \"2024-01-15T00:00:00Z\", // Installation date\n    \"warrantyExpiryDate\": \"2026-01-15T00:00:00Z\", // Warranty expiration date\n    \"amcVendorId\": \"replace-with-vendor-uuid\", // Vendor UUID responsible for AMC servicing\n    \"amcExpiryDate\": \"2027-01-15T00:00:00Z\", // Annual Maintenance Contract expiry date\n    \"lastServiceDate\": \"2026-06-10T00:00:00Z\", // Date of last routine service\n    \"nextServiceDate\": \"2026-09-10T00:00:00Z\", // Scheduled date for next routine service\n    \"status\": \"Operational\", // Equipment status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned\n    \"notes\": \"Main passenger lift servicing floors 1 to 10\", // Operational or maintenance notes\n    \"attachmentUrl\": \"https://example.com/attachments/otis-warranty.pdf\" // Attachment document URL\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/equipment",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"equipment"
+							]
+						},
+						"description": "Creates a new equipment record."
+					},
+					"response": []
+				},
+				{
+					"name": "E-04. Update Equipment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Building UUID\n    \"name\": \"Passenger Elevator 1 - Upgraded\", // Updated equipment name\n    \"type\": \"Lift\", // Equipment type\n    \"brand\": \"Otis\", // Brand\n    \"model\": \"Gen2 Life Plus\", // Updated model\n    \"serial_number\": \"OT-2024-99881\", // Serial number\n    \"installDate\": \"2024-01-15T00:00:00Z\", // Installation date\n    \"warrantyExpiryDate\": \"2026-01-15T00:00:00Z\", // Warranty expiry date\n    \"amcVendorId\": \"replace-with-vendor-uuid\", // AMC Vendor UUID\n    \"amcExpiryDate\": \"2027-01-15T00:00:00Z\", // AMC expiry date\n    \"lastServiceDate\": \"2026-07-01T00:00:00Z\", // Updated last service date\n    \"nextServiceDate\": \"2026-10-01T00:00:00Z\", // Updated next service date\n    \"status\": \"Operational\", // Equipment status\n    \"notes\": \"Updated service dates following routine quarterly inspection\", // Maintenance notes\n    \"attachmentUrl\": \"https://example.com/attachments/otis-service-report.pdf\" // Updated attachment URL\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/equipment/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-equipment-uuid",
+									"description": "Equipment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates details of an existing equipment record."
+					},
+					"response": []
+				},
+				{
+					"name": "E-05. Soft-Delete Equipment",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply admin password for deletion"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/equipment/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-equipment-uuid",
+									"description": "Equipment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes an equipment record."
+					},
+					"response": []
+				},
+				{
+					"name": "E-06. Update Equipment Status",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Under Maintenance\" // New status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/equipment/:id/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-equipment-uuid",
+									"description": "Equipment unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates equipment status only."
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"variable": [
