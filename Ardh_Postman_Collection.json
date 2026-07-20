@@ -24,7 +24,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@admin.com\", // The unique email address of the user (e.g. admin@admin.com)\n    \"password\": \"P@ssw0rd\", // The login password of the user\n    \"rememberMe\": true // Optional flag: if true, extends token lifespan to 30 days; if false/null, session lasts 24 hours\n}"
+							"raw": "{\n    \"email\": \"admin@gmail.com\", // The unique email address of the user (e.g. admin@admin.com)\n    \"password\": \"P@ssw0rd\", // The login password of the user\n    \"rememberMe\": true // Optional flag: if true, extends token lifespan to 30 days; if false/null, session lasts 24 hours\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/sign-in",
@@ -1006,6 +1006,199 @@
 							]
 						},
 						"description": "Delete the uploaded file from the storage directory."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Owners Management",
+			"description": "API endpoints for Managing Property Owners.",
+			"item": [
+				{
+					"name": "O-01. List All Owners",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners?page=1&pageSize=10&search=&status=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"owners"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination (defaults to 1)"
+								},
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "Number of items per page (defaults to 10)"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search keyword matching full_name, email, phone, or city"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Filter by owner status: Active, Inactive, Pending"
+								}
+							]
+						},
+						"description": "Retrieves a paginated list of property owners with optional search and status filter."
+					},
+					"response": []
+				},
+				{
+					"name": "O-02. Get Owner Details by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"owners",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-owner-uuid",
+									"description": "Owner unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Retrieves details of a single property owner by unique ID."
+					},
+					"response": []
+				},
+				{
+					"name": "O-03. Create Owner",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Unique email address of the owner\n    \"city\": \"Bangalore\", // City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Complete street address\n    \"idType\": \"Aadhar\", // Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Bank IFSC code\n    \"status\": \"Active\", // Owner status: Active, Inactive, Pending\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional additional notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"owners"
+							]
+						},
+						"description": "Creates a new property owner record."
+					},
+					"response": []
+				},
+				{
+					"name": "O-04. Update Owner",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"replace-with-owner-uuid\", // Owner unique identifier (UUID)\n    \"fullName\": \"Rajesh Kumar\", // Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Updated email address\n    \"city\": \"Bangalore\", // Updated city\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Updated complete street address\n    \"idType\": \"Aadhar\", // Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Updated bank name\n    \"accountNumber\": \"50100234567890\", // Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Updated IFSC code\n    \"status\": \"Active\", // Updated owner status: Active, Inactive, Pending\n    \"notes\": \"Updated owner notes and contact details\" // Optional updated notes\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"owners",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-owner-uuid",
+									"description": "Owner unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Updates an existing property owner record."
+					},
+					"response": []
+				},
+				{
+					"name": "O-05. Soft-Delete Owner",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Admin-Password",
+								"value": "adminpassword",
+								"description": "Header to supply the admin password for deletion (uses system delete password from Settings)"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/owners/:id?password=adminpassword",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"owners",
+								":id"
+							],
+							"query": [
+								{
+									"key": "password",
+									"value": "adminpassword",
+									"description": "Admin password query parameter to verify deletion"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "replace-with-owner-uuid",
+									"description": "Owner unique identifier (UUID)"
+								}
+							]
+						},
+						"description": "Soft-deletes an owner by setting deleted_at timestamp and recording soft-delete history. Requires Admin password."
 					},
 					"response": []
 				}

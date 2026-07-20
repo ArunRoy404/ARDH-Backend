@@ -9,6 +9,7 @@ public interface IUnitOfWork
     IBuildingRepository BuildingRepository { get; }
     ISettingRepository SettingRepository { get; }
     IDeletedHistoryRepository DeletedHistoryRepository { get; }
+    IOwnerRepository OwnerRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);

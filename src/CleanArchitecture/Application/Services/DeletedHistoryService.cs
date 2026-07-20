@@ -123,6 +123,15 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             building.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.BuildingRepository.Update(building);
         }
+        else if (history.EntityType.Equals("Owner", StringComparison.OrdinalIgnoreCase))
+        {
+            var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Owner not found.");
+            
+            owner.DeletedAt = null;
+            owner.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.OwnerRepository.Update(owner);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -160,6 +169,14 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             if (building != null)
             {
                 _unitOfWork.BuildingRepository.Delete(building);
+            }
+        }
+        else if (history.EntityType.Equals("Owner", StringComparison.OrdinalIgnoreCase))
+        {
+            var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (owner != null)
+            {
+                _unitOfWork.OwnerRepository.Delete(owner);
             }
         }
 
