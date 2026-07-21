@@ -14,6 +14,8 @@ using CleanArchitecture.Shared.Models.Vendor;
 using CleanArchitecture.Shared.Models.Equipment;
 using CleanArchitecture.Shared.Models.AmcContract;
 using CleanArchitecture.Shared.Models.Maintenance;
+using CleanArchitecture.Shared.Models.Income;
+using CleanArchitecture.Shared.Models.Expenses;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -201,6 +203,26 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             request.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.MaintenanceRequestRepository.Update(request);
         }
+        else if (history.EntityType.Equals("IncomeRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var income = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Income record not found.");
+
+            income.DeletedAt = null;
+            income.UpdatedAt = DateTime.UtcNow;
+            income.RestoredBy = _currentUser.GetCurrentUserId();
+            _unitOfWork.IncomeRecordRepository.Update(income);
+        }
+        else if (history.EntityType.Equals("ExpenseRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var expense = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Expense record not found.");
+
+            expense.DeletedAt = null;
+            expense.UpdatedAt = DateTime.UtcNow;
+            expense.RestoredBy = _currentUser.GetCurrentUserId();
+            _unitOfWork.ExpenseRecordRepository.Update(expense);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -302,6 +324,22 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             if (request != null)
             {
                 _unitOfWork.MaintenanceRequestRepository.Delete(request);
+            }
+        }
+        else if (history.EntityType.Equals("IncomeRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var income = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (income != null)
+            {
+                _unitOfWork.IncomeRecordRepository.Delete(income);
+            }
+        }
+        else if (history.EntityType.Equals("ExpenseRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var expense = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (expense != null)
+            {
+                _unitOfWork.ExpenseRecordRepository.Delete(expense);
             }
         }
 
@@ -497,6 +535,88 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                     UpdatedBy = request.UpdatedBy,
                     DeletedBy = request.DeletedBy,
                     RestoredBy = request.RestoredBy
+                };
+            }
+        }
+        else if (history.EntityType.Equals("IncomeRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (record != null)
+            {
+                var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
+                var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
+                var tenant = record.TenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value) : null;
+
+                entityData = new IncomeRecordViewModel
+                {
+                    Id = record.Id,
+                    IncomeEntity = record.IncomeEntity,
+                    IncomeType = record.IncomeType,
+                    Amount = record.Amount,
+                    TenantId = record.TenantId,
+                    TenantName = tenant?.FullName,
+                    BuildingId = record.BuildingId,
+                    BuildingName = building?.BuildingName,
+                    ApartmentId = record.ApartmentId,
+                    FlatNumber = apartment?.FlatNumber,
+                    Period = record.Period,
+                    PaymentDate = record.PaymentDate,
+                    PaymentMethod = record.PaymentMethod,
+                    TransactionReference = record.TransactionReference,
+                    Status = record.Status,
+                    Notes = record.Notes,
+                    AttachmentUrl = record.AttachmentUrl,
+                    CreatedAt = record.CreatedAt,
+                    UpdatedAt = record.UpdatedAt,
+                    CreatedBy = record.CreatedBy,
+                    UpdatedBy = record.UpdatedBy,
+                    DeletedBy = record.DeletedBy,
+                    RestoredBy = record.RestoredBy
+                };
+            }
+        }
+        else if (history.EntityType.Equals("ExpenseRecord", StringComparison.OrdinalIgnoreCase))
+        {
+            var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (record != null)
+            {
+                var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
+                var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
+                var vendor = record.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == record.VendorId.Value) : null;
+
+                entityData = new ExpenseRecordViewModel
+                {
+                    Id = record.Id,
+                    Category = record.Category,
+                    ExpenseHead = record.ExpenseHead,
+                    SpecificItem = record.SpecificItem,
+                    VendorId = record.VendorId,
+                    VendorName = vendor?.Name,
+                    VendorCompanyName = vendor?.CompanyName,
+                    Nature = record.Nature,
+                    Amount = record.Amount,
+                    Entity = record.Entity,
+                    BuildingId = record.BuildingId,
+                    BuildingName = building?.BuildingName,
+                    ApartmentId = record.ApartmentId,
+                    FlatNumber = apartment?.FlatNumber,
+                    ExpenseDate = record.ExpenseDate,
+                    PaymentMethod = record.PaymentMethod,
+                    Status = record.Status,
+                    Reference = record.Reference,
+                    AttachmentUrl = record.AttachmentUrl,
+                    Description = record.Description,
+                    TankerNumber = record.TankerNumber,
+                    TimeOfDelivery = record.TimeOfDelivery,
+                    DeliveryDriverName = record.DeliveryDriverName,
+                    ManagerInAttendance = record.ManagerInAttendance,
+                    LitersFilled = record.LitersFilled,
+                    CreatedAt = record.CreatedAt,
+                    UpdatedAt = record.UpdatedAt,
+                    CreatedBy = record.CreatedBy,
+                    UpdatedBy = record.UpdatedBy,
+                    DeletedBy = record.DeletedBy,
+                    RestoredBy = record.RestoredBy
                 };
             }
         }
