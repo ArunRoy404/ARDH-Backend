@@ -6884,6 +6884,535 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Expenses Management",
+            "item": [
+                {
+                    "name": "EX-01. List Expense Records",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses?page=1&pageSize=10&search=&category=Utility&status=Paid&nature=Service&buildingId=&vendorId=&startDate=&endDate=",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default: 1)"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "10",
+                                    "description": "Items per page (default: 10)"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search term matching expense_head, specific_item, reference, or description"
+                                },
+                                {
+                                    "key": "category",
+                                    "value": "Utility",
+                                    "description": "Filter by category: Utility, Operational, Maintenance, Tax, Capital"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Paid",
+                                    "description": "Filter by status: Draft, PendingPayment, Paid"
+                                },
+                                {
+                                    "key": "nature",
+                                    "value": "Service",
+                                    "description": "Filter by nature: Service, Material, Others"
+                                },
+                                {
+                                    "key": "buildingId",
+                                    "value": "",
+                                    "description": "Filter by building UUID"
+                                },
+                                {
+                                    "key": "vendorId",
+                                    "value": "",
+                                    "description": "Filter by vendor UUID"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "",
+                                    "description": "Filter by expense date start (yyyy-MM-dd)"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "",
+                                    "description": "Filter by expense date end (yyyy-MM-dd)"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of expense records with search and filters."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/expenses?page=1&pageSize=10&search=&category=Utility&status=Paid&nature=Service&buildingId=&vendorId=&startDate=&endDate=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "expenses"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1",
+                                            "description": "Page number (default: 1)"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10",
+                                            "description": "Items per page (default: 10)"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": "",
+                                            "description": "Search term matching expense_head, specific_item, reference, or description"
+                                        },
+                                        {
+                                            "key": "category",
+                                            "value": "Utility",
+                                            "description": "Filter by category: Utility, Operational, Maintenance, Tax, Capital"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "Paid",
+                                            "description": "Filter by status: Draft, PendingPayment, Paid"
+                                        },
+                                        {
+                                            "key": "nature",
+                                            "value": "Service",
+                                            "description": "Filter by nature: Service, Material, Others"
+                                        },
+                                        {
+                                            "key": "buildingId",
+                                            "value": "",
+                                            "description": "Filter by building UUID"
+                                        },
+                                        {
+                                            "key": "vendorId",
+                                            "value": "",
+                                            "description": "Filter by vendor UUID"
+                                        },
+                                        {
+                                            "key": "startDate",
+                                            "value": "",
+                                            "description": "Filter by expense date start (yyyy-MM-dd)"
+                                        },
+                                        {
+                                            "key": "endDate",
+                                            "value": "",
+                                            "description": "Filter by expense date end (yyyy-MM-dd)"
+                                        }
+                                    ]
+                                },
+                                "description": "Retrieves a paginated list of expense records with search and filters."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"category\": \"Utility\",\n            \"expenseHead\": \"Supplemental Water Supply\",\n            \"specificItem\": \"Water Tanker Purchase\",\n            \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"vendorName\": \"Falcon Water Suppliers\",\n            \"vendorCompanyName\": \"Falcon Trading Ltd\",\n            \"nature\": \"Material\",\n            \"amount\": 450.0,\n            \"entity\": \"BuildingLevel\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": null,\n            \"flatNumber\": null,\n            \"expenseDate\": \"2026-07-22T00:00:00Z\",\n            \"paymentMethod\": \"Cash\",\n            \"status\": \"Paid\",\n            \"reference\": \"WT-7782\",\n            \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\",\n            \"description\": \"5000L water tank delivery to building.\",\n            \"tankerNumber\": \"T-9082-SA\",\n            \"timeOfDelivery\": \"2026-07-22T10:30:00Z\",\n            \"deliveryDriverName\": \"Farhan Khan\",\n            \"managerInAttendance\": \"Adnan Siddiqui\",\n            \"litersFilled\": 5000,\n            \"createdAt\": \"2026-07-21T18:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"deletedBy\": null,\n            \"restoredBy\": null\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "EX-02. Get Single Expense Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses",
+                                "f5b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Retrieves details of a single expense record by its ID."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "expenses",
+                                        "f5b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Retrieves details of a single expense record by its ID."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"category\": \"Utility\",\n    \"expenseHead\": \"Supplemental Water Supply\",\n    \"specificItem\": \"Water Tanker Purchase\",\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"vendorName\": \"Falcon Water Suppliers\",\n    \"vendorCompanyName\": \"Falcon Trading Ltd\",\n    \"nature\": \"Material\",\n    \"amount\": 450.0,\n    \"entity\": \"BuildingLevel\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": null,\n    \"flatNumber\": null,\n    \"expenseDate\": \"2026-07-22T00:00:00Z\",\n    \"paymentMethod\": \"Cash\",\n    \"status\": \"Paid\",\n    \"reference\": \"WT-7782\",\n    \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\",\n    \"description\": \"5000L water tank delivery to building.\",\n    \"tankerNumber\": \"T-9082-SA\",\n    \"timeOfDelivery\": \"2026-07-22T10:30:00Z\",\n    \"deliveryDriverName\": \"Farhan Khan\",\n    \"managerInAttendance\": \"Adnan Siddiqui\",\n    \"litersFilled\": 5000,\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"deletedBy\": null,\n    \"restoredBy\": null\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "EX-03. Create Expense Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"category\": \"Utility\", // Expense category: Utility, Operational, Maintenance, Tax, Capital\n    \"expenseHead\": \"Supplemental Water Supply\", // Sub category (required for Utility)\n    \"specificItem\": \"Water Tanker Purchase\", // Specific item name/brief\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the vendor (optional)\n    \"nature\": \"Material\", // Nature: Service, Material, Others\n    \"amount\": 450.00, // Expense amount\n    \"entity\": \"BuildingLevel\", // Expense entity: General, ApartmentSpecific, BuildingLevel\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building (mandatory for BuildingLevel/ApartmentSpecific)\n    \"apartmentId\": null, // UUID of the apartment (mandatory for ApartmentSpecific)\n    \"expenseDate\": \"2026-07-22T00:00:00Z\", // Date of the expense\n    \"paymentMethod\": \"Cash\", // Payment method: Cash, UPI, BankTransfer, Cheque, Card\n    \"status\": \"Paid\", // Payment status: Draft, PendingPayment, Paid\n    \"reference\": \"WT-7782\", // Invoice/Receipt reference number (optional)\n    \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\", // Link to receipt upload (optional)\n    \"description\": \"5000L water tank delivery to building.\", // Brief description (optional)\n    \"tankerNumber\": \"T-9082-SA\", // Required when subcategory is water tank delivery (Supplemental Water Supply/Sweet Water Bill)\n    \"timeOfDelivery\": \"2026-07-22T10:30:00Z\", // Required when subcategory is water tank delivery\n    \"deliveryDriverName\": \"Farhan Khan\", // Required when subcategory is water tank delivery\n    \"managerInAttendance\": \"Adnan Siddiqui\", // Required when subcategory is water tank delivery\n    \"litersFilled\": 5000 // Required when subcategory is water tank delivery\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses"
+                            ]
+                        },
+                        "description": "Creates a new expense record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"category\": \"Utility\", // Expense category: Utility, Operational, Maintenance, Tax, Capital\n    \"expenseHead\": \"Supplemental Water Supply\", // Sub category (required for Utility)\n    \"specificItem\": \"Water Tanker Purchase\", // Specific item name/brief\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the vendor (optional)\n    \"nature\": \"Material\", // Nature: Service, Material, Others\n    \"amount\": 450.00, // Expense amount\n    \"entity\": \"BuildingLevel\", // Expense entity: General, ApartmentSpecific, BuildingLevel\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building (mandatory for BuildingLevel/ApartmentSpecific)\n    \"apartmentId\": null, // UUID of the apartment (mandatory for ApartmentSpecific)\n    \"expenseDate\": \"2026-07-22T00:00:00Z\", // Date of the expense\n    \"paymentMethod\": \"Cash\", // Payment method: Cash, UPI, BankTransfer, Cheque, Card\n    \"status\": \"Paid\", // Payment status: Draft, PendingPayment, Paid\n    \"reference\": \"WT-7782\", // Invoice/Receipt reference number (optional)\n    \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\", // Link to receipt upload (optional)\n    \"description\": \"5000L water tank delivery to building.\", // Brief description (optional)\n    \"tankerNumber\": \"T-9082-SA\", // Required when subcategory is water tank delivery (Supplemental Water Supply/Sweet Water Bill)\n    \"timeOfDelivery\": \"2026-07-22T10:30:00Z\", // Required when subcategory is water tank delivery\n    \"deliveryDriverName\": \"Farhan Khan\", // Required when subcategory is water tank delivery\n    \"managerInAttendance\": \"Adnan Siddiqui\", // Required when subcategory is water tank delivery\n    \"litersFilled\": 5000 // Required when subcategory is water tank delivery\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/expenses",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "expenses"
+                                    ]
+                                },
+                                "description": "Creates a new expense record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Expense record created successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "EX-04. Update Expense Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the expense record to update\n    \"category\": \"Utility\", // Expense category\n    \"expenseHead\": \"Supplemental Water Supply\", // Sub category\n    \"specificItem\": \"Water Tanker Purchase - Updated\", // Specific item name/brief (updated)\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the vendor\n    \"nature\": \"Material\", // Nature\n    \"amount\": 475.00, // Expense amount (updated)\n    \"entity\": \"BuildingLevel\", // Expense entity\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building\n    \"apartmentId\": null, // UUID of the apartment\n    \"expenseDate\": \"2026-07-22T00:00:00Z\", // Date of the expense\n    \"paymentMethod\": \"Cash\", // Payment method\n    \"status\": \"Paid\", // Payment status\n    \"reference\": \"WT-7782-REV\", // Reference number (updated)\n    \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice-rev.pdf\", // Link to receipt upload\n    \"description\": \"5000L water tank delivery to building. Price adjusted.\", // Description\n    \"tankerNumber\": \"T-9082-SA\", // Required for water tank delivery\n    \"timeOfDelivery\": \"2026-07-22T10:45:00Z\", // Required for water tank delivery\n    \"deliveryDriverName\": \"Farhan Khan\", // Required for water tank delivery\n    \"managerInAttendance\": \"Adnan Siddiqui\", // Required for water tank delivery\n    \"litersFilled\": 5000 // Required for water tank delivery\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses",
+                                "f5b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Updates details of an existing expense record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the expense record to update\n    \"category\": \"Utility\", // Expense category\n    \"expenseHead\": \"Supplemental Water Supply\", // Sub category\n    \"specificItem\": \"Water Tanker Purchase - Updated\", // Specific item name/brief (updated)\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the vendor\n    \"nature\": \"Material\", // Nature\n    \"amount\": 475.00, // Expense amount (updated)\n    \"entity\": \"BuildingLevel\", // Expense entity\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building\n    \"apartmentId\": null, // UUID of the apartment\n    \"expenseDate\": \"2026-07-22T00:00:00Z\", // Date of the expense\n    \"paymentMethod\": \"Cash\", // Payment method\n    \"status\": \"Paid\", // Payment status\n    \"reference\": \"WT-7782-REV\", // Reference number (updated)\n    \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice-rev.pdf\", // Link to receipt upload\n    \"description\": \"5000L water tank delivery to building. Price adjusted.\", // Description\n    \"tankerNumber\": \"T-9082-SA\", // Required for water tank delivery\n    \"timeOfDelivery\": \"2026-07-22T10:45:00Z\", // Required for water tank delivery\n    \"deliveryDriverName\": \"Farhan Khan\", // Required for water tank delivery\n    \"managerInAttendance\": \"Adnan Siddiqui\", // Required for water tank delivery\n    \"litersFilled\": 5000 // Required for water tank delivery\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "expenses",
+                                        "f5b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Updates details of an existing expense record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Expense record updated successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "EX-05. Soft-Delete Expense Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-Admin-Password",
+                                "value": "admin-password-123",
+                                "description": "Admin verification password"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24?password=admin-password-123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses",
+                                "f5b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ],
+                            "query": [
+                                {
+                                    "key": "password",
+                                    "value": "admin-password-123",
+                                    "description": "Alternative way to provide admin password"
+                                }
+                            ]
+                        },
+                        "description": "Soft-deletes an expense record. Requires Admin verification password."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "X-Admin-Password",
+                                        "value": "admin-password-123",
+                                        "description": "Admin verification password"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24?password=admin-password-123",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "expenses",
+                                        "f5b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "password",
+                                            "value": "admin-password-123",
+                                            "description": "Alternative way to provide admin password"
+                                        }
+                                    ]
+                                },
+                                "description": "Soft-deletes an expense record. Requires Admin verification password."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Expense record deleted successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "EX-06. Update Expense Status",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"Paid\" // New status: Draft, PendingPayment, Paid\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses",
+                                "f5b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                "status"
+                            ]
+                        },
+                        "description": "Updates the status of an expense record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"status\": \"Paid\" // New status: Draft, PendingPayment, Paid\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/expenses/f5b3b822-29c4-52a8-ad29-c8be5d491f24/status",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "expenses",
+                                        "f5b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                        "status"
+                                    ]
+                                },
+                                "description": "Updates the status of an expense record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Expense status updated successfully.\"\n}"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "variable": [

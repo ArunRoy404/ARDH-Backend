@@ -87,7 +87,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                     return;
                 }
             }
-            else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase))
+            else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
+                     path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasFinancePermission)
                 {

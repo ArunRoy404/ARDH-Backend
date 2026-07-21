@@ -20,6 +20,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<AmcContract> AmcContracts { get; set; }
     public DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
     public DbSet<IncomeRecord> IncomeRecords { get; set; }
+    public DbSet<ExpenseRecord> ExpenseRecords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
