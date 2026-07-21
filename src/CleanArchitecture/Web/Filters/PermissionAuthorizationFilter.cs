@@ -52,6 +52,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             var hasAdminPermission = isAdminRole || permissionList.Contains("admin");
             var hasPropertyPermission = isPropertyManagerRole || permissionList.Contains("properties") || permissionList.Contains("property") || hasAdminPermission;
             var hasOperationsPermission = isPropertyManagerRole || permissionList.Contains("operations") || permissionList.Contains("operation") || hasAdminPermission;
+            var hasFinancePermission = isPropertyManagerRole || permissionList.Contains("finance") || hasAdminPermission;
 
             // Route Permission Check (Applies to ALL HTTP methods including GET)
             if (path.StartsWith("/api/users", StringComparison.OrdinalIgnoreCase) ||
@@ -83,6 +84,14 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 if (!hasOperationsPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Operations permission required for this route.");
+                    return;
+                }
+            }
+            else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!hasFinancePermission)
+                {
+                    context.Result = CreateForbiddenResult("Access denied. Finance permission required for this route.");
                     return;
                 }
             }

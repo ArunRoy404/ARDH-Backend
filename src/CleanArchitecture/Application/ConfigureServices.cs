@@ -25,6 +25,7 @@ public static class ConfigureServices
         services.AddTransient<IEquipmentService, EquipmentService>();
         services.AddTransient<IAmcContractService, AmcContractService>();
         services.AddTransient<IMaintenanceRequestService, MaintenanceRequestService>();
+        services.AddTransient<IIncomeRecordService, IncomeRecordService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();

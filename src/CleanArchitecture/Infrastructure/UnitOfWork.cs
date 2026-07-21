@@ -26,6 +26,7 @@ public class UnitOfWork : IUnitOfWork
     public IEquipmentRepository EquipmentRepository { get; }
     public IAmcContractRepository AmcContractRepository { get; }
     public IMaintenanceRequestRepository MaintenanceRequestRepository { get; }
+    public IIncomeRecordRepository IncomeRecordRepository { get; }
 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -43,6 +44,7 @@ public class UnitOfWork : IUnitOfWork
         EquipmentRepository = new EquipmentRepository(_context);
         AmcContractRepository = new AmcContractRepository(_context);
         MaintenanceRequestRepository = new MaintenanceRequestRepository(_context);
+        IncomeRecordRepository = new IncomeRecordRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

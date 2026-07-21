@@ -6175,6 +6175,715 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Income Management",
+            "item": [
+                {
+                    "name": "I-01. List Income Records",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income?page=1&pageSize=10&search=&incomeType=Rent&status=Paid&buildingId=&tenantId=&startDate=&endDate=",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default: 1)"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "10",
+                                    "description": "Items per page (default: 10)"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search term matching period, notes, transaction reference, building/tenant/apartment name"
+                                },
+                                {
+                                    "key": "incomeType",
+                                    "value": "Rent",
+                                    "description": "Filter by income type: Rent, Maintenance, SecurityDeposit, WaterCharge, Others"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Paid",
+                                    "description": "Filter by status: Paid, Pending, Overdue, Partial"
+                                },
+                                {
+                                    "key": "buildingId",
+                                    "value": "",
+                                    "description": "Filter by building UUID"
+                                },
+                                {
+                                    "key": "tenantId",
+                                    "value": "",
+                                    "description": "Filter by tenant UUID"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "",
+                                    "description": "Filter by payment date start (yyyy-MM-dd)"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "",
+                                    "description": "Filter by payment date end (yyyy-MM-dd)"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of income records with search and filters."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income?page=1&pageSize=10&search=&incomeType=Rent&status=Paid&buildingId=&tenantId=&startDate=&endDate=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1",
+                                            "description": "Page number (default: 1)"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10",
+                                            "description": "Items per page (default: 10)"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": "",
+                                            "description": "Search term matching period, notes, transaction reference, building/tenant/apartment name"
+                                        },
+                                        {
+                                            "key": "incomeType",
+                                            "value": "Rent",
+                                            "description": "Filter by income type: Rent, Maintenance, SecurityDeposit, WaterCharge, Others"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "Paid",
+                                            "description": "Filter by status: Paid, Pending, Overdue, Partial"
+                                        },
+                                        {
+                                            "key": "buildingId",
+                                            "value": "",
+                                            "description": "Filter by building UUID"
+                                        },
+                                        {
+                                            "key": "tenantId",
+                                            "value": "",
+                                            "description": "Filter by tenant UUID"
+                                        },
+                                        {
+                                            "key": "startDate",
+                                            "value": "",
+                                            "description": "Filter by payment date start (yyyy-MM-dd)"
+                                        },
+                                        {
+                                            "key": "endDate",
+                                            "value": "",
+                                            "description": "Filter by payment date end (yyyy-MM-dd)"
+                                        }
+                                    ]
+                                },
+                                "description": "Retrieves a paginated list of income records with search and filters."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"incomeEntity\": \"ApartmentWise\",\n            \"incomeType\": \"Rent\",\n            \"amount\": 12000.0,\n            \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"tenantName\": \"Adnan Mansoor\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"flatNumber\": \"1204-B\",\n            \"period\": \"July 2026\",\n            \"paymentDate\": \"2026-07-22T00:00:00Z\",\n            \"paymentMethod\": \"BankTransfer\",\n            \"transactionReference\": \"TXN123456789\",\n            \"status\": \"Paid\",\n            \"notes\": \"Rent payment received via bank transfer.\",\n            \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n            \"createdAt\": \"2026-07-21T18:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"deletedBy\": null,\n            \"restoredBy\": null\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "I-02. Get Single Income Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income",
+                                "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Retrieves details of a single income record by its ID."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income",
+                                        "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Retrieves details of a single income record by its ID."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"incomeEntity\": \"ApartmentWise\",\n    \"incomeType\": \"Rent\",\n    \"amount\": 12000.0,\n    \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"tenantName\": \"Adnan Mansoor\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"flatNumber\": \"1204-B\",\n    \"period\": \"July 2026\",\n    \"paymentDate\": \"2026-07-22T00:00:00Z\",\n    \"paymentMethod\": \"BankTransfer\",\n    \"transactionReference\": \"TXN123456789\",\n    \"status\": \"Paid\",\n    \"notes\": \"Rent payment received via bank transfer.\",\n    \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"deletedBy\": null,\n    \"restoredBy\": null\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "I-03. Create Income Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"incomeEntity\": \"ApartmentWise\", // Income entity type: ApartmentWise, GeneralOthers\n    \"incomeType\": \"Rent\", // Income type: Rent, Maintenance, SecurityDeposit, WaterCharge, Others\n    \"amount\": 12000.00, // Total income amount\n    \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the tenant (required for ApartmentWise)\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building (required for ApartmentWise)\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the apartment (required for ApartmentWise)\n    \"period\": \"July 2026\", // Billing period (e.g. July 2026 or 2026-07)\n    \"paymentDate\": \"2026-07-22T00:00:00Z\", // Date of payment\n    \"paymentMethod\": \"BankTransfer\", // Payment method: TransferFromNestaway, DirectFromTenant, Cash, BankTransfer, Cheque, Others\n    \"transactionReference\": \"TXN123456789\", // Transaction reference/receipt ID (optional)\n    \"status\": \"Paid\", // Payment status: Paid, Pending, Overdue, Partial\n    \"notes\": \"Rent payment received via bank transfer.\", // Internal remarks (optional)\n    \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\" // Link to receipt upload document (optional)\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income"
+                            ]
+                        },
+                        "description": "Creates a new income record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"incomeEntity\": \"ApartmentWise\", // Income entity type: ApartmentWise, GeneralOthers\n    \"incomeType\": \"Rent\", // Income type: Rent, Maintenance, SecurityDeposit, WaterCharge, Others\n    \"amount\": 12000.00, // Total income amount\n    \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the tenant (required for ApartmentWise)\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building (required for ApartmentWise)\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the apartment (required for ApartmentWise)\n    \"period\": \"July 2026\", // Billing period (e.g. July 2026 or 2026-07)\n    \"paymentDate\": \"2026-07-22T00:00:00Z\", // Date of payment\n    \"paymentMethod\": \"BankTransfer\", // Payment method: TransferFromNestaway, DirectFromTenant, Cash, BankTransfer, Cheque, Others\n    \"transactionReference\": \"TXN123456789\", // Transaction reference/receipt ID (optional)\n    \"status\": \"Paid\", // Payment status: Paid, Pending, Overdue, Partial\n    \"notes\": \"Rent payment received via bank transfer.\", // Internal remarks (optional)\n    \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\" // Link to receipt upload document (optional)\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income"
+                                    ]
+                                },
+                                "description": "Creates a new income record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Income record created successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "I-04. Update Income Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the income record to update\n    \"incomeEntity\": \"ApartmentWise\", // Income entity type: ApartmentWise, GeneralOthers\n    \"incomeType\": \"Rent\", // Income type: Rent, Maintenance, SecurityDeposit, WaterCharge, Others\n    \"amount\": 12500.00, // Total income amount (updated)\n    \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the tenant\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the apartment\n    \"period\": \"July 2026\", // Billing period\n    \"paymentDate\": \"2026-07-22T00:00:00Z\", // Date of payment\n    \"paymentMethod\": \"BankTransfer\", // Payment method: TransferFromNestaway, DirectFromTenant, Cash, BankTransfer, Cheque, Others\n    \"transactionReference\": \"TXN123456789-REV\", // Transaction reference (updated)\n    \"status\": \"Paid\", // Payment status: Paid, Pending, Overdue, Partial\n    \"notes\": \"Rent payment received via bank transfer. Amount adjusted.\", // Internal remarks (optional)\n    \"attachmentUrl\": \"https://example.com/uploads/receipt-rev.pdf\" // Link to receipt upload document (optional)\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income",
+                                "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Updates details of an existing income record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the income record to update\n    \"incomeEntity\": \"ApartmentWise\", // Income entity type: ApartmentWise, GeneralOthers\n    \"incomeType\": \"Rent\", // Income type: Rent, Maintenance, SecurityDeposit, WaterCharge, Others\n    \"amount\": 12500.00, // Total income amount (updated)\n    \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the tenant\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the building\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the apartment\n    \"period\": \"July 2026\", // Billing period\n    \"paymentDate\": \"2026-07-22T00:00:00Z\", // Date of payment\n    \"paymentMethod\": \"BankTransfer\", // Payment method: TransferFromNestaway, DirectFromTenant, Cash, BankTransfer, Cheque, Others\n    \"transactionReference\": \"TXN123456789-REV\", // Transaction reference (updated)\n    \"status\": \"Paid\", // Payment status: Paid, Pending, Overdue, Partial\n    \"notes\": \"Rent payment received via bank transfer. Amount adjusted.\", // Internal remarks (optional)\n    \"attachmentUrl\": \"https://example.com/uploads/receipt-rev.pdf\" // Link to receipt upload document (optional)\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income",
+                                        "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Updates details of an existing income record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Income record updated successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "I-05. Soft-Delete Income Record",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-Admin-Password",
+                                "value": "admin-password-123",
+                                "description": "Admin verification password"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=admin-password-123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income",
+                                "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ],
+                            "query": [
+                                {
+                                    "key": "password",
+                                    "value": "admin-password-123",
+                                    "description": "Alternative way to provide admin password"
+                                }
+                            ]
+                        },
+                        "description": "Soft-deletes an income record. Requires Admin verification password."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "X-Admin-Password",
+                                        "value": "admin-password-123",
+                                        "description": "Admin verification password"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=admin-password-123",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income",
+                                        "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "password",
+                                            "value": "admin-password-123",
+                                            "description": "Alternative way to provide admin password"
+                                        }
+                                    ]
+                                },
+                                "description": "Soft-deletes an income record. Requires Admin verification password."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Income record deleted successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "I-06. Update Income Status",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"Overdue\" // New status: Paid, Pending, Overdue, Partial\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income",
+                                "f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                "status"
+                            ]
+                        },
+                        "description": "Updates the status of an income record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"status\": \"Overdue\" // New status: Paid, Pending, Overdue, Partial\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24/status",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income",
+                                        "f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                        "status"
+                                    ]
+                                },
+                                "description": "Updates the status of an income record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Income status updated successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "I-07. Download Income Receipt PDF",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income/download/f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income",
+                                "download",
+                                "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Downloads the PDF receipt for a specific income record."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income/download/f4b3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income",
+                                        "download",
+                                        "f4b3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Downloads the PDF receipt for a specific income record."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/pdf"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "%PDF-1.4\n...binary data..."
+                        }
+                    ]
+                },
+                {
+                    "name": "I-08. Download All Income CSV",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/income/download-csv?search=&incomeType=Rent&status=Paid&buildingId=&tenantId=&startDate=&endDate=",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "income",
+                                "download-csv"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search term"
+                                },
+                                {
+                                    "key": "incomeType",
+                                    "value": "Rent",
+                                    "description": "Filter by income type"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Paid",
+                                    "description": "Filter by status"
+                                },
+                                {
+                                    "key": "buildingId",
+                                    "value": "",
+                                    "description": "Filter by building UUID"
+                                },
+                                {
+                                    "key": "tenantId",
+                                    "value": "",
+                                    "description": "Filter by tenant UUID"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "",
+                                    "description": "Filter by payment date start"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "",
+                                    "description": "Filter by payment date end"
+                                }
+                            ]
+                        },
+                        "description": "Exports filtered income records to a CSV file."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/income/download-csv?search=&incomeType=Rent&status=Paid&buildingId=&tenantId=&startDate=&endDate=",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "income",
+                                        "download-csv"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "search",
+                                            "value": "",
+                                            "description": "Search term"
+                                        },
+                                        {
+                                            "key": "incomeType",
+                                            "value": "Rent",
+                                            "description": "Filter by income type"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "Paid",
+                                            "description": "Filter by status"
+                                        },
+                                        {
+                                            "key": "buildingId",
+                                            "value": "",
+                                            "description": "Filter by building UUID"
+                                        },
+                                        {
+                                            "key": "tenantId",
+                                            "value": "",
+                                            "description": "Filter by tenant UUID"
+                                        },
+                                        {
+                                            "key": "startDate",
+                                            "value": "",
+                                            "description": "Filter by payment date start"
+                                        },
+                                        {
+                                            "key": "endDate",
+                                            "value": "",
+                                            "description": "Filter by payment date end"
+                                        }
+                                    ]
+                                },
+                                "description": "Exports filtered income records to a CSV file."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "text",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "text/csv"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "ID,IncomeEntity,IncomeType,Amount,TenantName...\n..."
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "variable": [
