@@ -18,6 +18,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Vendor> Vendors { get; set; }
     public DbSet<Equipment> Equipment { get; set; }
     public DbSet<AmcContract> AmcContracts { get; set; }
+    public DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

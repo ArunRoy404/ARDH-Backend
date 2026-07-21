@@ -13,6 +13,7 @@ using CleanArchitecture.Shared.Models.Building;
 using CleanArchitecture.Shared.Models.Vendor;
 using CleanArchitecture.Shared.Models.Equipment;
 using CleanArchitecture.Shared.Models.AmcContract;
+using CleanArchitecture.Shared.Models.Maintenance;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -190,6 +191,16 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             contract.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.AmcContractRepository.Update(contract);
         }
+        else if (history.EntityType.Equals("MaintenanceRequest", StringComparison.OrdinalIgnoreCase))
+        {
+            var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId)
+                ?? throw DeletedHistoryException.NotFoundException("Original Maintenance request not found.");
+
+            request.DeletedAt = null;
+            request.UpdatedAt = DateTime.UtcNow;
+            request.RestoredBy = _currentUser.GetCurrentUserId();
+            _unitOfWork.MaintenanceRequestRepository.Update(request);
+        }
         else
         {
             throw DeletedHistoryException.BadRequestException($"Unknown entity type: {history.EntityType}");
@@ -283,6 +294,14 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             if (contract != null)
             {
                 _unitOfWork.AmcContractRepository.Delete(contract);
+            }
+        }
+        else if (history.EntityType.Equals("MaintenanceRequest", StringComparison.OrdinalIgnoreCase))
+        {
+            var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (request != null)
+            {
+                _unitOfWork.MaintenanceRequestRepository.Delete(request);
             }
         }
 
@@ -437,6 +456,47 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                     UpdatedBy = contract.UpdatedBy,
                     DeletedBy = contract.DeletedBy,
                     RestoredBy = contract.RestoredBy
+                };
+            }
+        }
+        else if (history.EntityType.Equals("MaintenanceRequest", StringComparison.OrdinalIgnoreCase))
+        {
+            var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == history.EntityId);
+            if (request != null)
+            {
+                var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.BuildingId);
+                var apartment = request.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId.Value) : null;
+                var vendor = request.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == request.VendorId.Value) : null;
+                var equipment = request.EquipmentId.HasValue ? await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value) : null;
+
+                entityData = new MaintenanceRequestViewModel
+                {
+                    Id = request.Id,
+                    Title = request.Title,
+                    Description = request.Description,
+                    Category = request.Category,
+                    Priority = request.Priority,
+                    Status = request.Status,
+                    VendorId = request.VendorId,
+                    VendorName = vendor?.Name,
+                    VendorCompanyName = vendor?.CompanyName,
+                    EquipmentId = request.EquipmentId,
+                    EquipmentName = equipment?.Name,
+                    BuildingId = request.BuildingId,
+                    BuildingName = building?.BuildingName ?? "Unknown Building",
+                    ApartmentId = request.ApartmentId,
+                    FlatNumber = apartment?.FlatNumber,
+                    EstimatedCost = request.EstimatedCost,
+                    AnnualCost = request.AnnualCost,
+                    ScheduledDate = request.ScheduledDate,
+                    ReceiptAttachmentUrl = request.ReceiptAttachmentUrl,
+                    Notes = request.Notes,
+                    CreatedAt = request.CreatedAt,
+                    UpdatedAt = request.UpdatedAt,
+                    CreatedBy = request.CreatedBy,
+                    UpdatedBy = request.UpdatedBy,
+                    DeletedBy = request.DeletedBy,
+                    RestoredBy = request.RestoredBy
                 };
             }
         }

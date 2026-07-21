@@ -16,6 +16,7 @@ public interface IUnitOfWork
     IVendorRepository VendorRepository { get; }
     IEquipmentRepository EquipmentRepository { get; }
     IAmcContractRepository AmcContractRepository { get; }
+    IMaintenanceRequestRepository MaintenanceRequestRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);

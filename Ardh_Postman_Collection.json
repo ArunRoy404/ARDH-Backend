@@ -5522,6 +5522,659 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Maintenance Management",
+            "item": [
+                {
+                    "name": "M-01. List Maintenance Requests",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance?page=1&pageSize=10&search=&status=Open&priority=High&category=Plumbing",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1",
+                                    "description": "Page number (default: 1)"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "10",
+                                    "description": "Items per page (default: 10)"
+                                },
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search term matching title, description, or notes"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "Open",
+                                    "description": "Filter by status: Open, InProgress, Complete, Cancelled"
+                                },
+                                {
+                                    "key": "priority",
+                                    "value": "High",
+                                    "description": "Filter by priority: Low, Medium, High, Emergency"
+                                },
+                                {
+                                    "key": "category",
+                                    "value": "Plumbing",
+                                    "description": "Filter by category"
+                                },
+                                {
+                                    "key": "buildingId",
+                                    "value": "",
+                                    "description": "Filter by building UUID"
+                                },
+                                {
+                                    "key": "vendorId",
+                                    "value": "",
+                                    "description": "Filter by vendor UUID"
+                                },
+                                {
+                                    "key": "equipmentId",
+                                    "value": "",
+                                    "description": "Filter by equipment UUID"
+                                }
+                            ]
+                        },
+                        "description": "Retrieves a paginated list of maintenance requests with search and filters."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance?page=1&pageSize=10&search=&status=Open&priority=High&category=Plumbing",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1",
+                                            "description": "Page number (default: 1)"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10",
+                                            "description": "Items per page (default: 10)"
+                                        },
+                                        {
+                                            "key": "search",
+                                            "value": "",
+                                            "description": "Search term matching title, description, or notes"
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "Open",
+                                            "description": "Filter by status: Open, InProgress, Complete, Cancelled"
+                                        },
+                                        {
+                                            "key": "priority",
+                                            "value": "High",
+                                            "description": "Filter by priority: Low, Medium, High, Emergency"
+                                        },
+                                        {
+                                            "key": "category",
+                                            "value": "Plumbing",
+                                            "description": "Filter by category"
+                                        },
+                                        {
+                                            "key": "buildingId",
+                                            "value": "",
+                                            "description": "Filter by building UUID"
+                                        },
+                                        {
+                                            "key": "vendorId",
+                                            "value": "",
+                                            "description": "Filter by vendor UUID"
+                                        },
+                                        {
+                                            "key": "equipmentId",
+                                            "value": "",
+                                            "description": "Filter by equipment UUID"
+                                        }
+                                    ]
+                                },
+                                "description": "Retrieves a paginated list of maintenance requests with search and filters."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"title\": \"Leaking Pipe in Kitchen\",\n            \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\",\n            \"category\": \"Plumbing\",\n            \"priority\": \"High\",\n            \"status\": \"Open\",\n            \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"vendorName\": \"Rajesh Sharma\",\n            \"vendorCompanyName\": \"Sharma Elevator Services\",\n            \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"equipmentName\": \"OTIS Elevator Block A\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"flatNumber\": \"1204-B\",\n            \"estimatedCost\": 2500.0,\n            \"annualCost\": 15000.0,\n            \"scheduledDate\": \"2026-07-22T10:00:00Z\",\n            \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n            \"notes\": \"Emergency plumber called.\",\n            \"createdAt\": \"2026-07-21T18:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"deletedBy\": null,\n            \"restoredBy\": null\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-02. Get Single Maintenance Request",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                "e3a3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Retrieves details of a single maintenance request by its ID."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        "e3a3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Retrieves details of a single maintenance request by its ID."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"title\": \"Leaking Pipe in Kitchen\",\n    \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\",\n    \"category\": \"Plumbing\",\n    \"priority\": \"High\",\n    \"status\": \"Open\",\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"vendorName\": \"Rajesh Sharma\",\n    \"vendorCompanyName\": \"Sharma Elevator Services\",\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"equipmentName\": \"OTIS Elevator Block A\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"flatNumber\": \"1204-B\",\n    \"estimatedCost\": 2500.0,\n    \"annualCost\": 15000.0,\n    \"scheduledDate\": \"2026-07-22T10:00:00Z\",\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n    \"notes\": \"Emergency plumber called.\",\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"deletedBy\": null,\n    \"restoredBy\": null\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-03. Create Maintenance Request",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Leaking Pipe in Kitchen\", // Title of the maintenance request\n    \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\", // Detailed description of the maintenance issue\n    \"category\": \"Plumbing\", // Category: Plumbing, Electrical, HVAC, Carpentry, Painting, Masonry, Elevator, Cleaning, Security, PestControl, Landscaping, General, Other\n    \"priority\": \"High\", // Priority: Low, Medium, High, Emergency\n    \"status\": \"Open\", // Current status: Open, InProgress, Complete, Cancelled\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated building UUID\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated apartment UUID (optional)\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated vendor UUID (optional)\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated equipment UUID (optional)\n    \"estimatedCost\": 2500.00, // Estimated cost of the maintenance work\n    \"annualCost\": 15000.00, // Projected annual cost of maintenance\n    \"scheduledDate\": \"2026-07-22T10:00:00Z\", // Scheduled date and time (optional)\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // Link to uploaded receipt/invoice document (optional)\n    \"notes\": \"Emergency plumber called.\" // Internal notes (optional)\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance"
+                            ]
+                        },
+                        "description": "Creates a new maintenance request."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"title\": \"Leaking Pipe in Kitchen\", // Title of the maintenance request\n    \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\", // Detailed description of the maintenance issue\n    \"category\": \"Plumbing\", // Category: Plumbing, Electrical, HVAC, Carpentry, Painting, Masonry, Elevator, Cleaning, Security, PestControl, Landscaping, General, Other\n    \"priority\": \"High\", // Priority: Low, Medium, High, Emergency\n    \"status\": \"Open\", // Current status: Open, InProgress, Complete, Cancelled\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated building UUID\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated apartment UUID (optional)\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated vendor UUID (optional)\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated equipment UUID (optional)\n    \"estimatedCost\": 2500.00, // Estimated cost of the maintenance work\n    \"annualCost\": 15000.00, // Projected annual cost of maintenance\n    \"scheduledDate\": \"2026-07-22T10:00:00Z\", // Scheduled date and time (optional)\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // Link to uploaded receipt/invoice document (optional)\n    \"notes\": \"Emergency plumber called.\" // Internal notes (optional)\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance"
+                                    ]
+                                },
+                                "description": "Creates a new maintenance request."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Maintenance request created successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-04. Update Maintenance Request",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the maintenance request to update\n    \"title\": \"Leaking Pipe in Kitchen - Updated\", // Title of the maintenance request\n    \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation. Plumber scheduled.\", // Detailed description of the maintenance issue\n    \"category\": \"Plumbing\", // Category: Plumbing, Electrical, HVAC, Carpentry, Painting, Masonry, Elevator, Cleaning, Security, PestControl, Landscaping, General, Other\n    \"priority\": \"High\", // Priority: Low, Medium, High, Emergency\n    \"status\": \"InProgress\", // Current status: Open, InProgress, Complete, Cancelled\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated building UUID\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated apartment UUID (optional)\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated vendor UUID (optional)\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated equipment UUID (optional)\n    \"estimatedCost\": 2700.00, // Estimated cost of the maintenance work\n    \"annualCost\": 15000.00, // Projected annual cost of maintenance\n    \"scheduledDate\": \"2026-07-22T12:00:00Z\", // Scheduled date and time (optional)\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt-updated.pdf\", // Link to uploaded receipt/invoice document (optional)\n    \"notes\": \"Emergency plumber called. Cost updated.\" // Internal notes (optional)\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                "e3a3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Updates details of an existing maintenance request."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\", // UUID of the maintenance request to update\n    \"title\": \"Leaking Pipe in Kitchen - Updated\", // Title of the maintenance request\n    \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation. Plumber scheduled.\", // Detailed description of the maintenance issue\n    \"category\": \"Plumbing\", // Category: Plumbing, Electrical, HVAC, Carpentry, Painting, Masonry, Elevator, Cleaning, Security, PestControl, Landscaping, General, Other\n    \"priority\": \"High\", // Priority: Low, Medium, High, Emergency\n    \"status\": \"InProgress\", // Current status: Open, InProgress, Complete, Cancelled\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated building UUID\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated apartment UUID (optional)\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated vendor UUID (optional)\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // Associated equipment UUID (optional)\n    \"estimatedCost\": 2700.00, // Estimated cost of the maintenance work\n    \"annualCost\": 15000.00, // Projected annual cost of maintenance\n    \"scheduledDate\": \"2026-07-22T12:00:00Z\", // Scheduled date and time (optional)\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt-updated.pdf\", // Link to uploaded receipt/invoice document (optional)\n    \"notes\": \"Emergency plumber called. Cost updated.\" // Internal notes (optional)\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        "e3a3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Updates details of an existing maintenance request."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Maintenance request updated successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-05. Soft-Delete Maintenance Request",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-Admin-Password",
+                                "value": "admin-password-123",
+                                "description": "Admin verification password"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24?password=admin-password-123",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                "e3a3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ],
+                            "query": [
+                                {
+                                    "key": "password",
+                                    "value": "admin-password-123",
+                                    "description": "Alternative way to provide admin password"
+                                }
+                            ]
+                        },
+                        "description": "Soft-deletes a maintenance request. Requires Admin verification password."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "X-Admin-Password",
+                                        "value": "admin-password-123",
+                                        "description": "Admin verification password"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24?password=admin-password-123",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        "e3a3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "password",
+                                            "value": "admin-password-123",
+                                            "description": "Alternative way to provide admin password"
+                                        }
+                                    ]
+                                },
+                                "description": "Soft-deletes a maintenance request. Requires Admin verification password."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Maintenance request deleted successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-06. Update Maintenance Status",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"status\": \"InProgress\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24/status",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                "e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                                "status"
+                            ]
+                        },
+                        "description": "Updates the status of a maintenance request."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"status\": \"InProgress\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24/status",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        "e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                                        "status"
+                                    ]
+                                },
+                                "description": "Updates the status of a maintenance request."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Maintenance request status updated successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-07. Assign Vendor to Maintenance Request",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24/assign",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                "e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                                "assign"
+                            ]
+                        },
+                        "description": "Assigns or updates the vendor for a maintenance request."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PATCH",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/e3a3b822-29c4-52a8-ad29-c8be5d491f24/assign",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        "e3a3b822-29c4-52a8-ad29-c8be5d491f24",
+                                        "assign"
+                                    ]
+                                },
+                                "description": "Assigns or updates the vendor for a maintenance request."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Maintenance request assignment updated successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "M-08. Get Maintenance Summary Stats",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/maintenance/stats",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "maintenance",
+                                "stats"
+                            ]
+                        },
+                        "description": "Retrieves summary statistics for maintenance requests."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/maintenance/stats",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "maintenance",
+                                        "stats"
+                                    ]
+                                },
+                                "description": "Retrieves summary statistics for maintenance requests."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"openCount\": 3,\n    \"inProgressCount\": 2,\n    \"completeCount\": 5,\n    \"cancelledCount\": 1,\n    \"totalCount\": 11\n}"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "variable": [
