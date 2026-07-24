@@ -17,3 +17,4 @@ public class DeletedHistoryViewModel
     public bool PermanentlyDeletable { get; set; }
     public bool Restorable { get; set; }
 }
+ 
