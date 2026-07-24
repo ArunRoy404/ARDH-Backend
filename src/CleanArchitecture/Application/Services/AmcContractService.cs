@@ -154,7 +154,15 @@ public class AmcContractService(
         var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync();
 
         var activeCount = contracts.Count(x => x.Status == AmcStatus.Active);
-        var expiringCount = contracts.Count(x => x.Status == AmcStatus.Expiring);
+        
+        var now = DateTime.UtcNow;
+        var thirtyDaysFromNow = now.AddDays(30);
+        var expiringInThirtyDaysCount = contracts.Count(x => 
+            x.Status != AmcStatus.Cancelled && 
+            x.Status != AmcStatus.Expired && 
+            x.EndDate > now && 
+            x.EndDate <= thirtyDaysFromNow);
+
         var expiredCount = contracts.Count(x => x.Status == AmcStatus.Expired);
         var cancelledCount = contracts.Count(x => x.Status == AmcStatus.Cancelled);
         var totalCount = contracts.Count;
@@ -162,7 +170,7 @@ public class AmcContractService(
         return new AmcContractStatsViewModel
         {
             ActiveCount = activeCount,
-            ExpiringCount = expiringCount,
+            ExpiringInThirtyDaysCount = expiringInThirtyDaysCount,
             ExpiredCount = expiredCount,
             CancelledCount = cancelledCount,
             TotalCount = totalCount

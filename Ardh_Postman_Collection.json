@@ -5258,7 +5258,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"activeCount\": 5,\n    \"expiringCount\": 2,\n    \"expiredCount\": 1,\n    \"cancelledCount\": 0,\n    \"totalCount\": 8\n}"
+                            "body": "{\n    \"activeCount\": 5,\n    \"expiredCount\": 1,\n    \"cancelledCount\": 0,\n    \"totalCount\": 8,\n    \"expiringInThirtyDaysCount\": 2\n}"
                         }
                     ]
                 },
