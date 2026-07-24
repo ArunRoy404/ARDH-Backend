@@ -1777,7 +1777,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"entityType\": \"Building\",\n            \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"entityTitle\": \"Grand Plaza Towers\",\n            \"deletedByName\": \"Super Admin\",\n            \"restoredAt\": null,\n            \"restoredByName\": null\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"entityType\": \"Building\",\n            \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"entityTitle\": \"Grand Plaza Towers\",\n            \"deletedByName\": \"Super Admin\",\n            \"restoredAt\": null,\n            \"restoredByName\": null,\n            \"permanentlyDeletable\": true,\n            \"restorable\": false\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
                         }
                     ]
                 },
@@ -1850,7 +1850,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Record restored successfully.\"\n}"
+                            "body": "{\n    \"message\": \"Record restored successfully.\",\n    \"permanentlyDeletable\": true,\n    \"restorable\": false\n}"
                         }
                     ]
                 },
@@ -1992,7 +1992,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"entityType\": \"Building\",\n    \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"entityTitle\": \"Grand Plaza Towers\",\n    \"deletedByName\": \"Super Admin\",\n    \"restoredAt\": null,\n    \"restoredByName\": null,\n    \"entityData\": {\n        \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"address\": \"123 Skyline Boulevard\",\n        \"city\": \"New York\",\n        \"state\": \"NY\",\n        \"country\": \"USA\",\n        \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n        \"totalFloors\": 24,\n        \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n        \"status\": \"active\",\n        \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n        \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n    }\n}"
+                            "body": "{\n    \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"entityType\": \"Building\",\n    \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"entityTitle\": \"Grand Plaza Towers\",\n    \"deletedByName\": \"Super Admin\",\n    \"restoredAt\": null,\n    \"restoredByName\": null,\n    \"entityData\": {\n        \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"address\": \"123 Skyline Boulevard\",\n        \"city\": \"New York\",\n        \"state\": \"NY\",\n        \"country\": \"USA\",\n        \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n        \"totalFloors\": 24,\n        \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n        \"status\": \"active\",\n        \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n        \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n    },\n    \"permanentlyDeletable\": true,\n    \"restorable\": false\n}"
                         }
                     ]
                 }

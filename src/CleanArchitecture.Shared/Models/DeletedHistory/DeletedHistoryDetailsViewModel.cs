@@ -14,5 +14,7 @@ public class DeletedHistoryDetailsViewModel
     public DateTime? RestoredAt { get; set; }
     public Guid? RestoredBy { get; set; }
     public string? RestoredByName { get; set; }
+    public bool PermanentlyDeletable { get; set; }
+    public bool Restorable { get; set; }
     public object? EntityData { get; set; }
 }

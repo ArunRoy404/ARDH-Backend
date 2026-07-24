@@ -86,7 +86,9 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             DeletedAt = x.DeletedAt,
             RestoredAt = x.RestoredAt,
             RestoredBy = x.RestoredBy,
-            RestoredByName = x.RestoredBy.HasValue && usersMap.TryGetValue(x.RestoredBy.Value, out var name2) ? name2 : null
+            RestoredByName = x.RestoredBy.HasValue && usersMap.TryGetValue(x.RestoredBy.Value, out var name2) ? name2 : null,
+            PermanentlyDeletable = !x.RestoredAt.HasValue,
+            Restorable = false
         }).ToList();
 
         return new PaginatedList<DeletedHistoryViewModel>(viewModels, totalCount, page, pageSize);
@@ -131,6 +133,8 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             RestoredAt = history.RestoredAt,
             RestoredBy = history.RestoredBy,
             RestoredByName = restoredBy?.Name,
+            PermanentlyDeletable = !history.RestoredAt.HasValue,
+            Restorable = false,
             EntityData = null
         };
     }
