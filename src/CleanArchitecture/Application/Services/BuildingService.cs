@@ -153,6 +153,31 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<BuildingStatsViewModel> GetStats(Guid buildingId, CancellationToken cancellationToken)
+    {
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == buildingId);
+        if (!buildingExists)
+        {
+            throw BuildingException.NotFoundException("The specified building does not exist.");
+        }
+
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.BuildingId == buildingId);
+        var maintenanceRequests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => x.BuildingId == buildingId);
+
+        var totalApartments = apartments.Count;
+        var totalOccupied = apartments.Count(x => x.CurrentTenantId != null && x.CurrentTenantId != Guid.Empty);
+        var totalVacant = totalApartments - totalOccupied;
+        var totalOpenMaintenance = maintenanceRequests.Count(x => x.Status == MaintenanceStatus.Open);
+
+        return new BuildingStatsViewModel
+        {
+            TotalApartments = totalApartments,
+            TotalOccupied = totalOccupied,
+            TotalVacant = totalVacant,
+            TotalOpenMaintenance = totalOpenMaintenance
+        };
+    }
+
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)

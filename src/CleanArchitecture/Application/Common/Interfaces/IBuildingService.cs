@@ -11,6 +11,7 @@ public interface IBuildingService
 {
     Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken);
     Task<BuildingViewModel> GetById(Guid id, CancellationToken cancellationToken);
+    Task<BuildingStatsViewModel> GetStats(Guid buildingId, CancellationToken cancellationToken);
     Task Create(BuildingCreateRequest request, CancellationToken cancellationToken);
     Task Update(BuildingUpdateRequest request, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);
