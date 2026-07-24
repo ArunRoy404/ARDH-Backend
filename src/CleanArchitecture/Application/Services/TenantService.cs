@@ -25,9 +25,9 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
         TenantStatus? status,
         CancellationToken cancellationToken)
     {
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.DeletedAt == null);
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => (a.FlatNumber, a.NestawayId));
@@ -96,8 +96,6 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
                 UpdatedAt = x.UpdatedAt,
                 CreatedBy = x.CreatedBy,
                 UpdatedBy = x.UpdatedBy,
-                DeletedBy = x.DeletedBy,
-                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -106,11 +104,11 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
 
     public async Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
 
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == tenant.BuildingId && x.DeletedAt == null);
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId && x.DeletedAt == null);
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == tenant.BuildingId);
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
 
         return new TenantViewModel
         {
@@ -139,36 +137,34 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
             UpdatedAt = tenant.UpdatedAt,
             CreatedBy = tenant.CreatedBy,
             UpdatedBy = tenant.UpdatedBy,
-            DeletedBy = tenant.DeletedBy,
-            RestoredBy = tenant.RestoredBy
         };
     }
 
     public async Task Create(TenantCreateRequest request, CancellationToken cancellationToken)
     {
         // Validate Building
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw TenantException.BadRequestException("The specified building does not exist.");
         }
 
         // Validate Apartment
-        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId && x.DeletedAt == null);
+        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId);
         if (!apartmentExists)
         {
             throw TenantException.BadRequestException("The specified apartment does not exist.");
         }
 
         // Validate Email uniqueness
-        var isEmailExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower() && x.DeletedAt == null);
+        var isEmailExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower());
         if (isEmailExist)
         {
             throw TenantException.BadRequestException($"Tenant with email '{request.Email}' already exists.");
         }
 
         // Validate ID Number uniqueness
-        var isIdNumberExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower() && x.DeletedAt == null);
+        var isIdNumberExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower());
         if (isIdNumberExist)
         {
             throw TenantException.BadRequestException($"Tenant with ID number '{request.IdNumber}' already exists.");
@@ -204,18 +200,18 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
 
     public async Task Update(Guid id, TenantUpdateRequest request, CancellationToken cancellationToken)
     {
-        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
 
         // Validate Building
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw TenantException.BadRequestException("The specified building does not exist.");
         }
 
         // Validate Apartment
-        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId && x.DeletedAt == null);
+        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId);
         if (!apartmentExists)
         {
             throw TenantException.BadRequestException("The specified apartment does not exist.");
@@ -224,7 +220,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
         // Validate Email uniqueness if changed
         if (!string.Equals(tenant.Email, request.Email, StringComparison.OrdinalIgnoreCase))
         {
-            var isEmailExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower() && x.Id != id && x.DeletedAt == null);
+            var isEmailExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower() && x.Id != id);
             if (isEmailExist)
             {
                 throw TenantException.BadRequestException($"Tenant with email '{request.Email}' already exists.");
@@ -234,7 +230,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
         // Validate ID Number uniqueness if changed
         if (!string.Equals(tenant.IdNumber, request.IdNumber, StringComparison.OrdinalIgnoreCase))
         {
-            var isIdNumberExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower() && x.Id != id && x.DeletedAt == null);
+            var isIdNumberExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower() && x.Id != id);
             if (isIdNumberExist)
             {
                 throw TenantException.BadRequestException($"Tenant with ID number '{request.IdNumber}' already exists.");
@@ -267,14 +263,10 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
 
-        tenant.DeletedAt = DateTime.UtcNow;
-        tenant.UpdatedAt = DateTime.UtcNow;
-        tenant.DeletedBy = _currentUser.GetCurrentUserId();
-
-        _unitOfWork.TenantRepository.Update(tenant);
+        _unitOfWork.TenantRepository.Delete(tenant);
 
         // Record soft-delete history
         var history = new DeletedHistory

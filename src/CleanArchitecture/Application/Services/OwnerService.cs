@@ -18,7 +18,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
     public async Task<PaginatedList<OwnerViewModel>> GetPaginated(int page, int pageSize, string? search, OwnerStatus? status, CancellationToken cancellationToken)
     {
-        var owners = await _unitOfWork.OwnerRepository.GetAllAsync(x => x.DeletedAt == null);
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
         var query = owners.AsQueryable();
 
         if (status.HasValue)
@@ -60,8 +60,6 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
                 UpdatedAt = x.UpdatedAt,
                 CreatedBy = x.CreatedBy,
                 UpdatedBy = x.UpdatedBy,
-                DeletedBy = x.DeletedBy,
-                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -70,7 +68,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
         return new OwnerViewModel
@@ -92,20 +90,18 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
             UpdatedAt = owner.UpdatedAt,
             CreatedBy = owner.CreatedBy,
             UpdatedBy = owner.UpdatedBy,
-            DeletedBy = owner.DeletedBy,
-            RestoredBy = owner.RestoredBy
         };
     }
 
     public async Task Create(OwnerCreateRequest request, CancellationToken cancellationToken)
     {
-        var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email && x.DeletedAt == null);
+        var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email);
         if (isEmailExist)
         {
             throw OwnerException.BadRequestException($"Owner with email '{request.Email}' already exists.");
         }
 
-        var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber && x.DeletedAt == null);
+        var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber);
         if (isIdNumberExist)
         {
             throw OwnerException.BadRequestException($"Owner with ID number '{request.IdNumber}' already exists.");
@@ -136,12 +132,12 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
     public async Task Update(Guid id, OwnerUpdateRequest request, CancellationToken cancellationToken)
     {
-        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
         if (owner.Email != request.Email)
         {
-            var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email && x.Id != id && x.DeletedAt == null);
+            var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email && x.Id != id);
             if (isEmailExist)
             {
                 throw OwnerException.BadRequestException($"Owner with email '{request.Email}' already exists.");
@@ -150,7 +146,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
         if (owner.IdNumber != request.IdNumber)
         {
-            var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber && x.Id != id && x.DeletedAt == null);
+            var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber && x.Id != id);
             if (isIdNumberExist)
             {
                 throw OwnerException.BadRequestException($"Owner with ID number '{request.IdNumber}' already exists.");
@@ -178,14 +174,10 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
-
-        owner.DeletedAt = DateTime.UtcNow;
-        owner.UpdatedAt = DateTime.UtcNow;
-        owner.DeletedBy = _currentUser.GetCurrentUserId();
  
-        _unitOfWork.OwnerRepository.Update(owner);
+        _unitOfWork.OwnerRepository.Delete(owner);
 
         // Record soft-delete history
         var history = new DeletedHistory

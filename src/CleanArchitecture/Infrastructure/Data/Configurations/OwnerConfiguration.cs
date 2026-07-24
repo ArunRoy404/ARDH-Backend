@@ -84,19 +84,10 @@ public class OwnerConfiguration : IEntityTypeConfiguration<Owner>
             .HasColumnName("updated_at")
             .IsRequired();
 
-        builder.Property(e => e.DeletedAt)
-            .HasColumnName("deleted_at");
-
         builder.Property(e => e.CreatedBy)
             .HasColumnName("created_by");
 
         builder.Property(e => e.UpdatedBy)
             .HasColumnName("updated_by");
-
-        builder.Property(e => e.DeletedBy)
-            .HasColumnName("deleted_by");
-
-        builder.Property(e => e.RestoredBy)
-            .HasColumnName("restored_by");
     }
 }

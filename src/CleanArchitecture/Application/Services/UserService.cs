@@ -21,7 +21,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.UserRepository.GetAllAsync(x => x.DeletedAt == null);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
 
         return users.Select(x => new UserViewModel
         {
@@ -39,14 +39,12 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy,
             UpdatedBy = x.UpdatedBy,
-            DeletedBy = x.DeletedBy,
-            RestoredBy = x.RestoredBy
         }).ToList();
     }
 
     public async Task<PaginatedList<UserViewModel>> GetPaginated(int page, int pageSize, string? search, UserRole? role, bool? isActive, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.UserRepository.GetAllAsync(x => x.DeletedAt == null);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
         var query = users.AsQueryable();
 
         if (role.HasValue)
@@ -89,8 +87,6 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
                 UpdatedAt = x.UpdatedAt,
                 CreatedBy = x.CreatedBy,
                 UpdatedBy = x.UpdatedBy,
-                DeletedBy = x.DeletedBy,
-                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -99,7 +95,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task<UserViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
         return new UserViewModel
@@ -118,8 +114,6 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             UpdatedAt = user.UpdatedAt,
             CreatedBy = user.CreatedBy,
             UpdatedBy = user.UpdatedBy,
-            DeletedBy = user.DeletedBy,
-            RestoredBy = user.RestoredBy
         };
     }
 
@@ -153,7 +147,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task Update(UserUpdateRequest request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == request.Id && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
         // Check if email is updated to an existing one
@@ -183,16 +177,13 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task Delete(Guid userId, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
         // Soft delete the user
-        user.DeletedAt = DateTime.UtcNow;
         user.IsActive = false;
-        user.UpdatedAt = DateTime.UtcNow;
-        user.DeletedBy = _currentUser.GetCurrentUserId();
 
-        _unitOfWork.UserRepository.Update(user);
+        _unitOfWork.UserRepository.Delete(user);
 
         // Record soft-delete history
         var history = new DeletedHistory
@@ -211,7 +202,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task ToggleStatus(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
         user.IsActive = !user.IsActive;

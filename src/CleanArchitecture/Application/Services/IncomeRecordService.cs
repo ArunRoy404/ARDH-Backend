@@ -35,10 +35,10 @@ public class IncomeRecordService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x => x.DeletedAt == null);
+        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -119,8 +119,6 @@ public class IncomeRecordService(
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy,
             UpdatedBy = x.UpdatedBy,
-            DeletedBy = x.DeletedBy,
-            RestoredBy = x.RestoredBy
         }).ToList();
 
         return new PaginatedList<IncomeRecordViewModel>(items, totalItems, page, pageSize);
@@ -128,12 +126,12 @@ public class IncomeRecordService(
 
     public async Task<IncomeRecordViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
-        var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value && x.DeletedAt == null) : null;
-        var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value && x.DeletedAt == null) : null;
-        var tenant = record.TenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value && x.DeletedAt == null) : null;
+        var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
+        var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
+        var tenant = record.TenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value) : null;
 
         return new IncomeRecordViewModel
         {
@@ -158,8 +156,6 @@ public class IncomeRecordService(
             UpdatedAt = record.UpdatedAt,
             CreatedBy = record.CreatedBy,
             UpdatedBy = record.UpdatedBy,
-            DeletedBy = record.DeletedBy,
-            RestoredBy = record.RestoredBy
         };
     }
 
@@ -167,7 +163,7 @@ public class IncomeRecordService(
     {
         if (request.BuildingId.HasValue)
         {
-            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value && x.DeletedAt == null);
+            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value);
             if (!buildingExists)
             {
                 throw IncomeRecordException.BadRequestException("The specified building does not exist.");
@@ -176,7 +172,7 @@ public class IncomeRecordService(
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null);
+            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
             if (!apartmentExists)
             {
                 throw IncomeRecordException.BadRequestException("The specified apartment does not exist.");
@@ -185,7 +181,7 @@ public class IncomeRecordService(
 
         if (request.TenantId.HasValue)
         {
-            var tenantExists = await _unitOfWork.TenantRepository.AnyAsync(x => x.Id == request.TenantId.Value && x.DeletedAt == null);
+            var tenantExists = await _unitOfWork.TenantRepository.AnyAsync(x => x.Id == request.TenantId.Value);
             if (!tenantExists)
             {
                 throw IncomeRecordException.BadRequestException("The specified tenant does not exist.");
@@ -220,12 +216,12 @@ public class IncomeRecordService(
 
     public async Task Update(Guid id, IncomeRecordUpdateRequest request, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         if (request.BuildingId.HasValue)
         {
-            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value && x.DeletedAt == null);
+            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value);
             if (!buildingExists)
             {
                 throw IncomeRecordException.BadRequestException("The specified building does not exist.");
@@ -234,7 +230,7 @@ public class IncomeRecordService(
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null);
+            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
             if (!apartmentExists)
             {
                 throw IncomeRecordException.BadRequestException("The specified apartment does not exist.");
@@ -243,7 +239,7 @@ public class IncomeRecordService(
 
         if (request.TenantId.HasValue)
         {
-            var tenantExists = await _unitOfWork.TenantRepository.AnyAsync(x => x.Id == request.TenantId.Value && x.DeletedAt == null);
+            var tenantExists = await _unitOfWork.TenantRepository.AnyAsync(x => x.Id == request.TenantId.Value);
             if (!tenantExists)
             {
                 throw IncomeRecordException.BadRequestException("The specified tenant does not exist.");
@@ -274,17 +270,13 @@ public class IncomeRecordService(
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        record.DeletedAt = now;
-        record.UpdatedAt = now;
-        record.DeletedBy = userId;
-
-        _unitOfWork.IncomeRecordRepository.Update(record);
+        _unitOfWork.IncomeRecordRepository.Delete(record);
 
         var history = new DeletedHistory
         {
@@ -302,7 +294,7 @@ public class IncomeRecordService(
 
     public async Task UpdateStatus(Guid id, IncomeRecordStatusUpdateRequest request, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         var userId = _currentUser.GetCurrentUserId();
@@ -317,7 +309,7 @@ public class IncomeRecordService(
 
     public async Task<byte[]> GenerateReceiptPdf(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         var buildingName = "N/A";
@@ -417,10 +409,10 @@ public class IncomeRecordService(
         DateTime? endDate,
         CancellationToken cancellationToken)
     {
-        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x => x.DeletedAt == null);
+        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);

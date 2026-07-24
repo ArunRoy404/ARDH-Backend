@@ -31,9 +31,9 @@ public class EquipmentService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => x.DeletedAt == null);
+        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
@@ -105,8 +105,6 @@ public class EquipmentService(
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy,
             UpdatedBy = x.UpdatedBy,
-            DeletedBy = x.DeletedBy,
-            RestoredBy = x.RestoredBy
         }).ToList();
 
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
@@ -114,11 +112,11 @@ public class EquipmentService(
 
     public async Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId && x.DeletedAt == null);
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == equipment.AmcVendorId && x.DeletedAt == null);
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);
+        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == equipment.AmcVendorId);
 
         return new EquipmentViewModel
         {
@@ -145,20 +143,18 @@ public class EquipmentService(
             UpdatedAt = equipment.UpdatedAt,
             CreatedBy = equipment.CreatedBy,
             UpdatedBy = equipment.UpdatedBy,
-            DeletedBy = equipment.DeletedBy,
-            RestoredBy = equipment.RestoredBy
         };
     }
 
     public async Task Create(EquipmentCreateRequest request, CancellationToken cancellationToken)
     {
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw EquipmentException.BadRequestException("The specified building does not exist.");
         }
 
-        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.AmcVendorId && x.DeletedAt == null);
+        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.AmcVendorId);
         if (!vendorExists)
         {
             throw EquipmentException.BadRequestException("The specified AMC vendor does not exist.");
@@ -192,16 +188,16 @@ public class EquipmentService(
 
     public async Task Update(Guid id, EquipmentUpdateRequest request, CancellationToken cancellationToken)
     {
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw EquipmentException.BadRequestException("The specified building does not exist.");
         }
 
-        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.AmcVendorId && x.DeletedAt == null);
+        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.AmcVendorId);
         if (!vendorExists)
         {
             throw EquipmentException.BadRequestException("The specified AMC vendor does not exist.");
@@ -230,7 +226,7 @@ public class EquipmentService(
 
     public async Task UpdateStatus(Guid id, EquipmentStatusUpdateRequest request, CancellationToken cancellationToken)
     {
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
         equipment.Status = request.Status;
@@ -243,15 +239,12 @@ public class EquipmentService(
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
         var now = DateTime.UtcNow;
-        equipment.DeletedAt = now;
-        equipment.UpdatedAt = now;
-        equipment.DeletedBy = _currentUser.GetCurrentUserId();
 
-        _unitOfWork.EquipmentRepository.Update(equipment);
+        _unitOfWork.EquipmentRepository.Delete(equipment);
 
         var history = new DeletedHistory
         {

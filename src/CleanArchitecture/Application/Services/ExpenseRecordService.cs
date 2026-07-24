@@ -34,10 +34,10 @@ public class ExpenseRecordService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => x.DeletedAt == null);
+        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -129,8 +129,6 @@ public class ExpenseRecordService(
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy,
             UpdatedBy = x.UpdatedBy,
-            DeletedBy = x.DeletedBy,
-            RestoredBy = x.RestoredBy
         }).ToList();
 
         return new PaginatedList<ExpenseRecordViewModel>(items, totalItems, page, pageSize);
@@ -138,12 +136,12 @@ public class ExpenseRecordService(
 
     public async Task<ExpenseRecordViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ExpenseRecordException.NotFoundException($"Expense record with ID '{id}' was not found.");
 
-        var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value && x.DeletedAt == null) : null;
-        var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value && x.DeletedAt == null) : null;
-        var vendor = record.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == record.VendorId.Value && x.DeletedAt == null) : null;
+        var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
+        var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
+        var vendor = record.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == record.VendorId.Value) : null;
 
         return new ExpenseRecordViewModel
         {
@@ -176,8 +174,6 @@ public class ExpenseRecordService(
             UpdatedAt = record.UpdatedAt,
             CreatedBy = record.CreatedBy,
             UpdatedBy = record.UpdatedBy,
-            DeletedBy = record.DeletedBy,
-            RestoredBy = record.RestoredBy
         };
     }
 
@@ -185,7 +181,7 @@ public class ExpenseRecordService(
     {
         if (request.BuildingId.HasValue)
         {
-            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value && x.DeletedAt == null);
+            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value);
             if (!buildingExists)
             {
                 throw ExpenseRecordException.BadRequestException("The specified building does not exist.");
@@ -194,7 +190,7 @@ public class ExpenseRecordService(
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null);
+            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
             if (!apartmentExists)
             {
                 throw ExpenseRecordException.BadRequestException("The specified apartment does not exist.");
@@ -203,7 +199,7 @@ public class ExpenseRecordService(
 
         if (request.VendorId.HasValue)
         {
-            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value && x.DeletedAt == null);
+            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value);
             if (!vendorExists)
             {
                 throw ExpenseRecordException.BadRequestException("The specified vendor does not exist.");
@@ -245,12 +241,12 @@ public class ExpenseRecordService(
 
     public async Task Update(Guid id, ExpenseRecordUpdateRequest request, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ExpenseRecordException.NotFoundException($"Expense record with ID '{id}' was not found.");
 
         if (request.BuildingId.HasValue)
         {
-            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value && x.DeletedAt == null);
+            var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value);
             if (!buildingExists)
             {
                 throw ExpenseRecordException.BadRequestException("The specified building does not exist.");
@@ -259,7 +255,7 @@ public class ExpenseRecordService(
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null);
+            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
             if (!apartmentExists)
             {
                 throw ExpenseRecordException.BadRequestException("The specified apartment does not exist.");
@@ -268,7 +264,7 @@ public class ExpenseRecordService(
 
         if (request.VendorId.HasValue)
         {
-            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value && x.DeletedAt == null);
+            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value);
             if (!vendorExists)
             {
                 throw ExpenseRecordException.BadRequestException("The specified vendor does not exist.");
@@ -306,17 +302,13 @@ public class ExpenseRecordService(
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ExpenseRecordException.NotFoundException($"Expense record with ID '{id}' was not found.");
 
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        record.DeletedAt = now;
-        record.UpdatedAt = now;
-        record.DeletedBy = userId;
-
-        _unitOfWork.ExpenseRecordRepository.Update(record);
+        _unitOfWork.ExpenseRecordRepository.Delete(record);
 
         var history = new DeletedHistory
         {
@@ -334,7 +326,7 @@ public class ExpenseRecordService(
 
     public async Task UpdateStatus(Guid id, ExpenseRecordStatusUpdateRequest request, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ExpenseRecordException.NotFoundException($"Expense record with ID '{id}' was not found.");
 
         var userId = _currentUser.GetCurrentUserId();

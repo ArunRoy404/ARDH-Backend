@@ -19,7 +19,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
 
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var query = buildings.AsQueryable();
 
         if (status.HasValue)
@@ -59,8 +59,6 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
                 UpdatedAt = x.UpdatedAt,
                 CreatedBy = x.CreatedBy,
                 UpdatedBy = x.UpdatedBy,
-                DeletedBy = x.DeletedBy,
-                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -69,7 +67,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
 
     public async Task<BuildingViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
 
         return new BuildingViewModel
@@ -90,14 +88,12 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
             UpdatedAt = building.UpdatedAt,
             CreatedBy = building.CreatedBy,
             UpdatedBy = building.UpdatedBy,
-            DeletedBy = building.DeletedBy,
-            RestoredBy = building.RestoredBy
         };
     }
 
     public async Task Create(BuildingCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.DeletedAt == null);
+        var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName);
         if (isNameExist)
         {
             throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -127,12 +123,12 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
 
     public async Task Update(BuildingUpdateRequest request, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.Id && x.DeletedAt == null)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
 
         if (building.BuildingName != request.BuildingName)
         {
-            var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id && x.DeletedAt == null);
+            var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
             if (isNameExist)
             {
                 throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -159,14 +155,10 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
-
-        building.DeletedAt = DateTime.UtcNow;
-        building.UpdatedAt = DateTime.UtcNow;
-        building.DeletedBy = _currentUser.GetCurrentUserId();
  
-        _unitOfWork.BuildingRepository.Update(building);
+        _unitOfWork.BuildingRepository.Delete(building);
 
         // Record soft-delete history
         var history = new DeletedHistory

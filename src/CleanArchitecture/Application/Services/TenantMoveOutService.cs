@@ -16,10 +16,10 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
 
     public async Task CreateMoveOut(Guid tenantId, TenantMoveOutCreateRequest request, CancellationToken cancellationToken)
     {
-        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == tenantId && x.DeletedAt == null)
+        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == tenantId)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
 
-        var existingRecord = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId && x.DeletedAt == null);
+        var existingRecord = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId);
         if (existingRecord != null)
         {
             throw TenantException.BadRequestException("A move-out record already exists for this tenant.");
@@ -55,7 +55,7 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
 
     public async Task<TenantMoveOutRecordViewModel> GetByTenantId(Guid tenantId, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId && x.DeletedAt == null)
+        var record = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId)
             ?? throw TenantException.NotFoundException("No move-out record found for the specified tenant.");
 
         var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId);
@@ -81,14 +81,12 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             UpdatedAt = record.UpdatedAt,
             CreatedBy = record.CreatedBy,
             UpdatedBy = record.UpdatedBy,
-            DeletedBy = record.DeletedBy,
-            RestoredBy = record.RestoredBy
         };
     }
 
     public async Task UpdateMoveOut(Guid tenantId, TenantMoveOutUpdateRequest request, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId && x.DeletedAt == null)
+        var record = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId)
             ?? throw TenantException.NotFoundException("No move-out record found for the specified tenant.");
 
         record.MoveOutDate = request.MoveOutDate;
@@ -106,14 +104,10 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
 
     public async Task DeleteMoveOut(Guid tenantId, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId && x.DeletedAt == null)
+        var record = await _unitOfWork.TenantMoveOutRecordRepository.FirstOrDefaultAsync(x => x.TenantId == tenantId)
             ?? throw TenantException.NotFoundException("No move-out record found for the specified tenant.");
 
-        record.DeletedAt = DateTime.UtcNow;
-        record.UpdatedAt = DateTime.UtcNow;
-        record.DeletedBy = _currentUser.GetCurrentUserId();
-
-        _unitOfWork.TenantMoveOutRecordRepository.Update(record);
+        _unitOfWork.TenantMoveOutRecordRepository.Delete(record);
 
         // Record soft-delete history
         var history = new DeletedHistory

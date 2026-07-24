@@ -29,7 +29,7 @@ public class VendorService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => x.DeletedAt == null);
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
         var query = vendors.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -67,7 +67,7 @@ public class VendorService(
 
     public async Task<VendorViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw VendorException.NotFoundException($"Vendor with ID '{id}' was not found.");
 
         return MapToViewModel(vendor);
@@ -76,7 +76,7 @@ public class VendorService(
     public async Task Create(VendorCreateRequest request, CancellationToken cancellationToken)
     {
         var existingEmail = await _unitOfWork.VendorRepository.AnyAsync(x =>
-            x.Email.ToLower() == request.Email.Trim().ToLower() && x.DeletedAt == null);
+            x.Email.ToLower() == request.Email.Trim().ToLower());
 
         if (existingEmail)
         {
@@ -84,7 +84,7 @@ public class VendorService(
         }
 
         var existingPhone = await _unitOfWork.VendorRepository.AnyAsync(x =>
-            x.Phone.Trim() == request.Phone.Trim() && x.DeletedAt == null);
+            x.Phone.Trim() == request.Phone.Trim());
 
         if (existingPhone)
         {
@@ -94,7 +94,7 @@ public class VendorService(
         if (!string.IsNullOrWhiteSpace(request.GstNumber))
         {
             var existingGst = await _unitOfWork.VendorRepository.AnyAsync(x =>
-                x.GstNumber.Trim().ToLower() == request.GstNumber.Trim().ToLower() && x.DeletedAt == null);
+                x.GstNumber.Trim().ToLower() == request.GstNumber.Trim().ToLower());
 
             if (existingGst)
             {
@@ -124,13 +124,13 @@ public class VendorService(
 
     public async Task Update(Guid id, VendorUpdateRequest request, CancellationToken cancellationToken)
     {
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw VendorException.NotFoundException($"Vendor with ID '{id}' was not found.");
 
         if (!string.Equals(vendor.Email, request.Email, StringComparison.OrdinalIgnoreCase))
         {
             var existingEmail = await _unitOfWork.VendorRepository.AnyAsync(x =>
-                x.Id != id && x.Email.ToLower() == request.Email.Trim().ToLower() && x.DeletedAt == null);
+                x.Id != id && x.Email.ToLower() == request.Email.Trim().ToLower());
 
             if (existingEmail)
             {
@@ -141,7 +141,7 @@ public class VendorService(
         if (!string.Equals(vendor.Phone, request.Phone, StringComparison.OrdinalIgnoreCase))
         {
             var existingPhone = await _unitOfWork.VendorRepository.AnyAsync(x =>
-                x.Id != id && x.Phone.Trim() == request.Phone.Trim() && x.DeletedAt == null);
+                x.Id != id && x.Phone.Trim() == request.Phone.Trim());
 
             if (existingPhone)
             {
@@ -152,7 +152,7 @@ public class VendorService(
         if (!string.IsNullOrWhiteSpace(request.GstNumber) && !string.Equals(vendor.GstNumber, request.GstNumber, StringComparison.OrdinalIgnoreCase))
         {
             var existingGst = await _unitOfWork.VendorRepository.AnyAsync(x =>
-                x.Id != id && x.GstNumber.Trim().ToLower() == request.GstNumber.Trim().ToLower() && x.DeletedAt == null);
+                x.Id != id && x.GstNumber.Trim().ToLower() == request.GstNumber.Trim().ToLower());
 
             if (existingGst)
             {
@@ -178,15 +178,12 @@ public class VendorService(
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw VendorException.NotFoundException($"Vendor with ID '{id}' was not found.");
 
         var now = DateTime.UtcNow;
-        vendor.DeletedAt = now;
-        vendor.UpdatedAt = now;
-        vendor.DeletedBy = _currentUser.GetCurrentUserId();
 
-        _unitOfWork.VendorRepository.Update(vendor);
+        _unitOfWork.VendorRepository.Delete(vendor);
 
         var history = new DeletedHistory
         {
@@ -220,8 +217,6 @@ public class VendorService(
             UpdatedAt = vendor.UpdatedAt,
             CreatedBy = vendor.CreatedBy,
             UpdatedBy = vendor.UpdatedBy,
-            DeletedBy = vendor.DeletedBy,
-            RestoredBy = vendor.RestoredBy
         };
     }
 }

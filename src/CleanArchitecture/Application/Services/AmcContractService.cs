@@ -31,9 +31,9 @@ public class AmcContractService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync(x => x.DeletedAt == null);
-        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => x.DeletedAt == null);
+        var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync();
+        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
 
         var equipmentMap = equipmentList.ToDictionary(e => e.Id, e => e.Name);
         var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
@@ -107,8 +107,6 @@ public class AmcContractService(
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy,
             UpdatedBy = x.UpdatedBy,
-            DeletedBy = x.DeletedBy,
-            RestoredBy = x.RestoredBy
         }).ToList();
 
         return new PaginatedList<AmcContractViewModel>(items, totalItems, page, pageSize);
@@ -116,11 +114,11 @@ public class AmcContractService(
 
     public async Task<AmcContractViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw AmcContractException.NotFoundException($"AMC Contract with ID '{id}' was not found.");
 
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId && x.DeletedAt == null);
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == contract.VendorId && x.DeletedAt == null);
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
+        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == contract.VendorId);
 
         return new AmcContractViewModel
         {
@@ -148,14 +146,12 @@ public class AmcContractService(
             UpdatedAt = contract.UpdatedAt,
             CreatedBy = contract.CreatedBy,
             UpdatedBy = contract.UpdatedBy,
-            DeletedBy = contract.DeletedBy,
-            RestoredBy = contract.RestoredBy
         };
     }
 
     public async Task<AmcContractStatsViewModel> GetStats(CancellationToken cancellationToken)
     {
-        var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync(x => x.DeletedAt == null);
+        var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync();
 
         var activeCount = contracts.Count(x => x.Status == AmcStatus.Active);
         var expiringCount = contracts.Count(x => x.Status == AmcStatus.Expiring);
@@ -175,13 +171,13 @@ public class AmcContractService(
 
     public async Task Create(AmcContractCreateRequest request, CancellationToken cancellationToken)
     {
-        var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId && x.DeletedAt == null);
+        var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId);
         if (!equipmentExists)
         {
             throw AmcContractException.BadRequestException("The specified equipment does not exist.");
         }
 
-        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId && x.DeletedAt == null);
+        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId);
         if (!vendorExists)
         {
             throw AmcContractException.BadRequestException("The specified vendor does not exist.");
@@ -191,7 +187,7 @@ public class AmcContractService(
         if (!string.IsNullOrWhiteSpace(request.AmcCode))
         {
             amcCode = request.AmcCode.Trim();
-            var codeExists = await _unitOfWork.AmcContractRepository.AnyAsync(x => x.AmcCode.ToLower() == amcCode.ToLower() && x.DeletedAt == null);
+            var codeExists = await _unitOfWork.AmcContractRepository.AnyAsync(x => x.AmcCode.ToLower() == amcCode.ToLower());
             if (codeExists)
             {
                 throw AmcContractException.BadRequestException($"AMC Contract with code '{amcCode}' already exists.");
@@ -234,16 +230,16 @@ public class AmcContractService(
 
     public async Task Update(Guid id, AmcContractUpdateRequest request, CancellationToken cancellationToken)
     {
-        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw AmcContractException.NotFoundException($"AMC Contract with ID '{id}' was not found.");
 
-        var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId && x.DeletedAt == null);
+        var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId);
         if (!equipmentExists)
         {
             throw AmcContractException.BadRequestException("The specified equipment does not exist.");
         }
 
-        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId && x.DeletedAt == null);
+        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId);
         if (!vendorExists)
         {
             throw AmcContractException.BadRequestException("The specified vendor does not exist.");
@@ -275,17 +271,13 @@ public class AmcContractService(
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw AmcContractException.NotFoundException($"AMC Contract with ID '{id}' was not found.");
 
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        contract.DeletedAt = now;
-        contract.UpdatedAt = now;
-        contract.DeletedBy = userId;
-
-        _unitOfWork.AmcContractRepository.Update(contract);
+        _unitOfWork.AmcContractRepository.Delete(contract);
 
         var history = new DeletedHistory
         {

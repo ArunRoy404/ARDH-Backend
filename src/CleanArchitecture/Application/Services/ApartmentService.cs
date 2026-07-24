@@ -25,9 +25,9 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
         ApartmentType? apartmentType,
         CancellationToken cancellationToken)
     {
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var owners = await _unitOfWork.OwnerRepository.GetAllAsync(x => x.DeletedAt == null);
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
@@ -92,8 +92,6 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
                 UpdatedAt = x.UpdatedAt,
                 CreatedBy = x.CreatedBy,
                 UpdatedBy = x.UpdatedBy,
-                DeletedBy = x.DeletedBy,
-                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -102,11 +100,11 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
 
     public async Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ApartmentException.NotFoundException("The specified apartment does not exist.");
 
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == apartment.BuildingId && x.DeletedAt == null);
-        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == apartment.OwnerId && x.DeletedAt == null);
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == apartment.BuildingId);
+        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == apartment.OwnerId);
 
         return new ApartmentViewModel
         {
@@ -132,29 +130,27 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
             UpdatedAt = apartment.UpdatedAt,
             CreatedBy = apartment.CreatedBy,
             UpdatedBy = apartment.UpdatedBy,
-            DeletedBy = apartment.DeletedBy,
-            RestoredBy = apartment.RestoredBy
         };
     }
 
     public async Task Create(ApartmentCreateRequest request, CancellationToken cancellationToken)
     {
         // Validate Building existence
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw ApartmentException.BadRequestException("The specified building does not exist.");
         }
 
         // Validate Owner existence
-        var ownerExists = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Id == request.OwnerId && x.DeletedAt == null);
+        var ownerExists = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Id == request.OwnerId);
         if (!ownerExists)
         {
             throw ApartmentException.BadRequestException("The specified owner does not exist.");
         }
 
         // Validate unique flat_number per building
-        var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.DeletedAt == null);
+        var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower());
         if (isFlatExist)
         {
             throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
@@ -187,18 +183,18 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
 
     public async Task Update(Guid id, ApartmentUpdateRequest request, CancellationToken cancellationToken)
     {
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ApartmentException.NotFoundException("The specified apartment does not exist.");
 
         // Validate Building existence
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw ApartmentException.BadRequestException("The specified building does not exist.");
         }
 
         // Validate Owner existence
-        var ownerExists = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Id == request.OwnerId && x.DeletedAt == null);
+        var ownerExists = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Id == request.OwnerId);
         if (!ownerExists)
         {
             throw ApartmentException.BadRequestException("The specified owner does not exist.");
@@ -207,7 +203,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
         // Validate flat number uniqueness if modified
         if (apartment.BuildingId != request.BuildingId || !string.Equals(apartment.FlatNumber, request.FlatNumber, StringComparison.OrdinalIgnoreCase))
         {
-            var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.Id != id && x.DeletedAt == null);
+            var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.Id != id);
             if (isFlatExist)
             {
                 throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
@@ -237,14 +233,10 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ApartmentException.NotFoundException("The specified apartment does not exist.");
 
-        apartment.DeletedAt = DateTime.UtcNow;
-        apartment.UpdatedAt = DateTime.UtcNow;
-        apartment.DeletedBy = _currentUser.GetCurrentUserId();
-
-        _unitOfWork.ApartmentRepository.Update(apartment);
+        _unitOfWork.ApartmentRepository.Delete(apartment);
 
         // Record soft-delete history
         var history = new DeletedHistory

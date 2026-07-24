@@ -50,7 +50,5 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.CreatedBy);
         builder.Property(x => x.UpdatedBy);
-        builder.Property(x => x.DeletedBy);
-        builder.Property(x => x.RestoredBy);
     }
 }

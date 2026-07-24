@@ -23,11 +23,8 @@ public class Equipment
     public string AttachmentUrl { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? DeletedAt { get; set; }
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
-    public Guid? DeletedBy { get; set; }
-    public Guid? RestoredBy { get; set; }
 
     public virtual Building? Building { get; set; }
     public virtual Vendor? AmcVendor { get; set; }

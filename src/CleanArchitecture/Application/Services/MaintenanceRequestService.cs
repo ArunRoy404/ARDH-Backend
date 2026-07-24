@@ -34,11 +34,11 @@ public class MaintenanceRequestService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => x.DeletedAt == null);
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.DeletedAt == null);
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => x.DeletedAt == null);
-        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync(x => x.DeletedAt == null);
+        var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -124,8 +124,6 @@ public class MaintenanceRequestService(
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy,
             UpdatedBy = x.UpdatedBy,
-            DeletedBy = x.DeletedBy,
-            RestoredBy = x.RestoredBy
         }).ToList();
 
         return new PaginatedList<MaintenanceRequestViewModel>(items, totalItems, page, pageSize);
@@ -133,13 +131,13 @@ public class MaintenanceRequestService(
 
     public async Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
-        var apartment = request.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null) : null;
-        var vendor = request.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == request.VendorId.Value && x.DeletedAt == null) : null;
-        var equipment = request.EquipmentId.HasValue ? await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value && x.DeletedAt == null) : null;
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.BuildingId);
+        var apartment = request.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId.Value) : null;
+        var vendor = request.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == request.VendorId.Value) : null;
+        var equipment = request.EquipmentId.HasValue ? await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value) : null;
 
         return new MaintenanceRequestViewModel
         {
@@ -167,14 +165,12 @@ public class MaintenanceRequestService(
             UpdatedAt = request.UpdatedAt,
             CreatedBy = request.CreatedBy,
             UpdatedBy = request.UpdatedBy,
-            DeletedBy = request.DeletedBy,
-            RestoredBy = request.RestoredBy
         };
     }
 
     public async Task Create(MaintenanceRequestCreateRequest request, CancellationToken cancellationToken)
     {
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw MaintenanceRequestException.BadRequestException("The specified building does not exist.");
@@ -182,7 +178,7 @@ public class MaintenanceRequestService(
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null);
+            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
             if (!apartmentExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified apartment does not exist.");
@@ -191,7 +187,7 @@ public class MaintenanceRequestService(
 
         if (request.VendorId.HasValue)
         {
-            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value && x.DeletedAt == null);
+            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value);
             if (!vendorExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified vendor does not exist.");
@@ -200,7 +196,7 @@ public class MaintenanceRequestService(
 
         if (request.EquipmentId.HasValue)
         {
-            var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId.Value && x.DeletedAt == null);
+            var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId.Value);
             if (!equipmentExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified equipment does not exist.");
@@ -236,10 +232,10 @@ public class MaintenanceRequestService(
 
     public async Task Update(Guid id, MaintenanceRequestUpdateRequest request, CancellationToken cancellationToken)
     {
-        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
-        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId && x.DeletedAt == null);
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
         {
             throw MaintenanceRequestException.BadRequestException("The specified building does not exist.");
@@ -247,7 +243,7 @@ public class MaintenanceRequestService(
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value && x.DeletedAt == null);
+            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
             if (!apartmentExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified apartment does not exist.");
@@ -256,7 +252,7 @@ public class MaintenanceRequestService(
 
         if (request.VendorId.HasValue)
         {
-            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value && x.DeletedAt == null);
+            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value);
             if (!vendorExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified vendor does not exist.");
@@ -265,7 +261,7 @@ public class MaintenanceRequestService(
 
         if (request.EquipmentId.HasValue)
         {
-            var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId.Value && x.DeletedAt == null);
+            var equipmentExists = await _unitOfWork.EquipmentRepository.AnyAsync(x => x.Id == request.EquipmentId.Value);
             if (!equipmentExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified equipment does not exist.");
@@ -297,17 +293,13 @@ public class MaintenanceRequestService(
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        maintenanceRequest.DeletedAt = now;
-        maintenanceRequest.UpdatedAt = now;
-        maintenanceRequest.DeletedBy = userId;
-
-        _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
+        _unitOfWork.MaintenanceRequestRepository.Delete(maintenanceRequest);
 
         var history = new DeletedHistory
         {
@@ -325,7 +317,7 @@ public class MaintenanceRequestService(
 
     public async Task UpdateStatus(Guid id, MaintenanceRequestStatusUpdateRequest request, CancellationToken cancellationToken)
     {
-        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
         var userId = _currentUser.GetCurrentUserId();
@@ -340,12 +332,12 @@ public class MaintenanceRequestService(
 
     public async Task Assign(Guid id, MaintenanceRequestAssignRequest request, CancellationToken cancellationToken)
     {
-        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
         if (request.VendorId.HasValue)
         {
-            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value && x.DeletedAt == null);
+            var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.VendorId.Value);
             if (!vendorExists)
             {
                 throw MaintenanceRequestException.BadRequestException("The specified vendor does not exist.");
@@ -364,7 +356,7 @@ public class MaintenanceRequestService(
 
     public async Task<MaintenanceRequestStatsViewModel> GetStats(CancellationToken cancellationToken)
     {
-        var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => x.DeletedAt == null);
+        var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync();
 
         var openCount = requests.Count(x => x.Status == MaintenanceStatus.Open);
         var inProgressCount = requests.Count(x => x.Status == MaintenanceStatus.InProgress);
