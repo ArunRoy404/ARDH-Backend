@@ -93,7 +93,11 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
                 Status = x.Status,
                 Notes = x.Notes,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy,
+                DeletedBy = x.DeletedBy,
+                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -132,7 +136,11 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
             Status = tenant.Status,
             Notes = tenant.Notes,
             CreatedAt = tenant.CreatedAt,
-            UpdatedAt = tenant.UpdatedAt
+            UpdatedAt = tenant.UpdatedAt,
+            CreatedBy = tenant.CreatedBy,
+            UpdatedBy = tenant.UpdatedBy,
+            DeletedBy = tenant.DeletedBy,
+            RestoredBy = tenant.RestoredBy
         };
     }
 
@@ -187,7 +195,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
             Status = request.Status,
             Notes = request.Notes?.Trim(),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.TenantRepository.AddAsync(tenant), cancellationToken);
@@ -250,6 +259,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
         tenant.Status = request.Status;
         tenant.Notes = request.Notes?.Trim();
         tenant.UpdatedAt = DateTime.UtcNow;
+        tenant.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.TenantRepository.Update(tenant);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -262,6 +272,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
 
         tenant.DeletedAt = DateTime.UtcNow;
         tenant.UpdatedAt = DateTime.UtcNow;
+        tenant.DeletedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.TenantRepository.Update(tenant);
 

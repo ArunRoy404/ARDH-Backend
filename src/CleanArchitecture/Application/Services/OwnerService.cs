@@ -57,7 +57,11 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
                 Status = x.Status,
                 Notes = x.Notes,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy,
+                DeletedBy = x.DeletedBy,
+                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -85,7 +89,11 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
             Status = owner.Status,
             Notes = owner.Notes,
             CreatedAt = owner.CreatedAt,
-            UpdatedAt = owner.UpdatedAt
+            UpdatedAt = owner.UpdatedAt,
+            CreatedBy = owner.CreatedBy,
+            UpdatedBy = owner.UpdatedBy,
+            DeletedBy = owner.DeletedBy,
+            RestoredBy = owner.RestoredBy
         };
     }
 
@@ -119,7 +127,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
             Status = request.Status,
             Notes = request.Notes,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.OwnerRepository.AddAsync(owner), cancellationToken);
@@ -161,7 +170,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         owner.Status = request.Status;
         owner.Notes = request.Notes;
         owner.UpdatedAt = DateTime.UtcNow;
-
+        owner.UpdatedBy = _currentUser.GetCurrentUserId();
+ 
         _unitOfWork.OwnerRepository.Update(owner);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -173,7 +183,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
         owner.DeletedAt = DateTime.UtcNow;
         owner.UpdatedAt = DateTime.UtcNow;
-
+        owner.DeletedBy = _currentUser.GetCurrentUserId();
+ 
         _unitOfWork.OwnerRepository.Update(owner);
 
         // Record soft-delete history

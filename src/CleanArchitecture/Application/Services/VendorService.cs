@@ -115,7 +115,8 @@ public class VendorService(
             Status = request.Status,
             Notes = request.Notes?.Trim() ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.VendorRepository.AddAsync(vendor), cancellationToken);
@@ -169,6 +170,7 @@ public class VendorService(
         vendor.Status = request.Status;
         vendor.Notes = request.Notes?.Trim() ?? string.Empty;
         vendor.UpdatedAt = DateTime.UtcNow;
+        vendor.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.VendorRepository.Update(vendor);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -182,6 +184,7 @@ public class VendorService(
         var now = DateTime.UtcNow;
         vendor.DeletedAt = now;
         vendor.UpdatedAt = now;
+        vendor.DeletedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.VendorRepository.Update(vendor);
 
@@ -214,7 +217,11 @@ public class VendorService(
             Status = vendor.Status,
             Notes = vendor.Notes,
             CreatedAt = vendor.CreatedAt,
-            UpdatedAt = vendor.UpdatedAt
+            UpdatedAt = vendor.UpdatedAt,
+            CreatedBy = vendor.CreatedBy,
+            UpdatedBy = vendor.UpdatedBy,
+            DeletedBy = vendor.DeletedBy,
+            RestoredBy = vendor.RestoredBy
         };
     }
 }

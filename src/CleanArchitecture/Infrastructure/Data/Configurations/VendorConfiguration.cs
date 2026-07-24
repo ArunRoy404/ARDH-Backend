@@ -73,5 +73,17 @@ public class VendorConfiguration : IEntityTypeConfiguration<Vendor>
 
         builder.Property(x => x.DeletedAt)
             .HasColumnName("deleted_at");
+
+        builder.Property(x => x.CreatedBy)
+            .HasColumnName("created_by");
+
+        builder.Property(x => x.UpdatedBy)
+            .HasColumnName("updated_by");
+
+        builder.Property(x => x.DeletedBy)
+            .HasColumnName("deleted_by");
+
+        builder.Property(x => x.RestoredBy)
+            .HasColumnName("restored_by");
     }
 }

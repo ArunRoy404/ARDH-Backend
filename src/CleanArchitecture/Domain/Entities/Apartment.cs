@@ -24,6 +24,10 @@ public class Apartment
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAt { get; set; }
+    public Guid? CreatedBy { get; set; }
+    public Guid? UpdatedBy { get; set; }
+    public Guid? DeletedBy { get; set; }
+    public Guid? RestoredBy { get; set; }
 
     // Navigation properties
     public Building Building { get; set; } = null!;

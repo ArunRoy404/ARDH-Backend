@@ -89,7 +89,11 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
                 WaterCharge = x.WaterCharge,
                 CurrentTenantId = x.CurrentTenantId,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy,
+                DeletedBy = x.DeletedBy,
+                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -125,7 +129,11 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
             WaterCharge = apartment.WaterCharge,
             CurrentTenantId = apartment.CurrentTenantId,
             CreatedAt = apartment.CreatedAt,
-            UpdatedAt = apartment.UpdatedAt
+            UpdatedAt = apartment.UpdatedAt,
+            CreatedBy = apartment.CreatedBy,
+            UpdatedBy = apartment.UpdatedBy,
+            DeletedBy = apartment.DeletedBy,
+            RestoredBy = apartment.RestoredBy
         };
     }
 
@@ -170,7 +178,8 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
             MaintenanceCharge = request.MaintenanceCharge,
             WaterCharge = request.WaterCharge,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.ApartmentRepository.AddAsync(apartment), cancellationToken);
@@ -220,6 +229,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
         apartment.MaintenanceCharge = request.MaintenanceCharge;
         apartment.WaterCharge = request.WaterCharge;
         apartment.UpdatedAt = DateTime.UtcNow;
+        apartment.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.ApartmentRepository.Update(apartment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -232,6 +242,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
 
         apartment.DeletedAt = DateTime.UtcNow;
         apartment.UpdatedAt = DateTime.UtcNow;
+        apartment.DeletedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.ApartmentRepository.Update(apartment);
 

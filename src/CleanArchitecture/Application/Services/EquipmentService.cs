@@ -102,7 +102,11 @@ public class EquipmentService(
             Notes = x.Notes,
             AttachmentUrl = x.AttachmentUrl,
             CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt
+            UpdatedAt = x.UpdatedAt,
+            CreatedBy = x.CreatedBy,
+            UpdatedBy = x.UpdatedBy,
+            DeletedBy = x.DeletedBy,
+            RestoredBy = x.RestoredBy
         }).ToList();
 
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
@@ -138,7 +142,11 @@ public class EquipmentService(
             Notes = equipment.Notes,
             AttachmentUrl = equipment.AttachmentUrl,
             CreatedAt = equipment.CreatedAt,
-            UpdatedAt = equipment.UpdatedAt
+            UpdatedAt = equipment.UpdatedAt,
+            CreatedBy = equipment.CreatedBy,
+            UpdatedBy = equipment.UpdatedBy,
+            DeletedBy = equipment.DeletedBy,
+            RestoredBy = equipment.RestoredBy
         };
     }
 
@@ -175,7 +183,8 @@ public class EquipmentService(
             Notes = request.Notes?.Trim() ?? string.Empty,
             AttachmentUrl = request.AttachmentUrl?.Trim() ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.EquipmentRepository.AddAsync(equipment), cancellationToken);
@@ -226,6 +235,7 @@ public class EquipmentService(
 
         equipment.Status = request.Status;
         equipment.UpdatedAt = DateTime.UtcNow;
+        equipment.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.EquipmentRepository.Update(equipment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -239,6 +249,7 @@ public class EquipmentService(
         var now = DateTime.UtcNow;
         equipment.DeletedAt = now;
         equipment.UpdatedAt = now;
+        equipment.DeletedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.EquipmentRepository.Update(equipment);
 

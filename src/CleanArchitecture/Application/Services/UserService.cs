@@ -36,7 +36,11 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             Permissions = x.Permissions,
             LastLoginAt = x.LastLoginAt,
             CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt
+            UpdatedAt = x.UpdatedAt,
+            CreatedBy = x.CreatedBy,
+            UpdatedBy = x.UpdatedBy,
+            DeletedBy = x.DeletedBy,
+            RestoredBy = x.RestoredBy
         }).ToList();
     }
 
@@ -82,7 +86,11 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
                 Permissions = x.Permissions ?? string.Empty,
                 LastLoginAt = x.LastLoginAt,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy,
+                DeletedBy = x.DeletedBy,
+                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -107,7 +115,11 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             Permissions = user.Permissions ?? string.Empty,
             LastLoginAt = user.LastLoginAt,
             CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt
+            UpdatedAt = user.UpdatedAt,
+            CreatedBy = user.CreatedBy,
+            UpdatedBy = user.UpdatedBy,
+            DeletedBy = user.DeletedBy,
+            RestoredBy = user.RestoredBy
         };
     }
 
@@ -132,7 +144,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             AvatarUrl = request.AvatarUrl,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.UserRepository.AddAsync(user), cancellationToken);
@@ -162,6 +175,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         user.Permissions = request.Permissions;
         user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -176,6 +190,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         user.DeletedAt = DateTime.UtcNow;
         user.IsActive = false;
         user.UpdatedAt = DateTime.UtcNow;
+        user.DeletedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.UserRepository.Update(user);
 
@@ -201,6 +216,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
         user.IsActive = !user.IsActive;
         user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

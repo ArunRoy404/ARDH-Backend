@@ -38,7 +38,8 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             HandoverNote = request.HandoverNote?.Trim(),
             ProcessedBy = _currentUser.GetCurrentUserId(),
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         // Update tenant status to MovedOut
@@ -77,7 +78,11 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             ProcessedBy = record.ProcessedBy,
             ProcessedByName = processor?.Name ?? "System",
             CreatedAt = record.CreatedAt,
-            UpdatedAt = record.UpdatedAt
+            UpdatedAt = record.UpdatedAt,
+            CreatedBy = record.CreatedBy,
+            UpdatedBy = record.UpdatedBy,
+            DeletedBy = record.DeletedBy,
+            RestoredBy = record.RestoredBy
         };
     }
 
@@ -93,6 +98,7 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
         record.IdNumber = request.IdNumber.Trim();
         record.HandoverNote = request.HandoverNote?.Trim();
         record.UpdatedAt = DateTime.UtcNow;
+        record.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.TenantMoveOutRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -105,6 +111,7 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
 
         record.DeletedAt = DateTime.UtcNow;
         record.UpdatedAt = DateTime.UtcNow;
+        record.DeletedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.TenantMoveOutRecordRepository.Update(record);
 

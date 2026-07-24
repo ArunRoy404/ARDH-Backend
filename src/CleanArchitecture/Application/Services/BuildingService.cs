@@ -56,7 +56,11 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
                 Description = x.Description,
                 ImageUrl = x.ImageUrl,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy,
+                UpdatedBy = x.UpdatedBy,
+                DeletedBy = x.DeletedBy,
+                RestoredBy = x.RestoredBy
             })
             .ToList();
 
@@ -83,7 +87,11 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
             Description = building.Description,
             ImageUrl = building.ImageUrl,
             CreatedAt = building.CreatedAt,
-            UpdatedAt = building.UpdatedAt
+            UpdatedAt = building.UpdatedAt,
+            CreatedBy = building.CreatedBy,
+            UpdatedBy = building.UpdatedBy,
+            DeletedBy = building.DeletedBy,
+            RestoredBy = building.RestoredBy
         };
     }
 
@@ -110,7 +118,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
             Description = request.Description,
             ImageUrl = request.ImageUrl,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.BuildingRepository.AddAsync(building), cancellationToken);
@@ -142,7 +151,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         building.Description = request.Description;
         building.ImageUrl = request.ImageUrl;
         building.UpdatedAt = DateTime.UtcNow;
-
+        building.UpdatedBy = _currentUser.GetCurrentUserId();
+ 
         _unitOfWork.BuildingRepository.Update(building);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -154,7 +164,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
 
         building.DeletedAt = DateTime.UtcNow;
         building.UpdatedAt = DateTime.UtcNow;
-
+        building.DeletedBy = _currentUser.GetCurrentUserId();
+ 
         _unitOfWork.BuildingRepository.Update(building);
 
         // Record soft-delete history

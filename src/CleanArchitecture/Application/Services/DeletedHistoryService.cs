@@ -118,6 +118,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             user.DeletedAt = null;
             user.IsActive = true;
             user.UpdatedAt = DateTime.UtcNow;
+            user.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.UserRepository.Update(user);
         }
         else if (history.EntityType.Equals("Building", StringComparison.OrdinalIgnoreCase))
@@ -127,6 +128,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             
             building.DeletedAt = null;
             building.UpdatedAt = DateTime.UtcNow;
+            building.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.BuildingRepository.Update(building);
         }
         else if (history.EntityType.Equals("Owner", StringComparison.OrdinalIgnoreCase))
@@ -136,6 +138,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             
             owner.DeletedAt = null;
             owner.UpdatedAt = DateTime.UtcNow;
+            owner.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.OwnerRepository.Update(owner);
         }
         else if (history.EntityType.Equals("Apartment", StringComparison.OrdinalIgnoreCase))
@@ -145,6 +148,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
             
             apartment.DeletedAt = null;
             apartment.UpdatedAt = DateTime.UtcNow;
+            apartment.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.ApartmentRepository.Update(apartment);
         }
         else if (history.EntityType.Equals("Tenant", StringComparison.OrdinalIgnoreCase))
@@ -154,6 +158,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
 
             tenant.DeletedAt = null;
             tenant.UpdatedAt = DateTime.UtcNow;
+            tenant.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.TenantRepository.Update(tenant);
         }
         else if (history.EntityType.Equals("TenantMoveOutRecord", StringComparison.OrdinalIgnoreCase))
@@ -163,6 +168,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
 
             moveOutRecord.DeletedAt = null;
             moveOutRecord.UpdatedAt = DateTime.UtcNow;
+            moveOutRecord.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.TenantMoveOutRecordRepository.Update(moveOutRecord);
         }
         else if (history.EntityType.Equals("Vendor", StringComparison.OrdinalIgnoreCase))
@@ -172,6 +178,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
 
             vendor.DeletedAt = null;
             vendor.UpdatedAt = DateTime.UtcNow;
+            vendor.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.VendorRepository.Update(vendor);
         }
         else if (history.EntityType.Equals("Equipment", StringComparison.OrdinalIgnoreCase))
@@ -181,6 +188,7 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
 
             equipment.DeletedAt = null;
             equipment.UpdatedAt = DateTime.UtcNow;
+            equipment.RestoredBy = _currentUser.GetCurrentUserId();
             _unitOfWork.EquipmentRepository.Update(equipment);
         }
         else if (history.EntityType.Equals("AmcContract", StringComparison.OrdinalIgnoreCase))
