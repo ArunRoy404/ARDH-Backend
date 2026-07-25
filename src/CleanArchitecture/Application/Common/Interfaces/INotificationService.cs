@@ -21,8 +21,6 @@ public interface INotificationService
 
     Task MarkAllAsRead(CancellationToken cancellationToken);
 
-    Task CreateNotification(NotificationCreateRequest request, CancellationToken cancellationToken);
-
     Task Delete(Guid id, CancellationToken cancellationToken);
 
     Task ClearAll(CancellationToken cancellationToken);

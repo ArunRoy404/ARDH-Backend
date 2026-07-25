@@ -71,19 +71,6 @@ public class NotificationController(INotificationService notificationService) : 
     }
 
     /// <summary>
-    /// [N-05] Create a notification (system-generated).
-    /// </summary>
-    [HttpPost]
-    [SwaggerResponse(200, "Notification created successfully.")]
-    [SwaggerResponse(400, "Invalid request payload.")]
-    [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> Create([FromBody] NotificationCreateRequest request, CancellationToken cancellationToken)
-    {
-        await _notificationService.CreateNotification(request, cancellationToken);
-        return Ok(new { message = "Notification created successfully." });
-    }
-
-    /// <summary>
     /// [N-06] Permanently Delete a single notification for the current user.
     /// </summary>
     [HttpDelete("{id}")]

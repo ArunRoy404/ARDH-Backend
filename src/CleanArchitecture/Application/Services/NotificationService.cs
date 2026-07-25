@@ -130,13 +130,6 @@ public class NotificationService(
         }
     }
 
-    public async Task CreateNotification(NotificationCreateRequest request, CancellationToken cancellationToken)
-    {
-        if (request == null) throw new ArgumentNullException(nameof(request));
-        
-        await CreateNotificationInternal(request.Type, request.Title, request.Detail, cancellationToken);
-    }
-
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
         var currentUserId = _currentUser.GetCurrentUserId();
@@ -216,7 +209,7 @@ public class NotificationService(
 
         foreach (var tenant in activeTenants)
         {
-            var leaseEndDateStr = tenant.LeaseEndDate.Value.ToString("yyyy-MM-dd");
+            var leaseEndDateStr = tenant.LeaseEndDate?.ToString("yyyy-MM-dd") ?? string.Empty;
             var title = $"Lease Expiring: {tenant.FullName}";
             var detail = $"Lease for {tenant.FullName} is expiring on {leaseEndDateStr}. Flat: {tenant.ApartmentId}.";
 
