@@ -15,10 +15,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class IncomeRecordService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IIncomeRecordService
+    ICurrentUser currentUser,
+    INotificationService notificationService) : IIncomeRecordService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<IncomeRecordViewModel>> GetPaginated(
         int page,
@@ -212,12 +214,23 @@ public class IncomeRecordService(
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.IncomeRecordRepository.AddAsync(record), cancellationToken);
+
+        if (record.Status == IncomeStatus.Overdue)
+        {
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Payment Overdue",
+                $"Payment for period '{record.Period}' is overdue. Amount: {record.Amount}.",
+                cancellationToken);
+        }
     }
 
     public async Task Update(Guid id, IncomeRecordUpdateRequest request, CancellationToken cancellationToken)
     {
         var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
+
+        var oldStatus = record.Status;
 
         if (request.BuildingId.HasValue)
         {
@@ -266,6 +279,15 @@ public class IncomeRecordService(
 
         _unitOfWork.IncomeRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (record.Status == IncomeStatus.Overdue && oldStatus != IncomeStatus.Overdue)
+        {
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Payment Overdue",
+                $"Payment for period '{record.Period}' is overdue. Amount: {record.Amount}.",
+                cancellationToken);
+        }
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -298,6 +320,7 @@ public class IncomeRecordService(
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         var userId = _currentUser.GetCurrentUserId();
+        var oldStatus = record.Status;
 
         record.Status = request.Status;
         record.UpdatedAt = DateTime.UtcNow;
@@ -305,6 +328,15 @@ public class IncomeRecordService(
 
         _unitOfWork.IncomeRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (record.Status == IncomeStatus.Overdue && oldStatus != IncomeStatus.Overdue)
+        {
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Payment Overdue",
+                $"Payment for period '{record.Period}' is overdue. Amount: {record.Amount}.",
+                cancellationToken);
+        }
     }
 
     public async Task<byte[]> GenerateReceiptPdf(Guid id, CancellationToken cancellationToken)

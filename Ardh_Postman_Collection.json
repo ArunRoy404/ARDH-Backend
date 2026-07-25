@@ -1,4 +1,4 @@
-﻿{
+{
     "info": {
         "_postman_id": "9a38f321-4bcf-4f9e-a0e2-2a54b38dcd2b",
         "name": "Ardh Property Management API (Cookie Auth)",
@@ -7472,6 +7472,456 @@
                             ],
                             "cookie": [],
                             "body": "{\n    \"message\": \"Expense status updated successfully.\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Notifications",
+            "item": [
+                {
+                    "name": "N-01. List Notifications",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications?page=1&pageSize=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "operations",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "is_read",
+                                    "value": "false",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "List all notifications with pagination and optional type/is_read filters."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications?page=1&pageSize=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10"
+                                        }
+                                    ]
+                                },
+                                "description": "List all notifications with pagination."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"e4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"type\": \"operations\",\n            \"title\": \"Maintenance Request Status Updated\",\n            \"detail\": \"Request 'Fix elevator' status changed to 'Complete'.\",\n            \"createdAt\": \"2026-07-25T18:00:00Z\",\n            \"isRead\": false,\n            \"readAt\": null\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "N-02. Get Notification Count",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/count",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "count"
+                            ]
+                        },
+                        "description": "Get unread notification count, and total count."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications/count",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications",
+                                        "count"
+                                    ]
+                                },
+                                "description": "Get unread notification count, and total count."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"unreadCount\": 1,\n    \"totalCount\": 5\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "N-03. Mark Notification as Read",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PATCH",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/a4f3b822-29c4-52a8-ad29-c8be5d491f24/read",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "a4f3b822-29c4-52a8-ad29-c8be5d491f24",
+                                "read"
+                            ]
+                        },
+                        "description": "Mark a single notification as read."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PATCH",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications/a4f3b822-29c4-52a8-ad29-c8be5d491f24/read",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications",
+                                        "a4f3b822-29c4-52a8-ad29-c8be5d491f24",
+                                        "read"
+                                    ]
+                                },
+                                "description": "Mark a single notification as read."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Notification marked as read successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "N-04. Mark All Notifications as Read",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "PATCH",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/read-all",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "read-all"
+                            ]
+                        },
+                        "description": "Mark all notifications as read for current user."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "PATCH",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications/read-all",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications",
+                                        "read-all"
+                                    ]
+                                },
+                                "description": "Mark all notifications as read for current user."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"All notifications marked as read successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "N-05. Create Notification (System-Generated)",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"type\": \"operations\", // Notification type/module: operations, finance, properties, general\n    \"title\": \"Status Changed\", // Title/Summary of the notification\n    \"detail\": \"Maintenance status changed.\" // Key details in short\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications"
+                            ]
+                        },
+                        "description": "Create a new notification manually/system-generated."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"type\": \"operations\", // Notification type/module: operations, finance, properties, general\n    \"title\": \"Status Changed\", // Title/Summary of the notification\n    \"detail\": \"Maintenance status changed.\" // Key details in short\n}"
+                                },
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications"
+                                    ]
+                                },
+                                "description": "Create a new notification manually/system-generated."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Notification created successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "N-06. Delete Single Notification",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/a4f3b822-29c4-52a8-ad29-c8be5d491f24",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "a4f3b822-29c4-52a8-ad29-c8be5d491f24"
+                            ]
+                        },
+                        "description": "Permanently delete a single notification for current user."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications/a4f3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications",
+                                        "a4f3b822-29c4-52a8-ad29-c8be5d491f24"
+                                    ]
+                                },
+                                "description": "Permanently delete a single notification for current user."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"Notification deleted successfully.\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "N-07. Clear All Notifications",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/clear-all",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notifications",
+                                "clear-all"
+                            ]
+                        },
+                        "description": "Permanently delete all notifications for current user."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/notifications/clear-all",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "notifications",
+                                        "clear-all"
+                                    ]
+                                },
+                                "description": "Permanently delete all notifications for current user."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"message\": \"All notifications cleared successfully.\"\n}"
                         }
                     ]
                 }

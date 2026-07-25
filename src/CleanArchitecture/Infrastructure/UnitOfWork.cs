@@ -28,7 +28,9 @@ public class UnitOfWork : IUnitOfWork
     public IMaintenanceRequestRepository MaintenanceRequestRepository { get; }
     public IIncomeRecordRepository IncomeRecordRepository { get; }
     public IExpenseRecordRepository ExpenseRecordRepository { get; }
-
+    public INotificationRepository NotificationRepository { get; }
+    public INotificationRecipientRepository NotificationRecipientRepository { get; }
+ 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
         _context = dbContext;
@@ -47,6 +49,8 @@ public class UnitOfWork : IUnitOfWork
         MaintenanceRequestRepository = new MaintenanceRequestRepository(_context);
         IncomeRecordRepository = new IncomeRecordRepository(_context);
         ExpenseRecordRepository = new ExpenseRecordRepository(_context);
+        NotificationRepository = new NotificationRepository(_context);
+        NotificationRecipientRepository = new NotificationRecipientRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

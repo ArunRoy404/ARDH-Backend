@@ -28,6 +28,8 @@ public static class ConfigureServices
         services.AddScoped<IForgotPasswordRepository, ForgotPasswordRepository>();
         services.AddScoped<IBuildingRepository, BuildingRepository>();
         services.AddScoped<IDeletedHistoryRepository, DeletedHistoryRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<INotificationRecipientRepository, NotificationRecipientRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<ApplicationDbContextInitializer>();
 

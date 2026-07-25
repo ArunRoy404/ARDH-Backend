@@ -21,6 +21,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
     public DbSet<IncomeRecord> IncomeRecords { get; set; }
     public DbSet<ExpenseRecord> ExpenseRecords { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

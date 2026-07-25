@@ -14,10 +14,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class MaintenanceRequestService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IMaintenanceRequestService
+    ICurrentUser currentUser,
+    INotificationService notificationService) : IMaintenanceRequestService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<MaintenanceRequestViewModel>> GetPaginated(
         int page,
@@ -228,12 +230,20 @@ public class MaintenanceRequestService(
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.MaintenanceRequestRepository.AddAsync(maintenanceRequest), cancellationToken);
+
+        await _notificationService.CreateNotificationInternal(
+            "operations",
+            "New Maintenance Request",
+            $"A new maintenance request '{maintenanceRequest.Title}' has been created with status '{maintenanceRequest.Status}'.",
+            cancellationToken);
     }
 
     public async Task Update(Guid id, MaintenanceRequestUpdateRequest request, CancellationToken cancellationToken)
     {
         var maintenanceRequest = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
+
+        var oldStatus = maintenanceRequest.Status;
 
         var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
@@ -289,6 +299,15 @@ public class MaintenanceRequestService(
 
         _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (oldStatus != request.Status)
+        {
+            await _notificationService.CreateNotificationInternal(
+                "operations",
+                "Maintenance Request Status Updated",
+                $"Request '{maintenanceRequest.Title}' status changed to '{request.Status}'.",
+                cancellationToken);
+        }
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)

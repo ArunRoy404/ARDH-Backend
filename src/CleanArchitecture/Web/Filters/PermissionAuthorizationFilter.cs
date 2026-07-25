@@ -104,6 +104,15 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                     return;
                 }
             }
+            else if (path.StartsWith("/api/notifications", StringComparison.OrdinalIgnoreCase))
+            {
+                var hasDashboardPermission = isPropertyManagerRole || permissionList.Contains("dashboard") || hasAdminPermission;
+                if (!hasDashboardPermission)
+                {
+                    context.Result = CreateForbiddenResult("Access denied. Dashboard permission required for this route.");
+                    return;
+                }
+            }
 
             // Viewer Role Constraint: Viewer cannot perform POST, PUT, PATCH, or DELETE operations
             var method = httpContext.Request.Method;
