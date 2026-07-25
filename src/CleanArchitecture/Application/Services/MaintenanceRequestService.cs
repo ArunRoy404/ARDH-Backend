@@ -15,11 +15,13 @@ namespace CleanArchitecture.Application.Services;
 public class MaintenanceRequestService(
     IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
-    INotificationService notificationService) : IMaintenanceRequestService
+    INotificationService notificationService,
+    IActivityService activityService) : IMaintenanceRequestService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly INotificationService _notificationService = notificationService;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<MaintenanceRequestViewModel>> GetPaginated(
         int page,
@@ -236,6 +238,22 @@ public class MaintenanceRequestService(
             "New Maintenance Request",
             $"A new maintenance request '{maintenanceRequest.Title}' has been created with status '{maintenanceRequest.Status}'.",
             cancellationToken);
+
+        var apartment = maintenanceRequest.ApartmentId.HasValue
+            ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.ApartmentId.Value)
+            : null;
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.BuildingId);
+        var locationStr = apartment != null
+            ? $"Flat {apartment.FlatNumber} at {building?.BuildingName ?? "building"}"
+            : (building?.BuildingName ?? "Building");
+
+        await _activityService.CreateActivity(
+            "Create",
+            "MaintenanceRequest",
+            maintenanceRequest.Id,
+            maintenanceRequest.BuildingId,
+            $"{locationStr} marked for maintenance.",
+            cancellationToken);
     }
 
     public async Task Update(Guid id, MaintenanceRequestUpdateRequest request, CancellationToken cancellationToken)
@@ -306,6 +324,19 @@ public class MaintenanceRequestService(
                 "operations",
                 "Maintenance Request Status Updated",
                 $"Request '{maintenanceRequest.Title}' status changed to '{request.Status}'.",
+                cancellationToken);
+
+            var isCritical = maintenanceRequest.Priority == MaintenancePriority.Critical;
+            var prefix = isCritical ? "Critical: " : "";
+            var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.BuildingId);
+            var bldName = building?.BuildingName ?? "building";
+
+            await _activityService.CreateActivity(
+                "StatusChange",
+                "MaintenanceRequest",
+                maintenanceRequest.Id,
+                maintenanceRequest.BuildingId,
+                $"{prefix}'{maintenanceRequest.Title}' status changed to '{request.Status}' at {bldName}.",
                 cancellationToken);
         }
     }

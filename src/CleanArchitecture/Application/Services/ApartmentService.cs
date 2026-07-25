@@ -11,10 +11,11 @@ using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Application.Services;
 
-public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IApartmentService
+public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : IApartmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<ApartmentViewModel>> GetPaginated(
         int page,
@@ -179,6 +180,8 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.ApartmentRepository.AddAsync(apartment), cancellationToken);
+
+        await _activityService.CreateActivity("Create", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' added to building.", cancellationToken);
     }
 
     public async Task Update(Guid id, ApartmentUpdateRequest request, CancellationToken cancellationToken)
@@ -229,6 +232,8 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
 
         _unitOfWork.ApartmentRepository.Update(apartment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Update", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -251,5 +256,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser) 
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Delete", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' was deleted.", cancellationToken);
     }
 }

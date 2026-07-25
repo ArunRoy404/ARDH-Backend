@@ -21,6 +21,7 @@ public interface IUnitOfWork
     IExpenseRecordRepository ExpenseRecordRepository { get; }
     INotificationRepository NotificationRepository { get; }
     INotificationRecipientRepository NotificationRecipientRepository { get; }
+    IActivityRepository ActivityRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);

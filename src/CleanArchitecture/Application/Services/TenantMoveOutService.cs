@@ -9,10 +9,11 @@ using CleanArchitecture.Shared.Models.Tenant;
 
 namespace CleanArchitecture.Application.Services;
 
-public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : ITenantMoveOutService
+public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : ITenantMoveOutService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task CreateMoveOut(Guid tenantId, TenantMoveOutCreateRequest request, CancellationToken cancellationToken)
     {
@@ -51,6 +52,10 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             await _unitOfWork.TenantMoveOutRecordRepository.AddAsync(moveOutRecord);
             _unitOfWork.TenantRepository.Update(tenant);
         }, cancellationToken);
+
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+        var flatNum = apartment?.FlatNumber ?? "Unknown Flat";
+        await _activityService.CreateActivity("MoveOut", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved out of Flat '{flatNum}'.", cancellationToken);
     }
 
     public async Task<TenantMoveOutRecordViewModel> GetByTenantId(Guid tenantId, CancellationToken cancellationToken)

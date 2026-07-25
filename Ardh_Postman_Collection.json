@@ -7853,6 +7853,91 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "Activities",
+            "item": [
+                {
+                    "name": "ACT-01. List Recent Activities",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/activities?page=1&pageSize=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "activities"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "pageSize",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "buildingId",
+                                    "value": "a4f3b822-29c4-52a8-ad29-c8be5d491f24",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "List recent activities with pagination and optional building filtering."
+                    },
+                    "response": [
+                        {
+                            "name": "Success Example (200)",
+                            "originalRequest": {
+                                "auth": {
+                                    "type": "noauth"
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/activities?page=1&pageSize=10",
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "activities"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "page",
+                                            "value": "1"
+                                        },
+                                        {
+                                            "key": "pageSize",
+                                            "value": "10"
+                                        }
+                                    ]
+                                },
+                                "description": "List recent activities with pagination."
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "header": [
+                                {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                                }
+                            ],
+                            "cookie": [],
+                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"c4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"actionType\": \"Create\",\n            \"entityType\": \"IncomeRecord\",\n            \"entityId\": \"d4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"description\": \"Rent payment of 45,000 SAR received from Meera Iyer (Flat 301).\",\n            \"createdAt\": \"2026-07-25T18:00:00Z\"\n        },\n        {\n            \"id\": \"c4f3b822-29c4-52a8-ad29-c8be5d491f25\",\n            \"actionType\": \"StatusChange\",\n            \"entityType\": \"MaintenanceRequest\",\n            \"entityId\": \"d4f3b822-29c4-52a8-ad29-c8be5d491f25\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"description\": \"Critical: 'CCTV camera malfunction' status changed to 'InProgress' at Skyline Residency.\",\n            \"createdAt\": \"2026-07-25T18:10:00Z\"\n        }\n    ],\n    \"totalCount\": 2,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                        }
+                    ]
+                }
+            ]
         }
     ],
     "variable": [

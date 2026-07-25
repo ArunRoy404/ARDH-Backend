@@ -11,10 +11,11 @@ using CleanArchitecture.Shared.Models.Tenant;
 
 namespace CleanArchitecture.Application.Services;
 
-public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : ITenantService
+public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : ITenantService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<TenantViewModel>> GetPaginated(
         int page,
@@ -196,6 +197,10 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.TenantRepository.AddAsync(tenant), cancellationToken);
+
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+        var flatNum = apartment?.FlatNumber ?? "Unknown Flat";
+        await _activityService.CreateActivity("Create", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved into Flat '{flatNum}'.", cancellationToken);
     }
 
     public async Task Update(Guid id, TenantUpdateRequest request, CancellationToken cancellationToken)
@@ -259,6 +264,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
 
         _unitOfWork.TenantRepository.Update(tenant);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Update", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -281,5 +288,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : I
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Delete", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' was deleted.", cancellationToken);
     }
 }

@@ -12,10 +12,11 @@ using CleanArchitecture.Shared.Models.Building;
 
 namespace CleanArchitecture.Application.Services;
 
-public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IBuildingService
+public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : IBuildingService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
@@ -119,6 +120,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.BuildingRepository.AddAsync(building), cancellationToken);
+
+        await _activityService.CreateActivity("Create", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' was created.", cancellationToken);
     }
 
     public async Task Update(BuildingUpdateRequest request, CancellationToken cancellationToken)
@@ -151,6 +154,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
  
         _unitOfWork.BuildingRepository.Update(building);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Update", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' details were updated.", cancellationToken);
     }
 
     public async Task<BuildingStatsViewModel> GetStats(Guid buildingId, CancellationToken cancellationToken)
@@ -198,5 +203,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Delete", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' was deleted.", cancellationToken);
     }
 }

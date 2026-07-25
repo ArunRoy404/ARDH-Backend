@@ -30,6 +30,7 @@ public class UnitOfWork : IUnitOfWork
     public IExpenseRecordRepository ExpenseRecordRepository { get; }
     public INotificationRepository NotificationRepository { get; }
     public INotificationRecipientRepository NotificationRecipientRepository { get; }
+    public IActivityRepository ActivityRepository { get; }
  
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -51,6 +52,7 @@ public class UnitOfWork : IUnitOfWork
         ExpenseRecordRepository = new ExpenseRecordRepository(_context);
         NotificationRepository = new NotificationRepository(_context);
         NotificationRecipientRepository = new NotificationRecipientRepository(_context);
+        ActivityRepository = new ActivityRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

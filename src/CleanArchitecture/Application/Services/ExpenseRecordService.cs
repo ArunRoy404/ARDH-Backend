@@ -13,10 +13,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class ExpenseRecordService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IExpenseRecordService
+    ICurrentUser currentUser,
+    IActivityService activityService) : IExpenseRecordService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<ExpenseRecordViewModel>> GetPaginated(
         int page,
@@ -237,6 +239,21 @@ public class ExpenseRecordService(
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.ExpenseRecordRepository.AddAsync(record), cancellationToken);
+
+        var building = record.BuildingId.HasValue
+            ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value)
+            : null;
+        var buildingName = building?.BuildingName ?? "building";
+        var itemName = string.IsNullOrEmpty(record.SpecificItem) ? record.ExpenseHead ?? "maintenance" : record.SpecificItem;
+        var verb = record.Status == ExpenseStatus.Paid ? "paid for" : "recorded for";
+
+        await _activityService.CreateActivity(
+            "Create",
+            "ExpenseRecord",
+            record.Id,
+            record.BuildingId,
+            $"{record.Amount:N0} SAR {verb} {itemName} at {buildingName}.",
+            cancellationToken);
     }
 
     public async Task Update(Guid id, ExpenseRecordUpdateRequest request, CancellationToken cancellationToken)
@@ -272,6 +289,7 @@ public class ExpenseRecordService(
         }
 
         var userId = _currentUser.GetCurrentUserId();
+        var oldStatus = record.Status;
 
         record.Category = request.Category;
         record.ExpenseHead = request.ExpenseHead?.Trim();
@@ -295,9 +313,26 @@ public class ExpenseRecordService(
         record.LitersFilled = request.LitersFilled;
         record.UpdatedAt = DateTime.UtcNow;
         record.UpdatedBy = userId;
-
+ 
         _unitOfWork.ExpenseRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (record.Status == ExpenseStatus.Paid && oldStatus != ExpenseStatus.Paid)
+        {
+            var building = record.BuildingId.HasValue
+                ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value)
+                : null;
+            var buildingName = building?.BuildingName ?? "building";
+            var itemName = string.IsNullOrEmpty(record.SpecificItem) ? record.ExpenseHead ?? "maintenance" : record.SpecificItem;
+
+            await _activityService.CreateActivity(
+                "Update",
+                "ExpenseRecord",
+                record.Id,
+                record.BuildingId,
+                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                cancellationToken);
+        }
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -322,6 +357,14 @@ public class ExpenseRecordService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity(
+            "Delete",
+            "ExpenseRecord",
+            record.Id,
+            record.BuildingId,
+            $"Expense record of {record.Amount:N0} SAR deleted.",
+            cancellationToken);
     }
 
     public async Task UpdateStatus(Guid id, ExpenseRecordStatusUpdateRequest request, CancellationToken cancellationToken)
@@ -331,11 +374,30 @@ public class ExpenseRecordService(
 
         var userId = _currentUser.GetCurrentUserId();
 
+        var oldStatus = record.Status;
+
         record.Status = request.Status;
         record.UpdatedAt = DateTime.UtcNow;
         record.UpdatedBy = userId;
 
         _unitOfWork.ExpenseRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (record.Status == ExpenseStatus.Paid && oldStatus != ExpenseStatus.Paid)
+        {
+            var building = record.BuildingId.HasValue
+                ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value)
+                : null;
+            var buildingName = building?.BuildingName ?? "building";
+            var itemName = string.IsNullOrEmpty(record.SpecificItem) ? record.ExpenseHead ?? "maintenance" : record.SpecificItem;
+
+            await _activityService.CreateActivity(
+                "StatusChange",
+                "ExpenseRecord",
+                record.Id,
+                record.BuildingId,
+                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                cancellationToken);
+        }
     }
 }

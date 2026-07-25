@@ -30,6 +30,7 @@ public static class ConfigureServices
         services.AddScoped<IDeletedHistoryRepository, DeletedHistoryRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<INotificationRecipientRepository, NotificationRecipientRepository>();
+        services.AddScoped<IActivityRepository, ActivityRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<ApplicationDbContextInitializer>();
 

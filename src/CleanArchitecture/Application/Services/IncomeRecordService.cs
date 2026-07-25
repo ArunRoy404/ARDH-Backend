@@ -16,11 +16,13 @@ namespace CleanArchitecture.Application.Services;
 public class IncomeRecordService(
     IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
-    INotificationService notificationService) : IIncomeRecordService
+    INotificationService notificationService,
+    IActivityService activityService) : IIncomeRecordService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly INotificationService _notificationService = notificationService;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<IncomeRecordViewModel>> GetPaginated(
         int page,
@@ -215,6 +217,27 @@ public class IncomeRecordService(
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.IncomeRecordRepository.AddAsync(record), cancellationToken);
 
+        if (record.Status == IncomeStatus.Paid)
+        {
+            var tenant = record.TenantId.HasValue
+                ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value)
+                : null;
+            var apartment = record.ApartmentId.HasValue
+                ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value)
+                : null;
+            
+            var tenantName = tenant?.FullName ?? "Tenant";
+            var flatStr = apartment != null ? $" (Flat {apartment.FlatNumber})" : "";
+            
+            await _activityService.CreateActivity(
+                "Create",
+                "IncomeRecord",
+                record.Id,
+                record.BuildingId,
+                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                cancellationToken);
+        }
+
         if (record.Status == IncomeStatus.Overdue)
         {
             await _notificationService.CreateNotificationInternal(
@@ -280,6 +303,27 @@ public class IncomeRecordService(
         _unitOfWork.IncomeRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        if (record.Status == IncomeStatus.Paid && oldStatus != IncomeStatus.Paid)
+        {
+            var tenant = record.TenantId.HasValue
+                ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value)
+                : null;
+            var apartment = record.ApartmentId.HasValue
+                ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value)
+                : null;
+            
+            var tenantName = tenant?.FullName ?? "Tenant";
+            var flatStr = apartment != null ? $" (Flat {apartment.FlatNumber})" : "";
+            
+            await _activityService.CreateActivity(
+                "Update",
+                "IncomeRecord",
+                record.Id,
+                record.BuildingId,
+                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                cancellationToken);
+        }
+
         if (record.Status == IncomeStatus.Overdue && oldStatus != IncomeStatus.Overdue)
         {
             await _notificationService.CreateNotificationInternal(
@@ -312,6 +356,14 @@ public class IncomeRecordService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity(
+            "Delete",
+            "IncomeRecord",
+            record.Id,
+            record.BuildingId,
+            $"Income record of {record.Amount:N0} deleted.",
+            cancellationToken);
     }
 
     public async Task UpdateStatus(Guid id, IncomeRecordStatusUpdateRequest request, CancellationToken cancellationToken)
@@ -328,6 +380,27 @@ public class IncomeRecordService(
 
         _unitOfWork.IncomeRecordRepository.Update(record);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (record.Status == IncomeStatus.Paid && oldStatus != IncomeStatus.Paid)
+        {
+            var tenant = record.TenantId.HasValue
+                ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value)
+                : null;
+            var apartment = record.ApartmentId.HasValue
+                ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value)
+                : null;
+            
+            var tenantName = tenant?.FullName ?? "Tenant";
+            var flatStr = apartment != null ? $" (Flat {apartment.FlatNumber})" : "";
+            
+            await _activityService.CreateActivity(
+                "StatusChange",
+                "IncomeRecord",
+                record.Id,
+                record.BuildingId,
+                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                cancellationToken);
+        }
 
         if (record.Status == IncomeStatus.Overdue && oldStatus != IncomeStatus.Overdue)
         {
