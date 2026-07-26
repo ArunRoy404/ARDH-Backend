@@ -19,6 +19,7 @@ public static class MvcExtension
         {
             options.Filters.Add(typeof(ValidateModelFilter));
             options.Filters.Add(typeof(PermissionAuthorizationFilter));
+            options.Filters.Add(typeof(ResponseWrapperFilter));
         }).AddJsonOptions(options =>
         {
             // Ignore null values

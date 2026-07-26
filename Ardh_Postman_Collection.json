@@ -68,7 +68,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"totalBuildings\": 1,\n    \"totalApartments\": 19,\n    \"occupiedCount\": 4,\n    \"vacantCount\": 15,\n    \"monthlyIncome\": 130000.0,\n    \"monthlyExpense\": 130000.0,\n    \"pendingPaymentsCount\": 4,\n    \"openMaintenanceCount\": 2\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"totalBuildings\": 1,\n        \"totalApartments\": 19,\n        \"occupiedCount\": 4,\n        \"vacantCount\": 15,\n        \"monthlyIncome\": 130000.0,\n        \"monthlyExpense\": 130000.0,\n        \"pendingPaymentsCount\": 4,\n        \"openMaintenanceCount\": 2\n    }\n}"
                         }
                     ]
                 },
@@ -131,7 +131,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"occupied\": 4,\n    \"vacant\": 11,\n    \"maintenance\": 2,\n    \"reserved\": 2,\n    \"total\": 19\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"occupied\": 4,\n        \"vacant\": 11,\n        \"maintenance\": 2,\n        \"reserved\": 2,\n        \"total\": 19\n    }\n}"
                         }
                     ]
                 },
@@ -194,7 +194,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "[\n    {\n        \"category\": \"Utilities\",\n        \"amount\": 45000.0\n    },\n    {\n        \"category\": \"Salary\",\n        \"amount\": 35000.0\n    },\n    {\n        \"category\": \"Maintenance\",\n        \"amount\": 25000.0\n    },\n    {\n        \"category\": \"Repair\",\n        \"amount\": 15000.0\n    },\n    {\n        \"category\": \"Cleaning\",\n        \"amount\": 10000.0\n    }\n]"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"category\": \"Utilities\",\n            \"amount\": 45000.0\n        },\n        {\n            \"category\": \"Salary\",\n            \"amount\": 35000.0\n        },\n        {\n            \"category\": \"Maintenance\",\n            \"amount\": 25000.0\n        },\n        {\n            \"category\": \"Repair\",\n            \"amount\": 15000.0\n        },\n        {\n            \"category\": \"Cleaning\",\n            \"amount\": 10000.0\n        }\n    ]\n}"
                         }
                     ]
                 },
@@ -257,7 +257,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "[\n    {\n        \"tenantName\": \"Meera Iyer\",\n        \"incomeType\": \"Rent\",\n        \"paymentDate\": \"2026-05-05T00:00:00Z\",\n        \"amount\": 45000.0,\n        \"status\": \"Paid\"\n    },\n    {\n        \"tenantName\": \"Meera Iyer\",\n        \"incomeType\": \"Maintenance\",\n        \"paymentDate\": \"2026-05-05T00:00:00Z\",\n        \"amount\": 5000.0,\n        \"status\": \"Paid\"\n    },\n    {\n        \"tenantName\": \"Meera Iyer\",\n        \"incomeType\": \"Parking\",\n        \"paymentDate\": \"2026-05-05T00:00:00Z\",\n        \"amount\": 2000.0,\n        \"status\": \"Paid\"\n    },\n    {\n        \"tenantName\": \"Neha Singh\",\n        \"incomeType\": \"Rent\",\n        \"paymentDate\": \"2026-05-05T00:00:00Z\",\n        \"amount\": 35000.0,\n        \"status\": \"Paid\"\n    }\n]"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"tenantName\": \"Meera Iyer\",\n            \"incomeType\": \"Rent\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 45000.0,\n            \"status\": \"Paid\"\n        },\n        {\n            \"tenantName\": \"Meera Iyer\",\n            \"incomeType\": \"Maintenance\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 5000.0,\n            \"status\": \"Paid\"\n        },\n        {\n            \"tenantName\": \"Meera Iyer\",\n            \"incomeType\": \"Parking\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 2000.0,\n            \"status\": \"Paid\"\n        },\n        {\n            \"tenantName\": \"Neha Singh\",\n            \"incomeType\": \"Rent\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 35000.0,\n            \"status\": \"Paid\"\n        }\n    ]\n}"
                         }
                     ]
                 },
@@ -320,7 +320,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "[\n    {\n        \"id\": \"e3c7b822-29c4-52a8-ad29-c8be5d491f30\",\n        \"title\": \"Water Leakage in bathroom\",\n        \"location\": \"Sunrise Tower • 101\",\n        \"priority\": \"High\",\n        \"status\": \"InProgress\"\n    },\n    {\n        \"id\": \"f4c7b822-29c4-52a8-ad29-c8be5d491f31\",\n        \"title\": \"Ac Not cooling\",\n        \"location\": \"Skyline Residency • 301\",\n        \"priority\": \"High\",\n        \"status\": \"InProgress\"\n    },\n    {\n        \"id\": \"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\n        \"title\": \"Parking lot lights broken\",\n        \"location\": \"Sunrise Tower • Common Area\",\n        \"priority\": \"Medium\",\n        \"status\": \"Open\"\n    }\n]"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"e3c7b822-29c4-52a8-ad29-c8be5d491f30\",\n            \"title\": \"Water Leakage in bathroom\",\n            \"location\": \"Sunrise Tower \\u2022 101\",\n            \"priority\": \"High\",\n            \"status\": \"InProgress\"\n        },\n        {\n            \"id\": \"f4c7b822-29c4-52a8-ad29-c8be5d491f31\",\n            \"title\": \"Ac Not cooling\",\n            \"location\": \"Skyline Residency \\u2022 301\",\n            \"priority\": \"High\",\n            \"status\": \"InProgress\"\n        },\n        {\n            \"id\": \"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\n            \"title\": \"Parking lot lights broken\",\n            \"location\": \"Sunrise Tower \\u2022 Common Area\",\n            \"priority\": \"Medium\",\n            \"status\": \"Open\"\n        }\n    ]\n}"
                         }
                     ]
                 }
@@ -400,7 +400,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Successfully signed in.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Successfully signed in.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -457,7 +457,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"role\": \"admin\",\n    \"address\": \"123 Main St\",\n    \"avatarUrl\": \"https://example.com/avatar.png\",\n    \"isActive\": true,\n    \"permissions\": \"read:all\",\n    \"lastLoginAt\": \"2026-07-21T18:00:00Z\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"name\": \"Super Admin\",\n        \"email\": \"admin@gmail.com\",\n        \"phone\": \"+1234567890\",\n        \"role\": \"admin\",\n        \"address\": \"123 Main St\",\n        \"avatarUrl\": \"https://example.com/avatar.png\",\n        \"isActive\": true,\n        \"permissions\": \"read:all\",\n        \"lastLoginAt\": \"2026-07-21T18:00:00Z\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\"\n    }\n}"
                         }
                     ]
                 },
@@ -532,7 +532,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Password reset OTP sent to email.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Password reset OTP sent to email.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -607,7 +607,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Password reset OTP sent to email.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Password reset OTP sent to email.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -682,7 +682,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"OTP verified successfully. You can now reset your password.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"OTP verified successfully. You can now reset your password.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -757,7 +757,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Password has been reset successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Password has been reset successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -814,7 +814,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Successfully logged out.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Successfully logged out.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -928,7 +928,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"name\": \"Rajesh Kumar\",\n            \"email\": \"rajesh@example.com\",\n            \"phone\": \"+91 9876543210\",\n            \"address\": \"Bangalore North\",\n            \"role\": \"admin\",\n            \"avatarUrl\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n            \"isActive\": true,\n            \"permissions\": \"dashboard,properties\",\n            \"lastLoginAt\": \"2026-07-21T18:00:00Z\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"name\": \"Rajesh Kumar\",\n                \"email\": \"rajesh@example.com\",\n                \"phone\": \"+91 9876543210\",\n                \"address\": \"Bangalore North\",\n                \"role\": \"admin\",\n                \"avatarUrl\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n                \"isActive\": true,\n                \"permissions\": \"dashboard,properties\",\n                \"lastLoginAt\": \"2026-07-21T18:00:00Z\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -999,7 +999,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"name\": \"Rajesh Kumar\",\n    \"email\": \"rajesh@example.com\",\n    \"phone\": \"+91 9876543210\",\n    \"address\": \"Bangalore North\",\n    \"role\": \"admin\",\n    \"avatarUrl\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,properties\",\n    \"lastLoginAt\": \"2026-07-21T18:00:00Z\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"name\": \"Rajesh Kumar\",\n        \"email\": \"rajesh@example.com\",\n        \"phone\": \"+91 9876543210\",\n        \"address\": \"Bangalore North\",\n        \"role\": \"admin\",\n        \"avatarUrl\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n        \"isActive\": true,\n        \"permissions\": \"dashboard,properties\",\n        \"lastLoginAt\": \"2026-07-21T18:00:00Z\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -1072,7 +1072,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"User created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"User created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -1161,7 +1161,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"User updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"User updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -1258,7 +1258,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"User deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"User deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -1331,7 +1331,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"User status toggled successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"User status toggled successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -1435,7 +1435,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"address\": \"123 Skyline Boulevard\",\n            \"city\": \"New York\",\n            \"state\": \"NY\",\n            \"country\": \"USA\",\n            \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n            \"totalFloors\": 24,\n            \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n            \"status\": \"active\",\n            \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n            \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"address\": \"123 Skyline Boulevard\",\n                \"city\": \"New York\",\n                \"state\": \"NY\",\n                \"country\": \"USA\",\n                \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n                \"totalFloors\": 24,\n                \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n                \"status\": \"active\",\n                \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n                \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -1506,7 +1506,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"address\": \"123 Skyline Boulevard\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n    \"totalFloors\": 24,\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n    \"status\": \"active\",\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"address\": \"123 Skyline Boulevard\",\n        \"city\": \"New York\",\n        \"state\": \"NY\",\n        \"country\": \"USA\",\n        \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n        \"totalFloors\": 24,\n        \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n        \"status\": \"active\",\n        \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n        \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -1579,7 +1579,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Building created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Building created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -1668,7 +1668,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Building updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Building updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -1765,7 +1765,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Building deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Building deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -1828,7 +1828,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"totalApartments\": 12,\n    \"totalOccupied\": 8,\n    \"totalVacant\": 4,\n    \"totalOpenMaintenance\": 2\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"totalApartments\": 12,\n        \"totalOccupied\": 8,\n        \"totalVacant\": 4,\n        \"totalOpenMaintenance\": 2\n    }\n}"
                         }
                     ]
                 }
@@ -1888,7 +1888,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"3ea2b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"companyName\": \"Ardh Property Management\",\n    \"companyEmail\": \"info@ardh.com\",\n    \"phone\": \"+91 1234567890\",\n    \"address\": \"123 Main Street, Bangalore, India\",\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3ea2b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"companyName\": \"Ardh Property Management\",\n        \"companyEmail\": \"info@ardh.com\",\n        \"phone\": \"+91 1234567890\",\n        \"address\": \"123 Main Street, Bangalore, India\",\n        \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n        \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\"\n    }\n}"
                         }
                     ]
                 },
@@ -1961,7 +1961,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Settings updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Settings updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -2036,7 +2036,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Admin password updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Admin password updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -2160,7 +2160,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"entityType\": \"Building\",\n            \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"entityTitle\": \"Grand Plaza Towers\",\n            \"deletedByName\": \"Super Admin\",\n            \"restoredAt\": null,\n            \"restoredByName\": null,\n            \"permanentlyDeletable\": true,\n            \"restorable\": false\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"entityType\": \"Building\",\n                \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"entityTitle\": \"Grand Plaza Towers\",\n                \"deletedByName\": \"Super Admin\",\n                \"restoredAt\": null,\n                \"restoredByName\": null,\n                \"permanentlyDeletable\": true,\n                \"restorable\": false\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -2233,7 +2233,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Record restored successfully.\",\n    \"permanentlyDeletable\": true,\n    \"restorable\": false\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Record restored successfully.\",\n    \"data\": {\n        \"message\": \"Record restored successfully.\",\n        \"permanentlyDeletable\": true,\n        \"restorable\": false\n    }\n}"
                         }
                     ]
                 },
@@ -2304,7 +2304,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Deleted history record permanently deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Deleted history record permanently deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -2375,7 +2375,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"entityType\": \"Building\",\n    \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"entityTitle\": \"Grand Plaza Towers\",\n    \"deletedByName\": \"Super Admin\",\n    \"restoredAt\": null,\n    \"restoredByName\": null,\n    \"entityData\": {\n        \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"address\": \"123 Skyline Boulevard\",\n        \"city\": \"New York\",\n        \"state\": \"NY\",\n        \"country\": \"USA\",\n        \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n        \"totalFloors\": 24,\n        \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n        \"status\": \"active\",\n        \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n        \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n    },\n    \"permanentlyDeletable\": true,\n    \"restorable\": false\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"4da2b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"entityType\": \"Building\",\n        \"entityId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"entityTitle\": \"Grand Plaza Towers\",\n        \"deletedByName\": \"Super Admin\",\n        \"restoredAt\": null,\n        \"restoredByName\": null,\n        \"entityData\": {\n            \"id\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"address\": \"123 Skyline Boulevard\",\n            \"city\": \"New York\",\n            \"state\": \"NY\",\n            \"country\": \"USA\",\n            \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n            \"totalFloors\": 24,\n            \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n            \"status\": \"active\",\n            \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n            \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n        },\n        \"permanentlyDeletable\": true,\n        \"restorable\": false\n    }\n}"
                         }
                     ]
                 }
@@ -2457,7 +2457,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"url\": \"http://localhost:5000/uploads/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7.png\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"http://localhost:5000/uploads/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7.png\"\n    }\n}"
                         }
                     ]
                 },
@@ -2534,7 +2534,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"url\": \"http://localhost:5000/uploads/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7.pdf\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"http://localhost:5000/uploads/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7.pdf\"\n    }\n}"
                         }
                     ]
                 },
@@ -2611,7 +2611,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"url\": \"http://localhost:5000/uploads/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7.pdf\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"http://localhost:5000/uploads/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7.pdf\"\n    }\n}"
                         }
                     ]
                 },
@@ -2682,7 +2682,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"File deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"File deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -2787,7 +2787,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"fullName\": \"Amit Sharma\",\n            \"phone\": \"+91 9988776655\",\n            \"email\": \"amit.sharma@example.com\",\n            \"city\": \"Mumbai\",\n            \"address\": \"45, Marine Drive\",\n            \"idType\": \"Aadhaar\",\n            \"idNumber\": \"1234-5678-9012\",\n            \"bankName\": \"HDFC Bank\",\n            \"accountNumber\": \"50100223344556\",\n            \"ifscCode\": \"HDFC0000123\",\n            \"status\": \"active\",\n            \"notes\": \"Primary owner for block B.\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"fullName\": \"Amit Sharma\",\n                \"phone\": \"+91 9988776655\",\n                \"email\": \"amit.sharma@example.com\",\n                \"city\": \"Mumbai\",\n                \"address\": \"45, Marine Drive\",\n                \"idType\": \"Aadhaar\",\n                \"idNumber\": \"1234-5678-9012\",\n                \"bankName\": \"HDFC Bank\",\n                \"accountNumber\": \"50100223344556\",\n                \"ifscCode\": \"HDFC0000123\",\n                \"status\": \"active\",\n                \"notes\": \"Primary owner for block B.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -2858,7 +2858,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"fullName\": \"Amit Sharma\",\n    \"phone\": \"+91 9988776655\",\n    \"email\": \"amit.sharma@example.com\",\n    \"city\": \"Mumbai\",\n    \"address\": \"45, Marine Drive\",\n    \"idType\": \"Aadhaar\",\n    \"idNumber\": \"1234-5678-9012\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountNumber\": \"50100223344556\",\n    \"ifscCode\": \"HDFC0000123\",\n    \"status\": \"active\",\n    \"notes\": \"Primary owner for block B.\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"fullName\": \"Amit Sharma\",\n        \"phone\": \"+91 9988776655\",\n        \"email\": \"amit.sharma@example.com\",\n        \"city\": \"Mumbai\",\n        \"address\": \"45, Marine Drive\",\n        \"idType\": \"Aadhaar\",\n        \"idNumber\": \"1234-5678-9012\",\n        \"bankName\": \"HDFC Bank\",\n        \"accountNumber\": \"50100223344556\",\n        \"ifscCode\": \"HDFC0000123\",\n        \"status\": \"active\",\n        \"notes\": \"Primary owner for block B.\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -2931,7 +2931,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Owner created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Owner created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -3020,7 +3020,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Owner updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Owner updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -3117,7 +3117,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Owner deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Owner deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -3242,7 +3242,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"ownerId\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"ownerName\": \"Amit Sharma\",\n            \"nestawayId\": \"NST-7719\",\n            \"flatNumber\": \"1204-B\",\n            \"floor\": 12,\n            \"apartmentType\": \"3BHK\",\n            \"areaSqft\": 1450.0,\n            \"bedrooms\": 3,\n            \"bathrooms\": 3,\n            \"hasBalcony\": true,\n            \"parkingSlot\": \"P-12\",\n            \"expectedRent\": 45000.0,\n            \"maintenanceCharge\": 3500.0,\n            \"waterCharge\": 500.0,\n            \"currentTenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"ownerId\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"ownerName\": \"Amit Sharma\",\n                \"nestawayId\": \"NST-7719\",\n                \"flatNumber\": \"1204-B\",\n                \"floor\": 12,\n                \"apartmentType\": \"3BHK\",\n                \"areaSqft\": 1450.0,\n                \"bedrooms\": 3,\n                \"bathrooms\": 3,\n                \"hasBalcony\": true,\n                \"parkingSlot\": \"P-12\",\n                \"expectedRent\": 45000.0,\n                \"maintenanceCharge\": 3500.0,\n                \"waterCharge\": 500.0,\n                \"currentTenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -3313,7 +3313,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"ownerId\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"ownerName\": \"Amit Sharma\",\n    \"nestawayId\": \"NST-7719\",\n    \"flatNumber\": \"1204-B\",\n    \"floor\": 12,\n    \"apartmentType\": \"3BHK\",\n    \"areaSqft\": 1450.0,\n    \"bedrooms\": 3,\n    \"bathrooms\": 3,\n    \"hasBalcony\": true,\n    \"parkingSlot\": \"P-12\",\n    \"expectedRent\": 45000.0,\n    \"maintenanceCharge\": 3500.0,\n    \"waterCharge\": 500.0,\n    \"currentTenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"ownerId\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"ownerName\": \"Amit Sharma\",\n        \"nestawayId\": \"NST-7719\",\n        \"flatNumber\": \"1204-B\",\n        \"floor\": 12,\n        \"apartmentType\": \"3BHK\",\n        \"areaSqft\": 1450.0,\n        \"bedrooms\": 3,\n        \"bathrooms\": 3,\n        \"hasBalcony\": true,\n        \"parkingSlot\": \"P-12\",\n        \"expectedRent\": 45000.0,\n        \"maintenanceCharge\": 3500.0,\n        \"waterCharge\": 500.0,\n        \"currentTenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -3386,7 +3386,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Apartment created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Apartment created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -3475,7 +3475,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Apartment updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Apartment updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -3572,7 +3572,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Apartment deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Apartment deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -3696,7 +3696,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"flatNumber\": \"1204-B\",\n            \"nestawayId\": \"NST-7719\",\n            \"fullName\": \"John Tenant\",\n            \"phone\": \"+1 555-0199\",\n            \"email\": \"john.t@example.com\",\n            \"idType\": \"Passport\",\n            \"idNumber\": \"Z1234567\",\n            \"idProofAttachmentUrl\": \"https://example.com/uploads/uuid.pdf\",\n            \"moveInDate\": \"2026-07-20T00:00:00Z\",\n            \"leaseStartDate\": \"2026-07-20T00:00:00Z\",\n            \"leaseEndDate\": \"2027-07-20T00:00:00Z\",\n            \"monthlyRent\": 45000.0,\n            \"securityDeposit\": 90000.0,\n            \"emergencyContactName\": \"Mary Tenant\",\n            \"emergencyContactPhone\": \"+1 555-0200\",\n            \"status\": \"active\",\n            \"notes\": \"Lease verified.\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"1204-B\",\n                \"nestawayId\": \"NST-7719\",\n                \"fullName\": \"John Tenant\",\n                \"phone\": \"+1 555-0199\",\n                \"email\": \"john.t@example.com\",\n                \"idType\": \"Passport\",\n                \"idNumber\": \"Z1234567\",\n                \"idProofAttachmentUrl\": \"https://example.com/uploads/uuid.pdf\",\n                \"moveInDate\": \"2026-07-20T00:00:00Z\",\n                \"leaseStartDate\": \"2026-07-20T00:00:00Z\",\n                \"leaseEndDate\": \"2027-07-20T00:00:00Z\",\n                \"monthlyRent\": 45000.0,\n                \"securityDeposit\": 90000.0,\n                \"emergencyContactName\": \"Mary Tenant\",\n                \"emergencyContactPhone\": \"+1 555-0200\",\n                \"status\": \"active\",\n                \"notes\": \"Lease verified.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -3767,7 +3767,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"flatNumber\": \"1204-B\",\n    \"nestawayId\": \"NST-7719\",\n    \"fullName\": \"John Tenant\",\n    \"phone\": \"+1 555-0199\",\n    \"email\": \"john.t@example.com\",\n    \"idType\": \"Passport\",\n    \"idNumber\": \"Z1234567\",\n    \"idProofAttachmentUrl\": \"https://example.com/uploads/uuid.pdf\",\n    \"moveInDate\": \"2026-07-20T00:00:00Z\",\n    \"leaseStartDate\": \"2026-07-20T00:00:00Z\",\n    \"leaseEndDate\": \"2027-07-20T00:00:00Z\",\n    \"monthlyRent\": 45000.0,\n    \"securityDeposit\": 90000.0,\n    \"emergencyContactName\": \"Mary Tenant\",\n    \"emergencyContactPhone\": \"+1 555-0200\",\n    \"status\": \"active\",\n    \"notes\": \"Lease verified.\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"flatNumber\": \"1204-B\",\n        \"nestawayId\": \"NST-7719\",\n        \"fullName\": \"John Tenant\",\n        \"phone\": \"+1 555-0199\",\n        \"email\": \"john.t@example.com\",\n        \"idType\": \"Passport\",\n        \"idNumber\": \"Z1234567\",\n        \"idProofAttachmentUrl\": \"https://example.com/uploads/uuid.pdf\",\n        \"moveInDate\": \"2026-07-20T00:00:00Z\",\n        \"leaseStartDate\": \"2026-07-20T00:00:00Z\",\n        \"leaseEndDate\": \"2027-07-20T00:00:00Z\",\n        \"monthlyRent\": 45000.0,\n        \"securityDeposit\": 90000.0,\n        \"emergencyContactName\": \"Mary Tenant\",\n        \"emergencyContactPhone\": \"+1 555-0200\",\n        \"status\": \"active\",\n        \"notes\": \"Lease verified.\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -3840,7 +3840,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Tenant created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Tenant created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -3929,7 +3929,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Tenant updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Tenant updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -4026,7 +4026,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Tenant deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Tenant deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -4117,7 +4117,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Move-out record created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Move-out record created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -4190,7 +4190,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"b1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"tenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"tenantName\": \"John Tenant\",\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"flatNumber\": \"1204-B\",\n    \"moveOutDate\": \"2027-07-20T00:00:00Z\",\n    \"pendingRent\": 0.0,\n    \"damageAmount\": 5000.0,\n    \"refundAmount\": 85000.0,\n    \"idNumber\": \"Z1234567\",\n    \"handoverNote\": \"Keys returned, some minor wall scratches.\",\n    \"processedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"processedByName\": \"Super Admin\",\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"b1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"tenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"tenantName\": \"John Tenant\",\n        \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"flatNumber\": \"1204-B\",\n        \"moveOutDate\": \"2027-07-20T00:00:00Z\",\n        \"pendingRent\": 0.0,\n        \"damageAmount\": 5000.0,\n        \"refundAmount\": 85000.0,\n        \"idNumber\": \"Z1234567\",\n        \"handoverNote\": \"Keys returned, some minor wall scratches.\",\n        \"processedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"processedByName\": \"Super Admin\",\n        \"createdAt\": \"2026-07-21T18:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -4281,7 +4281,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Move-out record updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Move-out record updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -4380,7 +4380,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Move-out record deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Move-out record deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -4494,7 +4494,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"name\": \"Rajesh Sharma\",\n            \"companyName\": \"Sharma Elevator Services\",\n            \"phone\": \"+91 9876500112\",\n            \"email\": \"sharma.elevators@example.com\",\n            \"vendorType\": \"elevator\",\n            \"gstNumber\": \"29AAAAA1111A1Z1\",\n            \"address\": \"12, MG Road, Bangalore\",\n            \"status\": \"active\",\n            \"notes\": \"Elevator maintenance vendor.\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Rajesh Sharma\",\n                \"companyName\": \"Sharma Elevator Services\",\n                \"phone\": \"+91 9876500112\",\n                \"email\": \"sharma.elevators@example.com\",\n                \"vendorType\": \"elevator\",\n                \"gstNumber\": \"29AAAAA1111A1Z1\",\n                \"address\": \"12, MG Road, Bangalore\",\n                \"status\": \"active\",\n                \"notes\": \"Elevator maintenance vendor.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -4565,7 +4565,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"name\": \"Rajesh Sharma\",\n    \"companyName\": \"Sharma Elevator Services\",\n    \"phone\": \"+91 9876500112\",\n    \"email\": \"sharma.elevators@example.com\",\n    \"vendorType\": \"elevator\",\n    \"gstNumber\": \"29AAAAA1111A1Z1\",\n    \"address\": \"12, MG Road, Bangalore\",\n    \"status\": \"active\",\n    \"notes\": \"Elevator maintenance vendor.\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"name\": \"Rajesh Sharma\",\n        \"companyName\": \"Sharma Elevator Services\",\n        \"phone\": \"+91 9876500112\",\n        \"email\": \"sharma.elevators@example.com\",\n        \"vendorType\": \"elevator\",\n        \"gstNumber\": \"29AAAAA1111A1Z1\",\n        \"address\": \"12, MG Road, Bangalore\",\n        \"status\": \"active\",\n        \"notes\": \"Elevator maintenance vendor.\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -4638,7 +4638,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Vendor created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Vendor created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -4727,7 +4727,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Vendor updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Vendor updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -4824,7 +4824,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Vendor deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Vendor deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -4958,7 +4958,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"name\": \"OTIS Elevator Block A\",\n            \"type\": \"elevator\",\n            \"brand\": \"OTIS\",\n            \"model\": \"Gen2\",\n            \"serialNumber\": \"OTIS-55291-A\",\n            \"installDate\": \"2026-07-20T00:00:00Z\",\n            \"warrantyExpiryDate\": \"2028-07-20T00:00:00Z\",\n            \"amcVendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"amcVendorName\": \"Rajesh Sharma\",\n            \"amcVendorCompanyName\": \"Sharma Elevator Services\",\n            \"amcExpiryDate\": \"2027-07-20T00:00:00Z\",\n            \"lastServiceDate\": \"2026-07-20T00:00:00Z\",\n            \"nextServiceDate\": \"2026-10-20T00:00:00Z\",\n            \"status\": \"operational\",\n            \"notes\": \"Working perfectly.\",\n            \"attachmentUrl\": \"https://example.com/uploads/manual.pdf\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"name\": \"OTIS Elevator Block A\",\n                \"type\": \"elevator\",\n                \"brand\": \"OTIS\",\n                \"model\": \"Gen2\",\n                \"serialNumber\": \"OTIS-55291-A\",\n                \"installDate\": \"2026-07-20T00:00:00Z\",\n                \"warrantyExpiryDate\": \"2028-07-20T00:00:00Z\",\n                \"amcVendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"amcVendorName\": \"Rajesh Sharma\",\n                \"amcVendorCompanyName\": \"Sharma Elevator Services\",\n                \"amcExpiryDate\": \"2027-07-20T00:00:00Z\",\n                \"lastServiceDate\": \"2026-07-20T00:00:00Z\",\n                \"nextServiceDate\": \"2026-10-20T00:00:00Z\",\n                \"status\": \"operational\",\n                \"notes\": \"Working perfectly.\",\n                \"attachmentUrl\": \"https://example.com/uploads/manual.pdf\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -5029,7 +5029,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"name\": \"OTIS Elevator Block A\",\n    \"type\": \"elevator\",\n    \"brand\": \"OTIS\",\n    \"model\": \"Gen2\",\n    \"serialNumber\": \"OTIS-55291-A\",\n    \"installDate\": \"2026-07-20T00:00:00Z\",\n    \"warrantyExpiryDate\": \"2028-07-20T00:00:00Z\",\n    \"amcVendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"amcVendorName\": \"Rajesh Sharma\",\n    \"amcVendorCompanyName\": \"Sharma Elevator Services\",\n    \"amcExpiryDate\": \"2027-07-20T00:00:00Z\",\n    \"lastServiceDate\": \"2026-07-20T00:00:00Z\",\n    \"nextServiceDate\": \"2026-10-20T00:00:00Z\",\n    \"status\": \"operational\",\n    \"notes\": \"Working perfectly.\",\n    \"attachmentUrl\": \"https://example.com/uploads/manual.pdf\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"name\": \"OTIS Elevator Block A\",\n        \"type\": \"elevator\",\n        \"brand\": \"OTIS\",\n        \"model\": \"Gen2\",\n        \"serialNumber\": \"OTIS-55291-A\",\n        \"installDate\": \"2026-07-20T00:00:00Z\",\n        \"warrantyExpiryDate\": \"2028-07-20T00:00:00Z\",\n        \"amcVendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"amcVendorName\": \"Rajesh Sharma\",\n        \"amcVendorCompanyName\": \"Sharma Elevator Services\",\n        \"amcExpiryDate\": \"2027-07-20T00:00:00Z\",\n        \"lastServiceDate\": \"2026-07-20T00:00:00Z\",\n        \"nextServiceDate\": \"2026-10-20T00:00:00Z\",\n        \"status\": \"operational\",\n        \"notes\": \"Working perfectly.\",\n        \"attachmentUrl\": \"https://example.com/uploads/manual.pdf\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -5102,7 +5102,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Equipment created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Equipment created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -5191,7 +5191,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Equipment updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Equipment updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -5288,7 +5288,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Equipment deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Equipment deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -5379,7 +5379,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Equipment status updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Equipment status updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -5513,7 +5513,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"amcCode\": \"AMC-2026-001\",\n            \"contractNumber\": \"CON-88192-A\",\n            \"contractTitle\": \"Elevator Maintenance Contract Block A\",\n            \"contractType\": \"comprehensive\",\n            \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"equipmentName\": \"OTIS Elevator Block A\",\n            \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"vendorName\": \"Rajesh Sharma\",\n            \"vendorCompanyName\": \"Sharma Elevator Services\",\n            \"startDate\": \"2026-07-20T00:00:00Z\",\n            \"endDate\": \"2027-07-20T00:00:00Z\",\n            \"contractAmount\": 120000.0,\n            \"paymentTerms\": \"quarterly\",\n            \"serviceFrequency\": \"monthly\",\n            \"coverageDetails\": \"All spare parts and labour included.\",\n            \"exclusions\": \"Damage due to natural disasters.\",\n            \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n            \"remarks\": \"Renewed for 1 year.\",\n            \"status\": \"active\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"amcCode\": \"AMC-2026-001\",\n                \"contractNumber\": \"CON-88192-A\",\n                \"contractTitle\": \"Elevator Maintenance Contract Block A\",\n                \"contractType\": \"comprehensive\",\n                \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"equipmentName\": \"OTIS Elevator Block A\",\n                \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Rajesh Sharma\",\n                \"vendorCompanyName\": \"Sharma Elevator Services\",\n                \"startDate\": \"2026-07-20T00:00:00Z\",\n                \"endDate\": \"2027-07-20T00:00:00Z\",\n                \"contractAmount\": 120000.0,\n                \"paymentTerms\": \"quarterly\",\n                \"serviceFrequency\": \"monthly\",\n                \"coverageDetails\": \"All spare parts and labour included.\",\n                \"exclusions\": \"Damage due to natural disasters.\",\n                \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n                \"remarks\": \"Renewed for 1 year.\",\n                \"status\": \"active\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -5584,7 +5584,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"amcCode\": \"AMC-2026-001\",\n    \"contractNumber\": \"CON-88192-A\",\n    \"contractTitle\": \"Elevator Maintenance Contract Block A\",\n    \"contractType\": \"comprehensive\",\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"equipmentName\": \"OTIS Elevator Block A\",\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"vendorName\": \"Rajesh Sharma\",\n    \"vendorCompanyName\": \"Sharma Elevator Services\",\n    \"startDate\": \"2026-07-20T00:00:00Z\",\n    \"endDate\": \"2027-07-20T00:00:00Z\",\n    \"contractAmount\": 120000.0,\n    \"paymentTerms\": \"quarterly\",\n    \"serviceFrequency\": \"monthly\",\n    \"coverageDetails\": \"All spare parts and labour included.\",\n    \"exclusions\": \"Damage due to natural disasters.\",\n    \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n    \"remarks\": \"Renewed for 1 year.\",\n    \"status\": \"active\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"amcCode\": \"AMC-2026-001\",\n        \"contractNumber\": \"CON-88192-A\",\n        \"contractTitle\": \"Elevator Maintenance Contract Block A\",\n        \"contractType\": \"comprehensive\",\n        \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"equipmentName\": \"OTIS Elevator Block A\",\n        \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"vendorName\": \"Rajesh Sharma\",\n        \"vendorCompanyName\": \"Sharma Elevator Services\",\n        \"startDate\": \"2026-07-20T00:00:00Z\",\n        \"endDate\": \"2027-07-20T00:00:00Z\",\n        \"contractAmount\": 120000.0,\n        \"paymentTerms\": \"quarterly\",\n        \"serviceFrequency\": \"monthly\",\n        \"coverageDetails\": \"All spare parts and labour included.\",\n        \"exclusions\": \"Damage due to natural disasters.\",\n        \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n        \"remarks\": \"Renewed for 1 year.\",\n        \"status\": \"active\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -5641,7 +5641,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"activeCount\": 5,\n    \"expiredCount\": 1,\n    \"cancelledCount\": 0,\n    \"totalCount\": 8,\n    \"expiringInThirtyDaysCount\": 2\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"activeCount\": 5,\n        \"expiredCount\": 1,\n        \"cancelledCount\": 0,\n        \"totalCount\": 8,\n        \"expiringInThirtyDaysCount\": 2\n    }\n}"
                         }
                     ]
                 },
@@ -5714,7 +5714,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"AMC contract created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"AMC contract created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -5803,7 +5803,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"AMC contract updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"AMC contract updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -5900,7 +5900,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"AMC contract deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"AMC contract deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -6054,7 +6054,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"title\": \"Leaking Pipe in Kitchen\",\n            \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\",\n            \"category\": \"Plumbing\",\n            \"priority\": \"High\",\n            \"status\": \"Open\",\n            \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"vendorName\": \"Rajesh Sharma\",\n            \"vendorCompanyName\": \"Sharma Elevator Services\",\n            \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"equipmentName\": \"OTIS Elevator Block A\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"flatNumber\": \"1204-B\",\n            \"estimatedCost\": 2500.0,\n            \"annualCost\": 15000.0,\n            \"scheduledDate\": \"2026-07-22T10:00:00Z\",\n            \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n            \"notes\": \"Emergency plumber called.\",\n            \"createdAt\": \"2026-07-21T18:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"Leaking Pipe in Kitchen\",\n                \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\",\n                \"category\": \"Plumbing\",\n                \"priority\": \"High\",\n                \"status\": \"Open\",\n                \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Rajesh Sharma\",\n                \"vendorCompanyName\": \"Sharma Elevator Services\",\n                \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"equipmentName\": \"OTIS Elevator Block A\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"1204-B\",\n                \"estimatedCost\": 2500.0,\n                \"annualCost\": 15000.0,\n                \"scheduledDate\": \"2026-07-22T10:00:00Z\",\n                \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n                \"notes\": \"Emergency plumber called.\",\n                \"createdAt\": \"2026-07-21T18:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -6111,7 +6111,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"title\": \"Leaking Pipe in Kitchen\",\n    \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\",\n    \"category\": \"Plumbing\",\n    \"priority\": \"High\",\n    \"status\": \"Open\",\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"vendorName\": \"Rajesh Sharma\",\n    \"vendorCompanyName\": \"Sharma Elevator Services\",\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"equipmentName\": \"OTIS Elevator Block A\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"flatNumber\": \"1204-B\",\n    \"estimatedCost\": 2500.0,\n    \"annualCost\": 15000.0,\n    \"scheduledDate\": \"2026-07-22T10:00:00Z\",\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n    \"notes\": \"Emergency plumber called.\",\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"e3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"title\": \"Leaking Pipe in Kitchen\",\n        \"description\": \"The kitchen pipe under the sink has a major leak causing water accumulation.\",\n        \"category\": \"Plumbing\",\n        \"priority\": \"High\",\n        \"status\": \"Open\",\n        \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"vendorName\": \"Rajesh Sharma\",\n        \"vendorCompanyName\": \"Sharma Elevator Services\",\n        \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"equipmentName\": \"OTIS Elevator Block A\",\n        \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"flatNumber\": \"1204-B\",\n        \"estimatedCost\": 2500.0,\n        \"annualCost\": 15000.0,\n        \"scheduledDate\": \"2026-07-22T10:00:00Z\",\n        \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n        \"notes\": \"Emergency plumber called.\",\n        \"createdAt\": \"2026-07-21T18:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -6184,7 +6184,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Maintenance request created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Maintenance request created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6259,7 +6259,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Maintenance request updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Maintenance request updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6342,7 +6342,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Maintenance request deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Maintenance request deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6419,7 +6419,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Maintenance request status updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Maintenance request status updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6496,7 +6496,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Maintenance request assignment updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Maintenance request assignment updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6553,7 +6553,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"openCount\": 3,\n    \"inProgressCount\": 2,\n    \"completeCount\": 5,\n    \"cancelledCount\": 1,\n    \"totalCount\": 11\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"openCount\": 3,\n        \"inProgressCount\": 2,\n        \"completeCount\": 5,\n        \"cancelledCount\": 1,\n        \"totalCount\": 11\n    }\n}"
                         }
                     ]
                 }
@@ -6707,7 +6707,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"incomeEntity\": \"ApartmentWise\",\n            \"incomeType\": \"Rent\",\n            \"amount\": 12000.0,\n            \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"tenantName\": \"Adnan Mansoor\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"flatNumber\": \"1204-B\",\n            \"period\": \"July 2026\",\n            \"paymentDate\": \"2026-07-22T00:00:00Z\",\n            \"paymentMethod\": \"BankTransfer\",\n            \"transactionReference\": \"TXN123456789\",\n            \"status\": \"Paid\",\n            \"notes\": \"Rent payment received via bank transfer.\",\n            \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n            \"createdAt\": \"2026-07-21T18:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"incomeEntity\": \"ApartmentWise\",\n                \"incomeType\": \"Rent\",\n                \"amount\": 12000.0,\n                \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"tenantName\": \"Adnan Mansoor\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"1204-B\",\n                \"period\": \"July 2026\",\n                \"paymentDate\": \"2026-07-22T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"transactionReference\": \"TXN123456789\",\n                \"status\": \"Paid\",\n                \"notes\": \"Rent payment received via bank transfer.\",\n                \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n                \"createdAt\": \"2026-07-21T18:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -6764,7 +6764,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"incomeEntity\": \"ApartmentWise\",\n    \"incomeType\": \"Rent\",\n    \"amount\": 12000.0,\n    \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"tenantName\": \"Adnan Mansoor\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"flatNumber\": \"1204-B\",\n    \"period\": \"July 2026\",\n    \"paymentDate\": \"2026-07-22T00:00:00Z\",\n    \"paymentMethod\": \"BankTransfer\",\n    \"transactionReference\": \"TXN123456789\",\n    \"status\": \"Paid\",\n    \"notes\": \"Rent payment received via bank transfer.\",\n    \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"incomeEntity\": \"ApartmentWise\",\n        \"incomeType\": \"Rent\",\n        \"amount\": 12000.0,\n        \"tenantId\": \"c3a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"tenantName\": \"Adnan Mansoor\",\n        \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"flatNumber\": \"1204-B\",\n        \"period\": \"July 2026\",\n        \"paymentDate\": \"2026-07-22T00:00:00Z\",\n        \"paymentMethod\": \"BankTransfer\",\n        \"transactionReference\": \"TXN123456789\",\n        \"status\": \"Paid\",\n        \"notes\": \"Rent payment received via bank transfer.\",\n        \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n        \"createdAt\": \"2026-07-21T18:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -6837,7 +6837,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Income record created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Income record created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6912,7 +6912,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Income record updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Income record updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -6995,7 +6995,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Income record deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Income record deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -7072,7 +7072,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Income status updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Income status updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -7426,7 +7426,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"category\": \"Utility\",\n            \"expenseHead\": \"Supplemental Water Supply\",\n            \"specificItem\": \"Water Tanker Purchase\",\n            \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"vendorName\": \"Falcon Water Suppliers\",\n            \"vendorCompanyName\": \"Falcon Trading Ltd\",\n            \"nature\": \"Material\",\n            \"amount\": 450.0,\n            \"entity\": \"BuildingLevel\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"apartmentId\": null,\n            \"flatNumber\": null,\n            \"expenseDate\": \"2026-07-22T00:00:00Z\",\n            \"paymentMethod\": \"Cash\",\n            \"status\": \"Paid\",\n            \"reference\": \"WT-7782\",\n            \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\",\n            \"description\": \"5000L water tank delivery to building.\",\n            \"tankerNumber\": \"T-9082-SA\",\n            \"timeOfDelivery\": \"2026-07-22T10:30:00Z\",\n            \"deliveryDriverName\": \"Farhan Khan\",\n            \"managerInAttendance\": \"Adnan Siddiqui\",\n            \"litersFilled\": 5000,\n            \"createdAt\": \"2026-07-21T18:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"category\": \"Utility\",\n                \"expenseHead\": \"Supplemental Water Supply\",\n                \"specificItem\": \"Water Tanker Purchase\",\n                \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Falcon Water Suppliers\",\n                \"vendorCompanyName\": \"Falcon Trading Ltd\",\n                \"nature\": \"Material\",\n                \"amount\": 450.0,\n                \"entity\": \"BuildingLevel\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": null,\n                \"flatNumber\": null,\n                \"expenseDate\": \"2026-07-22T00:00:00Z\",\n                \"paymentMethod\": \"Cash\",\n                \"status\": \"Paid\",\n                \"reference\": \"WT-7782\",\n                \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\",\n                \"description\": \"5000L water tank delivery to building.\",\n                \"tankerNumber\": \"T-9082-SA\",\n                \"timeOfDelivery\": \"2026-07-22T10:30:00Z\",\n                \"deliveryDriverName\": \"Farhan Khan\",\n                \"managerInAttendance\": \"Adnan Siddiqui\",\n                \"litersFilled\": 5000,\n                \"createdAt\": \"2026-07-21T18:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -7483,7 +7483,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"category\": \"Utility\",\n    \"expenseHead\": \"Supplemental Water Supply\",\n    \"specificItem\": \"Water Tanker Purchase\",\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"vendorName\": \"Falcon Water Suppliers\",\n    \"vendorCompanyName\": \"Falcon Trading Ltd\",\n    \"nature\": \"Material\",\n    \"amount\": 450.0,\n    \"entity\": \"BuildingLevel\",\n    \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"apartmentId\": null,\n    \"flatNumber\": null,\n    \"expenseDate\": \"2026-07-22T00:00:00Z\",\n    \"paymentMethod\": \"Cash\",\n    \"status\": \"Paid\",\n    \"reference\": \"WT-7782\",\n    \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\",\n    \"description\": \"5000L water tank delivery to building.\",\n    \"tankerNumber\": \"T-9082-SA\",\n    \"timeOfDelivery\": \"2026-07-22T10:30:00Z\",\n    \"deliveryDriverName\": \"Farhan Khan\",\n    \"managerInAttendance\": \"Adnan Siddiqui\",\n    \"litersFilled\": 5000,\n    \"createdAt\": \"2026-07-21T18:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"f5b3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"category\": \"Utility\",\n        \"expenseHead\": \"Supplemental Water Supply\",\n        \"specificItem\": \"Water Tanker Purchase\",\n        \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"vendorName\": \"Falcon Water Suppliers\",\n        \"vendorCompanyName\": \"Falcon Trading Ltd\",\n        \"nature\": \"Material\",\n        \"amount\": 450.0,\n        \"entity\": \"BuildingLevel\",\n        \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"apartmentId\": null,\n        \"flatNumber\": null,\n        \"expenseDate\": \"2026-07-22T00:00:00Z\",\n        \"paymentMethod\": \"Cash\",\n        \"status\": \"Paid\",\n        \"reference\": \"WT-7782\",\n        \"attachmentUrl\": \"https://example.com/uploads/tanker-invoice.pdf\",\n        \"description\": \"5000L water tank delivery to building.\",\n        \"tankerNumber\": \"T-9082-SA\",\n        \"timeOfDelivery\": \"2026-07-22T10:30:00Z\",\n        \"deliveryDriverName\": \"Farhan Khan\",\n        \"managerInAttendance\": \"Adnan Siddiqui\",\n        \"litersFilled\": 5000,\n        \"createdAt\": \"2026-07-21T18:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                         }
                     ]
                 },
@@ -7556,7 +7556,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Expense record created successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Expense record created successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -7631,7 +7631,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Expense record updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Expense record updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -7714,7 +7714,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Expense record deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Expense record deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -7791,7 +7791,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Expense status updated successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Expense status updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -7881,7 +7881,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"e4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"type\": \"operations\",\n            \"title\": \"Maintenance Request Status Updated\",\n            \"detail\": \"Request 'Fix elevator' status changed to 'Complete'.\",\n            \"createdAt\": \"2026-07-25T18:00:00Z\",\n            \"isRead\": false,\n            \"readAt\": null\n        }\n    ],\n    \"totalCount\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"type\": \"operations\",\n                \"title\": \"Maintenance Request Status Updated\",\n                \"detail\": \"Request 'Fix elevator' status changed to 'Complete'.\",\n                \"createdAt\": \"2026-07-25T18:00:00Z\",\n                \"isRead\": false,\n                \"readAt\": null\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 },
@@ -7938,7 +7938,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"unreadCount\": 1,\n    \"totalCount\": 5\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"unreadCount\": 1,\n        \"totalCount\": 5\n    }\n}"
                         }
                     ]
                 },
@@ -7997,7 +7997,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Notification marked as read successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Notification marked as read successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -8054,7 +8054,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"All notifications marked as read successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"All notifications marked as read successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -8111,7 +8111,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"Notification deleted successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Notification deleted successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 },
@@ -8168,7 +8168,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"message\": \"All notifications cleared successfully.\"\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"All notifications cleared successfully.\",\n    \"data\": null\n}"
                         }
                     ]
                 }
@@ -8253,7 +8253,7 @@
                                 }
                             ],
                             "cookie": [],
-                            "body": "{\n    \"items\": [\n        {\n            \"id\": \"c4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"actionType\": \"Create\",\n            \"entityType\": \"IncomeRecord\",\n            \"entityId\": \"d4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"description\": \"Rent payment of 45,000 SAR received from Meera Iyer (Flat 301).\",\n            \"createdAt\": \"2026-07-25T18:00:00Z\"\n        },\n        {\n            \"id\": \"c4f3b822-29c4-52a8-ad29-c8be5d491f25\",\n            \"actionType\": \"StatusChange\",\n            \"entityType\": \"MaintenanceRequest\",\n            \"entityId\": \"d4f3b822-29c4-52a8-ad29-c8be5d491f25\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"description\": \"Critical: 'CCTV camera malfunction' status changed to 'InProgress' at Skyline Residency.\",\n            \"createdAt\": \"2026-07-25T18:10:00Z\"\n        }\n    ],\n    \"totalCount\": 2,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+                            "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"c4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"actionType\": \"Create\",\n                \"entityType\": \"IncomeRecord\",\n                \"entityId\": \"d4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"description\": \"Rent payment of 45,000 SAR received from Meera Iyer (Flat 301).\",\n                \"createdAt\": \"2026-07-25T18:00:00Z\"\n            },\n            {\n                \"id\": \"c4f3b822-29c4-52a8-ad29-c8be5d491f25\",\n                \"actionType\": \"StatusChange\",\n                \"entityType\": \"MaintenanceRequest\",\n                \"entityId\": \"d4f3b822-29c4-52a8-ad29-c8be5d491f25\",\n                \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"description\": \"Critical: 'CCTV camera malfunction' status changed to 'InProgress' at Skyline Residency.\",\n                \"createdAt\": \"2026-07-25T18:10:00Z\"\n            }\n        ],\n        \"totalCount\": 2,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
                         }
                     ]
                 }
