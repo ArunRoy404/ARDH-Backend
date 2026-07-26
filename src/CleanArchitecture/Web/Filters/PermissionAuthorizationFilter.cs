@@ -57,6 +57,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             // Route Permission Check (Applies to ALL HTTP methods including GET)
             if (path.StartsWith("/api/users", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/settings", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/deleted-history", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasAdminPermission)
