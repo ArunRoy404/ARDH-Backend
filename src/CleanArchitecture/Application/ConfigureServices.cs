@@ -29,6 +29,7 @@ public static class ConfigureServices
         services.AddTransient<IExpenseRecordService, ExpenseRecordService>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IActivityService, ActivityService>();
+        services.AddTransient<IDashboardService, DashboardService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();

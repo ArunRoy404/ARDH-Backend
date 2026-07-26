@@ -105,7 +105,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 }
             }
             else if (path.StartsWith("/api/notifications", StringComparison.OrdinalIgnoreCase) ||
-                     path.StartsWith("/api/activities", StringComparison.OrdinalIgnoreCase))
+                     path.StartsWith("/api/activities", StringComparison.OrdinalIgnoreCase) ||
+                     path.StartsWith("/api/dashboard", StringComparison.OrdinalIgnoreCase))
             {
                 var hasDashboardPermission = isPropertyManagerRole || permissionList.Contains("dashboard") || hasAdminPermission;
                 if (!hasDashboardPermission)
