@@ -400,4 +400,101 @@ public class ExpenseRecordService(
                 cancellationToken);
         }
     }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        ExpenseCategory? category,
+        ExpenseStatus? status,
+        ExpenseNature? nature,
+        Guid? buildingId,
+        Guid? vendorId,
+        DateTime? startDate,
+        DateTime? endDate,
+        CancellationToken cancellationToken)
+    {
+        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
+
+        var query = records.AsQueryable();
+
+        if (category.HasValue)
+        {
+            query = query.Where(x => x.Category == category.Value);
+        }
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (nature.HasValue)
+        {
+            query = query.Where(x => x.Nature == nature.Value);
+        }
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (vendorId.HasValue)
+        {
+            query = query.Where(x => x.VendorId == vendorId.Value);
+        }
+
+        if (startDate.HasValue)
+        {
+            query = query.Where(x => x.ExpenseDate >= startDate.Value);
+        }
+
+        if (endDate.HasValue)
+        {
+            query = query.Where(x => x.ExpenseDate <= endDate.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchLower = search.Trim().ToLower();
+            query = query.Where(x =>
+                (x.ExpenseHead != null && x.ExpenseHead.ToLower().Contains(searchLower)) ||
+                (x.SpecificItem != null && x.SpecificItem.ToLower().Contains(searchLower)) ||
+                (x.Reference != null && x.Reference.ToLower().Contains(searchLower)) ||
+                (x.Description != null && x.Description.ToLower().Contains(searchLower)) ||
+                (x.BuildingId.HasValue && buildingMap.ContainsKey(x.BuildingId.Value) && buildingMap[x.BuildingId.Value].ToLower().Contains(searchLower)) ||
+                (x.VendorId.HasValue && vendorMap.ContainsKey(x.VendorId.Value) && (vendorMap[x.VendorId.Value].Name.ToLower().Contains(searchLower) || vendorMap[x.VendorId.Value].CompanyName.ToLower().Contains(searchLower))) ||
+                (x.ApartmentId.HasValue && apartmentMap.ContainsKey(x.ApartmentId.Value) && apartmentMap[x.ApartmentId.Value].ToLower().Contains(searchLower))
+            );
+        }
+
+        var list = query.OrderByDescending(x => x.ExpenseDate).ToList();
+
+        var csv = new System.Text.StringBuilder();
+        csv.AppendLine("ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt");
+
+        foreach (var r in list)
+        {
+            var vName = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v) ? v.Name : "";
+            var vComp = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v2) ? v2.CompanyName : "";
+            var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
+            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
+
+            var deliveryTime = r.TimeOfDelivery.HasValue ? r.TimeOfDelivery.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
+
+            csv.AppendLine($"\"{r.Id}\",\"{r.Category}\",\"{EscapeCsv(r.ExpenseHead)}\",\"{EscapeCsv(r.SpecificItem)}\",\"{EscapeCsv(vName)}\",\"{EscapeCsv(vComp)}\",\"{r.Nature}\",{r.Amount:F2},\"{r.Entity}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.ExpenseDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{r.Status}\",\"{EscapeCsv(r.Reference)}\",\"{EscapeCsv(r.Description)}\",\"{EscapeCsv(r.TankerNumber)}\",\"{deliveryTime}\",\"{EscapeCsv(r.DeliveryDriverName)}\",\"{EscapeCsv(r.ManagerInAttendance)}\",\"{r.LitersFilled}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+        }
+
+        return System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+    }
+
+    private static string EscapeCsv(string? val)
+    {
+        if (string.IsNullOrEmpty(val)) return "";
+        return val.Replace("\"", "\"\"");
+    }
 }

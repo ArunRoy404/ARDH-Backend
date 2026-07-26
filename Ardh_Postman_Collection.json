@@ -7794,6 +7794,71 @@
                             "body": "{\n    \"success\": true,\n    \"message\": \"Expense status updated successfully.\",\n    \"data\": null\n}"
                         }
                     ]
+                },
+                {
+                    "name": "EX-07. Download All Expenses CSV",
+                    "request": {
+                        "auth": {
+                            "type": "noauth"
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/expenses/download-csv?search=&category=&status=&nature=&buildingId=&vendorId=&startDate=&endDate=",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "expenses",
+                                "download-csv"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "",
+                                    "description": "Search term matching Expense Head, Specific Item, Reference, or Description"
+                                },
+                                {
+                                    "key": "category",
+                                    "value": "",
+                                    "description": "Filter by expense category: Maintenance, Repairs, Utilities, Supplies, Salaries, Taxes, Insurance, WaterTanker, Others"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "",
+                                    "description": "Filter by status: Paid, Pending, Cancelled"
+                                },
+                                {
+                                    "key": "nature",
+                                    "value": "",
+                                    "description": "Filter by nature of expense: Capital, Operational"
+                                },
+                                {
+                                    "key": "buildingId",
+                                    "value": "",
+                                    "description": "Filter by specific Building UUID"
+                                },
+                                {
+                                    "key": "vendorId",
+                                    "value": "",
+                                    "description": "Filter by specific Vendor UUID"
+                                },
+                                {
+                                    "key": "startDate",
+                                    "value": "",
+                                    "description": "Filter expenses starting from this date (YYYY-MM-DD)"
+                                },
+                                {
+                                    "key": "endDate",
+                                    "value": "",
+                                    "description": "Filter expenses ending on this date (YYYY-MM-DD)"
+                                }
+                            ]
+                        },
+                        "description": "Exports all filtered expense records to a CSV file."
+                    },
+                    "response": []
                 }
             ]
         },

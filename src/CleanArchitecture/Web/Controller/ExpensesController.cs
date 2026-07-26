@@ -125,4 +125,26 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
         await _expenseRecordService.UpdateStatus(id, request, cancellationToken);
         return Ok(new { message = "Expense status updated successfully." });
     }
+
+    /// <summary>
+    /// [EX-07] Exports all filtered expense records to a CSV file.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file exported and downloaded successfully.", typeof(FileResult))]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] ExpenseCategory? category = null,
+        [FromQuery] ExpenseStatus? status = null,
+        [FromQuery] ExpenseNature? nature = null,
+        [FromQuery] Guid? buildingId = null,
+        [FromQuery] Guid? vendorId = null,
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _expenseRecordService.ExportToCsv(
+            search, category, status, nature, buildingId, vendorId, startDate, endDate, cancellationToken);
+        return File(bytes, "text/csv", "expense_records.csv");
+    }
 }

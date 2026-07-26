@@ -31,4 +31,15 @@ public interface IExpenseRecordService
     Task Delete(Guid id, CancellationToken cancellationToken);
 
     Task UpdateStatus(Guid id, ExpenseRecordStatusUpdateRequest request, CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToCsv(
+        string? search,
+        ExpenseCategory? category,
+        ExpenseStatus? status,
+        ExpenseNature? nature,
+        Guid? buildingId,
+        Guid? vendorId,
+        DateTime? startDate,
+        DateTime? endDate,
+        CancellationToken cancellationToken);
 }
