@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
 
@@ -23,7 +22,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         string? search,
         Guid? buildingId,
         Guid? ownerId,
-        ApartmentType? apartmentType,
+        string? apartmentType,
         CancellationToken cancellationToken)
     {
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
@@ -45,9 +44,9 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             query = query.Where(x => x.OwnerId == ownerId.Value);
         }
 
-        if (apartmentType.HasValue)
+        if (!string.IsNullOrWhiteSpace(apartmentType))
         {
-            query = query.Where(x => x.ApartmentType == apartmentType.Value);
+            query = query.Where(x => x.ApartmentType == apartmentType.Trim());
         }
 
         if (!string.IsNullOrWhiteSpace(search))

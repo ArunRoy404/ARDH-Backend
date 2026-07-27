@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Utilities;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +31,7 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? ownerId = null,
-        [FromQuery] ApartmentType? apartmentType = null,
+        [FromQuery] string? apartmentType = null,
         CancellationToken cancellationToken = default)
     {
         var apartments = await _apartmentService.GetPaginated(page, pageSize, search, buildingId, ownerId, apartmentType, cancellationToken);

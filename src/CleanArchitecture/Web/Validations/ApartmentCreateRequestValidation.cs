@@ -25,7 +25,7 @@ public class ApartmentCreateRequestValidation : AbstractValidator<ApartmentCreat
             .GreaterThanOrEqualTo(0).WithMessage("Floor number cannot be negative.");
 
         RuleFor(x => x.ApartmentType)
-            .IsInEnum().WithMessage("Invalid apartment type.");
+            .NotEmpty().WithMessage("Apartment type is required.");
 
         RuleFor(x => x.AreaSqft)
             .GreaterThan(0).WithMessage("Area sqft must be greater than 0.");

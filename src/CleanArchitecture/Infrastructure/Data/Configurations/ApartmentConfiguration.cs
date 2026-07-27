@@ -39,7 +39,6 @@ public class ApartmentConfiguration : IEntityTypeConfiguration<Apartment>
 
         builder.Property(e => e.ApartmentType)
             .HasColumnName("apartment_type")
-            .HasConversion<string>()
             .HasMaxLength(50)
             .IsRequired();
 

@@ -1,5 +1,4 @@
 using System;
-using CleanArchitecture.Shared.Domain.Enums;
 
 namespace CleanArchitecture.Shared.Models.Apartment;
 
@@ -10,7 +9,7 @@ public class ApartmentUpdateRequest
     public string NestawayId { get; set; } = null!;
     public string FlatNumber { get; set; } = null!;
     public int Floor { get; set; }
-    public ApartmentType ApartmentType { get; set; }
+    public string ApartmentType { get; set; } = null!;
     public decimal AreaSqft { get; set; }
     public int Bedrooms { get; set; }
     public int Bathrooms { get; set; }

@@ -3475,7 +3475,7 @@
                                 {
                                     "key": "apartmentType",
                                     "value": "",
-                                    "description": "Filter by Apartment Type: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio"
+                                    "description": "Filter by Apartment Type (e.g. 1BHK, 2BHK, Penthouse, Studio, etc.)"
                                 }
                             ]
                         },
@@ -3528,7 +3528,7 @@
                                         {
                                             "key": "apartmentType",
                                             "value": "",
-                                            "description": "Filter by Apartment Type: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio"
+                                            "description": "Filter by Apartment Type (e.g. 1BHK, 2BHK, Penthouse, Studio, etc.)"
                                         }
                                     ]
                                 },
@@ -3634,7 +3634,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // External system identifier\n    \"flatNumber\": \"A-101\", // Flat/unit number (must be unique within the building)\n    \"floor\": 1, // Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Apartment configuration: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio\n    \"areaSqft\": 1250.50, // Total carpet area in square feet\n    \"bedrooms\": 2, // Number of bedrooms\n    \"bathrooms\": 2, // Number of bathrooms\n    \"hasBalcony\": true, // Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Parking space identifier\n    \"expectedRent\": 25000.00, // Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Monthly maintenance charges\n    \"waterCharge\": 500.00 // Monthly water charges\n}"
+                            "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // External system identifier\n    \"flatNumber\": \"A-101\", // Flat/unit number (must be unique within the building)\n    \"floor\": 1, // Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Apartment configuration (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"areaSqft\": 1250.50, // Total carpet area in square feet\n    \"bedrooms\": 2, // Number of bedrooms\n    \"bathrooms\": 2, // Number of bathrooms\n    \"hasBalcony\": true, // Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Parking space identifier\n    \"expectedRent\": 25000.00, // Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Monthly maintenance charges\n    \"waterCharge\": 500.00 // Monthly water charges\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/api/apartments",
@@ -3664,7 +3664,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // External system identifier\n    \"flatNumber\": \"A-101\", // Flat/unit number (must be unique within the building)\n    \"floor\": 1, // Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Apartment configuration: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio\n    \"areaSqft\": 1250.50, // Total carpet area in square feet\n    \"bedrooms\": 2, // Number of bedrooms\n    \"bathrooms\": 2, // Number of bathrooms\n    \"hasBalcony\": true, // Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Parking space identifier\n    \"expectedRent\": 25000.00, // Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Monthly maintenance charges\n    \"waterCharge\": 500.00 // Monthly water charges\n}"
+                                    "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // External system identifier\n    \"flatNumber\": \"A-101\", // Flat/unit number (must be unique within the building)\n    \"floor\": 1, // Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Apartment configuration (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"areaSqft\": 1250.50, // Total carpet area in square feet\n    \"bedrooms\": 2, // Number of bedrooms\n    \"bathrooms\": 2, // Number of bathrooms\n    \"hasBalcony\": true, // Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Parking space identifier\n    \"expectedRent\": 25000.00, // Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Monthly maintenance charges\n    \"waterCharge\": 500.00 // Monthly water charges\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/apartments",
@@ -3707,7 +3707,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Updated external system identifier\n    \"flatNumber\": \"A-101\", // Updated flat/unit number\n    \"floor\": 1, // Updated floor number\n    \"apartmentType\": \"2BHK\", // Updated apartment type: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio\n    \"areaSqft\": 1250.50, // Updated area in sqft\n    \"bedrooms\": 2, // Updated bedroom count\n    \"bathrooms\": 2, // Updated bathroom count\n    \"hasBalcony\": true, // Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Updated parking slot\n    \"expectedRent\": 26000.00, // Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Updated maintenance charge\n    \"waterCharge\": 500.00 // Updated water charge\n}"
+                            "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Updated external system identifier\n    \"flatNumber\": \"A-101\", // Updated flat/unit number\n    \"floor\": 1, // Updated floor number\n    \"apartmentType\": \"2BHK\", // Updated apartment type (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"areaSqft\": 1250.50, // Updated area in sqft\n    \"bedrooms\": 2, // Updated bedroom count\n    \"bathrooms\": 2, // Updated bathroom count\n    \"hasBalcony\": true, // Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Updated parking slot\n    \"expectedRent\": 26000.00, // Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Updated maintenance charge\n    \"waterCharge\": 500.00 // Updated water charge\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/api/apartments/:id",
@@ -3745,7 +3745,7 @@
                                 ],
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Updated external system identifier\n    \"flatNumber\": \"A-101\", // Updated flat/unit number\n    \"floor\": 1, // Updated floor number\n    \"apartmentType\": \"2BHK\", // Updated apartment type: 1BHK, 2BHK, 3BHK, 4BHK, Penthouse, Studio\n    \"areaSqft\": 1250.50, // Updated area in sqft\n    \"bedrooms\": 2, // Updated bedroom count\n    \"bathrooms\": 2, // Updated bathroom count\n    \"hasBalcony\": true, // Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Updated parking slot\n    \"expectedRent\": 26000.00, // Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Updated maintenance charge\n    \"waterCharge\": 500.00 // Updated water charge\n}"
+                                    "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Updated external system identifier\n    \"flatNumber\": \"A-101\", // Updated flat/unit number\n    \"floor\": 1, // Updated floor number\n    \"apartmentType\": \"2BHK\", // Updated apartment type (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"areaSqft\": 1250.50, // Updated area in sqft\n    \"bedrooms\": 2, // Updated bedroom count\n    \"bathrooms\": 2, // Updated bathroom count\n    \"hasBalcony\": true, // Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Updated parking slot\n    \"expectedRent\": 26000.00, // Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Updated maintenance charge\n    \"waterCharge\": 500.00 // Updated water charge\n}"
                                 },
                                 "url": {
                                     "raw": "{{baseUrl}}/api/apartments/:id",

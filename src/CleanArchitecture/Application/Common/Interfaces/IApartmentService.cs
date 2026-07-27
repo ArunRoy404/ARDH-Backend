@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
 
@@ -15,7 +14,7 @@ public interface IApartmentService
         string? search,
         Guid? buildingId,
         Guid? ownerId,
-        ApartmentType? apartmentType,
+        string? apartmentType,
         CancellationToken cancellationToken);
 
     Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken);
