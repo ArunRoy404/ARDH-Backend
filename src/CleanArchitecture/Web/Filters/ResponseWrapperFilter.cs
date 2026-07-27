@@ -26,11 +26,45 @@ public class ResponseWrapperFilter : IAsyncResultFilter
 
                 if (!isAlreadyWrapped)
                 {
+                    string message = "Request processed successfully.";
+                    object? data = value;
+
+                    if (value != null && valueType != null)
+                    {
+                        var properties = valueType.GetProperties();
+                        var messageProp = properties.FirstOrDefault(p => string.Equals(p.Name, "message", StringComparison.OrdinalIgnoreCase));
+                        if (messageProp != null)
+                        {
+                            var msgVal = messageProp.GetValue(value)?.ToString();
+                            if (!string.IsNullOrEmpty(msgVal))
+                            {
+                                message = msgVal;
+                            }
+
+                            if (properties.Length == 1)
+                            {
+                                data = null;
+                            }
+                            else
+                            {
+                                var dict = new Dictionary<string, object?>();
+                                foreach (var prop in properties)
+                                {
+                                    if (!string.Equals(prop.Name, "message", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        dict[prop.Name] = prop.GetValue(value);
+                                    }
+                                }
+                                data = dict;
+                            }
+                        }
+                    }
+
                     var wrappedValue = new ApiResponse<object>
                     {
                         Success = true,
-                        Message = "Request processed successfully.",
-                        Data = value
+                        Message = message,
+                        Data = data
                     };
 
                     objectResult.Value = wrappedValue;
