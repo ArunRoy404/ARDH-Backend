@@ -39,7 +39,7 @@ public class ValidateModelFilter : IActionFilter
 
     private void HandleModelValidationErrors(ActionExecutingContext context)
     {
-        var errors = context.ModelState
+        var rawErrors = context.ModelState
             .Where(ms => ms.Value.Errors.Any())
             .SelectMany(ms => ms.Value.Errors.Select(error => new
             {
@@ -47,6 +47,16 @@ public class ValidateModelFilter : IActionFilter
                 ErrorMessage = error.ErrorMessage,
                 AttemptedValue = ms.Value.AttemptedValue
             }))
+            .ToList();
+
+        if (rawErrors.Count > 1)
+        {
+            rawErrors = rawErrors.Where(e =>
+                !(e.ErrorMessage == "The request field is required." || e.ErrorMessage == "A non-empty request body is required.")
+            ).ToList();
+        }
+
+        var errors = rawErrors
             .Select(errorDetail => new Error(
                 $"{ApplicationConstants.Name}.{ErrorRespondCode.BAD_REQUEST}",
                 errorDetail.ErrorMessage)

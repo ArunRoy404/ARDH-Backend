@@ -83,6 +83,12 @@ public class ApiErrorDetail
         if (string.IsNullOrWhiteSpace(message))
             return "An error occurred.";
 
+        if (message.Contains("The request field is required.", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("A non-empty request body is required.", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Please provide the request body.";
+        }
+
         // 1. JSON conversion errors
         if (message.Contains("JSON value could not be converted", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("Could not convert", StringComparison.OrdinalIgnoreCase))
