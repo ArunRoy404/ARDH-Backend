@@ -26,6 +26,7 @@ public class AmcContract
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public virtual Equipment? Equipment { get; set; }
     public virtual Vendor? Vendor { get; set; }

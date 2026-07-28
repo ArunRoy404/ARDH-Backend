@@ -29,5 +29,17 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        builder.Entity<Building>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<Owner>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<Apartment>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<Tenant>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<Equipment>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<AmcContract>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<MaintenanceRequest>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<IncomeRecord>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<ExpenseRecord>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<Vendor>().HasQueryFilter(x => !x.IsDeleted);
+        builder.Entity<User>().HasQueryFilter(x => !x.IsDeleted);
     }
 }

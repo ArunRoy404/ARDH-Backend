@@ -412,7 +412,9 @@ public class IncomeRecordService(
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        _unitOfWork.IncomeRecordRepository.Delete(record);
+        record.IsDeleted = true;
+        record.UpdatedAt = now;
+        _unitOfWork.IncomeRecordRepository.Update(record);
 
         var history = new DeletedHistory
         {

@@ -25,6 +25,7 @@ public class Equipment
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public virtual Building? Building { get; set; }
     public virtual Vendor? AmcVendor { get; set; }

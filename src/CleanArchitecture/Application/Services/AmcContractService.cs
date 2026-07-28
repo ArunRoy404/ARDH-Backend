@@ -351,7 +351,9 @@ public class AmcContractService(
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        _unitOfWork.AmcContractRepository.Delete(contract);
+        contract.IsDeleted = true;
+        contract.UpdatedAt = now;
+        _unitOfWork.AmcContractRepository.Update(contract);
 
         var history = new DeletedHistory
         {

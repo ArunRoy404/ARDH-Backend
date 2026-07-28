@@ -177,7 +177,9 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
  
-        _unitOfWork.OwnerRepository.Delete(owner);
+        owner.IsDeleted = true;
+        owner.UpdatedAt = DateTime.UtcNow;
+        _unitOfWork.OwnerRepository.Update(owner);
 
         // Record soft-delete history
         var history = new DeletedHistory

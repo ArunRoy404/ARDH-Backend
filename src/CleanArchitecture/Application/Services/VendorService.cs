@@ -183,7 +183,9 @@ public class VendorService(
 
         var now = DateTime.UtcNow;
 
-        _unitOfWork.VendorRepository.Delete(vendor);
+        vendor.IsDeleted = true;
+        vendor.UpdatedAt = now;
+        _unitOfWork.VendorRepository.Update(vendor);
 
         var history = new DeletedHistory
         {

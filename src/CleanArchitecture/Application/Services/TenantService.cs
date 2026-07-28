@@ -387,7 +387,9 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             _unitOfWork.ApartmentRepository.Update(apartment);
         }
 
-        _unitOfWork.TenantRepository.Delete(tenant);
+        tenant.IsDeleted = true;
+        tenant.UpdatedAt = DateTime.UtcNow;
+        _unitOfWork.TenantRepository.Update(tenant);
 
         // Record soft-delete history
         var history = new DeletedHistory

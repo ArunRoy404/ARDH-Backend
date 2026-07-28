@@ -406,7 +406,9 @@ public class ExpenseRecordService(
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
-        _unitOfWork.ExpenseRecordRepository.Delete(record);
+        record.IsDeleted = true;
+        record.UpdatedAt = now;
+        _unitOfWork.ExpenseRecordRepository.Update(record);
 
         var history = new DeletedHistory
         {

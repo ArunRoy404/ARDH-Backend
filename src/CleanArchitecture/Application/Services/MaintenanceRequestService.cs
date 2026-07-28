@@ -506,7 +506,9 @@ public class MaintenanceRequestService(
             }
         }
 
-        _unitOfWork.MaintenanceRequestRepository.Delete(maintenanceRequest);
+        maintenanceRequest.IsDeleted = true;
+        maintenanceRequest.UpdatedAt = now;
+        _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
 
         var history = new DeletedHistory
         {

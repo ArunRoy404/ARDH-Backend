@@ -180,10 +180,10 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
-        // Soft delete the user
         user.IsActive = false;
-
-        _unitOfWork.UserRepository.Delete(user);
+        user.IsDeleted = true;
+        user.UpdatedAt = DateTime.UtcNow;
+        _unitOfWork.UserRepository.Update(user);
 
         // Record soft-delete history
         var history = new DeletedHistory

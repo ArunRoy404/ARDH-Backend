@@ -25,6 +25,7 @@ public class IncomeRecord
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Guid? CreatedBy { get; set; }
     public Guid? UpdatedBy { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     // Navigation Properties
     public virtual Tenant? Tenant { get; set; }

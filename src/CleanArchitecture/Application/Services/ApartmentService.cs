@@ -281,7 +281,9 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw ApartmentException.NotFoundException("The specified apartment does not exist.");
 
-        _unitOfWork.ApartmentRepository.Delete(apartment);
+        apartment.IsDeleted = true;
+        apartment.UpdatedAt = DateTime.UtcNow;
+        _unitOfWork.ApartmentRepository.Update(apartment);
 
         // Record soft-delete history
         var history = new DeletedHistory

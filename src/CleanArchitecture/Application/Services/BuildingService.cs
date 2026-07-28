@@ -188,7 +188,9 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
  
-        _unitOfWork.BuildingRepository.Delete(building);
+        building.IsDeleted = true;
+        building.UpdatedAt = DateTime.UtcNow;
+        _unitOfWork.BuildingRepository.Update(building);
 
         // Record soft-delete history
         var history = new DeletedHistory

@@ -282,7 +282,9 @@ public class EquipmentService(
 
         var now = DateTime.UtcNow;
 
-        _unitOfWork.EquipmentRepository.Delete(equipment);
+        equipment.IsDeleted = true;
+        equipment.UpdatedAt = now;
+        _unitOfWork.EquipmentRepository.Update(equipment);
 
         var history = new DeletedHistory
         {
