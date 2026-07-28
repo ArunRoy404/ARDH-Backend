@@ -27,6 +27,7 @@ public class ApartmentViewModel
     public decimal WaterCharge { get; set; }
     public Guid? CurrentTenantId { get; set; }
     public string? CurrentTenantName { get; set; }
+    public string OccupancyStatus => CurrentTenantId.HasValue ? "Occupied" : "Vacant";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string? CreatedBy { get; set; }

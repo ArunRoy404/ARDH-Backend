@@ -31,8 +31,10 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
+        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
@@ -106,6 +108,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
                 MaintenanceCharge = x.MaintenanceCharge,
                 WaterCharge = x.WaterCharge,
                 CurrentTenantId = x.CurrentTenantId,
+                CurrentTenantName = x.CurrentTenantId.HasValue && tenantMap.TryGetValue(x.CurrentTenantId.Value, out var tn) ? tn : null,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
                 CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
@@ -123,6 +126,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == apartment.BuildingId);
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == apartment.OwnerId);
+        var currentTenant = apartment.CurrentTenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == apartment.CurrentTenantId.Value) : null;
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
@@ -185,6 +189,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             MaintenanceCharge = apartment.MaintenanceCharge,
             WaterCharge = apartment.WaterCharge,
             CurrentTenantId = apartment.CurrentTenantId,
+            CurrentTenantName = currentTenant?.FullName,
             CreatedAt = apartment.CreatedAt,
             UpdatedAt = apartment.UpdatedAt,
             CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,

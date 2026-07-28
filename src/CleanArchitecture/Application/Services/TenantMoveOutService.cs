@@ -79,6 +79,7 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
         var processor = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == record.ProcessedBy);
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
+        var currentTenant = apartment != null && apartment.CurrentTenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == apartment.CurrentTenantId.Value) : null;
 
         return new TenantMoveOutRecordViewModel
         {
@@ -130,6 +131,7 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
                 MaintenanceCharge = apartment.MaintenanceCharge,
                 WaterCharge = apartment.WaterCharge,
                 CurrentTenantId = apartment.CurrentTenantId,
+                CurrentTenantName = currentTenant?.FullName,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
                 CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,

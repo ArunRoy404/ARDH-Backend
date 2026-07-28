@@ -116,6 +116,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
+        var currentTenant = apartment != null && apartment.CurrentTenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == apartment.CurrentTenantId.Value) : null;
 
         return new TenantViewModel
         {
@@ -162,6 +163,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
                 MaintenanceCharge = apartment.MaintenanceCharge,
                 WaterCharge = apartment.WaterCharge,
                 CurrentTenantId = apartment.CurrentTenantId,
+                CurrentTenantName = currentTenant?.FullName,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
                 CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,

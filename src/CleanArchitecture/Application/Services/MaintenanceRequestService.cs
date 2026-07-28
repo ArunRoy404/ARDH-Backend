@@ -156,6 +156,7 @@ public class MaintenanceRequestService(
         var equipment = request.EquipmentId.HasValue ? await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value) : null;
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
+        var currentTenant = apartment != null && apartment.CurrentTenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == apartment.CurrentTenantId.Value) : null;
 
         return new MaintenanceRequestViewModel
         {
@@ -249,8 +250,8 @@ public class MaintenanceRequestService(
                 ParkingSlot = apartment.ParkingSlot,
                 ExpectedRent = apartment.ExpectedRent,
                 MaintenanceCharge = apartment.MaintenanceCharge,
-                WaterCharge = apartment.WaterCharge,
-                CurrentTenantId = apartment.CurrentTenantId,
+                WaterCharge = apartment.WaterCharge,                CurrentTenantId = apartment.CurrentTenantId,
+                CurrentTenantName = currentTenant?.FullName,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
                 CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
