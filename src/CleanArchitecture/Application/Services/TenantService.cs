@@ -241,9 +241,22 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             CreatedBy = _currentUser.GetCurrentUserId()
         };
 
-        await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.TenantRepository.AddAsync(tenant), cancellationToken);
-
         var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+        if (apartment != null)
+        {
+            apartment.CurrentTenantId = tenant.Id;
+            apartment.UpdatedAt = DateTime.UtcNow;
+        }
+
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
+        {
+            await _unitOfWork.TenantRepository.AddAsync(tenant);
+            if (apartment != null)
+            {
+                _unitOfWork.ApartmentRepository.Update(apartment);
+            }
+        }, cancellationToken);
+
         var flatNum = apartment?.FlatNumber ?? "Unknown Flat";
         await _activityService.CreateActivity("Create", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved into Flat '{flatNum}'.", cancellationToken);
     }
@@ -287,6 +300,9 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             }
         }
 
+        var oldApartmentId = tenant.ApartmentId;
+        var oldStatus = tenant.Status;
+
         tenant.BuildingId = request.BuildingId;
         tenant.ApartmentId = request.ApartmentId;
         tenant.FullName = request.FullName.Trim();
@@ -307,6 +323,51 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         tenant.UpdatedAt = DateTime.UtcNow;
         tenant.UpdatedBy = _currentUser.GetCurrentUserId();
 
+        if (oldApartmentId != request.ApartmentId)
+        {
+            var oldApartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == oldApartmentId);
+            if (oldApartment != null && oldApartment.CurrentTenantId == tenant.Id)
+            {
+                oldApartment.CurrentTenantId = null;
+                oldApartment.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.ApartmentRepository.Update(oldApartment);
+            }
+
+            if (request.Status == TenantStatus.Active)
+            {
+                var newApartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId);
+                if (newApartment != null)
+                {
+                    newApartment.CurrentTenantId = tenant.Id;
+                    newApartment.UpdatedAt = DateTime.UtcNow;
+                    _unitOfWork.ApartmentRepository.Update(newApartment);
+                }
+            }
+        }
+        else
+        {
+            if (oldStatus == TenantStatus.Active && request.Status != TenantStatus.Active)
+            {
+                var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+                if (apartment != null && apartment.CurrentTenantId == tenant.Id)
+                {
+                    apartment.CurrentTenantId = null;
+                    apartment.UpdatedAt = DateTime.UtcNow;
+                    _unitOfWork.ApartmentRepository.Update(apartment);
+                }
+            }
+            else if (oldStatus != TenantStatus.Active && request.Status == TenantStatus.Active)
+            {
+                var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+                if (apartment != null)
+                {
+                    apartment.CurrentTenantId = tenant.Id;
+                    apartment.UpdatedAt = DateTime.UtcNow;
+                    _unitOfWork.ApartmentRepository.Update(apartment);
+                }
+            }
+        }
+
         _unitOfWork.TenantRepository.Update(tenant);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -317,6 +378,14 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
     {
         var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
+
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+        if (apartment != null && apartment.CurrentTenantId == tenant.Id)
+        {
+            apartment.CurrentTenantId = null;
+            apartment.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.ApartmentRepository.Update(apartment);
+        }
 
         _unitOfWork.TenantRepository.Delete(tenant);
 

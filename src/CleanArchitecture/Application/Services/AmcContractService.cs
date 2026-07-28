@@ -275,7 +275,22 @@ public class AmcContractService(
             CreatedBy = userId
         };
 
-        await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.AmcContractRepository.AddAsync(contract), cancellationToken);
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
+        if (equipment != null)
+        {
+            equipment.AmcVendorId = contract.VendorId;
+            equipment.AmcExpiryDate = contract.EndDate;
+            equipment.UpdatedAt = DateTime.UtcNow;
+        }
+
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
+        {
+            await _unitOfWork.AmcContractRepository.AddAsync(contract);
+            if (equipment != null)
+            {
+                _unitOfWork.EquipmentRepository.Update(equipment);
+            }
+        }, cancellationToken);
     }
 
     public async Task Update(Guid id, AmcContractUpdateRequest request, CancellationToken cancellationToken)
@@ -314,6 +329,15 @@ public class AmcContractService(
         contract.Status = request.Status;
         contract.UpdatedAt = DateTime.UtcNow;
         contract.UpdatedBy = userId;
+
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
+        if (equipment != null)
+        {
+            equipment.AmcVendorId = contract.VendorId;
+            equipment.AmcExpiryDate = contract.EndDate;
+            equipment.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.EquipmentRepository.Update(equipment);
+        }
 
         _unitOfWork.AmcContractRepository.Update(contract);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

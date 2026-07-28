@@ -317,7 +317,26 @@ public class MaintenanceRequestService(
             CreatedBy = userId
         };
 
-        await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.MaintenanceRequestRepository.AddAsync(maintenanceRequest), cancellationToken);
+        Equipment? equipmentToUpdate = null;
+        if (maintenanceRequest.EquipmentId.HasValue &&
+            (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress))
+        {
+            equipmentToUpdate = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
+            if (equipmentToUpdate != null)
+            {
+                equipmentToUpdate.Status = EquipmentStatus.UnderMaintenance;
+                equipmentToUpdate.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
+        {
+            await _unitOfWork.MaintenanceRequestRepository.AddAsync(maintenanceRequest);
+            if (equipmentToUpdate != null)
+            {
+                _unitOfWork.EquipmentRepository.Update(equipmentToUpdate);
+            }
+        }, cancellationToken);
 
         await _notificationService.CreateNotificationInternal(
             "operations",
@@ -348,6 +367,7 @@ public class MaintenanceRequestService(
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
         var oldStatus = maintenanceRequest.Status;
+        var oldEquipmentId = maintenanceRequest.EquipmentId;
 
         var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId);
         if (!buildingExists)
@@ -401,6 +421,45 @@ public class MaintenanceRequestService(
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
 
+        if (oldEquipmentId != request.EquipmentId)
+        {
+            if (oldEquipmentId.HasValue)
+            {
+                var oldEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == oldEquipmentId.Value);
+                if (oldEq != null)
+                {
+                    oldEq.Status = EquipmentStatus.Operational;
+                    oldEq.UpdatedAt = DateTime.UtcNow;
+                    _unitOfWork.EquipmentRepository.Update(oldEq);
+                }
+            }
+
+            if (request.EquipmentId.HasValue)
+            {
+                var newEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value);
+                if (newEq != null)
+                {
+                    newEq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
+                        ? EquipmentStatus.UnderMaintenance
+                        : EquipmentStatus.Operational;
+                    newEq.UpdatedAt = DateTime.UtcNow;
+                    _unitOfWork.EquipmentRepository.Update(newEq);
+                }
+            }
+        }
+        else if (request.EquipmentId.HasValue && oldStatus != request.Status)
+        {
+            var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value);
+            if (eq != null)
+            {
+                eq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
+                    ? EquipmentStatus.UnderMaintenance
+                    : EquipmentStatus.Operational;
+                eq.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.EquipmentRepository.Update(eq);
+            }
+        }
+
         _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -435,6 +494,18 @@ public class MaintenanceRequestService(
         var now = DateTime.UtcNow;
         var userId = _currentUser.GetCurrentUserId();
 
+        if (maintenanceRequest.EquipmentId.HasValue &&
+            (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress))
+        {
+            var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
+            if (eq != null)
+            {
+                eq.Status = EquipmentStatus.Operational;
+                eq.UpdatedAt = now;
+                _unitOfWork.EquipmentRepository.Update(eq);
+            }
+        }
+
         _unitOfWork.MaintenanceRequestRepository.Delete(maintenanceRequest);
 
         var history = new DeletedHistory
@@ -461,6 +532,19 @@ public class MaintenanceRequestService(
         maintenanceRequest.Status = request.Status;
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
+
+        if (maintenanceRequest.EquipmentId.HasValue)
+        {
+            var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
+            if (eq != null)
+            {
+                eq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
+                    ? EquipmentStatus.UnderMaintenance
+                    : EquipmentStatus.Operational;
+                eq.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.EquipmentRepository.Update(eq);
+            }
+        }
 
         _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

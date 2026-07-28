@@ -48,13 +48,23 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
         tenant.Status = TenantStatus.MovedOut;
         tenant.UpdatedAt = DateTime.UtcNow;
 
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+        if (apartment != null && apartment.CurrentTenantId == tenant.Id)
+        {
+            apartment.CurrentTenantId = null;
+            apartment.UpdatedAt = DateTime.UtcNow;
+        }
+
         await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
             await _unitOfWork.TenantMoveOutRecordRepository.AddAsync(moveOutRecord);
             _unitOfWork.TenantRepository.Update(tenant);
+            if (apartment != null)
+            {
+                _unitOfWork.ApartmentRepository.Update(apartment);
+            }
         }, cancellationToken);
 
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
         var flatNum = apartment?.FlatNumber ?? "Unknown Flat";
         await _activityService.CreateActivity("MoveOut", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved out of Flat '{flatNum}'.", cancellationToken);
     }
