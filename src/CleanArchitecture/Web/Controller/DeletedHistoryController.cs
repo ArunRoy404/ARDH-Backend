@@ -1,3 +1,4 @@
+using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.DeletedHistory;
@@ -12,9 +13,10 @@ namespace CleanArchitecture.Web.Controller;
 
 [Authorize]
 [Route("api/deleted-history")]
-public class DeletedHistoryController(IDeletedHistoryService deletedHistoryService) : BaseController
+public class DeletedHistoryController(IDeletedHistoryService deletedHistoryService, IUnitOfWork unitOfWork) : BaseController
 {
     private readonly IDeletedHistoryService _deletedHistoryService = deletedHistoryService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     /// <summary>
     /// [DH-01] List all soft-deleted records with pagination, search, and filters.
@@ -67,11 +69,25 @@ public class DeletedHistoryController(IDeletedHistoryService deletedHistoryServi
     /// </summary>
     [HttpDelete("{id}")]
     [SwaggerResponse(200, "Deleted history record and its underlying entity permanently deleted successfully.")]
-    [SwaggerResponse(400, "Record has already been restored and cannot be permanently deleted.")]
+    [SwaggerResponse(400, "Invalid Admin password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Deleted history record not found.")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id, [FromQuery] string? password, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(password))
+        {
+            if (HttpContext.Request.Headers.TryGetValue("X-Admin-Password", out var headerPassword))
+            {
+                password = headerPassword.ToString();
+            }
+        }
+
+        var settings = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        if (settings == null || string.IsNullOrEmpty(password) || !CleanArchitecture.Application.Common.Utilities.StringHelper.Verify(password, settings.AdminPassword))
+        {
+            return BadRequest(new { message = "Invalid Admin password." });
+        }
+
         await _deletedHistoryService.DeletePermanently(id, cancellationToken);
         return Ok(new { message = "Deleted history record permanently deleted successfully." });
     }

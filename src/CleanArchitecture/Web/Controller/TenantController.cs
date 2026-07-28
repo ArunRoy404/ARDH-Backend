@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
@@ -13,10 +14,11 @@ namespace CleanArchitecture.Web.Controller;
 
 [Authorize]
 [Route("api/tenants")]
-public class TenantController(ITenantService tenantService, ITenantMoveOutService tenantMoveOutService) : BaseController
+public class TenantController(ITenantService tenantService, ITenantMoveOutService tenantMoveOutService, IUnitOfWork unitOfWork) : BaseController
 {
     private readonly ITenantService _tenantService = tenantService;
     private readonly ITenantMoveOutService _tenantMoveOutService = tenantMoveOutService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     /// <summary>
     /// [T-01] Retrieves a paginated list of tenants with optional search and filters.
@@ -82,11 +84,25 @@ public class TenantController(ITenantService tenantService, ITenantMoveOutServic
     /// </summary>
     [HttpDelete("{id:guid}")]
     [SwaggerResponse(200, "Tenant deleted successfully.")]
-    [SwaggerResponse(400, "Invalid admin password.")]
+    [SwaggerResponse(400, "Invalid Admin password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Tenant not found.")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(Guid id, [FromQuery] string? password, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrEmpty(password))
+        {
+            if (HttpContext.Request.Headers.TryGetValue("X-Admin-Password", out var headerPassword))
+            {
+                password = headerPassword.ToString();
+            }
+        }
+
+        var settings = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        if (settings == null || string.IsNullOrEmpty(password) || !CleanArchitecture.Application.Common.Utilities.StringHelper.Verify(password, settings.AdminPassword))
+        {
+            return BadRequest(new { message = "Invalid Admin password." });
+        }
+
         await _tenantService.Delete(id, cancellationToken);
         return Ok(new { message = "Tenant deleted successfully." });
     }
