@@ -15,6 +15,7 @@ public interface IApartmentService
         Guid? buildingId,
         Guid? ownerId,
         string? apartmentType,
+        string? status,
         CancellationToken cancellationToken);
 
     Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken);

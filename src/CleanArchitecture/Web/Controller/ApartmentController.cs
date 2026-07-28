@@ -32,9 +32,10 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? ownerId = null,
         [FromQuery] string? apartmentType = null,
+        [FromQuery] string? status = null, // Filter by occupancy: "Occupied" or "Vacant"
         CancellationToken cancellationToken = default)
     {
-        var apartments = await _apartmentService.GetPaginated(page, pageSize, search, buildingId, ownerId, apartmentType, cancellationToken);
+        var apartments = await _apartmentService.GetPaginated(page, pageSize, search, buildingId, ownerId, apartmentType, status, cancellationToken);
         return Ok(apartments);
     }
 

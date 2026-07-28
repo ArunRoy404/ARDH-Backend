@@ -25,6 +25,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         Guid? buildingId,
         Guid? ownerId,
         string? apartmentType,
+        string? status,
         CancellationToken cancellationToken)
     {
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
@@ -49,6 +50,19 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         if (!string.IsNullOrWhiteSpace(apartmentType))
         {
             query = query.Where(x => x.ApartmentType == apartmentType.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var cleanStatus = status.Trim().ToLower();
+            if (cleanStatus == "occupied")
+            {
+                query = query.Where(x => x.CurrentTenantId != null);
+            }
+            else if (cleanStatus == "vacant")
+            {
+                query = query.Where(x => x.CurrentTenantId == null);
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(search))
