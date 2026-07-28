@@ -1,7 +1,10 @@
 using System.Net;
+using System.Text.Json;
+using System.Collections.Generic;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Domain;
 using CleanArchitecture.Domain.Constants;
+using CleanArchitecture.Shared.Models.Errors;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace CleanArchitecture.Web.Extensions;
@@ -85,7 +88,18 @@ public static class ExceptionMiddlewareExtensions
                         errorCode = $"{ApplicationConstants.Name}.{ErrorRespondCode.GENERAL_ERROR}";
                         errorMessage = "An error has occurred.";
                     }
-                    await context.Response.WriteAsync(new Error(errorCode, errorMessage, errorId));
+                    var apiError = new ApiErrorResponse
+                    {
+                        Success = false,
+                        Message = errorMessage,
+                        Errors = new List<ApiErrorDetail>
+                        {
+                            new ApiErrorDetail(errorCode, errorMessage)
+                        }
+                    };
+
+                    var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(apiError, options));
                     logger.LogError("ErrorId:{errorId} Exception:{contextFeature.Error}", errorId, contextFeature.Error);
                 }
             }

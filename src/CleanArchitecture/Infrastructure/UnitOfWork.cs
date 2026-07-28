@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Repositories;
@@ -15,7 +18,20 @@ public class UnitOfWork : IUnitOfWork
     public IBuildingRepository BuildingRepository { get; }
     public ISettingRepository SettingRepository { get; }
     public IDeletedHistoryRepository DeletedHistoryRepository { get; }
-
+    public IOwnerRepository OwnerRepository { get; }
+    public IApartmentRepository ApartmentRepository { get; }
+    public ITenantRepository TenantRepository { get; }
+    public ITenantMoveOutRecordRepository TenantMoveOutRecordRepository { get; }
+    public IVendorRepository VendorRepository { get; }
+    public IEquipmentRepository EquipmentRepository { get; }
+    public IAmcContractRepository AmcContractRepository { get; }
+    public IMaintenanceRequestRepository MaintenanceRequestRepository { get; }
+    public IIncomeRecordRepository IncomeRecordRepository { get; }
+    public IExpenseRecordRepository ExpenseRecordRepository { get; }
+    public INotificationRepository NotificationRepository { get; }
+    public INotificationRecipientRepository NotificationRecipientRepository { get; }
+    public IActivityRepository ActivityRepository { get; }
+ 
     public UnitOfWork(ApplicationDbContext dbContext)
     {
         _context = dbContext;
@@ -24,6 +40,19 @@ public class UnitOfWork : IUnitOfWork
         BuildingRepository = new BuildingRepository(_context);
         SettingRepository = new SettingRepository(_context);
         DeletedHistoryRepository = new DeletedHistoryRepository(_context);
+        OwnerRepository = new OwnerRepository(_context);
+        ApartmentRepository = new ApartmentRepository(_context);
+        TenantRepository = new TenantRepository(_context);
+        TenantMoveOutRecordRepository = new TenantMoveOutRecordRepository(_context);
+        VendorRepository = new VendorRepository(_context);
+        EquipmentRepository = new EquipmentRepository(_context);
+        AmcContractRepository = new AmcContractRepository(_context);
+        MaintenanceRequestRepository = new MaintenanceRequestRepository(_context);
+        IncomeRecordRepository = new IncomeRecordRepository(_context);
+        ExpenseRecordRepository = new ExpenseRecordRepository(_context);
+        NotificationRepository = new NotificationRepository(_context);
+        NotificationRecipientRepository = new NotificationRecipientRepository(_context);
+        ActivityRepository = new ActivityRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

@@ -1,0 +1,57 @@
+{
+  "Building": {
+    "title": "Permanently Delete Building?",
+    "message": "Warning: This action is IRREVERSIBLE. Permanently deleting this building will also permanently delete all associated apartments, active/past tenants, lease agreements, equipment, AMC contracts, maintenance logs, and all financial records (income and expenses) linked to this building.",
+    "dangerLevel": "Critical"
+  },
+  "Owner": {
+    "title": "Permanently Delete Owner?",
+    "message": "Warning: This action is IRREVERSIBLE. Permanently deleting this owner will also permanently delete all apartments registered under their name, including all tenant records, lease details, maintenance logs, and income records associated with those apartments.",
+    "dangerLevel": "Critical"
+  },
+  "Apartment": {
+    "title": "Permanently Delete Apartment?",
+    "message": "Warning: This action is IRREVERSIBLE. Permanently deleting this flat will also permanently delete all active and past tenant logs, lease move-out records, maintenance requests, and financial transactions (rent income and expenses) linked to this flat.",
+    "dangerLevel": "High"
+  },
+  "Tenant": {
+    "title": "Permanently Delete Tenant?",
+    "message": "Warning: This action is IRREVERSIBLE. Permanently deleting this tenant will permanently delete their historical move-out records and all rent payment income entries associated with them.",
+    "dangerLevel": "High"
+  },
+  "Equipment": {
+    "title": "Permanently Delete Equipment?",
+    "message": "Warning: This action is IRREVERSIBLE. Permanently deleting this equipment will also permanently delete all associated AMC service contracts and historical maintenance requests.",
+    "dangerLevel": "Medium"
+  },
+  "Vendor": {
+    "title": "Permanently Delete Vendor?",
+    "message": "Warning: This action is IRREVERSIBLE. Permanently deleting this vendor will permanently delete all of their AMC contracts, service logs, and expense records. Their references on any active building equipment will also be cleared.",
+    "dangerLevel": "High"
+  },
+  "AmcContract": {
+    "title": "Permanently Delete AMC Contract?",
+    "message": "Warning: This action is IRREVERSIBLE. This AMC service contract will be permanently removed from the system.",
+    "dangerLevel": "Medium"
+  },
+  "MaintenanceRequest": {
+    "title": "Permanently Delete Maintenance Request?",
+    "message": "Warning: This action is IRREVERSIBLE. This maintenance request record and its notes will be permanently removed from the system.",
+    "dangerLevel": "Medium"
+  },
+  "IncomeRecord": {
+    "title": "Permanently Delete Income Record?",
+    "message": "Warning: This action is IRREVERSIBLE. This financial income transaction will be permanently deleted from the accounts ledger.",
+    "dangerLevel": "High"
+  },
+  "ExpenseRecord": {
+    "title": "Permanently Delete Expense Record?",
+    "message": "Warning: This action is IRREVERSIBLE. This financial expense transaction will be permanently deleted from the accounts ledger.",
+    "dangerLevel": "High"
+  },
+  "User": {
+    "title": "Permanently Delete User?",
+    "message": "Warning: This action is IRREVERSIBLE. This user account and all of their notifications/recipients maps will be permanently deleted.",
+    "dangerLevel": "High"
+  }
+}

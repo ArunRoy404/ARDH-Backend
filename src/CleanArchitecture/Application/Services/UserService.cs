@@ -21,7 +21,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.UserRepository.GetAllAsync(x => x.DeletedAt == null);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return users.Select(x => new UserViewModel
         {
@@ -36,14 +37,17 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             Permissions = x.Permissions,
             LastLoginAt = x.LastLoginAt,
             CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt
+            UpdatedAt = x.UpdatedAt,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
     }
 
     public async Task<PaginatedList<UserViewModel>> GetPaginated(int page, int pageSize, string? search, UserRole? role, bool? isActive, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.UserRepository.GetAllAsync(x => x.DeletedAt == null);
-        var query = users.AsQueryable();
+        var allUsers = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = allUsers.ToDictionary(u => u.Id, u => u.Name);
+        var query = allUsers.AsQueryable();
 
         if (role.HasValue)
         {
@@ -66,10 +70,12 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         }
 
         var totalCount = query.Count();
-        var items = query
+        var pageEntities = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new UserViewModel
+            .ToList();
+
+        var items = pageEntities.Select(x => new UserViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -82,7 +88,9 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
                 Permissions = x.Permissions ?? string.Empty,
                 LastLoginAt = x.LastLoginAt,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+                UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
             })
             .ToList();
 
@@ -91,8 +99,11 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task<UserViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
+
+        var createdByUser = user.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == user.CreatedBy.Value) : null;
+        var updatedByUser = user.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == user.UpdatedBy.Value) : null;
 
         return new UserViewModel
         {
@@ -107,7 +118,9 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             Permissions = user.Permissions ?? string.Empty,
             LastLoginAt = user.LastLoginAt,
             CreatedAt = user.CreatedAt,
-            UpdatedAt = user.UpdatedAt
+            UpdatedAt = user.UpdatedAt,
+            CreatedBy = createdByUser?.Name,
+            UpdatedBy = updatedByUser?.Name,
         };
     }
 
@@ -132,7 +145,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             AvatarUrl = request.AvatarUrl,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.UserRepository.AddAsync(user), cancellationToken);
@@ -140,7 +154,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task Update(UserUpdateRequest request, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == request.Id && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
         // Check if email is updated to an existing one
@@ -162,6 +176,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         user.Permissions = request.Permissions;
         user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -169,14 +184,12 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task Delete(Guid userId, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
-        // Soft delete the user
-        user.DeletedAt = DateTime.UtcNow;
         user.IsActive = false;
+        user.IsDeleted = true;
         user.UpdatedAt = DateTime.UtcNow;
-
         _unitOfWork.UserRepository.Update(user);
 
         // Record soft-delete history
@@ -196,11 +209,12 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task ToggleStatus(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
         user.IsActive = !user.IsActive;
         user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

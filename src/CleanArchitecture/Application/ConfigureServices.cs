@@ -17,6 +17,20 @@ public static class ConfigureServices
         services.AddTransient<IBuildingService, BuildingService>();
         services.AddTransient<ISettingService, SettingService>();
         services.AddTransient<IDeletedHistoryService, DeletedHistoryService>();
+        services.AddTransient<IOwnerService, OwnerService>();
+        services.AddTransient<IApartmentService, ApartmentService>();
+        services.AddTransient<ITenantService, TenantService>();
+        services.AddTransient<ITenantMoveOutService, TenantMoveOutService>();
+        services.AddTransient<IVendorService, VendorService>();
+        services.AddTransient<IEquipmentService, EquipmentService>();
+        services.AddTransient<IAmcContractService, AmcContractService>();
+        services.AddTransient<IMaintenanceRequestService, MaintenanceRequestService>();
+        services.AddTransient<IIncomeRecordService, IncomeRecordService>();
+        services.AddTransient<IExpenseRecordService, ExpenseRecordService>();
+        services.AddTransient<INotificationService, NotificationService>();
+        services.AddTransient<IActivityService, ActivityService>();
+        services.AddTransient<IDashboardService, DashboardService>();
+        services.AddTransient<IReportService, ReportService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();

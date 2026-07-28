@@ -12,14 +12,17 @@ using CleanArchitecture.Shared.Models.Building;
 
 namespace CleanArchitecture.Application.Services;
 
-public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IBuildingService
+public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : IBuildingService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly IActivityService _activityService = activityService;
 
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => x.DeletedAt == null);
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var query = buildings.AsQueryable();
 
         if (status.HasValue)
@@ -38,10 +41,12 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         }
 
         var totalCount = query.Count();
-        var items = query
+        var pageEntities = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new BuildingViewModel
+            .ToList();
+
+        var items = pageEntities.Select(x => new BuildingViewModel
             {
                 Id = x.Id,
                 BuildingName = x.BuildingName,
@@ -56,7 +61,9 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
                 Description = x.Description,
                 ImageUrl = x.ImageUrl,
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+                UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
             })
             .ToList();
 
@@ -65,8 +72,11 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
 
     public async Task<BuildingViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
+
+        var createdByUser = building.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == building.CreatedBy.Value) : null;
+        var updatedByUser = building.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == building.UpdatedBy.Value) : null;
 
         return new BuildingViewModel
         {
@@ -83,13 +93,15 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
             Description = building.Description,
             ImageUrl = building.ImageUrl,
             CreatedAt = building.CreatedAt,
-            UpdatedAt = building.UpdatedAt
+            UpdatedAt = building.UpdatedAt,
+            CreatedBy = createdByUser?.Name,
+            UpdatedBy = updatedByUser?.Name,
         };
     }
 
     public async Task Create(BuildingCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.DeletedAt == null);
+        var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName);
         if (isNameExist)
         {
             throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -110,20 +122,23 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
             Description = request.Description,
             ImageUrl = request.ImageUrl,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            CreatedBy = _currentUser.GetCurrentUserId()
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.BuildingRepository.AddAsync(building), cancellationToken);
+
+        await _activityService.CreateActivity("Create", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' was created.", cancellationToken);
     }
 
     public async Task Update(BuildingUpdateRequest request, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.Id && x.DeletedAt == null)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
 
         if (building.BuildingName != request.BuildingName)
         {
-            var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id && x.DeletedAt == null);
+            var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
             if (isNameExist)
             {
                 throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -142,19 +157,46 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         building.Description = request.Description;
         building.ImageUrl = request.ImageUrl;
         building.UpdatedAt = DateTime.UtcNow;
-
+        building.UpdatedBy = _currentUser.GetCurrentUserId();
+ 
         _unitOfWork.BuildingRepository.Update(building);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Update", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' details were updated.", cancellationToken);
+    }
+
+    public async Task<BuildingStatsViewModel> GetStats(Guid buildingId, CancellationToken cancellationToken)
+    {
+        var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == buildingId);
+        if (!buildingExists)
+        {
+            throw BuildingException.NotFoundException("The specified building does not exist.");
+        }
+
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => x.BuildingId == buildingId);
+        var maintenanceRequests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => x.BuildingId == buildingId);
+
+        var totalApartments = apartments.Count;
+        var totalOccupied = apartments.Count(x => x.CurrentTenantId != null && x.CurrentTenantId != Guid.Empty);
+        var totalVacant = totalApartments - totalOccupied;
+        var totalOpenMaintenance = maintenanceRequests.Count(x => x.Status == MaintenanceStatus.Open);
+
+        return new BuildingStatsViewModel
+        {
+            TotalApartments = totalApartments,
+            TotalOccupied = totalOccupied,
+            TotalVacant = totalVacant,
+            TotalOpenMaintenance = totalOpenMaintenance
+        };
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
-
-        building.DeletedAt = DateTime.UtcNow;
+ 
+        building.IsDeleted = true;
         building.UpdatedAt = DateTime.UtcNow;
-
         _unitOfWork.BuildingRepository.Update(building);
 
         // Record soft-delete history
@@ -170,5 +212,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) :
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _activityService.CreateActivity("Delete", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' was deleted.", cancellationToken);
     }
 }

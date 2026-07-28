@@ -22,6 +22,8 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
             throw SettingException.NotFoundException("Application settings not found.");
         }
 
+        var updatedByUser = setting.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == setting.UpdatedBy.Value) : null;
+
         return new SettingViewModel
         {
             Id = setting.Id,
@@ -31,7 +33,7 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
             Address = setting.Address,
             Icon = setting.Icon,
             Fav = setting.Fav,
-            UpdatedBy = setting.UpdatedBy,
+            UpdatedBy = updatedByUser?.Name,
             UpdatedAt = setting.UpdatedAt
         };
     }

@@ -50,6 +50,19 @@ public class BuildingController(IBuildingService buildingService, IUnitOfWork un
     }
 
     /// <summary>
+    /// [B-06] Retrieves building stats by ID.
+    /// </summary>
+    [HttpGet("{id}/stats")]
+    [SwaggerResponse(200, "Building statistics retrieved successfully.", typeof(BuildingStatsViewModel))]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(404, "Building not found.")]
+    public async Task<ActionResult<BuildingStatsViewModel>> GetStats(Guid id, CancellationToken cancellationToken)
+    {
+        var stats = await _buildingService.GetStats(id, cancellationToken);
+        return Ok(stats);
+    }
+
+    /// <summary>
     /// [B-03] Creates a new building.
     /// </summary>
     [HttpPost]

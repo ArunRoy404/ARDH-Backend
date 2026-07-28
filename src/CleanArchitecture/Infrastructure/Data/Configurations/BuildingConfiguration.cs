@@ -62,6 +62,7 @@ public class BuildingConfiguration : IEntityTypeConfiguration<Building>
         builder.Property(x => x.UpdatedAt)
             .IsRequired();
 
-        builder.Property(x => x.DeletedAt);
+        builder.Property(x => x.CreatedBy);
+        builder.Property(x => x.UpdatedBy);
     }
 }
