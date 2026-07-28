@@ -19,6 +19,7 @@ public interface IMaintenanceRequestService
         Guid? buildingId,
         Guid? vendorId,
         Guid? equipmentId,
+        Guid? apartmentId,
         CancellationToken cancellationToken);
 
     Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken);

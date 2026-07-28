@@ -18,6 +18,7 @@ public interface IExpenseRecordService
         ExpenseNature? nature,
         Guid? buildingId,
         Guid? vendorId,
+        Guid? apartmentId,
         DateTime? startDate,
         DateTime? endDate,
         CancellationToken cancellationToken);

@@ -35,10 +35,11 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? vendorId = null,
         [FromQuery] Guid? equipmentId = null,
+        [FromQuery] Guid? apartmentId = null,
         CancellationToken cancellationToken = default)
     {
         var result = await _maintenanceRequestService.GetPaginated(
-            page, pageSize, search, status, priority, category, buildingId, vendorId, equipmentId, cancellationToken);
+            page, pageSize, search, status, priority, category, buildingId, vendorId, equipmentId, apartmentId, cancellationToken);
         return Ok(result);
     }
 

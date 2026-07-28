@@ -37,6 +37,7 @@ public class MaintenanceRequestService(
         Guid? buildingId,
         Guid? vendorId,
         Guid? equipmentId,
+        Guid? apartmentId,
         CancellationToken cancellationToken)
     {
         page = Math.Max(1, page);
@@ -83,6 +84,11 @@ public class MaintenanceRequestService(
         if (equipmentId.HasValue)
         {
             query = query.Where(x => x.EquipmentId == equipmentId.Value);
+        }
+
+        if (apartmentId.HasValue)
+        {
+            query = query.Where(x => x.ApartmentId == apartmentId.Value);
         }
 
         if (!string.IsNullOrWhiteSpace(search))

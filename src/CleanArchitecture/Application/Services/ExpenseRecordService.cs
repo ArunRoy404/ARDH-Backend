@@ -33,6 +33,7 @@ public class ExpenseRecordService(
         ExpenseNature? nature,
         Guid? buildingId,
         Guid? vendorId,
+        Guid? apartmentId,
         DateTime? startDate,
         DateTime? endDate,
         CancellationToken cancellationToken)
@@ -74,6 +75,11 @@ public class ExpenseRecordService(
         if (vendorId.HasValue)
         {
             query = query.Where(x => x.VendorId == vendorId.Value);
+        }
+
+        if (apartmentId.HasValue)
+        {
+            query = query.Where(x => x.ApartmentId == apartmentId.Value);
         }
 
         if (startDate.HasValue)

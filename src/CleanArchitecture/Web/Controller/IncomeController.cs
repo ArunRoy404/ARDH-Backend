@@ -33,12 +33,13 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
         [FromQuery] IncomeStatus? status = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? tenantId = null,
+        [FromQuery] Guid? apartmentId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
         var result = await _incomeRecordService.GetPaginated(
-            page, pageSize, search, incomeType, status, buildingId, tenantId, startDate, endDate, cancellationToken);
+            page, pageSize, search, incomeType, status, buildingId, tenantId, apartmentId, startDate, endDate, cancellationToken);
         return Ok(result);
     }
 

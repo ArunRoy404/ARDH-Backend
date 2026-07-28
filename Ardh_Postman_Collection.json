@@ -6352,6 +6352,12 @@
                   "key": "equipmentId",
                   "value": "",
                   "description": "Filter by equipment UUID"
+                },
+                {
+                  "key": "apartmentId",
+                  "value": "",
+                  "description": "Filter by Apartment UUID",
+                  "disabled": false
                 }
               ]
             },
@@ -7005,6 +7011,12 @@
                   "key": "endDate",
                   "value": "",
                   "description": "Filter by payment date end (yyyy-MM-dd)"
+                },
+                {
+                  "key": "apartmentId",
+                  "value": "",
+                  "description": "Filter by Apartment UUID",
+                  "disabled": false
                 }
               ]
             },
@@ -7719,6 +7731,12 @@
                   "key": "endDate",
                   "value": "",
                   "description": "Filter by expense date end (yyyy-MM-dd)"
+                },
+                {
+                  "key": "apartmentId",
+                  "value": "",
+                  "description": "Filter by Apartment UUID",
+                  "disabled": false
                 }
               ]
             },

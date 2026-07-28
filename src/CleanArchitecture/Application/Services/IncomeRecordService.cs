@@ -35,6 +35,7 @@ public class IncomeRecordService(
         IncomeStatus? status,
         Guid? buildingId,
         Guid? tenantId,
+        Guid? apartmentId,
         DateTime? startDate,
         DateTime? endDate,
         CancellationToken cancellationToken)
@@ -71,6 +72,11 @@ public class IncomeRecordService(
         if (tenantId.HasValue)
         {
             query = query.Where(x => x.TenantId == tenantId.Value);
+        }
+
+        if (apartmentId.HasValue)
+        {
+            query = query.Where(x => x.ApartmentId == apartmentId.Value);
         }
 
         if (startDate.HasValue)

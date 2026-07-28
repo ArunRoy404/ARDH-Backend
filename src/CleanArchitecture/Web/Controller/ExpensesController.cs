@@ -35,12 +35,13 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
         [FromQuery] ExpenseNature? nature = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? vendorId = null,
+        [FromQuery] Guid? apartmentId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
         var result = await _expenseRecordService.GetPaginated(
-            page, pageSize, search, category, status, nature, buildingId, vendorId, startDate, endDate, cancellationToken);
+            page, pageSize, search, category, status, nature, buildingId, vendorId, apartmentId, startDate, endDate, cancellationToken);
         return Ok(result);
     }
 
