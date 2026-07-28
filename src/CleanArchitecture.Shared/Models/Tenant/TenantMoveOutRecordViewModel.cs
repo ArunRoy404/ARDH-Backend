@@ -1,4 +1,5 @@
 using System;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Shared.Models.Tenant;
 
@@ -7,8 +8,10 @@ public class TenantMoveOutRecordViewModel
     public Guid Id { get; set; }
     public Guid TenantId { get; set; }
     public string TenantName { get; set; } = null!;
+    public TenantViewModel? Tenant { get; set; }
     public Guid ApartmentId { get; set; }
     public string FlatNumber { get; set; } = null!;
+    public ApartmentViewModel? Apartment { get; set; }
     public DateTime MoveOutDate { get; set; }
     public decimal PendingRent { get; set; }
     public decimal DamageAmount { get; set; }

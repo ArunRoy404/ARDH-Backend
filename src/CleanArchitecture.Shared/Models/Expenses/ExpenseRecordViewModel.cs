@@ -1,5 +1,8 @@
 using System;
 using CleanArchitecture.Shared.Domain.Enums;
+using CleanArchitecture.Shared.Models.Vendor;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Shared.Models.Expenses;
 
@@ -12,13 +15,16 @@ public class ExpenseRecordViewModel
     public Guid? VendorId { get; set; }
     public string? VendorName { get; set; }
     public string? VendorCompanyName { get; set; }
+    public VendorViewModel? Vendor { get; set; }
     public ExpenseNature Nature { get; set; }
     public decimal Amount { get; set; }
     public ExpenseEntity Entity { get; set; }
     public Guid? BuildingId { get; set; }
     public string? BuildingName { get; set; }
+    public BuildingViewModel? Building { get; set; }
     public Guid? ApartmentId { get; set; }
     public string? FlatNumber { get; set; }
+    public ApartmentViewModel? Apartment { get; set; }
     public DateTime ExpenseDate { get; set; }
     public ExpensePaymentMethod PaymentMethod { get; set; }
     public ExpenseStatus Status { get; set; }

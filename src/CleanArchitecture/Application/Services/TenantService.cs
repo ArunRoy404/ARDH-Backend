@@ -8,6 +8,8 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Tenant;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -116,8 +118,51 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             Id = tenant.Id,
             BuildingId = tenant.BuildingId,
             BuildingName = building?.BuildingName ?? "Unknown Building",
+            Building = building == null ? null : new BuildingViewModel
+            {
+                Id = building.Id,
+                BuildingName = building.BuildingName,
+                Address = building.Address,
+                City = building.City,
+                State = building.State,
+                Country = building.Country,
+                GoogleMapLink = building.GoogleMapLink,
+                TotalFloors = building.TotalFloors,
+                ParkingDetails = building.ParkingDetails,
+                Status = building.Status,
+                Description = building.Description,
+                ImageUrl = building.ImageUrl,
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                CreatedBy = building.CreatedBy,
+                UpdatedBy = building.UpdatedBy
+            },
             ApartmentId = tenant.ApartmentId,
             FlatNumber = apartment?.FlatNumber ?? "Unknown Flat",
+            Apartment = apartment == null ? null : new ApartmentViewModel
+            {
+                Id = apartment.Id,
+                BuildingId = apartment.BuildingId,
+                BuildingName = building?.BuildingName ?? "Unknown Building",
+                OwnerId = apartment.OwnerId,
+                NestawayId = apartment.NestawayId,
+                FlatNumber = apartment.FlatNumber,
+                Floor = apartment.Floor,
+                ApartmentType = apartment.ApartmentType,
+                AreaSqft = apartment.AreaSqft,
+                Bedrooms = apartment.Bedrooms,
+                Bathrooms = apartment.Bathrooms,
+                HasBalcony = apartment.HasBalcony,
+                ParkingSlot = apartment.ParkingSlot,
+                ExpectedRent = apartment.ExpectedRent,
+                MaintenanceCharge = apartment.MaintenanceCharge,
+                WaterCharge = apartment.WaterCharge,
+                CurrentTenantId = apartment.CurrentTenantId,
+                CreatedAt = apartment.CreatedAt,
+                UpdatedAt = apartment.UpdatedAt,
+                CreatedBy = apartment.CreatedBy,
+                UpdatedBy = apartment.UpdatedBy
+            },
             NestawayId = apartment?.NestawayId,
             FullName = tenant.FullName,
             Phone = tenant.Phone,

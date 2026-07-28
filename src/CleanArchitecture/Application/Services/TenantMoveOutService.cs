@@ -6,6 +6,7 @@ using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models.Tenant;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -72,8 +73,56 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             Id = record.Id,
             TenantId = record.TenantId,
             TenantName = tenant?.FullName ?? "Unknown Tenant",
+            Tenant = tenant == null ? null : new TenantViewModel
+            {
+                Id = tenant.Id,
+                BuildingId = tenant.BuildingId,
+                ApartmentId = tenant.ApartmentId,
+                FullName = tenant.FullName,
+                Phone = tenant.Phone,
+                Email = tenant.Email,
+                IdType = tenant.IdType,
+                IdNumber = tenant.IdNumber,
+                IdProofAttachmentUrl = tenant.IdProofAttachmentUrl,
+                MoveInDate = tenant.MoveInDate,
+                LeaseStartDate = tenant.LeaseStartDate,
+                LeaseEndDate = tenant.LeaseEndDate,
+                MonthlyRent = tenant.MonthlyRent,
+                SecurityDeposit = tenant.SecurityDeposit,
+                EmergencyContactName = tenant.EmergencyContactName,
+                EmergencyContactPhone = tenant.EmergencyContactPhone,
+                Status = tenant.Status,
+                Notes = tenant.Notes,
+                CreatedAt = tenant.CreatedAt,
+                UpdatedAt = tenant.UpdatedAt,
+                CreatedBy = tenant.CreatedBy,
+                UpdatedBy = tenant.UpdatedBy
+            },
             ApartmentId = record.ApartmentId,
             FlatNumber = apartment?.FlatNumber ?? "Unknown Flat",
+            Apartment = apartment == null ? null : new ApartmentViewModel
+            {
+                Id = apartment.Id,
+                BuildingId = apartment.BuildingId,
+                OwnerId = apartment.OwnerId,
+                NestawayId = apartment.NestawayId,
+                FlatNumber = apartment.FlatNumber,
+                Floor = apartment.Floor,
+                ApartmentType = apartment.ApartmentType,
+                AreaSqft = apartment.AreaSqft,
+                Bedrooms = apartment.Bedrooms,
+                Bathrooms = apartment.Bathrooms,
+                HasBalcony = apartment.HasBalcony,
+                ParkingSlot = apartment.ParkingSlot,
+                ExpectedRent = apartment.ExpectedRent,
+                MaintenanceCharge = apartment.MaintenanceCharge,
+                WaterCharge = apartment.WaterCharge,
+                CurrentTenantId = apartment.CurrentTenantId,
+                CreatedAt = apartment.CreatedAt,
+                UpdatedAt = apartment.UpdatedAt,
+                CreatedBy = apartment.CreatedBy,
+                UpdatedBy = apartment.UpdatedBy
+            },
             MoveOutDate = record.MoveOutDate,
             PendingRent = record.PendingRent,
             DamageAmount = record.DamageAmount,

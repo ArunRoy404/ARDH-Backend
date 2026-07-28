@@ -10,6 +10,9 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Income;
+using CleanArchitecture.Shared.Models.Tenant;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -145,10 +148,77 @@ public class IncomeRecordService(
             Amount = record.Amount,
             TenantId = record.TenantId,
             TenantName = tenant != null ? tenant.FullName : null,
+            Tenant = tenant == null ? null : new TenantViewModel
+            {
+                Id = tenant.Id,
+                BuildingId = tenant.BuildingId,
+                ApartmentId = tenant.ApartmentId,
+                FullName = tenant.FullName,
+                Phone = tenant.Phone,
+                Email = tenant.Email,
+                IdType = tenant.IdType,
+                IdNumber = tenant.IdNumber,
+                IdProofAttachmentUrl = tenant.IdProofAttachmentUrl,
+                MoveInDate = tenant.MoveInDate,
+                LeaseStartDate = tenant.LeaseStartDate,
+                LeaseEndDate = tenant.LeaseEndDate,
+                MonthlyRent = tenant.MonthlyRent,
+                SecurityDeposit = tenant.SecurityDeposit,
+                EmergencyContactName = tenant.EmergencyContactName,
+                EmergencyContactPhone = tenant.EmergencyContactPhone,
+                Status = tenant.Status,
+                Notes = tenant.Notes,
+                CreatedAt = tenant.CreatedAt,
+                UpdatedAt = tenant.UpdatedAt,
+                CreatedBy = tenant.CreatedBy,
+                UpdatedBy = tenant.UpdatedBy
+            },
             BuildingId = record.BuildingId,
             BuildingName = building?.BuildingName,
+            Building = building == null ? null : new BuildingViewModel
+            {
+                Id = building.Id,
+                BuildingName = building.BuildingName,
+                Address = building.Address,
+                City = building.City,
+                State = building.State,
+                Country = building.Country,
+                GoogleMapLink = building.GoogleMapLink,
+                TotalFloors = building.TotalFloors,
+                ParkingDetails = building.ParkingDetails,
+                Status = building.Status,
+                Description = building.Description,
+                ImageUrl = building.ImageUrl,
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                CreatedBy = building.CreatedBy,
+                UpdatedBy = building.UpdatedBy
+            },
             ApartmentId = record.ApartmentId,
             FlatNumber = apartment?.FlatNumber,
+            Apartment = apartment == null ? null : new ApartmentViewModel
+            {
+                Id = apartment.Id,
+                BuildingId = apartment.BuildingId,
+                OwnerId = apartment.OwnerId,
+                NestawayId = apartment.NestawayId,
+                FlatNumber = apartment.FlatNumber,
+                Floor = apartment.Floor,
+                ApartmentType = apartment.ApartmentType,
+                AreaSqft = apartment.AreaSqft,
+                Bedrooms = apartment.Bedrooms,
+                Bathrooms = apartment.Bathrooms,
+                HasBalcony = apartment.HasBalcony,
+                ParkingSlot = apartment.ParkingSlot,
+                ExpectedRent = apartment.ExpectedRent,
+                MaintenanceCharge = apartment.MaintenanceCharge,
+                WaterCharge = apartment.WaterCharge,
+                CurrentTenantId = apartment.CurrentTenantId,
+                CreatedAt = apartment.CreatedAt,
+                UpdatedAt = apartment.UpdatedAt,
+                CreatedBy = apartment.CreatedBy,
+                UpdatedBy = apartment.UpdatedBy
+            },
             Period = record.Period,
             PaymentDate = record.PaymentDate,
             PaymentMethod = record.PaymentMethod,

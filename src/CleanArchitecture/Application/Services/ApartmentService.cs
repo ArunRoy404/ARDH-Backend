@@ -7,6 +7,8 @@ using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Owner;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -111,8 +113,47 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             Id = apartment.Id,
             BuildingId = apartment.BuildingId,
             BuildingName = building?.BuildingName ?? "Unknown Building",
+            Building = building == null ? null : new BuildingViewModel
+            {
+                Id = building.Id,
+                BuildingName = building.BuildingName,
+                Address = building.Address,
+                City = building.City,
+                State = building.State,
+                Country = building.Country,
+                GoogleMapLink = building.GoogleMapLink,
+                TotalFloors = building.TotalFloors,
+                ParkingDetails = building.ParkingDetails,
+                Status = building.Status,
+                Description = building.Description,
+                ImageUrl = building.ImageUrl,
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                CreatedBy = building.CreatedBy,
+                UpdatedBy = building.UpdatedBy
+            },
             OwnerId = apartment.OwnerId,
             OwnerName = owner?.FullName ?? "Unknown Owner",
+            Owner = owner == null ? null : new OwnerViewModel
+            {
+                Id = owner.Id,
+                FullName = owner.FullName,
+                Phone = owner.Phone,
+                Email = owner.Email,
+                City = owner.City,
+                Address = owner.Address,
+                IdType = owner.IdType,
+                IdNumber = owner.IdNumber,
+                BankName = owner.BankName,
+                AccountNumber = owner.AccountNumber,
+                IfscCode = owner.IfscCode,
+                Status = owner.Status,
+                Notes = owner.Notes,
+                CreatedAt = owner.CreatedAt,
+                UpdatedAt = owner.UpdatedAt,
+                CreatedBy = owner.CreatedBy,
+                UpdatedBy = owner.UpdatedBy
+            },
             NestawayId = apartment.NestawayId,
             FlatNumber = apartment.FlatNumber,
             Floor = apartment.Floor,

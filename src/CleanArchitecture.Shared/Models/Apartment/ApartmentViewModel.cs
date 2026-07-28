@@ -1,4 +1,6 @@
 using System;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Owner;
 
 namespace CleanArchitecture.Shared.Models.Apartment;
 
@@ -7,8 +9,10 @@ public class ApartmentViewModel
     public Guid Id { get; set; }
     public Guid BuildingId { get; set; }
     public string BuildingName { get; set; } = null!;
+    public BuildingViewModel? Building { get; set; }
     public Guid OwnerId { get; set; }
     public string OwnerName { get; set; } = null!;
+    public OwnerViewModel? Owner { get; set; }
     public string NestawayId { get; set; } = null!;
     public string FlatNumber { get; set; } = null!;
     public int Floor { get; set; }

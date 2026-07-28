@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,9 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Expenses;
+using CleanArchitecture.Shared.Models.Vendor;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -154,13 +158,72 @@ public class ExpenseRecordService(
             VendorId = record.VendorId,
             VendorName = vendor?.Name,
             VendorCompanyName = vendor?.CompanyName,
+            Vendor = vendor == null ? null : new VendorViewModel
+            {
+                Id = vendor.Id,
+                Name = vendor.Name,
+                CompanyName = vendor.CompanyName,
+                Phone = vendor.Phone,
+                Email = vendor.Email,
+                VendorType = vendor.VendorType,
+                GstNumber = vendor.GstNumber,
+                Address = vendor.Address,
+                Status = vendor.Status,
+                Notes = vendor.Notes,
+                CreatedAt = vendor.CreatedAt,
+                UpdatedAt = vendor.UpdatedAt,
+                CreatedBy = vendor.CreatedBy,
+                UpdatedBy = vendor.UpdatedBy
+            },
             Nature = record.Nature,
             Amount = record.Amount,
             Entity = record.Entity,
             BuildingId = record.BuildingId,
             BuildingName = building?.BuildingName,
+            Building = building == null ? null : new BuildingViewModel
+            {
+                Id = building.Id,
+                BuildingName = building.BuildingName,
+                Address = building.Address,
+                City = building.City,
+                State = building.State,
+                Country = building.Country,
+                GoogleMapLink = building.GoogleMapLink,
+                TotalFloors = building.TotalFloors,
+                ParkingDetails = building.ParkingDetails,
+                Status = building.Status,
+                Description = building.Description,
+                ImageUrl = building.ImageUrl,
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                CreatedBy = building.CreatedBy,
+                UpdatedBy = building.UpdatedBy
+            },
             ApartmentId = record.ApartmentId,
             FlatNumber = apartment?.FlatNumber,
+            Apartment = apartment == null ? null : new ApartmentViewModel
+            {
+                Id = apartment.Id,
+                BuildingId = apartment.BuildingId,
+                OwnerId = apartment.OwnerId,
+                NestawayId = apartment.NestawayId,
+                FlatNumber = apartment.FlatNumber,
+                Floor = apartment.Floor,
+                ApartmentType = apartment.ApartmentType,
+                AreaSqft = apartment.AreaSqft,
+                Bedrooms = apartment.Bedrooms,
+                Bathrooms = apartment.Bathrooms,
+                HasBalcony = apartment.HasBalcony,
+                ParkingSlot = apartment.ParkingSlot,
+                ExpectedRent = apartment.ExpectedRent,
+                MaintenanceCharge = apartment.MaintenanceCharge,
+                WaterCharge = apartment.WaterCharge,
+                CurrentTenantId = apartment.CurrentTenantId,
+                CreatedAt = apartment.CreatedAt,
+                UpdatedAt = apartment.UpdatedAt,
+                CreatedBy = apartment.CreatedBy,
+                UpdatedBy = apartment.UpdatedBy
+            },
             ExpenseDate = record.ExpenseDate,
             PaymentMethod = record.PaymentMethod,
             Status = record.Status,

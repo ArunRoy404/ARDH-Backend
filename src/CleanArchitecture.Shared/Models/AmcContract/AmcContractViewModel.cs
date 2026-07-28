@@ -1,5 +1,7 @@
 using System;
 using CleanArchitecture.Shared.Domain.Enums;
+using CleanArchitecture.Shared.Models.Equipment;
+using CleanArchitecture.Shared.Models.Vendor;
 
 namespace CleanArchitecture.Shared.Models.AmcContract;
 
@@ -12,9 +14,11 @@ public class AmcContractViewModel
     public AmcContractType ContractType { get; set; }
     public Guid EquipmentId { get; set; }
     public string EquipmentName { get; set; } = string.Empty;
+    public EquipmentViewModel? Equipment { get; set; }
     public Guid VendorId { get; set; }
     public string VendorName { get; set; } = string.Empty;
     public string VendorCompanyName { get; set; } = string.Empty;
+    public VendorViewModel? Vendor { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public decimal ContractAmount { get; set; }

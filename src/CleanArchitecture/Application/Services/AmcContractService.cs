@@ -8,6 +8,8 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.AmcContract;
+using CleanArchitecture.Shared.Models.Equipment;
+using CleanArchitecture.Shared.Models.Vendor;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -129,9 +131,49 @@ public class AmcContractService(
             ContractType = contract.ContractType,
             EquipmentId = contract.EquipmentId,
             EquipmentName = equipment?.Name ?? "Unknown Equipment",
+            Equipment = equipment == null ? null : new EquipmentViewModel
+            {
+                Id = equipment.Id,
+                BuildingId = equipment.BuildingId,
+                Name = equipment.Name,
+                Type = equipment.Type,
+                Brand = equipment.Brand,
+                Model = equipment.Model,
+                SerialNumber = equipment.SerialNumber,
+                InstallDate = equipment.InstallDate,
+                WarrantyExpiryDate = equipment.WarrantyExpiryDate,
+                AmcVendorId = equipment.AmcVendorId,
+                AmcExpiryDate = equipment.AmcExpiryDate,
+                LastServiceDate = equipment.LastServiceDate,
+                NextServiceDate = equipment.NextServiceDate,
+                Status = equipment.Status,
+                Notes = equipment.Notes,
+                AttachmentUrl = equipment.AttachmentUrl,
+                CreatedAt = equipment.CreatedAt,
+                UpdatedAt = equipment.UpdatedAt,
+                CreatedBy = equipment.CreatedBy,
+                UpdatedBy = equipment.UpdatedBy
+            },
             VendorId = contract.VendorId,
             VendorName = vendor?.Name ?? "Unknown Vendor",
             VendorCompanyName = vendor?.CompanyName ?? "Unknown Vendor",
+            Vendor = vendor == null ? null : new VendorViewModel
+            {
+                Id = vendor.Id,
+                Name = vendor.Name,
+                CompanyName = vendor.CompanyName,
+                Phone = vendor.Phone,
+                Email = vendor.Email,
+                VendorType = vendor.VendorType,
+                GstNumber = vendor.GstNumber,
+                Address = vendor.Address,
+                Status = vendor.Status,
+                Notes = vendor.Notes,
+                CreatedAt = vendor.CreatedAt,
+                UpdatedAt = vendor.UpdatedAt,
+                CreatedBy = vendor.CreatedBy,
+                UpdatedBy = vendor.UpdatedBy
+            },
             StartDate = contract.StartDate,
             EndDate = contract.EndDate,
             ContractAmount = contract.ContractAmount,

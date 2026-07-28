@@ -1,5 +1,7 @@
 using System;
 using CleanArchitecture.Shared.Domain.Enums;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Shared.Models.Tenant;
 
@@ -8,8 +10,10 @@ public class TenantViewModel
     public Guid Id { get; set; }
     public Guid BuildingId { get; set; }
     public string BuildingName { get; set; } = null!;
+    public BuildingViewModel? Building { get; set; }
     public Guid ApartmentId { get; set; }
     public string FlatNumber { get; set; } = null!;
+    public ApartmentViewModel? Apartment { get; set; }
     public string? NestawayId { get; set; }
     public string FullName { get; set; } = null!;
     public string Phone { get; set; } = null!;

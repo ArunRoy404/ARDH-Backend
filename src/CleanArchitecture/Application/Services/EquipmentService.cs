@@ -8,6 +8,8 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Vendor;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -123,6 +125,25 @@ public class EquipmentService(
             Id = equipment.Id,
             BuildingId = equipment.BuildingId,
             BuildingName = building?.BuildingName ?? "Unknown Building",
+            Building = building == null ? null : new BuildingViewModel
+            {
+                Id = building.Id,
+                BuildingName = building.BuildingName,
+                Address = building.Address,
+                City = building.City,
+                State = building.State,
+                Country = building.Country,
+                GoogleMapLink = building.GoogleMapLink,
+                TotalFloors = building.TotalFloors,
+                ParkingDetails = building.ParkingDetails,
+                Status = building.Status,
+                Description = building.Description,
+                ImageUrl = building.ImageUrl,
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                CreatedBy = building.CreatedBy,
+                UpdatedBy = building.UpdatedBy
+            },
             Name = equipment.Name,
             Type = equipment.Type,
             Brand = equipment.Brand,
@@ -133,6 +154,23 @@ public class EquipmentService(
             AmcVendorId = equipment.AmcVendorId,
             AmcVendorName = vendor?.Name ?? "Unknown Vendor",
             AmcVendorCompanyName = vendor?.CompanyName ?? "Unknown Vendor",
+            AmcVendor = vendor == null ? null : new VendorViewModel
+            {
+                Id = vendor.Id,
+                Name = vendor.Name,
+                CompanyName = vendor.CompanyName,
+                Phone = vendor.Phone,
+                Email = vendor.Email,
+                VendorType = vendor.VendorType,
+                GstNumber = vendor.GstNumber,
+                Address = vendor.Address,
+                Status = vendor.Status,
+                Notes = vendor.Notes,
+                CreatedAt = vendor.CreatedAt,
+                UpdatedAt = vendor.UpdatedAt,
+                CreatedBy = vendor.CreatedBy,
+                UpdatedBy = vendor.UpdatedBy
+            },
             AmcExpiryDate = equipment.AmcExpiryDate,
             LastServiceDate = equipment.LastServiceDate,
             NextServiceDate = equipment.NextServiceDate,

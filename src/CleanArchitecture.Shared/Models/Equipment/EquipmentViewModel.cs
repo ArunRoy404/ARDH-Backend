@@ -1,5 +1,7 @@
 using System;
 using CleanArchitecture.Shared.Domain.Enums;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Vendor;
 
 namespace CleanArchitecture.Shared.Models.Equipment;
 
@@ -8,6 +10,7 @@ public class EquipmentViewModel
     public Guid Id { get; set; }
     public Guid BuildingId { get; set; }
     public string BuildingName { get; set; } = string.Empty;
+    public BuildingViewModel? Building { get; set; }
     public string Name { get; set; } = string.Empty;
     public EquipmentType Type { get; set; }
     public string Brand { get; set; } = string.Empty;
@@ -18,6 +21,7 @@ public class EquipmentViewModel
     public Guid AmcVendorId { get; set; }
     public string AmcVendorName { get; set; } = string.Empty;
     public string AmcVendorCompanyName { get; set; } = string.Empty;
+    public VendorViewModel? AmcVendor { get; set; }
     public DateTime AmcExpiryDate { get; set; }
     public DateTime LastServiceDate { get; set; }
     public DateTime NextServiceDate { get; set; }

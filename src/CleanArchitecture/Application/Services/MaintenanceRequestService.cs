@@ -9,6 +9,10 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Maintenance;
+using CleanArchitecture.Shared.Models.Building;
+using CleanArchitecture.Shared.Models.Apartment;
+using CleanArchitecture.Shared.Models.Vendor;
+using CleanArchitecture.Shared.Models.Equipment;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -154,12 +158,94 @@ public class MaintenanceRequestService(
             VendorId = request.VendorId,
             VendorName = vendor?.Name,
             VendorCompanyName = vendor?.CompanyName,
+            Vendor = vendor == null ? null : new VendorViewModel
+            {
+                Id = vendor.Id,
+                Name = vendor.Name,
+                CompanyName = vendor.CompanyName,
+                Phone = vendor.Phone,
+                Email = vendor.Email,
+                VendorType = vendor.VendorType,
+                GstNumber = vendor.GstNumber,
+                Address = vendor.Address,
+                Status = vendor.Status,
+                Notes = vendor.Notes,
+                CreatedAt = vendor.CreatedAt,
+                UpdatedAt = vendor.UpdatedAt,
+                CreatedBy = vendor.CreatedBy,
+                UpdatedBy = vendor.UpdatedBy
+            },
             EquipmentId = request.EquipmentId,
             EquipmentName = equipment?.Name,
+            Equipment = equipment == null ? null : new EquipmentViewModel
+            {
+                Id = equipment.Id,
+                BuildingId = equipment.BuildingId,
+                Name = equipment.Name,
+                Type = equipment.Type,
+                Brand = equipment.Brand,
+                Model = equipment.Model,
+                SerialNumber = equipment.SerialNumber,
+                InstallDate = equipment.InstallDate,
+                WarrantyExpiryDate = equipment.WarrantyExpiryDate,
+                AmcVendorId = equipment.AmcVendorId,
+                AmcExpiryDate = equipment.AmcExpiryDate,
+                LastServiceDate = equipment.LastServiceDate,
+                NextServiceDate = equipment.NextServiceDate,
+                Status = equipment.Status,
+                Notes = equipment.Notes,
+                AttachmentUrl = equipment.AttachmentUrl,
+                CreatedAt = equipment.CreatedAt,
+                UpdatedAt = equipment.UpdatedAt,
+                CreatedBy = equipment.CreatedBy,
+                UpdatedBy = equipment.UpdatedBy
+            },
             BuildingId = request.BuildingId,
             BuildingName = building?.BuildingName ?? "Unknown Building",
+            Building = building == null ? null : new BuildingViewModel
+            {
+                Id = building.Id,
+                BuildingName = building.BuildingName,
+                Address = building.Address,
+                City = building.City,
+                State = building.State,
+                Country = building.Country,
+                GoogleMapLink = building.GoogleMapLink,
+                TotalFloors = building.TotalFloors,
+                ParkingDetails = building.ParkingDetails,
+                Status = building.Status,
+                Description = building.Description,
+                ImageUrl = building.ImageUrl,
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                CreatedBy = building.CreatedBy,
+                UpdatedBy = building.UpdatedBy
+            },
             ApartmentId = request.ApartmentId,
             FlatNumber = apartment?.FlatNumber,
+            Apartment = apartment == null ? null : new ApartmentViewModel
+            {
+                Id = apartment.Id,
+                BuildingId = apartment.BuildingId,
+                OwnerId = apartment.OwnerId,
+                NestawayId = apartment.NestawayId,
+                FlatNumber = apartment.FlatNumber,
+                Floor = apartment.Floor,
+                ApartmentType = apartment.ApartmentType,
+                AreaSqft = apartment.AreaSqft,
+                Bedrooms = apartment.Bedrooms,
+                Bathrooms = apartment.Bathrooms,
+                HasBalcony = apartment.HasBalcony,
+                ParkingSlot = apartment.ParkingSlot,
+                ExpectedRent = apartment.ExpectedRent,
+                MaintenanceCharge = apartment.MaintenanceCharge,
+                WaterCharge = apartment.WaterCharge,
+                CurrentTenantId = apartment.CurrentTenantId,
+                CreatedAt = apartment.CreatedAt,
+                UpdatedAt = apartment.UpdatedAt,
+                CreatedBy = apartment.CreatedBy,
+                UpdatedBy = apartment.UpdatedBy
+            },
             EstimatedCost = request.EstimatedCost,
             AnnualCost = request.AnnualCost,
             ScheduledDate = request.ScheduledDate,
