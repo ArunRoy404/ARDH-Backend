@@ -36,6 +36,8 @@ public class EquipmentService(
         var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
@@ -105,8 +107,8 @@ public class EquipmentService(
             AttachmentUrl = x.AttachmentUrl,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
 
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
@@ -119,6 +121,8 @@ public class EquipmentService(
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);
         var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == equipment.AmcVendorId);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new EquipmentViewModel
         {
@@ -141,8 +145,8 @@ public class EquipmentService(
                 ImageUrl = building.ImageUrl,
                 CreatedAt = building.CreatedAt,
                 UpdatedAt = building.UpdatedAt,
-                CreatedBy = building.CreatedBy,
-                UpdatedBy = building.UpdatedBy
+                CreatedBy = building.CreatedBy.HasValue && userMap.TryGetValue(building.CreatedBy.Value, out var bcb) ? bcb : null,
+                UpdatedBy = building.UpdatedBy.HasValue && userMap.TryGetValue(building.UpdatedBy.Value, out var bub) ? bub : null
             },
             Name = equipment.Name,
             Type = equipment.Type,
@@ -168,8 +172,8 @@ public class EquipmentService(
                 Notes = vendor.Notes,
                 CreatedAt = vendor.CreatedAt,
                 UpdatedAt = vendor.UpdatedAt,
-                CreatedBy = vendor.CreatedBy,
-                UpdatedBy = vendor.UpdatedBy
+                CreatedBy = vendor.CreatedBy.HasValue && userMap.TryGetValue(vendor.CreatedBy.Value, out var vcb) ? vcb : null,
+                UpdatedBy = vendor.UpdatedBy.HasValue && userMap.TryGetValue(vendor.UpdatedBy.Value, out var vub) ? vub : null
             },
             AmcExpiryDate = equipment.AmcExpiryDate,
             LastServiceDate = equipment.LastServiceDate,
@@ -179,8 +183,8 @@ public class EquipmentService(
             AttachmentUrl = equipment.AttachmentUrl,
             CreatedAt = equipment.CreatedAt,
             UpdatedAt = equipment.UpdatedAt,
-            CreatedBy = equipment.CreatedBy,
-            UpdatedBy = equipment.UpdatedBy,
+            CreatedBy = equipment.CreatedBy.HasValue && userMap.TryGetValue(equipment.CreatedBy.Value, out var ecb) ? ecb : null,
+            UpdatedBy = equipment.UpdatedBy.HasValue && userMap.TryGetValue(equipment.UpdatedBy.Value, out var eub) ? eub : null,
         };
     }
 

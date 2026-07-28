@@ -19,6 +19,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
     public async Task<PaginatedList<OwnerViewModel>> GetPaginated(int page, int pageSize, string? search, OwnerStatus? status, CancellationToken cancellationToken)
     {
         var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var query = owners.AsQueryable();
 
         if (status.HasValue)
@@ -38,10 +40,12 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         }
 
         var totalCount = query.Count();
-        var items = query
+        var pageEntities = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new OwnerViewModel
+            .ToList();
+
+        var items = pageEntities.Select(x => new OwnerViewModel
             {
                 Id = x.Id,
                 FullName = x.FullName,
@@ -58,8 +62,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
                 Notes = x.Notes,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
-                CreatedBy = x.CreatedBy,
-                UpdatedBy = x.UpdatedBy,
+                CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+                UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
             })
             .ToList();
 
@@ -70,6 +74,9 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
     {
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
+
+        var createdByUser = owner.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == owner.CreatedBy.Value) : null;
+        var updatedByUser = owner.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == owner.UpdatedBy.Value) : null;
 
         return new OwnerViewModel
         {
@@ -88,8 +95,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
             Notes = owner.Notes,
             CreatedAt = owner.CreatedAt,
             UpdatedAt = owner.UpdatedAt,
-            CreatedBy = owner.CreatedBy,
-            UpdatedBy = owner.UpdatedBy,
+            CreatedBy = createdByUser?.Name,
+            UpdatedBy = updatedByUser?.Name,
         };
     }
 

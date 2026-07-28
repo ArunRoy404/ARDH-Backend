@@ -45,6 +45,8 @@ public class ExpenseRecordService(
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -139,8 +141,8 @@ public class ExpenseRecordService(
             LitersFilled = x.LitersFilled,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
 
         return new PaginatedList<ExpenseRecordViewModel>(items, totalItems, page, pageSize);
@@ -154,6 +156,8 @@ public class ExpenseRecordService(
         var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
         var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
         var vendor = record.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == record.VendorId.Value) : null;
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new ExpenseRecordViewModel
         {
@@ -178,8 +182,8 @@ public class ExpenseRecordService(
                 Notes = vendor.Notes,
                 CreatedAt = vendor.CreatedAt,
                 UpdatedAt = vendor.UpdatedAt,
-                CreatedBy = vendor.CreatedBy,
-                UpdatedBy = vendor.UpdatedBy
+                CreatedBy = vendor.CreatedBy.HasValue && userMap.TryGetValue(vendor.CreatedBy.Value, out var vcb) ? vcb : null,
+                UpdatedBy = vendor.UpdatedBy.HasValue && userMap.TryGetValue(vendor.UpdatedBy.Value, out var vub) ? vub : null
             },
             Nature = record.Nature,
             Amount = record.Amount,
@@ -202,8 +206,8 @@ public class ExpenseRecordService(
                 ImageUrl = building.ImageUrl,
                 CreatedAt = building.CreatedAt,
                 UpdatedAt = building.UpdatedAt,
-                CreatedBy = building.CreatedBy,
-                UpdatedBy = building.UpdatedBy
+                CreatedBy = building.CreatedBy.HasValue && userMap.TryGetValue(building.CreatedBy.Value, out var bcb) ? bcb : null,
+                UpdatedBy = building.UpdatedBy.HasValue && userMap.TryGetValue(building.UpdatedBy.Value, out var bub) ? bub : null
             },
             ApartmentId = record.ApartmentId,
             FlatNumber = apartment?.FlatNumber,
@@ -227,8 +231,8 @@ public class ExpenseRecordService(
                 CurrentTenantId = apartment.CurrentTenantId,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
-                CreatedBy = apartment.CreatedBy,
-                UpdatedBy = apartment.UpdatedBy
+                CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
+                UpdatedBy = apartment.UpdatedBy.HasValue && userMap.TryGetValue(apartment.UpdatedBy.Value, out var aub) ? aub : null
             },
             ExpenseDate = record.ExpenseDate,
             PaymentMethod = record.PaymentMethod,
@@ -243,8 +247,8 @@ public class ExpenseRecordService(
             LitersFilled = record.LitersFilled,
             CreatedAt = record.CreatedAt,
             UpdatedAt = record.UpdatedAt,
-            CreatedBy = record.CreatedBy,
-            UpdatedBy = record.UpdatedBy,
+            CreatedBy = record.CreatedBy.HasValue && userMap.TryGetValue(record.CreatedBy.Value, out var rcb) ? rcb : null,
+            UpdatedBy = record.UpdatedBy.HasValue && userMap.TryGetValue(record.UpdatedBy.Value, out var rub) ? rub : null,
         };
     }
 

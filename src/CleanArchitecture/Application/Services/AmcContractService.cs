@@ -36,6 +36,8 @@ public class AmcContractService(
         var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync();
         var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var equipmentMap = equipmentList.ToDictionary(e => e.Id, e => e.Name);
         var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
@@ -107,8 +109,8 @@ public class AmcContractService(
             Status = x.Status,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
 
         return new PaginatedList<AmcContractViewModel>(items, totalItems, page, pageSize);
@@ -121,6 +123,8 @@ public class AmcContractService(
 
         var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
         var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == contract.VendorId);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new AmcContractViewModel
         {
@@ -151,8 +155,8 @@ public class AmcContractService(
                 AttachmentUrl = equipment.AttachmentUrl,
                 CreatedAt = equipment.CreatedAt,
                 UpdatedAt = equipment.UpdatedAt,
-                CreatedBy = equipment.CreatedBy,
-                UpdatedBy = equipment.UpdatedBy
+                CreatedBy = equipment.CreatedBy.HasValue && userMap.TryGetValue(equipment.CreatedBy.Value, out var ecb) ? ecb : null,
+                UpdatedBy = equipment.UpdatedBy.HasValue && userMap.TryGetValue(equipment.UpdatedBy.Value, out var eub) ? eub : null
             },
             VendorId = contract.VendorId,
             VendorName = vendor?.Name ?? "Unknown Vendor",
@@ -171,8 +175,8 @@ public class AmcContractService(
                 Notes = vendor.Notes,
                 CreatedAt = vendor.CreatedAt,
                 UpdatedAt = vendor.UpdatedAt,
-                CreatedBy = vendor.CreatedBy,
-                UpdatedBy = vendor.UpdatedBy
+                CreatedBy = vendor.CreatedBy.HasValue && userMap.TryGetValue(vendor.CreatedBy.Value, out var vcb) ? vcb : null,
+                UpdatedBy = vendor.UpdatedBy.HasValue && userMap.TryGetValue(vendor.UpdatedBy.Value, out var vub) ? vub : null
             },
             StartDate = contract.StartDate,
             EndDate = contract.EndDate,
@@ -186,8 +190,8 @@ public class AmcContractService(
             Status = contract.Status,
             CreatedAt = contract.CreatedAt,
             UpdatedAt = contract.UpdatedAt,
-            CreatedBy = contract.CreatedBy,
-            UpdatedBy = contract.UpdatedBy,
+            CreatedBy = contract.CreatedBy.HasValue && userMap.TryGetValue(contract.CreatedBy.Value, out var ccb) ? ccb : null,
+            UpdatedBy = contract.UpdatedBy.HasValue && userMap.TryGetValue(contract.UpdatedBy.Value, out var cub) ? cub : null,
         };
     }
 

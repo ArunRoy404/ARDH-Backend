@@ -30,6 +30,8 @@ public class VendorService(
         pageSize = Math.Clamp(pageSize, 1, 100);
 
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var query = vendors.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -60,7 +62,7 @@ public class VendorService(
             .Take(pageSize)
             .ToList();
 
-        var items = pageEntities.Select(MapToViewModel).ToList();
+        var items = pageEntities.Select(x => MapToViewModel(x, userMap)).ToList();
 
         return new PaginatedList<VendorViewModel>(items, totalItems, page, pageSize);
     }
@@ -70,7 +72,13 @@ public class VendorService(
         var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw VendorException.NotFoundException($"Vendor with ID '{id}' was not found.");
 
-        return MapToViewModel(vendor);
+        var createdByUser = vendor.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == vendor.CreatedBy.Value) : null;
+        var updatedByUser = vendor.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == vendor.UpdatedBy.Value) : null;
+        var vendorUserMap = new Dictionary<Guid, string>();
+        if (createdByUser != null) vendorUserMap[vendor.CreatedBy!.Value] = createdByUser.Name;
+        if (updatedByUser != null) vendorUserMap[vendor.UpdatedBy!.Value] = updatedByUser.Name;
+
+        return MapToViewModel(vendor, vendorUserMap);
     }
 
     public async Task Create(VendorCreateRequest request, CancellationToken cancellationToken)
@@ -201,7 +209,7 @@ public class VendorService(
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    private static VendorViewModel MapToViewModel(Vendor vendor)
+    private static VendorViewModel MapToViewModel(Vendor vendor, Dictionary<Guid, string>? userMap = null)
     {
         return new VendorViewModel
         {
@@ -217,8 +225,8 @@ public class VendorService(
             Notes = vendor.Notes,
             CreatedAt = vendor.CreatedAt,
             UpdatedAt = vendor.UpdatedAt,
-            CreatedBy = vendor.CreatedBy,
-            UpdatedBy = vendor.UpdatedBy,
+            CreatedBy = vendor.CreatedBy.HasValue && userMap != null && userMap.TryGetValue(vendor.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = vendor.UpdatedBy.HasValue && userMap != null && userMap.TryGetValue(vendor.UpdatedBy.Value, out var ub) ? ub : null,
         };
     }
 }

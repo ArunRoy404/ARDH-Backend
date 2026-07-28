@@ -47,6 +47,8 @@ public class IncomeRecordService(
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -130,8 +132,8 @@ public class IncomeRecordService(
             AttachmentUrl = x.AttachmentUrl,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
 
         return new PaginatedList<IncomeRecordViewModel>(items, totalItems, page, pageSize);
@@ -145,6 +147,8 @@ public class IncomeRecordService(
         var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
         var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
         var tenant = record.TenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value) : null;
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new IncomeRecordViewModel
         {
@@ -176,8 +180,8 @@ public class IncomeRecordService(
                 Notes = tenant.Notes,
                 CreatedAt = tenant.CreatedAt,
                 UpdatedAt = tenant.UpdatedAt,
-                CreatedBy = tenant.CreatedBy,
-                UpdatedBy = tenant.UpdatedBy
+                CreatedBy = tenant.CreatedBy.HasValue && userMap.TryGetValue(tenant.CreatedBy.Value, out var tcb) ? tcb : null,
+                UpdatedBy = tenant.UpdatedBy.HasValue && userMap.TryGetValue(tenant.UpdatedBy.Value, out var tub) ? tub : null
             },
             BuildingId = record.BuildingId,
             BuildingName = building?.BuildingName,
@@ -197,8 +201,8 @@ public class IncomeRecordService(
                 ImageUrl = building.ImageUrl,
                 CreatedAt = building.CreatedAt,
                 UpdatedAt = building.UpdatedAt,
-                CreatedBy = building.CreatedBy,
-                UpdatedBy = building.UpdatedBy
+                CreatedBy = building.CreatedBy.HasValue && userMap.TryGetValue(building.CreatedBy.Value, out var bcb) ? bcb : null,
+                UpdatedBy = building.UpdatedBy.HasValue && userMap.TryGetValue(building.UpdatedBy.Value, out var bub) ? bub : null
             },
             ApartmentId = record.ApartmentId,
             FlatNumber = apartment?.FlatNumber,
@@ -222,8 +226,8 @@ public class IncomeRecordService(
                 CurrentTenantId = apartment.CurrentTenantId,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
-                CreatedBy = apartment.CreatedBy,
-                UpdatedBy = apartment.UpdatedBy
+                CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
+                UpdatedBy = apartment.UpdatedBy.HasValue && userMap.TryGetValue(apartment.UpdatedBy.Value, out var aub) ? aub : null
             },
             Period = record.Period,
             PaymentDate = record.PaymentDate,
@@ -234,8 +238,8 @@ public class IncomeRecordService(
             AttachmentUrl = record.AttachmentUrl,
             CreatedAt = record.CreatedAt,
             UpdatedAt = record.UpdatedAt,
-            CreatedBy = record.CreatedBy,
-            UpdatedBy = record.UpdatedBy,
+            CreatedBy = record.CreatedBy.HasValue && userMap.TryGetValue(record.CreatedBy.Value, out var rcb) ? rcb : null,
+            UpdatedBy = record.UpdatedBy.HasValue && userMap.TryGetValue(record.UpdatedBy.Value, out var rub) ? rub : null,
         };
     }
 
@@ -596,6 +600,8 @@ public class IncomeRecordService(
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);

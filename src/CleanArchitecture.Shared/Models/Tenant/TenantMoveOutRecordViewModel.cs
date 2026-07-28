@@ -18,10 +18,9 @@ public class TenantMoveOutRecordViewModel
     public decimal RefundAmount { get; set; }
     public string IdNumber { get; set; } = null!;
     public string? HandoverNote { get; set; }
-    public Guid ProcessedBy { get; set; }
-    public string ProcessedByName { get; set; } = null!;
+    public string ProcessedBy { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public Guid? UpdatedBy { get; set; }
+    public string? CreatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 }

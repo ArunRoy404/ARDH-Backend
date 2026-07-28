@@ -21,6 +21,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var query = buildings.AsQueryable();
 
         if (status.HasValue)
@@ -39,10 +41,12 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         }
 
         var totalCount = query.Count();
-        var items = query
+        var pageEntities = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new BuildingViewModel
+            .ToList();
+
+        var items = pageEntities.Select(x => new BuildingViewModel
             {
                 Id = x.Id,
                 BuildingName = x.BuildingName,
@@ -58,8 +62,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
                 ImageUrl = x.ImageUrl,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
-                CreatedBy = x.CreatedBy,
-                UpdatedBy = x.UpdatedBy,
+                CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+                UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
             })
             .ToList();
 
@@ -70,6 +74,9 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
     {
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
+
+        var createdByUser = building.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == building.CreatedBy.Value) : null;
+        var updatedByUser = building.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == building.UpdatedBy.Value) : null;
 
         return new BuildingViewModel
         {
@@ -87,8 +94,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
             ImageUrl = building.ImageUrl,
             CreatedAt = building.CreatedAt,
             UpdatedAt = building.UpdatedAt,
-            CreatedBy = building.CreatedBy,
-            UpdatedBy = building.UpdatedBy,
+            CreatedBy = createdByUser?.Name,
+            UpdatedBy = updatedByUser?.Name,
         };
     }
 

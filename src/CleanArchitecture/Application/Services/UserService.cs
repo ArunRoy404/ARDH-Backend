@@ -22,6 +22,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
         var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return users.Select(x => new UserViewModel
         {
@@ -37,15 +38,16 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             LastLoginAt = x.LastLoginAt,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
     }
 
     public async Task<PaginatedList<UserViewModel>> GetPaginated(int page, int pageSize, string? search, UserRole? role, bool? isActive, CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var query = users.AsQueryable();
+        var allUsers = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = allUsers.ToDictionary(u => u.Id, u => u.Name);
+        var query = allUsers.AsQueryable();
 
         if (role.HasValue)
         {
@@ -68,10 +70,12 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         }
 
         var totalCount = query.Count();
-        var items = query
+        var pageEntities = query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => new UserViewModel
+            .ToList();
+
+        var items = pageEntities.Select(x => new UserViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -85,8 +89,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
                 LastLoginAt = x.LastLoginAt,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
-                CreatedBy = x.CreatedBy,
-                UpdatedBy = x.UpdatedBy,
+                CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+                UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
             })
             .ToList();
 
@@ -97,6 +101,9 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
     {
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
+
+        var createdByUser = user.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == user.CreatedBy.Value) : null;
+        var updatedByUser = user.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == user.UpdatedBy.Value) : null;
 
         return new UserViewModel
         {
@@ -112,8 +119,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
             LastLoginAt = user.LastLoginAt,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt,
-            CreatedBy = user.CreatedBy,
-            UpdatedBy = user.UpdatedBy,
+            CreatedBy = createdByUser?.Name,
+            UpdatedBy = updatedByUser?.Name,
         };
     }
 

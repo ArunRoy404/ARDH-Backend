@@ -77,6 +77,8 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
         var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId);
         var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId);
         var processor = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == record.ProcessedBy);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new TenantMoveOutRecordViewModel
         {
@@ -105,8 +107,8 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
                 Notes = tenant.Notes,
                 CreatedAt = tenant.CreatedAt,
                 UpdatedAt = tenant.UpdatedAt,
-                CreatedBy = tenant.CreatedBy,
-                UpdatedBy = tenant.UpdatedBy
+                CreatedBy = tenant.CreatedBy.HasValue && userMap.TryGetValue(tenant.CreatedBy.Value, out var tcb) ? tcb : null,
+                UpdatedBy = tenant.UpdatedBy.HasValue && userMap.TryGetValue(tenant.UpdatedBy.Value, out var tub) ? tub : null
             },
             ApartmentId = record.ApartmentId,
             FlatNumber = apartment?.FlatNumber ?? "Unknown Flat",
@@ -130,8 +132,8 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
                 CurrentTenantId = apartment.CurrentTenantId,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
-                CreatedBy = apartment.CreatedBy,
-                UpdatedBy = apartment.UpdatedBy
+                CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
+                UpdatedBy = apartment.UpdatedBy.HasValue && userMap.TryGetValue(apartment.UpdatedBy.Value, out var aub) ? aub : null
             },
             MoveOutDate = record.MoveOutDate,
             PendingRent = record.PendingRent,
@@ -139,12 +141,11 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             RefundAmount = record.RefundAmount,
             IdNumber = record.IdNumber,
             HandoverNote = record.HandoverNote,
-            ProcessedBy = record.ProcessedBy,
-            ProcessedByName = processor?.Name ?? "System",
+            ProcessedBy = processor?.Name ?? "System",
             CreatedAt = record.CreatedAt,
             UpdatedAt = record.UpdatedAt,
-            CreatedBy = record.CreatedBy,
-            UpdatedBy = record.UpdatedBy,
+            CreatedBy = record.CreatedBy.HasValue && userMap.TryGetValue(record.CreatedBy.Value, out var rcb) ? rcb : null,
+            UpdatedBy = record.UpdatedBy.HasValue && userMap.TryGetValue(record.UpdatedBy.Value, out var rub) ? rub : null,
         };
     }
 

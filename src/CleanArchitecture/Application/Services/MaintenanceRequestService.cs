@@ -48,6 +48,8 @@ public class MaintenanceRequestService(
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
         var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -136,8 +138,8 @@ public class MaintenanceRequestService(
             Notes = x.Notes,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy,
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
         }).ToList();
 
         return new PaginatedList<MaintenanceRequestViewModel>(items, totalItems, page, pageSize);
@@ -152,6 +154,8 @@ public class MaintenanceRequestService(
         var apartment = request.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId.Value) : null;
         var vendor = request.VendorId.HasValue ? await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == request.VendorId.Value) : null;
         var equipment = request.EquipmentId.HasValue ? await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value) : null;
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new MaintenanceRequestViewModel
         {
@@ -178,8 +182,8 @@ public class MaintenanceRequestService(
                 Notes = vendor.Notes,
                 CreatedAt = vendor.CreatedAt,
                 UpdatedAt = vendor.UpdatedAt,
-                CreatedBy = vendor.CreatedBy,
-                UpdatedBy = vendor.UpdatedBy
+                CreatedBy = vendor.CreatedBy.HasValue && userMap.TryGetValue(vendor.CreatedBy.Value, out var vcb) ? vcb : null,
+                UpdatedBy = vendor.UpdatedBy.HasValue && userMap.TryGetValue(vendor.UpdatedBy.Value, out var vub) ? vub : null
             },
             EquipmentId = request.EquipmentId,
             EquipmentName = equipment?.Name,
@@ -203,8 +207,8 @@ public class MaintenanceRequestService(
                 AttachmentUrl = equipment.AttachmentUrl,
                 CreatedAt = equipment.CreatedAt,
                 UpdatedAt = equipment.UpdatedAt,
-                CreatedBy = equipment.CreatedBy,
-                UpdatedBy = equipment.UpdatedBy
+                CreatedBy = equipment.CreatedBy.HasValue && userMap.TryGetValue(equipment.CreatedBy.Value, out var ecb) ? ecb : null,
+                UpdatedBy = equipment.UpdatedBy.HasValue && userMap.TryGetValue(equipment.UpdatedBy.Value, out var eub) ? eub : null
             },
             BuildingId = request.BuildingId,
             BuildingName = building?.BuildingName ?? "Unknown Building",
@@ -224,8 +228,8 @@ public class MaintenanceRequestService(
                 ImageUrl = building.ImageUrl,
                 CreatedAt = building.CreatedAt,
                 UpdatedAt = building.UpdatedAt,
-                CreatedBy = building.CreatedBy,
-                UpdatedBy = building.UpdatedBy
+                CreatedBy = building.CreatedBy.HasValue && userMap.TryGetValue(building.CreatedBy.Value, out var bcb) ? bcb : null,
+                UpdatedBy = building.UpdatedBy.HasValue && userMap.TryGetValue(building.UpdatedBy.Value, out var bub) ? bub : null
             },
             ApartmentId = request.ApartmentId,
             FlatNumber = apartment?.FlatNumber,
@@ -249,8 +253,8 @@ public class MaintenanceRequestService(
                 CurrentTenantId = apartment.CurrentTenantId,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
-                CreatedBy = apartment.CreatedBy,
-                UpdatedBy = apartment.UpdatedBy
+                CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
+                UpdatedBy = apartment.UpdatedBy.HasValue && userMap.TryGetValue(apartment.UpdatedBy.Value, out var aub) ? aub : null
             },
             EstimatedCost = request.EstimatedCost,
             AnnualCost = request.AnnualCost,
@@ -259,8 +263,8 @@ public class MaintenanceRequestService(
             Notes = request.Notes,
             CreatedAt = request.CreatedAt,
             UpdatedAt = request.UpdatedAt,
-            CreatedBy = request.CreatedBy,
-            UpdatedBy = request.UpdatedBy,
+            CreatedBy = request.CreatedBy.HasValue && userMap.TryGetValue(request.CreatedBy.Value, out var rcb) ? rcb : null,
+            UpdatedBy = request.UpdatedBy.HasValue && userMap.TryGetValue(request.UpdatedBy.Value, out var rub) ? rub : null,
         };
     }
 

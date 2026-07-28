@@ -33,6 +33,8 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -83,8 +85,8 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
             AttachmentUrl = x.AttachmentUrl,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null
         }).ToList();
 
         return new PaginatedList<IncomeRecordViewModel>(items, totalItems, page, pageSize);
@@ -105,6 +107,8 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -163,8 +167,8 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
             LitersFilled = x.LitersFilled,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy,
-            UpdatedBy = x.UpdatedBy
+            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null
         }).ToList();
 
         return new PaginatedList<ExpenseRecordViewModel>(items, totalItems, page, pageSize);

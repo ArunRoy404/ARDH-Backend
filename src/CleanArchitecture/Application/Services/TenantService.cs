@@ -31,6 +31,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => (a.FlatNumber, a.NestawayId));
@@ -97,8 +99,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
                 Notes = x.Notes,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
-                CreatedBy = x.CreatedBy,
-                UpdatedBy = x.UpdatedBy,
+                CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
+                UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null,
             })
             .ToList();
 
@@ -112,6 +114,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == tenant.BuildingId);
         var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
+        var users = await _unitOfWork.UserRepository.GetAllAsync();
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         return new TenantViewModel
         {
@@ -134,8 +138,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
                 ImageUrl = building.ImageUrl,
                 CreatedAt = building.CreatedAt,
                 UpdatedAt = building.UpdatedAt,
-                CreatedBy = building.CreatedBy,
-                UpdatedBy = building.UpdatedBy
+                CreatedBy = building.CreatedBy.HasValue && userMap.TryGetValue(building.CreatedBy.Value, out var bcb) ? bcb : null,
+                UpdatedBy = building.UpdatedBy.HasValue && userMap.TryGetValue(building.UpdatedBy.Value, out var bub) ? bub : null
             },
             ApartmentId = tenant.ApartmentId,
             FlatNumber = apartment?.FlatNumber ?? "Unknown Flat",
@@ -160,8 +164,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
                 CurrentTenantId = apartment.CurrentTenantId,
                 CreatedAt = apartment.CreatedAt,
                 UpdatedAt = apartment.UpdatedAt,
-                CreatedBy = apartment.CreatedBy,
-                UpdatedBy = apartment.UpdatedBy
+                CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
+                UpdatedBy = apartment.UpdatedBy.HasValue && userMap.TryGetValue(apartment.UpdatedBy.Value, out var aub) ? aub : null
             },
             NestawayId = apartment?.NestawayId,
             FullName = tenant.FullName,
@@ -181,8 +185,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             Notes = tenant.Notes,
             CreatedAt = tenant.CreatedAt,
             UpdatedAt = tenant.UpdatedAt,
-            CreatedBy = tenant.CreatedBy,
-            UpdatedBy = tenant.UpdatedBy,
+            CreatedBy = tenant.CreatedBy.HasValue && userMap.TryGetValue(tenant.CreatedBy.Value, out var tcb) ? tcb : null,
+            UpdatedBy = tenant.UpdatedBy.HasValue && userMap.TryGetValue(tenant.UpdatedBy.Value, out var tub) ? tub : null,
         };
     }
 
