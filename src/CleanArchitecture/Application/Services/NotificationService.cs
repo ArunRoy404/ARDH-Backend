@@ -29,8 +29,9 @@ public class NotificationService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        // Dynamically scan for expiring leases to keep notifications synchronized
+        // Dynamically scan for expiring leases and AMC contracts to keep notifications synchronized
         await ScanAndGenerateLeaseExpiryNotifications(cancellationToken);
+        await ScanAndGenerateAmcExpiryNotifications(cancellationToken);
 
         var currentUserId = _currentUser.GetCurrentUserId();
 
@@ -225,6 +226,29 @@ public class NotificationService(
         }
     }
 
+    private async Task ScanAndGenerateAmcExpiryNotifications(CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        var threshold = now.AddDays(30);
+
+        var contracts = await _unitOfWork.AmcContractRepository.GetAllAsync(
+            x => x.Status != AmcStatus.Cancelled &&
+                 x.Status != AmcStatus.Expired &&
+                 x.EndDate > now &&
+                 x.EndDate <= threshold);
+
+        foreach (var contract in contracts)
+        {
+            var title = $"AMC Expiring: {contract.ContractTitle}";
+            var detail = $"AMC contract '{contract.ContractTitle}' ({contract.AmcCode}) expires on {contract.EndDate:yyyy-MM-dd}.";
+            var exists = await _unitOfWork.NotificationRepository.AnyAsync(x => x.Type == "operations" && x.Title == title);
+            if (!exists)
+            {
+                await CreateNotificationInternal("operations", title, detail, cancellationToken);
+            }
+        }
+    }
+
     private static bool HasPermissionForType(User user, string type)
     {
         if (!user.IsActive) return false;
@@ -245,6 +269,7 @@ public class NotificationService(
             "operations" => isPropertyManagerRole || permissionsList.Contains("operations") || permissionsList.Contains("operation"),
             "finance" => isPropertyManagerRole || permissionsList.Contains("finance"),
             "properties" => isPropertyManagerRole || permissionsList.Contains("properties") || permissionsList.Contains("property"),
+            "admin" => false, // Admin-only notifications; admin role / admin-permission users are already handled by the early return above
             _ => isPropertyManagerRole || permissionsList.Contains("dashboard") // Default general / dashboard
         };
     }

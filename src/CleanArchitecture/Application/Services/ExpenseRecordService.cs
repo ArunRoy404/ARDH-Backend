@@ -18,11 +18,13 @@ namespace CleanArchitecture.Application.Services;
 public class ExpenseRecordService(
     IUnitOfWork unitOfWork,
     ICurrentUser currentUser,
-    IActivityService activityService) : IExpenseRecordService
+    IActivityService activityService,
+    INotificationService notificationService) : IExpenseRecordService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly IActivityService _activityService = activityService;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<ExpenseRecordViewModel>> GetPaginated(
         int page,
@@ -329,6 +331,13 @@ public class ExpenseRecordService(
             record.BuildingId,
             $"{record.Amount:N0} SAR {verb} {itemName} at {buildingName}.",
             cancellationToken);
+
+        var createTitle = record.Status == ExpenseStatus.Paid ? "Expense Paid" : "Expense Recorded";
+        await _notificationService.CreateNotificationInternal(
+            "finance",
+            createTitle,
+            $"{record.Amount:N0} SAR {verb} {itemName} at {buildingName}.",
+            cancellationToken);
     }
 
     public async Task Update(Guid id, ExpenseRecordUpdateRequest request, CancellationToken cancellationToken)
@@ -407,6 +416,12 @@ public class ExpenseRecordService(
                 record.BuildingId,
                 $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
                 cancellationToken);
+
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Expense Paid",
+                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                cancellationToken);
         }
     }
 
@@ -442,6 +457,12 @@ public class ExpenseRecordService(
             record.BuildingId,
             $"Expense record of {record.Amount:N0} SAR deleted.",
             cancellationToken);
+
+        await _notificationService.CreateNotificationInternal(
+            "finance",
+            "Expense Record Deleted",
+            $"Expense record of {record.Amount:N0} SAR deleted.",
+            cancellationToken);
     }
 
     public async Task UpdateStatus(Guid id, ExpenseRecordStatusUpdateRequest request, CancellationToken cancellationToken)
@@ -473,6 +494,12 @@ public class ExpenseRecordService(
                 "ExpenseRecord",
                 record.Id,
                 record.BuildingId,
+                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                cancellationToken);
+
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Expense Paid",
                 $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
                 cancellationToken);
         }

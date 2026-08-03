@@ -13,10 +13,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class VendorService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IVendorService
+    ICurrentUser currentUser,
+    INotificationService notificationService) : IVendorService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<VendorViewModel>> GetPaginated(
         int page,
@@ -128,6 +130,8 @@ public class VendorService(
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.VendorRepository.AddAsync(vendor), cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Vendor Added", $"Vendor '{vendor.Name}' ({vendor.CompanyName}) was added.", cancellationToken);
     }
 
     public async Task Update(Guid id, VendorUpdateRequest request, CancellationToken cancellationToken)
@@ -182,6 +186,8 @@ public class VendorService(
 
         _unitOfWork.VendorRepository.Update(vendor);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Vendor Updated", $"Vendor '{vendor.Name}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -207,6 +213,8 @@ public class VendorService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Vendor Deleted", $"Vendor '{vendor.Name}' was deleted.", cancellationToken);
     }
 
     private static VendorViewModel MapToViewModel(Vendor vendor, Dictionary<Guid, string>? userMap = null)

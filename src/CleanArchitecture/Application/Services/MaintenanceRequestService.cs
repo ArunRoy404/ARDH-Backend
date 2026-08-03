@@ -533,6 +533,8 @@ public class MaintenanceRequestService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Maintenance Request Deleted", $"Request '{maintenanceRequest.Title}' was deleted.", cancellationToken);
     }
 
     public async Task UpdateStatus(Guid id, MaintenanceRequestStatusUpdateRequest request, CancellationToken cancellationToken)
@@ -561,6 +563,8 @@ public class MaintenanceRequestService(
 
         _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Maintenance Request Status Updated", $"Request '{maintenanceRequest.Title}' status changed to '{request.Status}'.", cancellationToken);
     }
 
     public async Task Assign(Guid id, MaintenanceRequestAssignRequest request, CancellationToken cancellationToken)
@@ -585,6 +589,8 @@ public class MaintenanceRequestService(
 
         _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Maintenance Request Assigned", $"Request '{maintenanceRequest.Title}' was assigned.", cancellationToken);
     }
 
     public async Task<MaintenanceRequestStatsViewModel> GetStats(CancellationToken cancellationToken)

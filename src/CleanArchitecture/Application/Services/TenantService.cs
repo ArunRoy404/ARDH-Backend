@@ -13,11 +13,12 @@ using CleanArchitecture.Shared.Models.Apartment;
 
 namespace CleanArchitecture.Application.Services;
 
-public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : ITenantService
+public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService, INotificationService notificationService) : ITenantService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly IActivityService _activityService = activityService;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<TenantViewModel>> GetPaginated(
         int page,
@@ -265,6 +266,8 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
         var flatNum = apartment?.FlatNumber ?? "Unknown Flat";
         await _activityService.CreateActivity("Create", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved into Flat '{flatNum}'.", cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Tenant Moved In", $"Tenant '{tenant.FullName}' moved into Flat '{flatNum}'.", cancellationToken);
     }
 
     public async Task Update(Guid id, TenantUpdateRequest request, CancellationToken cancellationToken)
@@ -378,6 +381,15 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Update", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' details were updated.", cancellationToken);
+
+        if (oldStatus != request.Status)
+        {
+            await _notificationService.CreateNotificationInternal("properties", "Tenant Status Changed", $"Tenant '{tenant.FullName}' status changed to '{request.Status}'.", cancellationToken);
+        }
+        else
+        {
+            await _notificationService.CreateNotificationInternal("properties", "Tenant Updated", $"Tenant '{tenant.FullName}' details were updated.", cancellationToken);
+        }
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -412,5 +424,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Delete", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' was deleted.", cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Tenant Deleted", $"Tenant '{tenant.FullName}' was deleted.", cancellationToken);
     }
 }

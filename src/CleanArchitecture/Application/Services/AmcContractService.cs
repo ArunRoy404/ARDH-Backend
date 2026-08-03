@@ -15,10 +15,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class AmcContractService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IAmcContractService
+    ICurrentUser currentUser,
+    INotificationService notificationService) : IAmcContractService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<AmcContractViewModel>> GetPaginated(
         int page,
@@ -295,6 +297,8 @@ public class AmcContractService(
                 _unitOfWork.EquipmentRepository.Update(equipment);
             }
         }, cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "AMC Contract Created", $"AMC contract '{contract.ContractTitle}' ({contract.AmcCode}) was created.", cancellationToken);
     }
 
     public async Task Update(Guid id, AmcContractUpdateRequest request, CancellationToken cancellationToken)
@@ -345,6 +349,8 @@ public class AmcContractService(
 
         _unitOfWork.AmcContractRepository.Update(contract);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "AMC Contract Updated", $"AMC contract '{contract.ContractTitle}' was updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -371,5 +377,7 @@ public class AmcContractService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "AMC Contract Deleted", $"AMC contract '{contract.ContractTitle}' was deleted.", cancellationToken);
     }
 }

@@ -11,10 +11,11 @@ using CleanArchitecture.Shared.Models.Owner;
 
 namespace CleanArchitecture.Application.Services;
 
-public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IOwnerService
+public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INotificationService notificationService) : IOwnerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<OwnerViewModel>> GetPaginated(int page, int pageSize, string? search, OwnerStatus? status, CancellationToken cancellationToken)
     {
@@ -135,6 +136,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.OwnerRepository.AddAsync(owner), cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Owner Added", $"Owner '{owner.FullName}' was added.", cancellationToken);
     }
 
     public async Task Update(Guid id, OwnerUpdateRequest request, CancellationToken cancellationToken)
@@ -177,6 +180,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
  
         _unitOfWork.OwnerRepository.Update(owner);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Owner Updated", $"Owner '{owner.FullName}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -201,5 +206,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Owner Deleted", $"Owner '{owner.FullName}' was deleted.", cancellationToken);
     }
 }

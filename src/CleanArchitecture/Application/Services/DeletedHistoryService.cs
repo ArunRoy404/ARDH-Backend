@@ -11,10 +11,11 @@ using CleanArchitecture.Shared.Models.DeletedHistory;
 
 namespace CleanArchitecture.Application.Services;
 
-public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IDeletedHistoryService
+public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INotificationService notificationService) : IDeletedHistoryService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<DeletedHistoryViewModel>> GetPaginated(
         int page,
@@ -213,6 +214,12 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
         _unitOfWork.DeletedHistoryRepository.Update(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal(
+            "admin",
+            "Record Restored",
+            $"{history.EntityType} record '{history.EntityTitle}' was restored.",
+            cancellationToken);
     }
 
     public async Task DeletePermanently(Guid id, CancellationToken cancellationToken)

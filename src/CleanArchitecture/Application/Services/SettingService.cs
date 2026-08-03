@@ -9,10 +9,11 @@ using CleanArchitecture.Shared.Models.Setting;
 
 namespace CleanArchitecture.Application.Services;
 
-public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : ISettingService
+public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INotificationService notificationService) : ISettingService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<SettingViewModel> Get(CancellationToken cancellationToken)
     {
@@ -93,6 +94,8 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
 
         _unitOfWork.SettingRepository.Update(setting);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("admin", "Settings Updated", "Application settings were updated.", cancellationToken);
     }
 
     public async Task UpdatePassword(SettingUpdatePasswordRequest request, CancellationToken cancellationToken)
@@ -129,5 +132,7 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
 
         _unitOfWork.SettingRepository.Update(setting);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("admin", "Admin Password Changed", "The admin password was changed.", cancellationToken);
     }
 }

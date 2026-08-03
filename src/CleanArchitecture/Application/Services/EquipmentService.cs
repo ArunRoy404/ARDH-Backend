@@ -15,10 +15,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class EquipmentService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IEquipmentService
+    ICurrentUser currentUser,
+    INotificationService notificationService) : IEquipmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<EquipmentViewModel>> GetPaginated(
         int page,
@@ -226,6 +228,9 @@ public class EquipmentService(
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.EquipmentRepository.AddAsync(equipment), cancellationToken);
+
+        var equipBuilding = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);
+        await _notificationService.CreateNotificationInternal("operations", "Equipment Added", $"Equipment '{equipment.Name}' added to '{equipBuilding?.BuildingName ?? "building"}' building.", cancellationToken);
     }
 
     public async Task Update(Guid id, EquipmentUpdateRequest request, CancellationToken cancellationToken)
@@ -264,6 +269,8 @@ public class EquipmentService(
 
         _unitOfWork.EquipmentRepository.Update(equipment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Equipment Updated", $"Equipment '{equipment.Name}' details were updated.", cancellationToken);
     }
 
     public async Task UpdateStatus(Guid id, EquipmentStatusUpdateRequest request, CancellationToken cancellationToken)
@@ -277,6 +284,8 @@ public class EquipmentService(
 
         _unitOfWork.EquipmentRepository.Update(equipment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Equipment Status Changed", $"Equipment '{equipment.Name}' status changed to '{request.Status}'.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -302,5 +311,7 @@ public class EquipmentService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Equipment Deleted", $"Equipment '{equipment.Name}' was deleted.", cancellationToken);
     }
 }
