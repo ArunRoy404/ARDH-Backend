@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -65,14 +66,16 @@ public class DashboardController(IDashboardService dashboardService) : BaseContr
     /// [D-04] Get recent payment activities.
     /// </summary>
     [HttpGet("recent-payments")]
-    [SwaggerResponse(200, "Recent payments retrieved successfully.", typeof(List<DashboardRecentPaymentViewModel>))]
+    [SwaggerResponse(200, "Recent payments retrieved successfully.", typeof(PaginatedList<DashboardRecentPaymentViewModel>))]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(403, "Access denied. Dashboard permission required.")]
-    public async Task<ActionResult<List<DashboardRecentPaymentViewModel>>> GetRecentPayments(
+    public async Task<ActionResult<PaginatedList<DashboardRecentPaymentViewModel>>> GetRecentPayments(
         [FromQuery] Guid? buildingId = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
         CancellationToken cancellationToken = default)
     {
-        var payments = await _dashboardService.GetRecentPayments(buildingId, cancellationToken);
+        var payments = await _dashboardService.GetRecentPayments(buildingId, page, pageSize, cancellationToken);
         return Ok(payments);
     }
 
@@ -80,14 +83,16 @@ public class DashboardController(IDashboardService dashboardService) : BaseContr
     /// [D-05] Get recent open/in-progress maintenance requests.
     /// </summary>
     [HttpGet("open-maintenance")]
-    [SwaggerResponse(200, "Open maintenance requests retrieved successfully.", typeof(List<DashboardOpenMaintenanceViewModel>))]
+    [SwaggerResponse(200, "Open maintenance requests retrieved successfully.", typeof(PaginatedList<DashboardOpenMaintenanceViewModel>))]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(403, "Access denied. Dashboard permission required.")]
-    public async Task<ActionResult<List<DashboardOpenMaintenanceViewModel>>> GetOpenMaintenance(
+    public async Task<ActionResult<PaginatedList<DashboardOpenMaintenanceViewModel>>> GetOpenMaintenance(
         [FromQuery] Guid? buildingId = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
         CancellationToken cancellationToken = default)
     {
-        var maintenance = await _dashboardService.GetOpenMaintenance(buildingId, cancellationToken);
+        var maintenance = await _dashboardService.GetOpenMaintenance(buildingId, page, pageSize, cancellationToken);
         return Ok(maintenance);
     }
 }

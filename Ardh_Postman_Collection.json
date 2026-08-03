@@ -204,7 +204,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/recent-payments?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+              "raw": "{{baseUrl}}/api/dashboard/recent-payments?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24&page=1&pageSize=10",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -218,10 +218,20 @@
                   "key": "buildingId",
                   "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
                   "description": "Optional building unique identifier (UUID) to filter recent payments list by building. If omitted, stats are aggregated globally."
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (defaults to 1)"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Number of items per page (defaults to 10)"
                 }
               ]
             },
-            "description": "Get recent payment activities."
+            "description": "Get recent payment activities. Supports pagination via page & pageSize query parameters."
           },
           "response": [
             {
@@ -230,7 +240,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/dashboard/recent-payments?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                  "raw": "{{baseUrl}}/api/dashboard/recent-payments?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24&page=1&pageSize=10",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -243,6 +253,14 @@
                     {
                       "key": "buildingId",
                       "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
                     }
                   ]
                 }
@@ -257,7 +275,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"tenantName\": \"Meera Iyer\",\n            \"incomeType\": \"Rent\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 45000.0,\n            \"status\": \"Paid\"\n        },\n        {\n            \"tenantName\": \"Meera Iyer\",\n            \"incomeType\": \"Maintenance\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 5000.0,\n            \"status\": \"Paid\"\n        },\n        {\n            \"tenantName\": \"Meera Iyer\",\n            \"incomeType\": \"Parking\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 2000.0,\n            \"status\": \"Paid\"\n        },\n        {\n            \"tenantName\": \"Neha Singh\",\n            \"incomeType\": \"Rent\",\n            \"paymentDate\": \"2026-05-05T00:00:00Z\",\n            \"amount\": 35000.0,\n            \"status\": \"Paid\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"tenantName\": \"Meera Iyer\",\n                \"incomeType\": \"Rent\",\n                \"paymentDate\": \"2026-05-05T00:00:00Z\",\n                \"amount\": 45000.0,\n                \"status\": \"Paid\"\n            },\n            {\n                \"tenantName\": \"Meera Iyer\",\n                \"incomeType\": \"Maintenance\",\n                \"paymentDate\": \"2026-05-05T00:00:00Z\",\n                \"amount\": 5000.0,\n                \"status\": \"Paid\"\n            },\n            {\n                \"tenantName\": \"Meera Iyer\",\n                \"incomeType\": \"Parking\",\n                \"paymentDate\": \"2026-05-05T00:00:00Z\",\n                \"amount\": 2000.0,\n                \"status\": \"Paid\"\n            },\n            {\n                \"tenantName\": \"Neha Singh\",\n                \"incomeType\": \"Rent\",\n                \"paymentDate\": \"2026-05-05T00:00:00Z\",\n                \"amount\": 35000.0,\n                \"status\": \"Paid\"\n            }\n        ],\n        \"totalCount\": 4,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
             }
           ]
         },
@@ -267,7 +285,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/dashboard/open-maintenance?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+              "raw": "{{baseUrl}}/api/dashboard/open-maintenance?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24&page=1&pageSize=10",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -281,10 +299,20 @@
                   "key": "buildingId",
                   "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
                   "description": "Optional building unique identifier (UUID) to filter open maintenance tickets by building. If omitted, stats are aggregated globally."
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (defaults to 1)"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Number of items per page (defaults to 10)"
                 }
               ]
             },
-            "description": "Get recent open/in-progress maintenance requests."
+            "description": "Get recent open/in-progress maintenance requests. Supports pagination via page & pageSize query parameters."
           },
           "response": [
             {
@@ -293,7 +321,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/dashboard/open-maintenance?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                  "raw": "{{baseUrl}}/api/dashboard/open-maintenance?buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24&page=1&pageSize=10",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -306,6 +334,14 @@
                     {
                       "key": "buildingId",
                       "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10"
                     }
                   ]
                 }
@@ -320,7 +356,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"e3c7b822-29c4-52a8-ad29-c8be5d491f30\",\n            \"title\": \"Water Leakage in bathroom\",\n            \"location\": \"Sunrise Tower \\u2022 101\",\n            \"priority\": \"High\",\n            \"status\": \"InProgress\"\n        },\n        {\n            \"id\": \"f4c7b822-29c4-52a8-ad29-c8be5d491f31\",\n            \"title\": \"Ac Not cooling\",\n            \"location\": \"Skyline Residency \\u2022 301\",\n            \"priority\": \"High\",\n            \"status\": \"InProgress\"\n        },\n        {\n            \"id\": \"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\n            \"title\": \"Parking lot lights broken\",\n            \"location\": \"Sunrise Tower \\u2022 Common Area\",\n            \"priority\": \"Medium\",\n            \"status\": \"Open\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e3c7b822-29c4-52a8-ad29-c8be5d491f30\",\n                \"title\": \"Water Leakage in bathroom\",\n                \"location\": \"Sunrise Tower \\u2022 101\",\n                \"priority\": \"High\",\n                \"status\": \"InProgress\"\n            },\n            {\n                \"id\": \"f4c7b822-29c4-52a8-ad29-c8be5d491f31\",\n                \"title\": \"Ac Not cooling\",\n                \"location\": \"Skyline Residency \\u2022 301\",\n                \"priority\": \"High\",\n                \"status\": \"InProgress\"\n            },\n            {\n                \"id\": \"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\n                \"title\": \"Parking lot lights broken\",\n                \"location\": \"Sunrise Tower \\u2022 Common Area\",\n                \"priority\": \"Medium\",\n                \"status\": \"Open\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
             }
           ]
         }
