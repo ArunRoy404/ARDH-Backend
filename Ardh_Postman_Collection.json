@@ -2341,6 +2341,63 @@
               "body": "{\n    \"success\": true,\n    \"message\": \"Admin password updated successfully.\",\n    \"data\": null\n}"
             }
           ]
+        },
+        {
+          "name": "S-04. Get Public Site Branding (Icon & Fav)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/public",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "public"
+              ]
+            },
+            "description": "Totally public endpoint - no authentication, authorization, or validation required. Returns only the application icon and favicon URLs for public-facing pages (e.g. login screen branding, browser tab favicon)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/settings/public",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "settings",
+                    "public"
+                  ]
+                },
+                "description": "Totally public endpoint - no authentication, authorization, or validation required. Returns only the application icon and favicon URLs for public-facing pages (e.g. login screen branding, browser tab favicon)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"icon\": \"http://localhost:5240/image/3d60a25e-6a9b-4878-ac7d-e71a56d4655f.png\",\n        \"fav\": \"http://localhost:5240/image/2793ebad-5544-46cd-b4e8-15fbcef7b3db.png\"\n    }\n}"
+            }
+          ]
         }
       ]
     },

@@ -38,6 +38,21 @@ public class SettingService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : 
         };
     }
 
+    public async Task<SettingPublicViewModel> GetPublic(CancellationToken cancellationToken)
+    {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        if (setting == null)
+        {
+            throw SettingException.NotFoundException("Application settings not found.");
+        }
+
+        return new SettingPublicViewModel
+        {
+            Icon = setting.Icon,
+            Fav = setting.Fav
+        };
+    }
+
     public async Task Update(SettingUpdateRequest request, CancellationToken cancellationToken)
     {
         var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);

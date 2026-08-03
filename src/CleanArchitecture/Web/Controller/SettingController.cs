@@ -28,6 +28,19 @@ public class SettingController(ISettingService settingService) : BaseController
     }
 
     /// <summary>
+    /// [S-04] Get public site branding (icon &amp; fav) - no authentication required.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("public")]
+    [SwaggerResponse(200, "Public site branding retrieved successfully.", typeof(SettingPublicViewModel))]
+    [SwaggerResponse(404, "Settings not found.")]
+    public async Task<ActionResult<SettingPublicViewModel>> GetPublic(CancellationToken cancellationToken)
+    {
+        var settings = await _settingService.GetPublic(cancellationToken);
+        return Ok(settings);
+    }
+
+    /// <summary>
     /// [S-02] Update general settings.
     /// </summary>
     [HttpPut]
