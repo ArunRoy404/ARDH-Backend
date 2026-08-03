@@ -209,14 +209,14 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         }
 
         // Validate Email uniqueness
-        var isEmailExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower());
+        var isEmailExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower());
         if (isEmailExist)
         {
             throw TenantException.BadRequestException($"Tenant with email '{request.Email}' already exists.");
         }
 
         // Validate ID Number uniqueness
-        var isIdNumberExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower());
+        var isIdNumberExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower());
         if (isIdNumberExist)
         {
             throw TenantException.BadRequestException($"Tenant with ID number '{request.IdNumber}' already exists.");
@@ -289,7 +289,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         // Validate Email uniqueness if changed
         if (!string.Equals(tenant.Email, request.Email, StringComparison.OrdinalIgnoreCase))
         {
-            var isEmailExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower() && x.Id != id);
+            var isEmailExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower() && x.Id != id);
             if (isEmailExist)
             {
                 throw TenantException.BadRequestException($"Tenant with email '{request.Email}' already exists.");
@@ -299,7 +299,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         // Validate ID Number uniqueness if changed
         if (!string.Equals(tenant.IdNumber, request.IdNumber, StringComparison.OrdinalIgnoreCase))
         {
-            var isIdNumberExist = await _unitOfWork.TenantRepository.AnyAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower() && x.Id != id);
+            var isIdNumberExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.IdNumber.ToLower() == request.IdNumber.Trim().ToLower() && x.Id != id);
             if (isIdNumberExist)
             {
                 throw TenantException.BadRequestException($"Tenant with ID number '{request.IdNumber}' already exists.");

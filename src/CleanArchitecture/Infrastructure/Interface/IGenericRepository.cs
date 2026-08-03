@@ -12,6 +12,11 @@ public interface IGenericRepository<T> where T : class
     Task AddRangeAsync(IEnumerable<T> entities);
     Task<bool> AnyAsync(Expression<Func<T, bool>> filter);
     Task<bool> AnyAsync();
+    /// <summary>
+    /// Checks for existence including soft-deleted records (ignores the IsDeleted query filter).
+    /// Use for uniqueness checks so soft-deleted records still block reuse of unique values.
+    /// </summary>
+    Task<bool> AnyIncludingDeletedAsync(Expression<Func<T, bool>> filter);
     Task<int> CountAsync(Expression<Func<T, bool>> filter);
     Task<int> CountAsync();
     Task<T> GetByIdAsync(object id);

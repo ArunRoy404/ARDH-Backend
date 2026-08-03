@@ -102,13 +102,13 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
     public async Task Create(OwnerCreateRequest request, CancellationToken cancellationToken)
     {
-        var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email);
+        var isEmailExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email);
         if (isEmailExist)
         {
             throw OwnerException.BadRequestException($"Owner with email '{request.Email}' already exists.");
         }
 
-        var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber);
+        var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.IdNumber == request.IdNumber);
         if (isIdNumberExist)
         {
             throw OwnerException.BadRequestException($"Owner with ID number '{request.IdNumber}' already exists.");
@@ -144,7 +144,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
         if (owner.Email != request.Email)
         {
-            var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email && x.Id != id);
+            var isEmailExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email && x.Id != id);
             if (isEmailExist)
             {
                 throw OwnerException.BadRequestException($"Owner with email '{request.Email}' already exists.");
@@ -153,7 +153,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
         if (owner.IdNumber != request.IdNumber)
         {
-            var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber && x.Id != id);
+            var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.IdNumber == request.IdNumber && x.Id != id);
             if (isIdNumberExist)
             {
                 throw OwnerException.BadRequestException($"Owner with ID number '{request.IdNumber}' already exists.");

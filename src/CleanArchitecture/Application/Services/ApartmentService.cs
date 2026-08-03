@@ -214,7 +214,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         }
 
         // Validate unique flat_number per building
-        var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower());
+        var isFlatExist = await _unitOfWork.ApartmentRepository.AnyIncludingDeletedAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower());
         if (isFlatExist)
         {
             throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
@@ -269,7 +269,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         // Validate flat number uniqueness if modified
         if (apartment.BuildingId != request.BuildingId || !string.Equals(apartment.FlatNumber, request.FlatNumber, StringComparison.OrdinalIgnoreCase))
         {
-            var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.Id != id);
+            var isFlatExist = await _unitOfWork.ApartmentRepository.AnyIncludingDeletedAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.Id != id);
             if (isFlatExist)
             {
                 throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");

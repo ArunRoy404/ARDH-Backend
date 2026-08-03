@@ -241,7 +241,7 @@ public class AmcContractService(
         if (!string.IsNullOrWhiteSpace(request.AmcCode))
         {
             amcCode = request.AmcCode.Trim();
-            var codeExists = await _unitOfWork.AmcContractRepository.AnyAsync(x => x.AmcCode.ToLower() == amcCode.ToLower());
+            var codeExists = await _unitOfWork.AmcContractRepository.AnyIncludingDeletedAsync(x => x.AmcCode.ToLower() == amcCode.ToLower());
             if (codeExists)
             {
                 throw AmcContractException.BadRequestException($"AMC Contract with code '{amcCode}' already exists.");

@@ -70,6 +70,14 @@ public class UnitOfWork : IUnitOfWork
         catch (Exception ex)
         {
             await transaction.RollbackAsync(token);
+
+            // Preserve business-level errors thrown inside the transaction so the
+            // original meaningful message reaches the client untouched.
+            if (ex is UserFriendlyException)
+            {
+                throw;
+            }
+
             throw TransactionException.TransactionNotExecuteException(ex);
         }
     }
@@ -86,6 +94,14 @@ public class UnitOfWork : IUnitOfWork
         catch (Exception ex)
         {
             await transaction.RollbackAsync(token);
+
+            // Preserve business-level errors thrown inside the transaction so the
+            // original meaningful message reaches the client untouched.
+            if (ex is UserFriendlyException)
+            {
+                throw;
+            }
+
             throw TransactionException.TransactionNotExecuteException(ex);
         }
     }

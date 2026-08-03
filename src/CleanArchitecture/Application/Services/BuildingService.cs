@@ -101,7 +101,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
     public async Task Create(BuildingCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName);
+        var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName == request.BuildingName);
         if (isNameExist)
         {
             throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -138,7 +138,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
         if (building.BuildingName != request.BuildingName)
         {
-            var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
+            var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
             if (isNameExist)
             {
                 throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");

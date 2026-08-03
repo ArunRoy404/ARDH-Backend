@@ -126,7 +126,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task Create(UserCreateRequest request, CancellationToken cancellationToken)
     {
-        var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email);
+        var isEmailExist = await _unitOfWork.UserRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email);
         if (isEmailExist)
         {
             throw UserException.UserAlreadyExistsException(request.Email);
@@ -160,7 +160,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         // Check if email is updated to an existing one
         if (user.Email != request.Email)
         {
-            var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email && x.Id != request.Id);
+            var isEmailExist = await _unitOfWork.UserRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email && x.Id != request.Id);
             if (isEmailExist)
             {
                 throw UserException.UserAlreadyExistsException(request.Email);

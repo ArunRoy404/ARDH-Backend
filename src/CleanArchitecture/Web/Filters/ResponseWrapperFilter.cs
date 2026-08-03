@@ -135,7 +135,10 @@ public class ResponseWrapperFilter : IAsyncResultFilter
                     }
                     else
                     {
-                        var strVal = value?.ToString() ?? "An error occurred.";
+                        // Extract a human-readable message from anonymous objects such as
+                        // BadRequest(new { message = "Invalid Admin password." })
+                        var extractedMessage = TryExtractMessage(value);
+                        var strVal = extractedMessage ?? value?.ToString() ?? "An error occurred.";
                         apiError.Message = strVal;
                         apiError.Errors = new List<ApiErrorDetail>
                         {
@@ -176,5 +179,27 @@ public class ResponseWrapperFilter : IAsyncResultFilter
         }
 
         await next();
+    }
+
+    /// <summary>
+    /// Looks for a public "message" property on an object (e.g. an anonymous type
+    /// returned via BadRequest(new { message = "..." })) and returns its value.
+    /// </summary>
+    private static string? TryExtractMessage(object? value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        var valueType = value.GetType();
+        var messageProp = valueType.GetProperties().FirstOrDefault(p => string.Equals(p.Name, "message", StringComparison.OrdinalIgnoreCase));
+        if (messageProp == null)
+        {
+            return null;
+        }
+
+        var msgVal = messageProp.GetValue(value)?.ToString();
+        return string.IsNullOrEmpty(msgVal) ? null : msgVal;
     }
 }

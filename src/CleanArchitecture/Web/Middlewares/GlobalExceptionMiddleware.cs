@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -6,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using CleanArchitecture.Shared.Models.Errors;
+using CleanArchitecture.Web.Extensions;
 
 namespace CleanArchitecture.Web.Middlewares;
 
@@ -21,17 +21,26 @@ public class GlobalExceptionMiddleware(ILoggerFactory logger) : IMiddleware
         catch (Exception ex)
         {
             _logger.LogError("GlobalExceptionMiddleware: {exception}", ex);
-            
-            context.Response.StatusCode = 500;
+
+            // If the response has already been written (e.g. by UseExceptionHandler),
+            // there is nothing more we can do.
+            if (context.Response.HasStarted)
+            {
+                return;
+            }
+
+            var (statusCode, message, errorCode) = ExceptionResponseMapper.Map(ex);
+
+            context.Response.StatusCode = statusCode;
             context.Response.ContentType = "application/json";
 
             var apiError = new ApiErrorResponse
             {
                 Success = false,
-                Message = "An unexpected error occurred.",
+                Message = message,
                 Errors = new List<ApiErrorDetail>
                 {
-                    new ApiErrorDetail("Ardh.InternalError", ex.Message)
+                    new(errorCode, message)
                 }
             };
 

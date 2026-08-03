@@ -251,7 +251,6 @@ public class NotificationService(
 
     private static Exception NotFoundException(string message)
     {
-        // Follow the codebase exception structure (e.g. keyNotFound or custom ApiException)
-        return new KeyNotFoundException(message);
+        return new UserFriendlyException(ErrorCode.NotFound, message, message);
     }
 }
