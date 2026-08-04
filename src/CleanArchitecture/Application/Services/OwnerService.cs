@@ -11,10 +11,11 @@ using CleanArchitecture.Shared.Models.Owner;
 
 namespace CleanArchitecture.Application.Services;
 
-public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IOwnerService
+public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INotificationService notificationService) : IOwnerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<OwnerViewModel>> GetPaginated(int page, int pageSize, string? search, OwnerStatus? status, CancellationToken cancellationToken)
     {
@@ -102,16 +103,34 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
 
     public async Task Create(OwnerCreateRequest request, CancellationToken cancellationToken)
     {
-        var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email);
+        var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName);
+        if (isNameExist)
+        {
+            throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
+        }
+
+        var isEmailExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email);
         if (isEmailExist)
         {
             throw OwnerException.BadRequestException($"Owner with email '{request.Email}' already exists.");
         }
 
-        var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber);
+        var isPhoneExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Phone == request.Phone);
+        if (isPhoneExist)
+        {
+            throw OwnerException.BadRequestException($"Owner with phone number '{request.Phone}' already exists.");
+        }
+
+        var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.IdNumber == request.IdNumber);
         if (isIdNumberExist)
         {
             throw OwnerException.BadRequestException($"Owner with ID number '{request.IdNumber}' already exists.");
+        }
+
+        var isAccountNumberExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.AccountNumber == request.AccountNumber);
+        if (isAccountNumberExist)
+        {
+            throw OwnerException.BadRequestException($"Owner with account number '{request.AccountNumber}' already exists.");
         }
 
         var owner = new Owner
@@ -120,8 +139,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
             FullName = request.FullName,
             Phone = request.Phone,
             Email = request.Email,
-            City = request.City,
-            Address = request.Address,
+            City = request.City ?? string.Empty,
+            Address = request.Address ?? string.Empty,
             IdType = request.IdType,
             IdNumber = request.IdNumber,
             BankName = request.BankName,
@@ -135,6 +154,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.OwnerRepository.AddAsync(owner), cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Owner Added", $"Owner '{owner.FullName}' was added.", cancellationToken);
     }
 
     public async Task Update(Guid id, OwnerUpdateRequest request, CancellationToken cancellationToken)
@@ -142,29 +163,54 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
+        if (owner.FullName != request.FullName)
+        {
+            var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName && x.Id != id);
+            if (isNameExist)
+            {
+                throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
+            }
+        }
+
         if (owner.Email != request.Email)
         {
-            var isEmailExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.Email == request.Email && x.Id != id);
+            var isEmailExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email && x.Id != id);
             if (isEmailExist)
             {
                 throw OwnerException.BadRequestException($"Owner with email '{request.Email}' already exists.");
             }
         }
 
+        if (owner.Phone != request.Phone)
+        {
+            var isPhoneExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Phone == request.Phone && x.Id != id);
+            if (isPhoneExist)
+            {
+                throw OwnerException.BadRequestException($"Owner with phone number '{request.Phone}' already exists.");
+            }
+        }
+
         if (owner.IdNumber != request.IdNumber)
         {
-            var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyAsync(x => x.IdNumber == request.IdNumber && x.Id != id);
+            var isIdNumberExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.IdNumber == request.IdNumber && x.Id != id);
             if (isIdNumberExist)
             {
                 throw OwnerException.BadRequestException($"Owner with ID number '{request.IdNumber}' already exists.");
             }
         }
 
+        if (owner.AccountNumber != request.AccountNumber)
+        {
+            var isAccountNumberExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.AccountNumber == request.AccountNumber && x.Id != id);
+            if (isAccountNumberExist)
+            {
+                throw OwnerException.BadRequestException($"Owner with account number '{request.AccountNumber}' already exists.");
+            }
+        }
+
         owner.FullName = request.FullName;
         owner.Phone = request.Phone;
         owner.Email = request.Email;
-        owner.City = request.City;
-        owner.Address = request.Address;
         owner.IdType = request.IdType;
         owner.IdNumber = request.IdNumber;
         owner.BankName = request.BankName;
@@ -172,11 +218,17 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         owner.IfscCode = request.IfscCode;
         owner.Status = request.Status;
         owner.Notes = request.Notes;
+
+        if (request.City != null) owner.City = request.City;
+        if (request.Address != null) owner.Address = request.Address;
+
         owner.UpdatedAt = DateTime.UtcNow;
         owner.UpdatedBy = _currentUser.GetCurrentUserId();
  
         _unitOfWork.OwnerRepository.Update(owner);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Owner Updated", $"Owner '{owner.FullName}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -201,5 +253,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IO
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("properties", "Owner Deleted", $"Owner '{owner.FullName}' was deleted.", cancellationToken);
     }
 }

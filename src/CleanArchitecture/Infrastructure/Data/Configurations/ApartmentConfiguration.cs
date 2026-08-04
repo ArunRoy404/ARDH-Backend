@@ -79,6 +79,10 @@ public class ApartmentConfiguration : IEntityTypeConfiguration<Apartment>
             .HasColumnType("decimal(12,2)")
             .IsRequired();
 
+        builder.Property(e => e.Notes)
+            .HasColumnName("notes")
+            .HasColumnType("text");
+
         builder.Property(e => e.CurrentTenantId)
             .HasColumnName("current_tenant_id");
 

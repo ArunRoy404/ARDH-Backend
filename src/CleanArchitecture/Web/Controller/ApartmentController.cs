@@ -57,7 +57,7 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
     /// </summary>
     [HttpPost]
     [SwaggerResponse(200, "Apartment created successfully.")]
-    [SwaggerResponse(400, "Invalid request or building/owner/flat number invalid.")]
+    [SwaggerResponse(400, "Invalid request, the specified building/owner does not exist, or the flat number already exists in this building.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     public async Task<IActionResult> Create([FromBody] ApartmentCreateRequest request, CancellationToken cancellationToken)
     {
@@ -70,7 +70,7 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
     /// </summary>
     [HttpPut("{id}")]
     [SwaggerResponse(200, "Apartment updated successfully.")]
-    [SwaggerResponse(400, "Invalid request or building/owner/flat number invalid.")]
+    [SwaggerResponse(400, "Invalid request, the specified building/owner does not exist, or the flat number already exists in this building.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Apartment not found.")]
     public async Task<IActionResult> Update(Guid id, [FromBody] ApartmentUpdateRequest request, CancellationToken cancellationToken)

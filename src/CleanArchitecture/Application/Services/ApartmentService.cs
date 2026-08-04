@@ -12,11 +12,12 @@ using CleanArchitecture.Shared.Models.Owner;
 
 namespace CleanArchitecture.Application.Services;
 
-public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : IApartmentService
+public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService, INotificationService notificationService) : IApartmentService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly IActivityService _activityService = activityService;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<ApartmentViewModel>> GetPaginated(
         int page,
@@ -107,6 +108,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
                 ExpectedRent = x.ExpectedRent,
                 MaintenanceCharge = x.MaintenanceCharge,
                 WaterCharge = x.WaterCharge,
+                Notes = x.Notes,
                 CurrentTenantId = x.CurrentTenantId,
                 CurrentTenantName = x.CurrentTenantId.HasValue && tenantMap.TryGetValue(x.CurrentTenantId.Value, out var tn) ? tn : null,
                 CreatedAt = x.CreatedAt,
@@ -188,6 +190,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             ExpectedRent = apartment.ExpectedRent,
             MaintenanceCharge = apartment.MaintenanceCharge,
             WaterCharge = apartment.WaterCharge,
+            Notes = apartment.Notes,
             CurrentTenantId = apartment.CurrentTenantId,
             CurrentTenantName = currentTenant?.FullName,
             CreatedAt = apartment.CreatedAt,
@@ -214,7 +217,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         }
 
         // Validate unique flat_number per building
-        var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower());
+        var isFlatExist = await _unitOfWork.ApartmentRepository.AnyIncludingDeletedAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower());
         if (isFlatExist)
         {
             throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
@@ -229,14 +232,15 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             FlatNumber = request.FlatNumber.Trim(),
             Floor = request.Floor,
             ApartmentType = request.ApartmentType,
-            AreaSqft = request.AreaSqft,
-            Bedrooms = request.Bedrooms,
-            Bathrooms = request.Bathrooms,
+            AreaSqft = request.AreaSqft ?? 0,
+            Bedrooms = request.Bedrooms ?? 0,
+            Bathrooms = request.Bathrooms ?? 0,
             HasBalcony = request.HasBalcony,
-            ParkingSlot = request.ParkingSlot.Trim(),
+            ParkingSlot = request.ParkingSlot?.Trim() ?? string.Empty,
             ExpectedRent = request.ExpectedRent,
             MaintenanceCharge = request.MaintenanceCharge,
             WaterCharge = request.WaterCharge,
+            Notes = request.Notes,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
@@ -245,6 +249,9 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.ApartmentRepository.AddAsync(apartment), cancellationToken);
 
         await _activityService.CreateActivity("Create", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' added to building.", cancellationToken);
+
+        var createdBuilding = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == apartment.BuildingId);
+        await _notificationService.CreateNotificationInternal("properties", "Apartment Added", $"Apartment '{apartment.FlatNumber}' added to '{createdBuilding?.BuildingName ?? "building"}' building.", cancellationToken);
     }
 
     public async Task Update(Guid id, ApartmentUpdateRequest request, CancellationToken cancellationToken)
@@ -269,7 +276,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         // Validate flat number uniqueness if modified
         if (apartment.BuildingId != request.BuildingId || !string.Equals(apartment.FlatNumber, request.FlatNumber, StringComparison.OrdinalIgnoreCase))
         {
-            var isFlatExist = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.Id != id);
+            var isFlatExist = await _unitOfWork.ApartmentRepository.AnyIncludingDeletedAsync(x => x.BuildingId == request.BuildingId && x.FlatNumber.ToLower() == request.FlatNumber.Trim().ToLower() && x.Id != id);
             if (isFlatExist)
             {
                 throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
@@ -282,14 +289,17 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         apartment.FlatNumber = request.FlatNumber.Trim();
         apartment.Floor = request.Floor;
         apartment.ApartmentType = request.ApartmentType;
-        apartment.AreaSqft = request.AreaSqft;
-        apartment.Bedrooms = request.Bedrooms;
-        apartment.Bathrooms = request.Bathrooms;
         apartment.HasBalcony = request.HasBalcony;
-        apartment.ParkingSlot = request.ParkingSlot.Trim();
         apartment.ExpectedRent = request.ExpectedRent;
         apartment.MaintenanceCharge = request.MaintenanceCharge;
         apartment.WaterCharge = request.WaterCharge;
+        apartment.Notes = request.Notes;
+
+        if (request.AreaSqft.HasValue) apartment.AreaSqft = request.AreaSqft.Value;
+        if (request.Bedrooms.HasValue) apartment.Bedrooms = request.Bedrooms.Value;
+        if (request.Bathrooms.HasValue) apartment.Bathrooms = request.Bathrooms.Value;
+        if (request.ParkingSlot != null) apartment.ParkingSlot = request.ParkingSlot.Trim();
+
         apartment.UpdatedAt = DateTime.UtcNow;
         apartment.UpdatedBy = _currentUser.GetCurrentUserId();
 
@@ -297,6 +307,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Update", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' details were updated.", cancellationToken);
+        await _notificationService.CreateNotificationInternal("properties", "Apartment Updated", $"Apartment '{apartment.FlatNumber}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -323,5 +334,6 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Delete", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' was deleted.", cancellationToken);
+        await _notificationService.CreateNotificationInternal("properties", "Apartment Deleted", $"Apartment '{apartment.FlatNumber}' was deleted.", cancellationToken);
     }
 }

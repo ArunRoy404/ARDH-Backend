@@ -14,10 +14,11 @@ using CleanArchitecture.Shared.Models.User;
 
 namespace CleanArchitecture.Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUserService
+public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INotificationService notificationService) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
@@ -126,7 +127,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
     public async Task Create(UserCreateRequest request, CancellationToken cancellationToken)
     {
-        var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email);
+        var isEmailExist = await _unitOfWork.UserRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email);
         if (isEmailExist)
         {
             throw UserException.UserAlreadyExistsException(request.Email);
@@ -150,6 +151,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.UserRepository.AddAsync(user), cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("admin", "New User Created", $"User '{user.Name}' ({user.Role}) was created.", cancellationToken);
     }
 
     public async Task Update(UserUpdateRequest request, CancellationToken cancellationToken)
@@ -160,7 +163,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         // Check if email is updated to an existing one
         if (user.Email != request.Email)
         {
-            var isEmailExist = await _unitOfWork.UserRepository.AnyAsync(x => x.Email == request.Email && x.Id != request.Id);
+            var isEmailExist = await _unitOfWork.UserRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email && x.Id != request.Id);
             if (isEmailExist)
             {
                 throw UserException.UserAlreadyExistsException(request.Email);
@@ -180,6 +183,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("admin", "User Updated", $"User '{user.Name}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid userId, CancellationToken cancellationToken)
@@ -205,6 +210,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("admin", "User Deleted", $"User '{user.Name}' was deleted.", cancellationToken);
     }
 
     public async Task ToggleStatus(Guid id, CancellationToken cancellationToken)
@@ -218,5 +225,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser) : IUs
 
         _unitOfWork.UserRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        var statusText = user.IsActive ? "activated" : "deactivated";
+        await _notificationService.CreateNotificationInternal("admin", "User Status Changed", $"User '{user.Name}' was {statusText}.", cancellationToken);
     }
 }

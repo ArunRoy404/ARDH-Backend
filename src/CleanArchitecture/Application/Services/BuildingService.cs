@@ -12,11 +12,12 @@ using CleanArchitecture.Shared.Models.Building;
 
 namespace CleanArchitecture.Application.Services;
 
-public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService) : IBuildingService
+public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IActivityService activityService, INotificationService notificationService) : IBuildingService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly IActivityService _activityService = activityService;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
@@ -101,7 +102,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
     public async Task Create(BuildingCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName);
+        var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName == request.BuildingName);
         if (isNameExist)
         {
             throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -111,16 +112,16 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         {
             Id = Guid.NewGuid(),
             BuildingName = request.BuildingName,
-            Address = request.Address,
+            Address = request.Address ?? string.Empty,
             City = request.City,
             State = request.State,
             Country = request.Country,
-            GoogleMapLink = request.GoogleMapLink,
-            TotalFloors = request.TotalFloors,
-            ParkingDetails = request.ParkingDetails,
-            Status = request.Status,
-            Description = request.Description,
-            ImageUrl = request.ImageUrl,
+            GoogleMapLink = request.GoogleMapLink ?? string.Empty,
+            TotalFloors = request.TotalFloors ?? 0,
+            ParkingDetails = request.ParkingDetails ?? string.Empty,
+            Status = request.Status ?? BuildingStatus.active,
+            Description = request.Description ?? string.Empty,
+            ImageUrl = request.ImageUrl ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
@@ -129,6 +130,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.BuildingRepository.AddAsync(building), cancellationToken);
 
         await _activityService.CreateActivity("Create", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' was created.", cancellationToken);
+        await _notificationService.CreateNotificationInternal("properties", "Building Created", $"Building '{building.BuildingName}' was created.", cancellationToken);
     }
 
     public async Task Update(BuildingUpdateRequest request, CancellationToken cancellationToken)
@@ -138,7 +140,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
         if (building.BuildingName != request.BuildingName)
         {
-            var isNameExist = await _unitOfWork.BuildingRepository.AnyAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
+            var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
             if (isNameExist)
             {
                 throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -146,16 +148,18 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         }
 
         building.BuildingName = request.BuildingName;
-        building.Address = request.Address;
         building.City = request.City;
         building.State = request.State;
         building.Country = request.Country;
-        building.GoogleMapLink = request.GoogleMapLink;
-        building.TotalFloors = request.TotalFloors;
-        building.ParkingDetails = request.ParkingDetails;
-        building.Status = request.Status;
-        building.Description = request.Description;
-        building.ImageUrl = request.ImageUrl;
+
+        if (request.Address != null) building.Address = request.Address;
+        if (request.GoogleMapLink != null) building.GoogleMapLink = request.GoogleMapLink;
+        if (request.TotalFloors.HasValue) building.TotalFloors = request.TotalFloors.Value;
+        if (request.ParkingDetails != null) building.ParkingDetails = request.ParkingDetails;
+        if (request.Status.HasValue) building.Status = request.Status.Value;
+        if (request.Description != null) building.Description = request.Description;
+        if (request.ImageUrl != null) building.ImageUrl = request.ImageUrl;
+
         building.UpdatedAt = DateTime.UtcNow;
         building.UpdatedBy = _currentUser.GetCurrentUserId();
  
@@ -163,6 +167,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Update", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' details were updated.", cancellationToken);
+        await _notificationService.CreateNotificationInternal("properties", "Building Updated", $"Building '{building.BuildingName}' details were updated.", cancellationToken);
     }
 
     public async Task<BuildingStatsViewModel> GetStats(Guid buildingId, CancellationToken cancellationToken)
@@ -214,5 +219,6 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Delete", "Building", building.Id, building.Id, $"Building '{building.BuildingName}' was deleted.", cancellationToken);
+        await _notificationService.CreateNotificationInternal("properties", "Building Deleted", $"Building '{building.BuildingName}' was deleted.", cancellationToken);
     }
 }

@@ -36,6 +36,11 @@ public class GenericRepository<T>(ApplicationDbContext context) : IGenericReposi
         return await _dbSet.AnyAsync();
     }
 
+    public async Task<bool> AnyIncludingDeletedAsync(Expression<Func<T, bool>> filter)
+    {
+        return await _dbSet.IgnoreQueryFilters().AnyAsync(filter);
+    }
+
     public async Task<int> CountAsync(Expression<Func<T, bool>> filter)
     {
         return filter == null ? await _dbSet.CountAsync() : await _dbSet.CountAsync(filter);

@@ -19,6 +19,7 @@ public class Apartment
     public decimal ExpectedRent { get; set; }
     public decimal MaintenanceCharge { get; set; }
     public decimal WaterCharge { get; set; }
+    public string? Notes { get; set; }
     public Guid? CurrentTenantId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

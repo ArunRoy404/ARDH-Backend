@@ -13,10 +13,12 @@ namespace CleanArchitecture.Application.Services;
 
 public class VendorService(
     IUnitOfWork unitOfWork,
-    ICurrentUser currentUser) : IVendorService
+    ICurrentUser currentUser,
+    INotificationService notificationService) : IVendorService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
+    private readonly INotificationService _notificationService = notificationService;
 
     public async Task<PaginatedList<VendorViewModel>> GetPaginated(
         int page,
@@ -83,7 +85,7 @@ public class VendorService(
 
     public async Task Create(VendorCreateRequest request, CancellationToken cancellationToken)
     {
-        var existingEmail = await _unitOfWork.VendorRepository.AnyAsync(x =>
+        var existingEmail = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
             x.Email.ToLower() == request.Email.Trim().ToLower());
 
         if (existingEmail)
@@ -91,7 +93,7 @@ public class VendorService(
             throw VendorException.BadRequestException($"A vendor with email '{request.Email}' already exists.");
         }
 
-        var existingPhone = await _unitOfWork.VendorRepository.AnyAsync(x =>
+        var existingPhone = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
             x.Phone.Trim() == request.Phone.Trim());
 
         if (existingPhone)
@@ -101,7 +103,7 @@ public class VendorService(
 
         if (!string.IsNullOrWhiteSpace(request.GstNumber))
         {
-            var existingGst = await _unitOfWork.VendorRepository.AnyAsync(x =>
+            var existingGst = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
                 x.GstNumber.Trim().ToLower() == request.GstNumber.Trim().ToLower());
 
             if (existingGst)
@@ -128,6 +130,8 @@ public class VendorService(
         };
 
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.VendorRepository.AddAsync(vendor), cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Vendor Added", $"Vendor '{vendor.Name}' ({vendor.CompanyName}) was added.", cancellationToken);
     }
 
     public async Task Update(Guid id, VendorUpdateRequest request, CancellationToken cancellationToken)
@@ -137,7 +141,7 @@ public class VendorService(
 
         if (!string.Equals(vendor.Email, request.Email, StringComparison.OrdinalIgnoreCase))
         {
-            var existingEmail = await _unitOfWork.VendorRepository.AnyAsync(x =>
+            var existingEmail = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
                 x.Id != id && x.Email.ToLower() == request.Email.Trim().ToLower());
 
             if (existingEmail)
@@ -148,7 +152,7 @@ public class VendorService(
 
         if (!string.Equals(vendor.Phone, request.Phone, StringComparison.OrdinalIgnoreCase))
         {
-            var existingPhone = await _unitOfWork.VendorRepository.AnyAsync(x =>
+            var existingPhone = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
                 x.Id != id && x.Phone.Trim() == request.Phone.Trim());
 
             if (existingPhone)
@@ -159,7 +163,7 @@ public class VendorService(
 
         if (!string.IsNullOrWhiteSpace(request.GstNumber) && !string.Equals(vendor.GstNumber, request.GstNumber, StringComparison.OrdinalIgnoreCase))
         {
-            var existingGst = await _unitOfWork.VendorRepository.AnyAsync(x =>
+            var existingGst = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
                 x.Id != id && x.GstNumber.Trim().ToLower() == request.GstNumber.Trim().ToLower());
 
             if (existingGst)
@@ -182,6 +186,8 @@ public class VendorService(
 
         _unitOfWork.VendorRepository.Update(vendor);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Vendor Updated", $"Vendor '{vendor.Name}' details were updated.", cancellationToken);
     }
 
     public async Task Delete(Guid id, CancellationToken cancellationToken)
@@ -207,6 +213,8 @@ public class VendorService(
         await _unitOfWork.DeletedHistoryRepository.AddAsync(history);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _notificationService.CreateNotificationInternal("operations", "Vendor Deleted", $"Vendor '{vendor.Name}' was deleted.", cancellationToken);
     }
 
     private static VendorViewModel MapToViewModel(Vendor vendor, Dictionary<Guid, string>? userMap = null)

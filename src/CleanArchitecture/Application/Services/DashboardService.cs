@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Shared.Domain.Enums;
+using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Dashboard;
 
 namespace CleanArchitecture.Application.Services;
@@ -157,33 +158,44 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
         return breakdown;
     }
 
-    public async Task<List<DashboardRecentPaymentViewModel>> GetRecentPayments(Guid? buildingId, CancellationToken cancellationToken)
+    public async Task<PaginatedList<DashboardRecentPaymentViewModel>> GetRecentPayments(Guid? buildingId, int page, int pageSize, CancellationToken cancellationToken)
     {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
         var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
         var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
         var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
         var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
-        var recent = records
+        var query = records.AsQueryable();
+        var totalItems = query.Count();
+
+        var pageRecords = query
             .OrderByDescending(x => x.PaymentDate)
             .ThenByDescending(x => x.CreatedAt)
-            .Take(10)
-            .Select(x => new DashboardRecentPaymentViewModel
-            {
-                TenantName = x.TenantId.HasValue && tenantMap.TryGetValue(x.TenantId.Value, out var name) ? name : "Unknown Tenant",
-                IncomeType = x.IncomeType.ToString(),
-                PaymentDate = x.PaymentDate,
-                Amount = x.Amount,
-                Status = x.Status.ToString()
-            })
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
 
-        return recent;
+        var items = pageRecords.Select(x => new DashboardRecentPaymentViewModel
+        {
+            TenantName = x.TenantId.HasValue && tenantMap.TryGetValue(x.TenantId.Value, out var name) ? name : "Unknown Tenant",
+            IncomeType = x.IncomeType.ToString(),
+            PaymentDate = x.PaymentDate,
+            Amount = x.Amount,
+            Status = x.Status.ToString()
+        }).ToList();
+
+        return new PaginatedList<DashboardRecentPaymentViewModel>(items, totalItems, page, pageSize);
     }
 
-    public async Task<List<DashboardOpenMaintenanceViewModel>> GetOpenMaintenance(Guid? buildingId, CancellationToken cancellationToken)
+    public async Task<PaginatedList<DashboardOpenMaintenanceViewModel>> GetOpenMaintenance(Guid? buildingId, int page, int pageSize, CancellationToken cancellationToken)
     {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
         var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
         var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => 
@@ -196,24 +208,29 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
 
-        var recent = requests
+        var query = requests.AsQueryable();
+        var totalItems = query.Count();
+
+        var pageRequests = query
             .OrderBy(x => x.Priority == MaintenancePriority.High ? 1 : x.Priority == MaintenancePriority.Medium ? 2 : 3)
             .ThenByDescending(x => x.CreatedAt)
-            .Take(10)
-            .Select(x => {
-                var bName = x.BuildingId != Guid.Empty && buildingMap.TryGetValue(x.BuildingId, out var b) ? b : "Unknown Building";
-                var flat = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var f) ? f : "Common Area";
-                return new DashboardOpenMaintenanceViewModel
-                {
-                    Id = x.Id,
-                    Title = x.Title,
-                    Location = $"{bName} • {flat}",
-                    Priority = x.Priority.ToString(),
-                    Status = x.Status.ToString()
-                };
-            })
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
 
-        return recent;
+        var items = pageRequests.Select(x => {
+            var bName = x.BuildingId != Guid.Empty && buildingMap.TryGetValue(x.BuildingId, out var b) ? b : "Unknown Building";
+            var flat = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var f) ? f : "Common Area";
+            return new DashboardOpenMaintenanceViewModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Location = $"{bName} • {flat}",
+                Priority = x.Priority.ToString(),
+                Status = x.Status.ToString()
+            };
+        }).ToList();
+
+        return new PaginatedList<DashboardOpenMaintenanceViewModel>(items, totalItems, page, pageSize);
     }
 }

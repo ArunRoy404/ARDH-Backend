@@ -25,6 +25,7 @@ public class ApartmentViewModel
     public decimal ExpectedRent { get; set; }
     public decimal MaintenanceCharge { get; set; }
     public decimal WaterCharge { get; set; }
+    public string? Notes { get; set; }
     public Guid? CurrentTenantId { get; set; }
     public string? CurrentTenantName { get; set; }
     public string OccupancyStatus => CurrentTenantId.HasValue ? "Occupied" : "Vacant";

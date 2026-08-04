@@ -7,6 +7,7 @@ namespace CleanArchitecture.Application.Common.Interfaces;
 public interface ISettingService
 {
     Task<SettingViewModel> Get(CancellationToken cancellationToken);
+    Task<SettingPublicViewModel> GetPublic(CancellationToken cancellationToken);
     Task Update(SettingUpdateRequest request, CancellationToken cancellationToken);
     Task UpdatePassword(SettingUpdatePasswordRequest request, CancellationToken cancellationToken);
 }

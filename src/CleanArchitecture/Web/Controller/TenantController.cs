@@ -57,7 +57,7 @@ public class TenantController(ITenantService tenantService, ITenantMoveOutServic
     /// </summary>
     [HttpPost]
     [SwaggerResponse(200, "Tenant created successfully.")]
-    [SwaggerResponse(400, "Invalid request or email/ID number already exists.")]
+    [SwaggerResponse(400, "Invalid request, email/ID number already exists, or the apartment is already occupied by another tenant.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     public async Task<IActionResult> Create([FromBody] TenantCreateRequest request, CancellationToken cancellationToken)
     {
@@ -70,7 +70,7 @@ public class TenantController(ITenantService tenantService, ITenantMoveOutServic
     /// </summary>
     [HttpPut("{id:guid}")]
     [SwaggerResponse(200, "Tenant updated successfully.")]
-    [SwaggerResponse(400, "Invalid request or duplicate email/ID number.")]
+    [SwaggerResponse(400, "Invalid request, duplicate email/ID number, or the target apartment is already occupied by another tenant.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Tenant not found.")]
     public async Task<IActionResult> Update(Guid id, [FromBody] TenantUpdateRequest request, CancellationToken cancellationToken)

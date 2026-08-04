@@ -22,9 +22,9 @@ public class TenantUpdateRequestValidation : AbstractValidator<TenantUpdateReque
             .MaximumLength(50).WithMessage("Phone number must not exceed 50 characters.");
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email address is required.")
             .EmailAddress().WithMessage("A valid email address is required.")
-            .MaximumLength(255).WithMessage("Email address must not exceed 255 characters.");
+            .MaximumLength(255).WithMessage("Email address must not exceed 255 characters.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Email));
 
         RuleFor(x => x.IdType)
             .IsInEnum().WithMessage("A valid ID type is required.");
@@ -43,9 +43,11 @@ public class TenantUpdateRequestValidation : AbstractValidator<TenantUpdateReque
             .GreaterThanOrEqualTo(0).WithMessage("Monthly rent must be greater than or equal to 0.");
 
         RuleFor(x => x.SecurityDeposit)
-            .GreaterThanOrEqualTo(0).WithMessage("Security deposit must be greater than or equal to 0.");
+            .GreaterThanOrEqualTo(0).WithMessage("Security deposit must be greater than or equal to 0.")
+            .When(x => x.SecurityDeposit.HasValue);
 
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid tenant status is required.");
+            .IsInEnum().WithMessage("A valid tenant status is required.")
+            .When(x => x.Status.HasValue);
     }
 }

@@ -10,12 +10,13 @@ public class ApartmentUpdateRequest
     public string FlatNumber { get; set; } = null!;
     public int Floor { get; set; }
     public string ApartmentType { get; set; } = null!;
-    public decimal AreaSqft { get; set; }
-    public int Bedrooms { get; set; }
-    public int Bathrooms { get; set; }
+    public decimal? AreaSqft { get; set; }
+    public int? Bedrooms { get; set; }
+    public int? Bathrooms { get; set; }
     public bool HasBalcony { get; set; }
-    public string ParkingSlot { get; set; } = null!;
+    public string? ParkingSlot { get; set; }
     public decimal ExpectedRent { get; set; }
     public decimal MaintenanceCharge { get; set; }
     public decimal WaterCharge { get; set; }
+    public string? Notes { get; set; }
 }

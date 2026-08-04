@@ -318,6 +318,12 @@ public class IncomeRecordService(
                 record.BuildingId,
                 $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
                 cancellationToken);
+
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Payment Received",
+                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                cancellationToken);
         }
 
         if (record.Status == IncomeStatus.Overdue)
@@ -404,6 +410,12 @@ public class IncomeRecordService(
                 record.BuildingId,
                 $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
                 cancellationToken);
+
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Payment Received",
+                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                cancellationToken);
         }
 
         if (record.Status == IncomeStatus.Overdue && oldStatus != IncomeStatus.Overdue)
@@ -448,6 +460,12 @@ public class IncomeRecordService(
             record.BuildingId,
             $"Income record of {record.Amount:N0} deleted.",
             cancellationToken);
+
+        await _notificationService.CreateNotificationInternal(
+            "finance",
+            "Income Record Deleted",
+            $"Income record of {record.Amount:N0} deleted.",
+            cancellationToken);
     }
 
     public async Task UpdateStatus(Guid id, IncomeRecordStatusUpdateRequest request, CancellationToken cancellationToken)
@@ -482,6 +500,12 @@ public class IncomeRecordService(
                 "IncomeRecord",
                 record.Id,
                 record.BuildingId,
+                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                cancellationToken);
+
+            await _notificationService.CreateNotificationInternal(
+                "finance",
+                "Payment Received",
                 $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
                 cancellationToken);
         }
