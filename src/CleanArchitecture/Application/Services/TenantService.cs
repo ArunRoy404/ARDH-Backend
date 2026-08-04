@@ -203,17 +203,26 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         }
 
         // Validate Apartment
-        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId);
-        if (!apartmentExists)
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId);
+        if (apartment == null)
         {
             throw TenantException.BadRequestException("The specified apartment does not exist.");
         }
 
-        // Validate Email uniqueness
-        var isEmailExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower());
-        if (isEmailExist)
+        // Validate apartment occupancy - a new tenant can only be assigned to a vacant apartment
+        if (apartment.CurrentTenantId.HasValue)
         {
-            throw TenantException.BadRequestException($"Tenant with email '{request.Email}' already exists.");
+            throw TenantException.BadRequestException($"Apartment '{apartment.FlatNumber}' is already occupied by another tenant. Please move out the current tenant before assigning a new one.");
+        }
+
+        // Validate Email uniqueness (only when provided)
+        if (!string.IsNullOrWhiteSpace(request.Email))
+        {
+            var isEmailExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower());
+            if (isEmailExist)
+            {
+                throw TenantException.BadRequestException($"Tenant with email '{request.Email}' already exists.");
+            }
         }
 
         // Validate ID Number uniqueness
@@ -230,7 +239,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             ApartmentId = request.ApartmentId,
             FullName = request.FullName.Trim(),
             Phone = request.Phone.Trim(),
-            Email = request.Email.Trim(),
+            Email = request.Email?.Trim() ?? string.Empty,
             IdType = request.IdType,
             IdNumber = request.IdNumber.Trim(),
             IdProofAttachmentUrl = request.IdProofAttachmentUrl?.Trim(),
@@ -238,36 +247,28 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             LeaseStartDate = request.LeaseStartDate,
             LeaseEndDate = request.LeaseEndDate,
             MonthlyRent = request.MonthlyRent,
-            SecurityDeposit = request.SecurityDeposit,
+            SecurityDeposit = request.SecurityDeposit ?? 0,
             EmergencyContactName = request.EmergencyContactName?.Trim(),
             EmergencyContactPhone = request.EmergencyContactPhone?.Trim(),
-            Status = request.Status,
+            Status = request.Status ?? TenantStatus.Active,
             Notes = request.Notes?.Trim(),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
         };
 
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
-        if (apartment != null)
-        {
-            apartment.CurrentTenantId = tenant.Id;
-            apartment.UpdatedAt = DateTime.UtcNow;
-        }
+        apartment.CurrentTenantId = tenant.Id;
+        apartment.UpdatedAt = DateTime.UtcNow;
 
         await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
             await _unitOfWork.TenantRepository.AddAsync(tenant);
-            if (apartment != null)
-            {
-                _unitOfWork.ApartmentRepository.Update(apartment);
-            }
+            _unitOfWork.ApartmentRepository.Update(apartment);
         }, cancellationToken);
 
-        var flatNum = apartment?.FlatNumber ?? "Unknown Flat";
-        await _activityService.CreateActivity("Create", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved into Flat '{flatNum}'.", cancellationToken);
+        await _activityService.CreateActivity("Create", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' moved into Flat '{apartment.FlatNumber}'.", cancellationToken);
 
-        await _notificationService.CreateNotificationInternal("properties", "Tenant Moved In", $"Tenant '{tenant.FullName}' moved into Flat '{flatNum}'.", cancellationToken);
+        await _notificationService.CreateNotificationInternal("properties", "Tenant Moved In", $"Tenant '{tenant.FullName}' moved into Flat '{apartment.FlatNumber}'.", cancellationToken);
     }
 
     public async Task Update(Guid id, TenantUpdateRequest request, CancellationToken cancellationToken)
@@ -283,14 +284,11 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         }
 
         // Validate Apartment
-        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId);
-        if (!apartmentExists)
-        {
-            throw TenantException.BadRequestException("The specified apartment does not exist.");
-        }
+        var requestedApartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId)
+            ?? throw TenantException.BadRequestException("The specified apartment does not exist.");
 
-        // Validate Email uniqueness if changed
-        if (!string.Equals(tenant.Email, request.Email, StringComparison.OrdinalIgnoreCase))
+        // Validate Email uniqueness if changed and provided
+        if (!string.IsNullOrWhiteSpace(request.Email) && !string.Equals(tenant.Email, request.Email, StringComparison.OrdinalIgnoreCase))
         {
             var isEmailExist = await _unitOfWork.TenantRepository.AnyIncludingDeletedAsync(x => x.Email.ToLower() == request.Email.Trim().ToLower() && x.Id != id);
             if (isEmailExist)
@@ -311,12 +309,22 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
         var oldApartmentId = tenant.ApartmentId;
         var oldStatus = tenant.Status;
+        var newStatus = request.Status ?? oldStatus;
+
+        // Validate apartment occupancy before applying any changes - a tenant can only become
+        // Active on an apartment (whether by moving apartment or by re-activating in place)
+        // if that apartment is currently vacant or already occupied by this same tenant.
+        var becomingActiveHere = newStatus == TenantStatus.Active && (oldApartmentId != request.ApartmentId || oldStatus != TenantStatus.Active);
+        if (becomingActiveHere && requestedApartment.CurrentTenantId.HasValue && requestedApartment.CurrentTenantId != tenant.Id)
+        {
+            throw TenantException.BadRequestException($"Apartment '{requestedApartment.FlatNumber}' is already occupied by another tenant. Please move out the current tenant before assigning a new one.");
+        }
 
         tenant.BuildingId = request.BuildingId;
         tenant.ApartmentId = request.ApartmentId;
         tenant.FullName = request.FullName.Trim();
         tenant.Phone = request.Phone.Trim();
-        tenant.Email = request.Email.Trim();
+        if (!string.IsNullOrWhiteSpace(request.Email)) tenant.Email = request.Email.Trim();
         tenant.IdType = request.IdType;
         tenant.IdNumber = request.IdNumber.Trim();
         tenant.IdProofAttachmentUrl = request.IdProofAttachmentUrl?.Trim();
@@ -324,10 +332,10 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         tenant.LeaseStartDate = request.LeaseStartDate;
         tenant.LeaseEndDate = request.LeaseEndDate;
         tenant.MonthlyRent = request.MonthlyRent;
-        tenant.SecurityDeposit = request.SecurityDeposit;
+        if (request.SecurityDeposit.HasValue) tenant.SecurityDeposit = request.SecurityDeposit.Value;
         tenant.EmergencyContactName = request.EmergencyContactName?.Trim();
         tenant.EmergencyContactPhone = request.EmergencyContactPhone?.Trim();
-        tenant.Status = request.Status;
+        tenant.Status = newStatus;
         tenant.Notes = request.Notes?.Trim();
         tenant.UpdatedAt = DateTime.UtcNow;
         tenant.UpdatedBy = _currentUser.GetCurrentUserId();
@@ -342,38 +350,29 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
                 _unitOfWork.ApartmentRepository.Update(oldApartment);
             }
 
-            if (request.Status == TenantStatus.Active)
+            if (newStatus == TenantStatus.Active)
             {
-                var newApartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId);
-                if (newApartment != null)
-                {
-                    newApartment.CurrentTenantId = tenant.Id;
-                    newApartment.UpdatedAt = DateTime.UtcNow;
-                    _unitOfWork.ApartmentRepository.Update(newApartment);
-                }
+                requestedApartment.CurrentTenantId = tenant.Id;
+                requestedApartment.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.ApartmentRepository.Update(requestedApartment);
             }
         }
         else
         {
-            if (oldStatus == TenantStatus.Active && request.Status != TenantStatus.Active)
+            if (oldStatus == TenantStatus.Active && newStatus != TenantStatus.Active)
             {
-                var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
-                if (apartment != null && apartment.CurrentTenantId == tenant.Id)
+                if (requestedApartment.CurrentTenantId == tenant.Id)
                 {
-                    apartment.CurrentTenantId = null;
-                    apartment.UpdatedAt = DateTime.UtcNow;
-                    _unitOfWork.ApartmentRepository.Update(apartment);
+                    requestedApartment.CurrentTenantId = null;
+                    requestedApartment.UpdatedAt = DateTime.UtcNow;
+                    _unitOfWork.ApartmentRepository.Update(requestedApartment);
                 }
             }
-            else if (oldStatus != TenantStatus.Active && request.Status == TenantStatus.Active)
+            else if (oldStatus != TenantStatus.Active && newStatus == TenantStatus.Active)
             {
-                var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
-                if (apartment != null)
-                {
-                    apartment.CurrentTenantId = tenant.Id;
-                    apartment.UpdatedAt = DateTime.UtcNow;
-                    _unitOfWork.ApartmentRepository.Update(apartment);
-                }
+                requestedApartment.CurrentTenantId = tenant.Id;
+                requestedApartment.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.ApartmentRepository.Update(requestedApartment);
             }
         }
 
@@ -382,9 +381,9 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
         await _activityService.CreateActivity("Update", "Tenant", tenant.Id, tenant.BuildingId, $"Tenant '{tenant.FullName}' details were updated.", cancellationToken);
 
-        if (oldStatus != request.Status)
+        if (oldStatus != newStatus)
         {
-            await _notificationService.CreateNotificationInternal("properties", "Tenant Status Changed", $"Tenant '{tenant.FullName}' status changed to '{request.Status}'.", cancellationToken);
+            await _notificationService.CreateNotificationInternal("properties", "Tenant Status Changed", $"Tenant '{tenant.FullName}' status changed to '{newStatus}'.", cancellationToken);
         }
         else
         {
