@@ -230,11 +230,11 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             FlatNumber = request.FlatNumber.Trim(),
             Floor = request.Floor,
             ApartmentType = request.ApartmentType,
-            AreaSqft = request.AreaSqft,
-            Bedrooms = request.Bedrooms,
-            Bathrooms = request.Bathrooms,
+            AreaSqft = request.AreaSqft ?? 0,
+            Bedrooms = request.Bedrooms ?? 0,
+            Bathrooms = request.Bathrooms ?? 0,
             HasBalcony = request.HasBalcony,
-            ParkingSlot = request.ParkingSlot.Trim(),
+            ParkingSlot = request.ParkingSlot?.Trim() ?? string.Empty,
             ExpectedRent = request.ExpectedRent,
             MaintenanceCharge = request.MaintenanceCharge,
             WaterCharge = request.WaterCharge,
@@ -286,14 +286,16 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         apartment.FlatNumber = request.FlatNumber.Trim();
         apartment.Floor = request.Floor;
         apartment.ApartmentType = request.ApartmentType;
-        apartment.AreaSqft = request.AreaSqft;
-        apartment.Bedrooms = request.Bedrooms;
-        apartment.Bathrooms = request.Bathrooms;
         apartment.HasBalcony = request.HasBalcony;
-        apartment.ParkingSlot = request.ParkingSlot.Trim();
         apartment.ExpectedRent = request.ExpectedRent;
         apartment.MaintenanceCharge = request.MaintenanceCharge;
         apartment.WaterCharge = request.WaterCharge;
+
+        if (request.AreaSqft.HasValue) apartment.AreaSqft = request.AreaSqft.Value;
+        if (request.Bedrooms.HasValue) apartment.Bedrooms = request.Bedrooms.Value;
+        if (request.Bathrooms.HasValue) apartment.Bathrooms = request.Bathrooms.Value;
+        if (request.ParkingSlot != null) apartment.ParkingSlot = request.ParkingSlot.Trim();
+
         apartment.UpdatedAt = DateTime.UtcNow;
         apartment.UpdatedBy = _currentUser.GetCurrentUserId();
 
