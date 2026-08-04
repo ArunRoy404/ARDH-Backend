@@ -103,6 +103,12 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
 
     public async Task Create(OwnerCreateRequest request, CancellationToken cancellationToken)
     {
+        var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName);
+        if (isNameExist)
+        {
+            throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
+        }
+
         var isEmailExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email);
         if (isEmailExist)
         {
@@ -156,6 +162,15 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
     {
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
+
+        if (owner.FullName != request.FullName)
+        {
+            var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName && x.Id != id);
+            if (isNameExist)
+            {
+                throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
+            }
+        }
 
         if (owner.Email != request.Email)
         {
