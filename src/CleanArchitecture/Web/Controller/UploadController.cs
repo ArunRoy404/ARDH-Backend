@@ -157,8 +157,10 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             await file.CopyToAsync(stream);
         }
 
-        var appUrl = _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
+        var baseUrl = !string.IsNullOrWhiteSpace(_appSettings.BaseURL)
+            ? _appSettings.BaseURL.TrimEnd('/')
+            : _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
         var folderName = _appSettings.FileStorageSettings.Path.Trim('/');
-        return $"{appUrl}/{folderName}/{fileName}";
+        return $"{baseUrl}/{folderName}/{fileName}";
     }
 }
