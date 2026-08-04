@@ -55,7 +55,7 @@ public class OwnerController(IOwnerService ownerService, IUnitOfWork unitOfWork)
     /// </summary>
     [HttpPost]
     [SwaggerResponse(200, "Owner created successfully.")]
-    [SwaggerResponse(400, "Invalid request or email/ID number already exists.")]
+    [SwaggerResponse(400, "Invalid request or email/phone/ID number/account number already exists.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     public async Task<IActionResult> Create([FromBody] OwnerCreateRequest request, CancellationToken cancellationToken)
     {
@@ -68,7 +68,7 @@ public class OwnerController(IOwnerService ownerService, IUnitOfWork unitOfWork)
     /// </summary>
     [HttpPut("{id}")]
     [SwaggerResponse(200, "Owner updated successfully.")]
-    [SwaggerResponse(400, "Invalid request or email/ID number already exists.")]
+    [SwaggerResponse(400, "Invalid request or email/phone/ID number/account number already exists.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "Owner not found.")]
     public async Task<IActionResult> Update(Guid id, [FromBody] OwnerUpdateRequest request, CancellationToken cancellationToken)

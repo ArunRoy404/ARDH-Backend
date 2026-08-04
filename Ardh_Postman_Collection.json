@@ -3272,7 +3272,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Unique email address of the owner\n    \"city\": \"Bangalore\", // City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Complete street address\n    \"idType\": \"Aadhar\", // Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Bank IFSC code\n    \"status\": \"Active\", // Owner status: Active, Inactive, Pending\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional additional notes\n}"
+              "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required: Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Email address of the owner\n    \"idType\": \"Aadhar\", // Required: Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Required, unique: Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Required: Bank IFSC code\n    \"status\": \"Active\", // Required: Owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Complete street address\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional: Additional notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/owners",
@@ -3284,7 +3284,7 @@
                 "owners"
               ]
             },
-            "description": "Creates a new property owner record."
+            "description": "Creates a new property owner record. Mandatory fields: fullName, phone, email, status, idType, idNumber, bankName, accountNumber, ifscCode. city, address, and notes are optional. Phone, email, idNumber, and accountNumber must each be unique across owners (including soft-deleted records) — a duplicate value returns a 400 error."
           },
           "response": [
             {
@@ -3302,7 +3302,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Unique email address of the owner\n    \"city\": \"Bangalore\", // City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Complete street address\n    \"idType\": \"Aadhar\", // Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Bank IFSC code\n    \"status\": \"Active\", // Owner status: Active, Inactive, Pending\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional additional notes\n}"
+                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required: Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Email address of the owner\n    \"idType\": \"Aadhar\", // Required: Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Required, unique: Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Required: Bank IFSC code\n    \"status\": \"Active\", // Required: Owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Complete street address\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional: Additional notes\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/owners",
@@ -3314,7 +3314,7 @@
                     "owners"
                   ]
                 },
-                "description": "Creates a new property owner record."
+                "description": "Creates a new property owner record. Mandatory fields: fullName, phone, email, status, idType, idNumber, bankName, accountNumber, ifscCode. city, address, and notes are optional. Phone, email, idNumber, and accountNumber must each be unique across owners (including soft-deleted records) — a duplicate value returns a 400 error."
               },
               "status": "OK",
               "code": 200,
@@ -3345,7 +3345,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Updated email address\n    \"city\": \"Bangalore\", // Updated city\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Updated complete street address\n    \"idType\": \"Aadhar\", // Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Updated bank name\n    \"accountNumber\": \"50100234567890\", // Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Updated IFSC code\n    \"status\": \"Active\", // Updated owner status: Active, Inactive, Pending\n    \"notes\": \"Updated owner notes and contact details\" // Optional updated notes\n}"
+              "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required: Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Updated email address\n    \"idType\": \"Aadhar\", // Required: Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Updated bank name\n    \"accountNumber\": \"50100234567890\", // Required, unique: Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Required: Updated IFSC code\n    \"status\": \"Active\", // Required: Updated owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: Updated city (omit to keep existing value)\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Updated complete street address (omit to keep existing value)\n    \"notes\": \"Updated owner notes and contact details\" // Optional: Updated notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/owners/:id",
@@ -3365,7 +3365,7 @@
                 }
               ]
             },
-            "description": "Updates an existing property owner record."
+            "description": "Updates an existing property owner record. Mandatory fields: fullName, phone, email, status, idType, idNumber, bankName, accountNumber, ifscCode. city, address, and notes are optional and, if omitted, retain their current stored value. Phone, email, idNumber, and accountNumber must each remain unique across owners (excluding this record) — a duplicate value returns a 400 error."
           },
           "response": [
             {
@@ -3383,7 +3383,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Updated email address\n    \"city\": \"Bangalore\", // Updated city\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Updated complete street address\n    \"idType\": \"Aadhar\", // Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Updated bank name\n    \"accountNumber\": \"50100234567890\", // Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Updated IFSC code\n    \"status\": \"Active\", // Updated owner status: Active, Inactive, Pending\n    \"notes\": \"Updated owner notes and contact details\" // Optional updated notes\n}"
+                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required: Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Updated email address\n    \"idType\": \"Aadhar\", // Required: Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Updated bank name\n    \"accountNumber\": \"50100234567890\", // Required, unique: Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Required: Updated IFSC code\n    \"status\": \"Active\", // Required: Updated owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: Updated city (omit to keep existing value)\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Updated complete street address (omit to keep existing value)\n    \"notes\": \"Updated owner notes and contact details\" // Optional: Updated notes\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/owners/:id",
@@ -3403,7 +3403,7 @@
                     }
                   ]
                 },
-                "description": "Updates an existing property owner record."
+                "description": "Updates an existing property owner record. Mandatory fields: fullName, phone, email, status, idType, idNumber, bankName, accountNumber, ifscCode. city, address, and notes are optional and, if omitted, retain their current stored value. Phone, email, idNumber, and accountNumber must each remain unique across owners (excluding this record) — a duplicate value returns a 400 error."
               },
               "status": "OK",
               "code": 200,

@@ -21,12 +21,12 @@ public class OwnerUpdateRequestValidation : AbstractValidator<OwnerUpdateRequest
             .MaximumLength(255).WithMessage("Email address must not exceed 255 characters.");
 
         RuleFor(x => x.City)
-            .NotEmpty().WithMessage("City is required.")
-            .MaximumLength(100).WithMessage("City must not exceed 100 characters.");
+            .MaximumLength(100).WithMessage("City must not exceed 100 characters.")
+            .When(x => x.City != null);
 
         RuleFor(x => x.Address)
-            .NotEmpty().WithMessage("Address is required.")
-            .MaximumLength(500).WithMessage("Address must not exceed 500 characters.");
+            .MaximumLength(500).WithMessage("Address must not exceed 500 characters.")
+            .When(x => x.Address != null);
 
         RuleFor(x => x.IdType)
             .IsInEnum().WithMessage("A valid ID type is required.");
