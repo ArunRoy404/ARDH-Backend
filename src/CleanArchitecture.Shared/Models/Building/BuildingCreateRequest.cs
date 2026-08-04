@@ -8,8 +8,7 @@ public class BuildingCreateRequest
     [Required]
     public string BuildingName { get; set; } = string.Empty;
 
-    [Required]
-    public string Address { get; set; } = string.Empty;
+    public string? Address { get; set; }
 
     [Required]
     public string City { get; set; } = string.Empty;
@@ -20,21 +19,15 @@ public class BuildingCreateRequest
     [Required]
     public string Country { get; set; } = string.Empty;
 
-    [Required]
-    public string GoogleMapLink { get; set; } = string.Empty;
+    public string? GoogleMapLink { get; set; }
 
-    [Required]
-    public int TotalFloors { get; set; }
+    public int? TotalFloors { get; set; }
 
-    [Required]
-    public string ParkingDetails { get; set; } = string.Empty;
+    public string? ParkingDetails { get; set; }
 
-    [Required]
-    public BuildingStatus Status { get; set; } = BuildingStatus.active;
+    public BuildingStatus? Status { get; set; }
 
-    [Required]
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
 
-    [Required]
-    public string ImageUrl { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
 }

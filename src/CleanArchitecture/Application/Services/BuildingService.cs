@@ -112,16 +112,16 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         {
             Id = Guid.NewGuid(),
             BuildingName = request.BuildingName,
-            Address = request.Address,
+            Address = request.Address ?? string.Empty,
             City = request.City,
             State = request.State,
             Country = request.Country,
-            GoogleMapLink = request.GoogleMapLink,
-            TotalFloors = request.TotalFloors,
-            ParkingDetails = request.ParkingDetails,
-            Status = request.Status,
-            Description = request.Description,
-            ImageUrl = request.ImageUrl,
+            GoogleMapLink = request.GoogleMapLink ?? string.Empty,
+            TotalFloors = request.TotalFloors ?? 0,
+            ParkingDetails = request.ParkingDetails ?? string.Empty,
+            Status = request.Status ?? BuildingStatus.active,
+            Description = request.Description ?? string.Empty,
+            ImageUrl = request.ImageUrl ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
@@ -148,16 +148,18 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         }
 
         building.BuildingName = request.BuildingName;
-        building.Address = request.Address;
         building.City = request.City;
         building.State = request.State;
         building.Country = request.Country;
-        building.GoogleMapLink = request.GoogleMapLink;
-        building.TotalFloors = request.TotalFloors;
-        building.ParkingDetails = request.ParkingDetails;
-        building.Status = request.Status;
-        building.Description = request.Description;
-        building.ImageUrl = request.ImageUrl;
+
+        if (request.Address != null) building.Address = request.Address;
+        if (request.GoogleMapLink != null) building.GoogleMapLink = request.GoogleMapLink;
+        if (request.TotalFloors.HasValue) building.TotalFloors = request.TotalFloors.Value;
+        if (request.ParkingDetails != null) building.ParkingDetails = request.ParkingDetails;
+        if (request.Status.HasValue) building.Status = request.Status.Value;
+        if (request.Description != null) building.Description = request.Description;
+        if (request.ImageUrl != null) building.ImageUrl = request.ImageUrl;
+
         building.UpdatedAt = DateTime.UtcNow;
         building.UpdatedBy = _currentUser.GetCurrentUserId();
  

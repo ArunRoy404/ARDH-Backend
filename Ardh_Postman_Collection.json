@@ -1863,7 +1863,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 24, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard\", // Optional: Street address of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL\n    \"totalFloors\": 24, // Optional: Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Optional: Description of parking facilities\n    \"status\": \"active\", // Optional: Building status: active, inactive (defaults to active if omitted)\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Optional: Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/buildings",
@@ -1875,7 +1875,7 @@
                 "buildings"
               ]
             },
-            "description": "Creates a new building profile. Accessible by authenticated users. All fields are mandatory."
+            "description": "Creates a new building profile. Accessible by authenticated users. Only buildingName, city, state, and country are mandatory; all other fields are optional."
           },
           "response": [
             {
@@ -1893,7 +1893,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 24, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard\", // Optional: Street address of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL\n    \"totalFloors\": 24, // Optional: Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Optional: Description of parking facilities\n    \"status\": \"active\", // Optional: Building status: active, inactive (defaults to active if omitted)\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Optional: Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/buildings",
@@ -1905,7 +1905,7 @@
                     "buildings"
                   ]
                 },
-                "description": "Creates a new building profile. Accessible by authenticated users. All fields are mandatory."
+                "description": "Creates a new building profile. Accessible by authenticated users. Only buildingName, city, state, and country are mandatory; all other fields are optional."
               },
               "status": "OK",
               "code": 200,
@@ -1936,7 +1936,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 25, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Updated description for the luxury residence building.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Optional: Street address of the building (omit to keep existing value)\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL (omit to keep existing value)\n    \"totalFloors\": 25, // Optional: Total number of floors in the building (omit to keep existing value)\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Optional: Description of parking facilities (omit to keep existing value)\n    \"status\": \"active\", // Optional: Building status: active, inactive (omit to keep existing value)\n    \"description\": \"Updated description for the luxury residence building.\", // Optional: Detailed overview of building (omit to keep existing value)\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image (omit to keep existing value)\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/buildings/:id",
@@ -1956,7 +1956,7 @@
                 }
               ]
             },
-            "description": "Updates details for an existing building record."
+            "description": "Updates details for an existing building record. Only buildingName, city, state, and country are mandatory; other fields are optional and, if omitted, retain their current stored value."
           },
           "response": [
             {
@@ -1974,7 +1974,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Unique name of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Street address of the building\n    \"city\": \"New York\", // City where the building is located\n    \"state\": \"NY\", // State/Province where the building is located\n    \"country\": \"USA\", // Country of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Map pin URL\n    \"totalFloors\": 25, // Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Description of parking facilities\n    \"status\": \"active\", // Building status: active, inactive\n    \"description\": \"Updated description for the luxury residence building.\", // Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // URL to the building's exterior image\n}"
+                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Optional: Street address of the building (omit to keep existing value)\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL (omit to keep existing value)\n    \"totalFloors\": 25, // Optional: Total number of floors in the building (omit to keep existing value)\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Optional: Description of parking facilities (omit to keep existing value)\n    \"status\": \"active\", // Optional: Building status: active, inactive (omit to keep existing value)\n    \"description\": \"Updated description for the luxury residence building.\", // Optional: Detailed overview of building (omit to keep existing value)\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image (omit to keep existing value)\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/buildings/:id",
@@ -1994,7 +1994,7 @@
                     }
                   ]
                 },
-                "description": "Updates details for an existing building record."
+                "description": "Updates details for an existing building record. Only buildingName, city, state, and country are mandatory; other fields are optional and, if omitted, retain their current stored value."
               },
               "status": "OK",
               "code": 200,
