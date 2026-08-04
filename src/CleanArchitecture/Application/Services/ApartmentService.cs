@@ -108,6 +108,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
                 ExpectedRent = x.ExpectedRent,
                 MaintenanceCharge = x.MaintenanceCharge,
                 WaterCharge = x.WaterCharge,
+                Notes = x.Notes,
                 CurrentTenantId = x.CurrentTenantId,
                 CurrentTenantName = x.CurrentTenantId.HasValue && tenantMap.TryGetValue(x.CurrentTenantId.Value, out var tn) ? tn : null,
                 CreatedAt = x.CreatedAt,
@@ -189,6 +190,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             ExpectedRent = apartment.ExpectedRent,
             MaintenanceCharge = apartment.MaintenanceCharge,
             WaterCharge = apartment.WaterCharge,
+            Notes = apartment.Notes,
             CurrentTenantId = apartment.CurrentTenantId,
             CurrentTenantName = currentTenant?.FullName,
             CreatedAt = apartment.CreatedAt,
@@ -238,6 +240,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             ExpectedRent = request.ExpectedRent,
             MaintenanceCharge = request.MaintenanceCharge,
             WaterCharge = request.WaterCharge,
+            Notes = request.Notes,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
@@ -290,6 +293,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         apartment.ExpectedRent = request.ExpectedRent;
         apartment.MaintenanceCharge = request.MaintenanceCharge;
         apartment.WaterCharge = request.WaterCharge;
+        apartment.Notes = request.Notes;
 
         if (request.AreaSqft.HasValue) apartment.AreaSqft = request.AreaSqft.Value;
         if (request.Bedrooms.HasValue) apartment.Bedrooms = request.Bedrooms.Value;

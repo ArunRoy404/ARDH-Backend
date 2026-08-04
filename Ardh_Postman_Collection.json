@@ -1863,7 +1863,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"address\": \"123 Skyline Boulevard\",\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n    \"totalFloors\": 24,\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n    \"status\": \"active\",\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n}"
+              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard\", // Optional: Street address of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL\n    \"totalFloors\": 24, // Optional: Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Optional: Description of parking facilities\n    \"status\": \"active\", // Optional: Building status: active, inactive (defaults to active if omitted)\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Optional: Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/buildings",
@@ -1893,7 +1893,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"address\": \"123 Skyline Boulevard\",\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n    \"totalFloors\": 24,\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n    \"status\": \"active\",\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n}"
+                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard\", // Optional: Street address of the building\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL\n    \"totalFloors\": 24, // Optional: Total number of floors in the building\n    \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\", // Optional: Description of parking facilities\n    \"status\": \"active\", // Optional: Building status: active, inactive (defaults to active if omitted)\n    \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\", // Optional: Detailed overview of building\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/buildings",
@@ -1936,7 +1936,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"address\": \"123 Skyline Boulevard Suite A\",\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n    \"totalFloors\": 25,\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\",\n    \"status\": \"active\",\n    \"description\": \"Updated description for the luxury residence building.\",\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n}"
+              "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Optional: Street address of the building (omit to keep existing value)\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL (omit to keep existing value)\n    \"totalFloors\": 25, // Optional: Total number of floors in the building (omit to keep existing value)\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Optional: Description of parking facilities (omit to keep existing value)\n    \"status\": \"active\", // Optional: Building status: active, inactive (omit to keep existing value)\n    \"description\": \"Updated description for the luxury residence building.\", // Optional: Detailed overview of building (omit to keep existing value)\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image (omit to keep existing value)\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/buildings/:id",
@@ -1974,7 +1974,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"address\": \"123 Skyline Boulevard Suite A\",\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n    \"totalFloors\": 25,\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\",\n    \"status\": \"active\",\n    \"description\": \"Updated description for the luxury residence building.\",\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\"\n}"
+                  "raw": "{\n    \"buildingName\": \"Grand Plaza Towers Updated\", // Required: Unique name of the building\n    \"city\": \"New York\", // Required: City where the building is located\n    \"state\": \"NY\", // Required: State/Province where the building is located\n    \"country\": \"USA\", // Required: Country of the building\n    \"address\": \"123 Skyline Boulevard Suite A\", // Optional: Street address of the building (omit to keep existing value)\n    \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\", // Optional: Map pin URL (omit to keep existing value)\n    \"totalFloors\": 25, // Optional: Total number of floors in the building (omit to keep existing value)\n    \"parkingDetails\": \"Basement Level 1 & 2, 160 Slots Available\", // Optional: Description of parking facilities (omit to keep existing value)\n    \"status\": \"active\", // Optional: Building status: active, inactive (omit to keep existing value)\n    \"description\": \"Updated description for the luxury residence building.\", // Optional: Detailed overview of building (omit to keep existing value)\n    \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\" // Optional: URL to the building's exterior image (omit to keep existing value)\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/buildings/:id",
@@ -3272,7 +3272,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"fullName\": \"Rajesh Kumar\",\n    \"phone\": \"+91 9876543210\",\n    \"email\": \"rajesh.kumar@example.com\",\n    \"idType\": \"Aadhar\",\n    \"idNumber\": \"1234-5678-9012\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountNumber\": \"50100234567890\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"status\": \"Active\",\n    \"city\": \"Bangalore\",\n    \"address\": \"789 Palm Avenue, Indiranagar\",\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\"\n}"
+              "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required, unique: Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Email address of the owner\n    \"idType\": \"Aadhar\", // Required: Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Required, unique: Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Required: Bank IFSC code\n    \"status\": \"Active\", // Required: Owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Complete street address\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional: Additional notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/owners",
@@ -3302,7 +3302,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\",\n    \"phone\": \"+91 9876543210\",\n    \"email\": \"rajesh.kumar@example.com\",\n    \"idType\": \"Aadhar\",\n    \"idNumber\": \"1234-5678-9012\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountNumber\": \"50100234567890\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"status\": \"Active\",\n    \"city\": \"Bangalore\",\n    \"address\": \"789 Palm Avenue, Indiranagar\",\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\"\n}"
+                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required, unique: Full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Primary contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Email address of the owner\n    \"idType\": \"Aadhar\", // Required: Government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Bank name for payout deposits\n    \"accountNumber\": \"50100234567890\", // Required, unique: Bank account number for payouts\n    \"ifscCode\": \"HDFC0001234\", // Required: Bank IFSC code\n    \"status\": \"Active\", // Required: Owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: City of residence/property\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Complete street address\n    \"notes\": \"Primary owner for Grand Plaza Towers unit 101\" // Optional: Additional notes\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/owners",
@@ -3345,7 +3345,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"fullName\": \"Rajesh Kumar\",\n    \"phone\": \"+91 9876543210\",\n    \"email\": \"rajesh.kumar@example.com\",\n    \"idType\": \"Aadhar\",\n    \"idNumber\": \"1234-5678-9012\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountNumber\": \"50100234567890\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"status\": \"Active\",\n    \"city\": \"Bangalore\",\n    \"address\": \"789 Palm Avenue, Indiranagar\",\n    \"notes\": \"Updated owner notes and contact details\"\n}"
+              "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required, unique: Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Updated email address\n    \"idType\": \"Aadhar\", // Required: Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Updated bank name\n    \"accountNumber\": \"50100234567890\", // Required, unique: Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Required: Updated IFSC code\n    \"status\": \"Active\", // Required: Updated owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: Updated city (omit to keep existing value)\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Updated complete street address (omit to keep existing value)\n    \"notes\": \"Updated owner notes and contact details\" // Optional: Updated notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/owners/:id",
@@ -3383,7 +3383,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\",\n    \"phone\": \"+91 9876543210\",\n    \"email\": \"rajesh.kumar@example.com\",\n    \"idType\": \"Aadhar\",\n    \"idNumber\": \"1234-5678-9012\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountNumber\": \"50100234567890\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"status\": \"Active\",\n    \"city\": \"Bangalore\",\n    \"address\": \"789 Palm Avenue, Indiranagar\",\n    \"notes\": \"Updated owner notes and contact details\"\n}"
+                  "raw": "{\n    \"fullName\": \"Rajesh Kumar\", // Required, unique: Updated full name of the property owner\n    \"phone\": \"+91 9876543210\", // Required, unique: Updated contact phone number\n    \"email\": \"rajesh.kumar@example.com\", // Required, unique: Updated email address\n    \"idType\": \"Aadhar\", // Required: Updated government ID type: Aadhar, PanCard, or Passport (No dynamic fields needed; all types use idNumber)\n    \"idNumber\": \"1234-5678-9012\", // Required, unique: Updated document number matching selected idType (e.g. Aadhar, PAN, or Passport number)\n    \"bankName\": \"HDFC Bank\", // Required: Updated bank name\n    \"accountNumber\": \"50100234567890\", // Required, unique: Updated bank account number\n    \"ifscCode\": \"HDFC0001234\", // Required: Updated IFSC code\n    \"status\": \"Active\", // Required: Updated owner status: Active, Inactive, Pending\n    \"city\": \"Bangalore\", // Optional: Updated city (omit to keep existing value)\n    \"address\": \"789 Palm Avenue, Indiranagar\", // Optional: Updated complete street address (omit to keep existing value)\n    \"notes\": \"Updated owner notes and contact details\" // Optional: Updated notes\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/owners/:id",
@@ -3733,7 +3733,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\",\n    \"ownerId\": \"replace-with-owner-uuid\",\n    \"nestawayId\": \"NA-101\",\n    \"flatNumber\": \"A-101\",\n    \"floor\": 1,\n    \"apartmentType\": \"2BHK\",\n    \"expectedRent\": 25000.00,\n    \"maintenanceCharge\": 2500.00,\n    \"waterCharge\": 500.00,\n    \"areaSqft\": 1250.50,\n    \"bedrooms\": 2,\n    \"bathrooms\": 2,\n    \"hasBalcony\": true,\n    \"parkingSlot\": \"P-101\"\n}"
+              "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Required: Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // Required: External system identifier\n    \"flatNumber\": \"A-101\", // Required, unique within building: Flat/unit number\n    \"floor\": 1, // Required: Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Required: Apartment configuration (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"expectedRent\": 25000.00, // Required: Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Required: Monthly maintenance charges\n    \"waterCharge\": 500.00, // Required: Monthly water charges\n    \"areaSqft\": 1250.50, // Optional: Total carpet area in square feet\n    \"bedrooms\": 2, // Optional: Number of bedrooms\n    \"bathrooms\": 2, // Optional: Number of bathrooms\n    \"hasBalcony\": true, // Optional: Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Optional: Parking space identifier\n    \"notes\": \"Corner unit with additional storage space\" // Optional: Additional notes about the apartment\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/apartments",
@@ -3745,7 +3745,7 @@
                 "apartments"
               ]
             },
-            "description": "Creates a new apartment unit under a specified building and owner. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, and parkingSlot are optional. flatNumber must be unique within the same building (case-insensitive) — a duplicate returns a 400 error."
+            "description": "Creates a new apartment unit under a specified building and owner. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, parkingSlot, and notes are optional. flatNumber must be unique within the same building (case-insensitive) — a duplicate returns a 400 error."
           },
           "response": [
             {
@@ -3763,7 +3763,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\",\n    \"ownerId\": \"replace-with-owner-uuid\",\n    \"nestawayId\": \"NA-101\",\n    \"flatNumber\": \"A-101\",\n    \"floor\": 1,\n    \"apartmentType\": \"2BHK\",\n    \"expectedRent\": 25000.00,\n    \"maintenanceCharge\": 2500.00,\n    \"waterCharge\": 500.00,\n    \"areaSqft\": 1250.50,\n    \"bedrooms\": 2,\n    \"bathrooms\": 2,\n    \"hasBalcony\": true,\n    \"parkingSlot\": \"P-101\"\n}"
+                  "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Foreign key to existing building record\n    \"ownerId\": \"replace-with-owner-uuid\", // Required: Foreign key to existing owner record\n    \"nestawayId\": \"NA-101\", // Required: External system identifier\n    \"flatNumber\": \"A-101\", // Required, unique within building: Flat/unit number\n    \"floor\": 1, // Required: Floor number (0 for Ground Floor)\n    \"apartmentType\": \"2BHK\", // Required: Apartment configuration (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"expectedRent\": 25000.00, // Required: Monthly expected rent amount\n    \"maintenanceCharge\": 2500.00, // Required: Monthly maintenance charges\n    \"waterCharge\": 500.00, // Required: Monthly water charges\n    \"areaSqft\": 1250.50, // Optional: Total carpet area in square feet\n    \"bedrooms\": 2, // Optional: Number of bedrooms\n    \"bathrooms\": 2, // Optional: Number of bathrooms\n    \"hasBalcony\": true, // Optional: Balcony availability flag (true/false)\n    \"parkingSlot\": \"P-101\", // Optional: Parking space identifier\n    \"notes\": \"Corner unit with additional storage space\" // Optional: Additional notes about the apartment\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/apartments",
@@ -3775,7 +3775,7 @@
                     "apartments"
                   ]
                 },
-                "description": "Creates a new apartment unit under a specified building and owner. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, and parkingSlot are optional. flatNumber must be unique within the same building (case-insensitive) — a duplicate returns a 400 error."
+                "description": "Creates a new apartment unit under a specified building and owner. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, parkingSlot, and notes are optional. flatNumber must be unique within the same building (case-insensitive) — a duplicate returns a 400 error."
               },
               "status": "OK",
               "code": 200,
@@ -3806,7 +3806,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\",\n    \"ownerId\": \"replace-with-owner-uuid\",\n    \"nestawayId\": \"NA-101\",\n    \"flatNumber\": \"A-101\",\n    \"floor\": 1,\n    \"apartmentType\": \"2BHK\",\n    \"expectedRent\": 26000.00,\n    \"maintenanceCharge\": 2500.00,\n    \"waterCharge\": 500.00,\n    \"areaSqft\": 1250.50,\n    \"bedrooms\": 2,\n    \"bathrooms\": 2,\n    \"hasBalcony\": true,\n    \"parkingSlot\": \"P-101\"\n}"
+              "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Required: Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Required: Updated external system identifier\n    \"flatNumber\": \"A-101\", // Required, unique within building: Updated flat/unit number\n    \"floor\": 1, // Required: Updated floor number\n    \"apartmentType\": \"2BHK\", // Required: Updated apartment type (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"expectedRent\": 26000.00, // Required: Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Required: Updated maintenance charge\n    \"waterCharge\": 500.00, // Required: Updated water charge\n    \"areaSqft\": 1250.50, // Optional: Updated area in sqft (omit to keep existing value)\n    \"bedrooms\": 2, // Optional: Updated bedroom count (omit to keep existing value)\n    \"bathrooms\": 2, // Optional: Updated bathroom count (omit to keep existing value)\n    \"hasBalcony\": true, // Optional: Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Optional: Updated parking slot (omit to keep existing value)\n    \"notes\": \"Updated notes about the apartment condition\" // Optional: Updated notes about the apartment (omit to keep existing value)\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/apartments/:id",
@@ -3826,7 +3826,7 @@
                 }
               ]
             },
-            "description": "Updates an existing apartment record. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, and parkingSlot are optional and, if omitted, retain their current stored value. flatNumber must remain unique within the same building (case-insensitive, excluding this record) — a duplicate returns a 400 error."
+            "description": "Updates an existing apartment record. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, and parkingSlot are optional and, if omitted, retain their current stored value; notes is optional and fully replaced on each update (omit or send null to clear it). flatNumber must remain unique within the same building (case-insensitive, excluding this record) — a duplicate returns a 400 error."
           },
           "response": [
             {
@@ -3844,7 +3844,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\",\n    \"ownerId\": \"replace-with-owner-uuid\",\n    \"nestawayId\": \"NA-101\",\n    \"flatNumber\": \"A-101\",\n    \"floor\": 1,\n    \"apartmentType\": \"2BHK\",\n    \"expectedRent\": 26000.00,\n    \"maintenanceCharge\": 2500.00,\n    \"waterCharge\": 500.00,\n    \"areaSqft\": 1250.50,\n    \"bedrooms\": 2,\n    \"bathrooms\": 2,\n    \"hasBalcony\": true,\n    \"parkingSlot\": \"P-101\"\n}"
+                  "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Foreign key to building\n    \"ownerId\": \"replace-with-owner-uuid\", // Required: Foreign key to owner\n    \"nestawayId\": \"NA-101\", // Required: Updated external system identifier\n    \"flatNumber\": \"A-101\", // Required, unique within building: Updated flat/unit number\n    \"floor\": 1, // Required: Updated floor number\n    \"apartmentType\": \"2BHK\", // Required: Updated apartment type (arbitrary string value, e.g., 2BHK, Studio, Penthouse)\n    \"expectedRent\": 26000.00, // Required: Updated expected rent\n    \"maintenanceCharge\": 2500.00, // Required: Updated maintenance charge\n    \"waterCharge\": 500.00, // Required: Updated water charge\n    \"areaSqft\": 1250.50, // Optional: Updated area in sqft (omit to keep existing value)\n    \"bedrooms\": 2, // Optional: Updated bedroom count (omit to keep existing value)\n    \"bathrooms\": 2, // Optional: Updated bathroom count (omit to keep existing value)\n    \"hasBalcony\": true, // Optional: Updated balcony availability\n    \"parkingSlot\": \"P-101\", // Optional: Updated parking slot (omit to keep existing value)\n    \"notes\": \"Updated notes about the apartment condition\" // Optional: Updated notes about the apartment (omit to keep existing value)\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/apartments/:id",
@@ -3864,7 +3864,7 @@
                     }
                   ]
                 },
-                "description": "Updates an existing apartment record. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, and parkingSlot are optional and, if omitted, retain their current stored value. flatNumber must remain unique within the same building (case-insensitive, excluding this record) — a duplicate returns a 400 error."
+                "description": "Updates an existing apartment record. Mandatory fields: buildingId, ownerId, nestawayId, flatNumber, floor, apartmentType, expectedRent, maintenanceCharge, waterCharge. areaSqft, bedrooms, bathrooms, hasBalcony, and parkingSlot are optional and, if omitted, retain their current stored value; notes is optional and fully replaced on each update (omit or send null to clear it). flatNumber must remain unique within the same building (case-insensitive, excluding this record) — a duplicate returns a 400 error."
               },
               "status": "OK",
               "code": 200,

@@ -18,4 +18,5 @@ public class ApartmentUpdateRequest
     public decimal ExpectedRent { get; set; }
     public decimal MaintenanceCharge { get; set; }
     public decimal WaterCharge { get; set; }
+    public string? Notes { get; set; }
 }
