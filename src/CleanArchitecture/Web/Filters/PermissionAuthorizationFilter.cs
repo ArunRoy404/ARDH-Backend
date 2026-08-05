@@ -88,12 +88,19 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 }
             }
             else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
-                     path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase) ||
                      path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasFinancePermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Finance permission required for this route.");
+                    return;
+                }
+            }
+            else if (path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!hasFinancePermission && !hasOperationsPermission)
+                {
+                    context.Result = CreateForbiddenResult("Access denied. Finance or Operations permission required for this route.");
                     return;
                 }
             }
