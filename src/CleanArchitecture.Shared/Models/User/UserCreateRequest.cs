@@ -31,8 +31,7 @@ public class UserCreateRequest
     [Required]
     public UserRole Role { get; set; } = UserRole.admin;
 
-    [Required]
-    public string Permissions { get; set; } = string.Empty;
+    public string? Permissions { get; set; }
 
     [Required]
     [JsonPropertyName("avatarURL")]
