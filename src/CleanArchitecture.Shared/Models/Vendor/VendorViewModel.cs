@@ -10,7 +10,7 @@ public class VendorViewModel
     public string CompanyName { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public VendorType VendorType { get; set; }
+    public string VendorType { get; set; } = string.Empty;
     public string GstNumber { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public VendorStatus Status { get; set; }

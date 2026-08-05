@@ -38,8 +38,7 @@ public class VendorConfiguration : IEntityTypeConfiguration<Vendor>
 
         builder.Property(x => x.VendorType)
             .HasColumnName("vendor_type")
-            .HasConversion<string>()
-            .HasMaxLength(50)
+            .HasMaxLength(100)
             .IsRequired();
 
         builder.Property(x => x.GstNumber)

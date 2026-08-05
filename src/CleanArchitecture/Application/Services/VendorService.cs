@@ -24,7 +24,7 @@ public class VendorService(
         int page,
         int pageSize,
         string? search,
-        VendorType? vendorType,
+        string? vendorType,
         VendorStatus? status,
         CancellationToken cancellationToken)
     {
@@ -47,9 +47,10 @@ public class VendorService(
                 x.GstNumber.ToLower().Contains(searchLower));
         }
 
-        if (vendorType.HasValue)
+        if (!string.IsNullOrWhiteSpace(vendorType))
         {
-            query = query.Where(x => x.VendorType == vendorType.Value);
+            var vendorTypeTrimmed = vendorType.Trim();
+            query = query.Where(x => x.VendorType.Equals(vendorTypeTrimmed, StringComparison.OrdinalIgnoreCase));
         }
 
         if (status.HasValue)
@@ -85,12 +86,15 @@ public class VendorService(
 
     public async Task Create(VendorCreateRequest request, CancellationToken cancellationToken)
     {
-        var existingEmail = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
-            x.Email.ToLower() == request.Email.Trim().ToLower());
-
-        if (existingEmail)
+        if (!string.IsNullOrWhiteSpace(request.Email))
         {
-            throw VendorException.BadRequestException($"A vendor with email '{request.Email}' already exists.");
+            var existingEmail = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
+                x.Email.ToLower() == request.Email.Trim().ToLower());
+
+            if (existingEmail)
+            {
+                throw VendorException.BadRequestException($"A vendor with email '{request.Email}' already exists.");
+            }
         }
 
         var existingPhone = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
@@ -118,10 +122,10 @@ public class VendorService(
             Name = request.Name.Trim(),
             CompanyName = request.CompanyName.Trim(),
             Phone = request.Phone.Trim(),
-            Email = request.Email.Trim(),
-            VendorType = request.VendorType,
-            GstNumber = request.GstNumber.Trim(),
-            Address = request.Address.Trim(),
+            Email = request.Email?.Trim() ?? string.Empty,
+            VendorType = request.VendorType.Trim(),
+            GstNumber = request.GstNumber?.Trim() ?? string.Empty,
+            Address = request.Address?.Trim() ?? string.Empty,
             Status = request.Status,
             Notes = request.Notes?.Trim() ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
@@ -139,7 +143,7 @@ public class VendorService(
         var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw VendorException.NotFoundException($"Vendor with ID '{id}' was not found.");
 
-        if (!string.Equals(vendor.Email, request.Email, StringComparison.OrdinalIgnoreCase))
+        if (!string.IsNullOrWhiteSpace(request.Email) && !string.Equals(vendor.Email, request.Email, StringComparison.OrdinalIgnoreCase))
         {
             var existingEmail = await _unitOfWork.VendorRepository.AnyIncludingDeletedAsync(x =>
                 x.Id != id && x.Email.ToLower() == request.Email.Trim().ToLower());
@@ -175,10 +179,10 @@ public class VendorService(
         vendor.Name = request.Name.Trim();
         vendor.CompanyName = request.CompanyName.Trim();
         vendor.Phone = request.Phone.Trim();
-        vendor.Email = request.Email.Trim();
-        vendor.VendorType = request.VendorType;
-        vendor.GstNumber = request.GstNumber.Trim();
-        vendor.Address = request.Address.Trim();
+        vendor.Email = request.Email?.Trim() ?? string.Empty;
+        vendor.VendorType = request.VendorType.Trim();
+        vendor.GstNumber = request.GstNumber?.Trim() ?? string.Empty;
+        vendor.Address = request.Address?.Trim() ?? string.Empty;
         vendor.Status = request.Status;
         vendor.Notes = request.Notes?.Trim() ?? string.Empty;
         vendor.UpdatedAt = DateTime.UtcNow;

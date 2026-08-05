@@ -13,7 +13,7 @@ public interface IVendorService
         int page,
         int pageSize,
         string? search,
-        VendorType? vendorType,
+        string? vendorType,
         VendorStatus? status,
         CancellationToken cancellationToken);
 

@@ -20,19 +20,15 @@ public class VendorCreateRequestValidation : AbstractValidator<VendorCreateReque
             .MaximumLength(50).WithMessage("Phone number must not exceed 50 characters.");
 
         RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email address is required.")
-            .EmailAddress().WithMessage("A valid email address is required.")
+            .EmailAddress().When(x => !string.IsNullOrWhiteSpace(x.Email)).WithMessage("A valid email address is required.")
             .MaximumLength(255).WithMessage("Email address must not exceed 255 characters.");
 
         RuleFor(x => x.VendorType)
-            .IsInEnum().WithMessage("A valid vendor type is required.");
+            .NotEmpty().WithMessage("Vendor type is required.")
+            .MaximumLength(100).WithMessage("Vendor type must not exceed 100 characters.");
 
         RuleFor(x => x.GstNumber)
-            .NotEmpty().WithMessage("GST number is required.")
             .MaximumLength(50).WithMessage("GST number must not exceed 50 characters.");
-
-        RuleFor(x => x.Address)
-            .NotEmpty().WithMessage("Address is required.");
 
         RuleFor(x => x.Status)
             .IsInEnum().WithMessage("A valid vendor status is required.");
