@@ -57,7 +57,6 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             // Route Permission Check (Applies to ALL HTTP methods including GET)
             if (path.StartsWith("/api/users", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/settings", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/deleted-history", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasAdminPermission)
@@ -89,7 +88,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 }
             }
             else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
-                     path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase))
+                     path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase) ||
+                     path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasFinancePermission)
                 {
