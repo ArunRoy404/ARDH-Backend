@@ -395,14 +395,6 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                     var exps = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x => x.VendorId == vendor.Id);
                     _unitOfWork.ExpenseRecordRepository.DeleteRange(exps);
 
-                    var eqs = await _unitOfWork.EquipmentRepository.GetAllAsync(x => x.AmcVendorId == vendor.Id);
-                    foreach (var eq in eqs)
-                    {
-                        eq.AmcVendorId = Guid.Empty;
-                        eq.UpdatedAt = DateTime.UtcNow;
-                        _unitOfWork.EquipmentRepository.Update(eq);
-                    }
-
                     _unitOfWork.VendorRepository.Delete(vendor);
                 }
                 break;

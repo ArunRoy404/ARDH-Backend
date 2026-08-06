@@ -8,19 +8,15 @@ public class Equipment
     public Guid Id { get; set; }
     public Guid BuildingId { get; set; }
     public string Name { get; set; } = null!;
-    public EquipmentType Type { get; set; }
+    public string Type { get; set; } = null!;
     public string Brand { get; set; } = null!;
-    public string Model { get; set; } = null!;
-    public string SerialNumber { get; set; } = null!;
+    public string? Model { get; set; }
+    public string? SerialNumber { get; set; }
     public DateTime InstallDate { get; set; }
-    public DateTime WarrantyExpiryDate { get; set; }
-    public Guid AmcVendorId { get; set; }
-    public DateTime AmcExpiryDate { get; set; }
-    public DateTime LastServiceDate { get; set; }
-    public DateTime NextServiceDate { get; set; }
+    public DateTime? WarrantyExpiryDate { get; set; }
     public EquipmentStatus Status { get; set; } = EquipmentStatus.Operational;
-    public string Notes { get; set; } = null!;
-    public string AttachmentUrl { get; set; } = null!;
+    public string? Notes { get; set; }
+    public string? AttachmentUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public Guid? CreatedBy { get; set; }
@@ -28,5 +24,4 @@ public class Equipment
     public bool IsDeleted { get; set; } = false;
 
     public virtual Building? Building { get; set; }
-    public virtual Vendor? AmcVendor { get; set; }
 }

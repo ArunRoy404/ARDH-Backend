@@ -30,12 +30,11 @@ public class EquipmentController(IEquipmentService equipmentService, IUnitOfWork
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
-        [FromQuery] EquipmentType? type = null,
+        [FromQuery] string? type = null,
         [FromQuery] EquipmentStatus? status = null,
-        [FromQuery] Guid? amcVendorId = null,
         CancellationToken cancellationToken = default)
     {
-        var equipment = await _equipmentService.GetPaginated(page, pageSize, search, buildingId, type, status, amcVendorId, cancellationToken);
+        var equipment = await _equipmentService.GetPaginated(page, pageSize, search, buildingId, type, status, cancellationToken);
         return Ok(equipment);
     }
 

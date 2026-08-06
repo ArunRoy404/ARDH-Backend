@@ -14,9 +14,8 @@ public interface IEquipmentService
         int pageSize,
         string? search,
         Guid? buildingId,
-        EquipmentType? type,
+        string? type,
         EquipmentStatus? status,
-        Guid? amcVendorId,
         CancellationToken cancellationToken);
 
     Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken);

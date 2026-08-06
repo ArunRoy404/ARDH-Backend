@@ -27,7 +27,6 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
 
         builder.Property(x => x.Type)
             .HasColumnName("type")
-            .HasConversion<string>()
             .HasMaxLength(100)
             .IsRequired();
 
@@ -38,37 +37,18 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
 
         builder.Property(x => x.Model)
             .HasColumnName("model")
-            .HasMaxLength(255)
-            .IsRequired();
+            .HasMaxLength(255);
 
         builder.Property(x => x.SerialNumber)
             .HasColumnName("serial_number")
-            .HasMaxLength(255)
-            .IsRequired();
+            .HasMaxLength(255);
 
         builder.Property(x => x.InstallDate)
             .HasColumnName("install_date")
             .IsRequired();
 
         builder.Property(x => x.WarrantyExpiryDate)
-            .HasColumnName("warranty_expiry_date")
-            .IsRequired();
-
-        builder.Property(x => x.AmcVendorId)
-            .HasColumnName("amc_vendor_id")
-            .IsRequired();
-
-        builder.Property(x => x.AmcExpiryDate)
-            .HasColumnName("amc_expiry_date")
-            .IsRequired();
-
-        builder.Property(x => x.LastServiceDate)
-            .HasColumnName("last_service_date")
-            .IsRequired();
-
-        builder.Property(x => x.NextServiceDate)
-            .HasColumnName("next_service_date")
-            .IsRequired();
+            .HasColumnName("warranty_expiry_date");
 
         builder.Property(x => x.Status)
             .HasColumnName("status")
@@ -78,13 +58,11 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
 
         builder.Property(x => x.Notes)
             .HasColumnName("notes")
-            .HasColumnType("nvarchar(max)")
-            .IsRequired();
+            .HasColumnType("nvarchar(max)");
 
         builder.Property(x => x.AttachmentUrl)
             .HasColumnName("attachment_url")
-            .HasMaxLength(1000)
-            .IsRequired();
+            .HasMaxLength(1000);
 
         builder.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
@@ -103,11 +81,6 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
         builder.HasOne(x => x.Building)
             .WithMany()
             .HasForeignKey(x => x.BuildingId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(x => x.AmcVendor)
-            .WithMany()
-            .HasForeignKey(x => x.AmcVendorId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
