@@ -29,6 +29,9 @@ public class AmcContractConfiguration : IEntityTypeConfiguration<AmcContract>
             .HasMaxLength(100)
             .IsRequired();
 
+        builder.HasIndex(x => x.ContractNumber)
+            .IsUnique();
+
         builder.Property(x => x.ContractTitle)
             .HasColumnName("contract_title")
             .HasMaxLength(255)

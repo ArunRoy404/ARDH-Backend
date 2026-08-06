@@ -7,6 +7,10 @@ public class AmcContractCreateRequestValidation : AbstractValidator<AmcContractC
 {
     public AmcContractCreateRequestValidation()
     {
+        RuleFor(x => x.AmcCode)
+            .NotEmpty().WithMessage("AMC code is required.")
+            .MaximumLength(50).WithMessage("AMC code must not exceed 50 characters.");
+
         RuleFor(x => x.ContractNumber)
             .NotEmpty().WithMessage("Contract number is required.")
             .MaximumLength(100).WithMessage("Contract number must not exceed 100 characters.");

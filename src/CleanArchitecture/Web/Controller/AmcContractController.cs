@@ -67,9 +67,14 @@ public class AmcContractController(IAmcContractService amcContractService, IUnit
     /// <summary>
     /// [AMC-04] Creates a new AMC contract.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: AMC code, contract number, contract title, contract type, equipment ID, vendor ID,
+    /// start date, end date, contract amount, payment terms, and service frequency. All other fields are optional.
+    /// AMC code and contract number must each be unique across all contracts (including soft-deleted ones).
+    /// </remarks>
     [HttpPost]
     [SwaggerResponse(200, "AMC contract created successfully.")]
-    [SwaggerResponse(400, "Invalid request payload.")]
+    [SwaggerResponse(400, "Invalid request payload, or a duplicate AMC code / contract number.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     public async Task<IActionResult> Create([FromBody] AmcContractCreateRequest request, CancellationToken cancellationToken)
     {
@@ -80,9 +85,14 @@ public class AmcContractController(IAmcContractService amcContractService, IUnit
     /// <summary>
     /// [AMC-05] Updates details of an existing AMC contract.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: AMC code, contract number, contract title, contract type, equipment ID, vendor ID,
+    /// start date, end date, contract amount, payment terms, and service frequency. All other fields are optional.
+    /// AMC code and contract number must each remain unique across all other contracts (including soft-deleted ones).
+    /// </remarks>
     [HttpPut("{id:guid}")]
     [SwaggerResponse(200, "AMC contract updated successfully.")]
-    [SwaggerResponse(400, "Invalid request payload.")]
+    [SwaggerResponse(400, "Invalid request payload, or a duplicate AMC code / contract number.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(404, "AMC contract not found.")]
     public async Task<IActionResult> Update(Guid id, [FromBody] AmcContractUpdateRequest request, CancellationToken cancellationToken)
