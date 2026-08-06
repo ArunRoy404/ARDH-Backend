@@ -105,6 +105,8 @@ public class ApiErrorDetail
                 return "You need to choose a valid vendor.";
             if (message.Contains("equipmentId", StringComparison.OrdinalIgnoreCase))
                 return "You need to choose a valid equipment.";
+            if (message.Contains("status", StringComparison.OrdinalIgnoreCase))
+                return "Please provide a valid status value.";
             if (message.Contains("flatNumber", StringComparison.OrdinalIgnoreCase))
                 return "Please enter a valid flat number.";
             if (message.Contains("floor", StringComparison.OrdinalIgnoreCase))

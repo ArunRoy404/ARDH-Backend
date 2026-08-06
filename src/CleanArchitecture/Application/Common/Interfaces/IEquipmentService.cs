@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
 
@@ -15,7 +14,7 @@ public interface IEquipmentService
         string? search,
         Guid? buildingId,
         string? type,
-        EquipmentStatus? status,
+        string? status,
         CancellationToken cancellationToken);
 
     Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken);

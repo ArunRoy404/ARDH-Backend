@@ -1,5 +1,4 @@
 using System;
-using CleanArchitecture.Shared.Domain.Enums;
 
 namespace CleanArchitecture.Shared.Models.Equipment;
 
@@ -13,7 +12,7 @@ public class EquipmentUpdateRequest
     public string? SerialNumber { get; set; }
     public DateTime InstallDate { get; set; }
     public DateTime? WarrantyExpiryDate { get; set; }
-    public EquipmentStatus Status { get; set; }
+    public string Status { get; set; } = string.Empty;
     public string? Notes { get; set; }
     public string? AttachmentUrl { get; set; }
 }

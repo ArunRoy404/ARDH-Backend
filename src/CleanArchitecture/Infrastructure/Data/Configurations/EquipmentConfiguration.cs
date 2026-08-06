@@ -52,7 +52,6 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
 
         builder.Property(x => x.Status)
             .HasColumnName("status")
-            .HasConversion<string>()
             .HasMaxLength(50)
             .IsRequired();
 

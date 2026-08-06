@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +30,7 @@ public class EquipmentController(IEquipmentService equipmentService, IUnitOfWork
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] string? type = null,
-        [FromQuery] EquipmentStatus? status = null,
+        [FromQuery] string? status = null,
         CancellationToken cancellationToken = default)
     {
         var equipment = await _equipmentService.GetPaginated(page, pageSize, search, buildingId, type, status, cancellationToken);

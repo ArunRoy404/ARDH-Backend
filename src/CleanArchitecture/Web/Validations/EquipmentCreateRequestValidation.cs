@@ -32,6 +32,7 @@ public class EquipmentCreateRequestValidation : AbstractValidator<EquipmentCreat
             .NotEmpty().WithMessage("Install date is required.");
 
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid equipment status is required.");
+            .NotEmpty().WithMessage("Equipment status is required.")
+            .MaximumLength(50).WithMessage("Equipment status must not exceed 50 characters.");
     }
 }

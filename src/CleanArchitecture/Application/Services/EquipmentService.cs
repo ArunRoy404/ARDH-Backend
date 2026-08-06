@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
 using CleanArchitecture.Shared.Models.Building;
@@ -27,7 +26,7 @@ public class EquipmentService(
         string? search,
         Guid? buildingId,
         string? type,
-        EquipmentStatus? status,
+        string? status,
         CancellationToken cancellationToken)
     {
         page = Math.Max(1, page);
@@ -53,9 +52,10 @@ public class EquipmentService(
             query = query.Where(x => x.Type.ToLower() == typeLower);
         }
 
-        if (status.HasValue)
+        if (!string.IsNullOrWhiteSpace(status))
         {
-            query = query.Where(x => x.Status == status.Value);
+            var statusLower = status.Trim().ToLower();
+            query = query.Where(x => x.Status.ToLower() == statusLower);
         }
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -170,7 +170,7 @@ public class EquipmentService(
             SerialNumber = string.IsNullOrWhiteSpace(request.SerialNumber) ? null : request.SerialNumber.Trim(),
             InstallDate = request.InstallDate,
             WarrantyExpiryDate = request.WarrantyExpiryDate,
-            Status = request.Status,
+            Status = request.Status.Trim(),
             Notes = string.IsNullOrWhiteSpace(request.Notes) ? null : request.Notes.Trim(),
             AttachmentUrl = string.IsNullOrWhiteSpace(request.AttachmentUrl) ? null : request.AttachmentUrl.Trim(),
             CreatedAt = DateTime.UtcNow,
@@ -203,7 +203,7 @@ public class EquipmentService(
         equipment.SerialNumber = string.IsNullOrWhiteSpace(request.SerialNumber) ? null : request.SerialNumber.Trim();
         equipment.InstallDate = request.InstallDate;
         equipment.WarrantyExpiryDate = request.WarrantyExpiryDate;
-        equipment.Status = request.Status;
+        equipment.Status = request.Status.Trim();
         equipment.Notes = string.IsNullOrWhiteSpace(request.Notes) ? null : request.Notes.Trim();
         equipment.AttachmentUrl = string.IsNullOrWhiteSpace(request.AttachmentUrl) ? null : request.AttachmentUrl.Trim();
         equipment.UpdatedAt = DateTime.UtcNow;
@@ -219,7 +219,7 @@ public class EquipmentService(
         var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
-        equipment.Status = request.Status;
+        equipment.Status = request.Status.Trim();
         equipment.UpdatedAt = DateTime.UtcNow;
         equipment.UpdatedBy = _currentUser.GetCurrentUserId();
 

@@ -5353,7 +5353,7 @@
                 {
                   "key": "status",
                   "value": "Operational",
-                  "description": "Filter by equipment status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned"
+                  "description": "Filter by equipment status (free text, e.g. Operational, Under Maintenance, Out of Order, Decommissioned, etc.)"
                 }
               ]
             },
@@ -5406,7 +5406,7 @@
                     {
                       "key": "status",
                       "value": "Operational",
-                      "description": "Filter by equipment status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned"
+                      "description": "Filter by equipment status (free text, e.g. Operational, Under Maintenance, Out of Order, Decommissioned, etc.)"
                     }
                   ]
                 },
@@ -5512,7 +5512,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Building UUID where equipment is installed\n    \"name\": \"Passenger Elevator 1\", // Required: Equipment display name\n    \"type\": \"Lift\", // Required: Equipment type (free text, e.g. Lift, CCTV, Inverter, Pump, Generator, Fire Safety, Water System, etc.)\n    \"brand\": \"Otis\", // Required: Manufacturer or brand name\n    \"installDate\": \"2024-01-15T00:00:00Z\", // Required: Installation date\n    \"status\": \"Operational\", // Required: Equipment status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned\n    \"model\": \"Gen2 Life\", // Optional: Equipment model number/name\n    \"serialNumber\": \"OT-2024-99881\", // Optional: Unique manufacturer serial number\n    \"warrantyExpiryDate\": \"2026-01-15T00:00:00Z\", // Optional: Warranty expiration date\n    \"notes\": \"Main passenger lift servicing floors 1 to 10\", // Optional: Operational or maintenance notes\n    \"attachmentUrl\": \"https://example.com/attachments/otis-warranty.pdf\" // Optional: Attachment document URL\n}"
+              "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Building UUID where equipment is installed\n    \"name\": \"Passenger Elevator 1\", // Required: Equipment display name\n    \"type\": \"Lift\", // Required: Equipment type (free text, e.g. Lift, CCTV, Inverter, Pump, Generator, Fire Safety, Water System, etc.)\n    \"brand\": \"Otis\", // Required: Manufacturer or brand name\n    \"installDate\": \"2024-01-15T00:00:00Z\", // Required: Installation date\n    \"status\": \"Operational\", // Required: Equipment status (free text, e.g. Operational, Under Maintenance, Out of Order, Decommissioned, etc.)\n    \"model\": \"Gen2 Life\", // Optional: Equipment model number/name\n    \"serialNumber\": \"OT-2024-99881\", // Optional: Unique manufacturer serial number\n    \"warrantyExpiryDate\": \"2026-01-15T00:00:00Z\", // Optional: Warranty expiration date\n    \"notes\": \"Main passenger lift servicing floors 1 to 10\", // Optional: Operational or maintenance notes\n    \"attachmentUrl\": \"https://example.com/attachments/otis-warranty.pdf\" // Optional: Attachment document URL\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/equipment",
@@ -5542,7 +5542,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Building UUID where equipment is installed\n    \"name\": \"Passenger Elevator 1\", // Required: Equipment display name\n    \"type\": \"Lift\", // Required: Equipment type (free text, e.g. Lift, CCTV, Inverter, Pump, Generator, Fire Safety, Water System, etc.)\n    \"brand\": \"Otis\", // Required: Manufacturer or brand name\n    \"installDate\": \"2024-01-15T00:00:00Z\", // Required: Installation date\n    \"status\": \"Operational\", // Required: Equipment status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned\n    \"model\": \"Gen2 Life\", // Optional: Equipment model number/name\n    \"serialNumber\": \"OT-2024-99881\", // Optional: Unique manufacturer serial number\n    \"warrantyExpiryDate\": \"2026-01-15T00:00:00Z\", // Optional: Warranty expiration date\n    \"notes\": \"Main passenger lift servicing floors 1 to 10\", // Optional: Operational or maintenance notes\n    \"attachmentUrl\": \"https://example.com/attachments/otis-warranty.pdf\" // Optional: Attachment document URL\n}"
+                  "raw": "{\n    \"buildingId\": \"replace-with-building-uuid\", // Required: Building UUID where equipment is installed\n    \"name\": \"Passenger Elevator 1\", // Required: Equipment display name\n    \"type\": \"Lift\", // Required: Equipment type (free text, e.g. Lift, CCTV, Inverter, Pump, Generator, Fire Safety, Water System, etc.)\n    \"brand\": \"Otis\", // Required: Manufacturer or brand name\n    \"installDate\": \"2024-01-15T00:00:00Z\", // Required: Installation date\n    \"status\": \"Operational\", // Required: Equipment status (free text, e.g. Operational, Under Maintenance, Out of Order, Decommissioned, etc.)\n    \"model\": \"Gen2 Life\", // Optional: Equipment model number/name\n    \"serialNumber\": \"OT-2024-99881\", // Optional: Unique manufacturer serial number\n    \"warrantyExpiryDate\": \"2026-01-15T00:00:00Z\", // Optional: Warranty expiration date\n    \"notes\": \"Main passenger lift servicing floors 1 to 10\", // Optional: Operational or maintenance notes\n    \"attachmentUrl\": \"https://example.com/attachments/otis-warranty.pdf\" // Optional: Attachment document URL\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/equipment",
@@ -5771,7 +5771,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"status\": \"Under Maintenance\" // New status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned\n}"
+              "raw": "{\n    \"status\": \"Under Maintenance\" // New status (free text, e.g. Operational, Under Maintenance, Out of Order, Decommissioned, etc.)\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/equipment/:id/status",
@@ -5810,7 +5810,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"status\": \"Under Maintenance\" // New status: Operational, Optional, Under Maintenance, Out of Order, Decommissioned\n}"
+                  "raw": "{\n    \"status\": \"Under Maintenance\" // New status (free text, e.g. Operational, Under Maintenance, Out of Order, Decommissioned, etc.)\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/equipment/:id/status",

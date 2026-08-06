@@ -1,5 +1,4 @@
 using System;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models.Building;
 
 namespace CleanArchitecture.Shared.Models.Equipment;
@@ -17,7 +16,7 @@ public class EquipmentViewModel
     public string? SerialNumber { get; set; }
     public DateTime InstallDate { get; set; }
     public DateTime? WarrantyExpiryDate { get; set; }
-    public EquipmentStatus Status { get; set; }
+    public string Status { get; set; } = string.Empty;
     public string? Notes { get; set; }
     public string? AttachmentUrl { get; set; }
     public DateTime CreatedAt { get; set; }

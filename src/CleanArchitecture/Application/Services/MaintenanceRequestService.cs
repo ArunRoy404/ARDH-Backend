@@ -331,7 +331,7 @@ public class MaintenanceRequestService(
             equipmentToUpdate = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
             if (equipmentToUpdate != null)
             {
-                equipmentToUpdate.Status = EquipmentStatus.UnderMaintenance;
+                equipmentToUpdate.Status = "UnderMaintenance";
                 equipmentToUpdate.UpdatedAt = DateTime.UtcNow;
             }
         }
@@ -435,7 +435,7 @@ public class MaintenanceRequestService(
                 var oldEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == oldEquipmentId.Value);
                 if (oldEq != null)
                 {
-                    oldEq.Status = EquipmentStatus.Operational;
+                    oldEq.Status = "Operational";
                     oldEq.UpdatedAt = DateTime.UtcNow;
                     _unitOfWork.EquipmentRepository.Update(oldEq);
                 }
@@ -447,8 +447,8 @@ public class MaintenanceRequestService(
                 if (newEq != null)
                 {
                     newEq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
-                        ? EquipmentStatus.UnderMaintenance
-                        : EquipmentStatus.Operational;
+                        ? "UnderMaintenance"
+                        : "Operational";
                     newEq.UpdatedAt = DateTime.UtcNow;
                     _unitOfWork.EquipmentRepository.Update(newEq);
                 }
@@ -460,8 +460,8 @@ public class MaintenanceRequestService(
             if (eq != null)
             {
                 eq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
-                    ? EquipmentStatus.UnderMaintenance
-                    : EquipmentStatus.Operational;
+                    ? "UnderMaintenance"
+                    : "Operational";
                 eq.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.EquipmentRepository.Update(eq);
             }
@@ -507,7 +507,7 @@ public class MaintenanceRequestService(
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
             if (eq != null)
             {
-                eq.Status = EquipmentStatus.Operational;
+                eq.Status = "Operational";
                 eq.UpdatedAt = now;
                 _unitOfWork.EquipmentRepository.Update(eq);
             }
@@ -550,8 +550,8 @@ public class MaintenanceRequestService(
             if (eq != null)
             {
                 eq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
-                    ? EquipmentStatus.UnderMaintenance
-                    : EquipmentStatus.Operational;
+                    ? "UnderMaintenance"
+                    : "Operational";
                 eq.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.EquipmentRepository.Update(eq);
             }
