@@ -16536,6 +16536,2881 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Bulk Upload",
+      "item": [
+        {
+          "name": "BU-00. Upload CSV File",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/upload/csv",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "upload",
+                "csv"
+              ],
+              "query": []
+            },
+            "description": "Uploads a CSV file to the server and returns its URL. Pass this URL to the bulk-upload start endpoint.\nAllowed format: .csv only.\nRequires admin or properties permission (same as the other upload endpoints)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - File uploaded)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/upload/csv",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "upload",
+                    "csv"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n    }\n}"
+            },
+            {
+              "name": "Error Example (400 - Invalid format)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/upload/csv",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "upload",
+                    "csv"
+                  ],
+                  "query": []
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid file format. Only .csv files are allowed.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Apartments Management",
+          "item": [
+            {
+              "name": "BU-apartments-01. Start Bulk Upload (Apartments)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'apartments'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-apartments-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "apartments",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Apartments\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "apartments",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-apartments-02. Get Bulk Upload Status (Apartments)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "apartments",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'apartments' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "apartments",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Apartments\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Apartments\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "apartments",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-apartments-03. Get Bulk Upload Status by ID (Apartments)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Apartments\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Apartments' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-apartments-04. Download Bulk Upload Template (Apartments)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "apartments",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'apartments' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "apartments",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"apartments_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "BuildingId,OwnerId,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"NST-BULK-001\",\"999\",9,\"3 BHK\",1100,3,2,true,\"P-99\",45000,3000,500,\"Bulk upload sample apartment\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "apartments",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Tenants Management",
+          "item": [
+            {
+              "name": "BU-tenants-01. Start Bulk Upload (Tenants)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'tenants'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-tenants-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "tenants",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Tenants\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "tenants",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-tenants-02. Get Bulk Upload Status (Tenants)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "tenants",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'tenants' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "tenants",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Tenants\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Tenants\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "tenants",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-tenants-03. Get Bulk Upload Status by ID (Tenants)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Tenants\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Tenants' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-tenants-04. Download Bulk Upload Template (Tenants)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "tenants",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'tenants' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "tenants",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"tenants_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "BuildingId,ApartmentId,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\"Bulk Test Tenant\",\"+91 9000000000\",\"bulk.tenant@example.com\",\"Aadhar\",\"TENANT-BULK-001\",\"\",\"2026-09-01\",\"2026-09-01\",\"2027-08-31\",45000,90000,\"Emergency Contact\",\"+91 9000000001\",\"Active\",\"Bulk upload sample tenant\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "tenants",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Owners Management",
+          "item": [
+            {
+              "name": "BU-owners-01. Start Bulk Upload (Owners)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'owners'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-owners-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "owners",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Owners\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "owners",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-owners-02. Get Bulk Upload Status (Owners)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "owners",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'owners' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "owners",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Owners\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Owners\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "owners",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-owners-03. Get Bulk Upload Status by ID (Owners)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Owners\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Owners' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-owners-04. Download Bulk Upload Template (Owners)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "owners",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'owners' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'properties' permission or 'property'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "owners",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"owners_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes\n\"Bulk Test Owner\",\"+91 9000000002\",\"bulk.owner@example.com\",\"Mumbai\",\"1, Test Street\",\"Aadhar\",\"OWNER-BULK-001\",\"HDFC Bank\",\"88888888888\",\"HDFC0000999\",\"Active\",\"Bulk upload sample owner\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "owners",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Income Management",
+          "item": [
+            {
+              "name": "BU-income-01. Start Bulk Upload (Income)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'income'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-income-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'finance' permission."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "income",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Income\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "income",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-income-02. Get Bulk Upload Status (Income)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "income",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'income' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'finance' permission."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "income",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Income\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Income\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "income",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-income-03. Get Bulk Upload Status by ID (Income)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'finance' permission."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Income\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Income' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-income-04. Download Bulk Upload Template (Income)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "income",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'income' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'finance' permission."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "income",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"income_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "IncomeEntity,IncomeType,Amount,BuildingId,ApartmentId,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\n\"ApartmentWise\",\"Rent\",45000,\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"2026-09-05\",\"BankTransfer\",\"TRX-BULK-001\",\"Paid\",\"Bulk upload sample income\",\"\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "income",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Expenses Management",
+          "item": [
+            {
+              "name": "BU-expenses-01. Start Bulk Upload (Expenses)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'expenses'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-expenses-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'finance' permission or 'operations'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "expenses",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Expenses\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "expenses",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-expenses-02. Get Bulk Upload Status (Expenses)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "expenses",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'expenses' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'finance' permission or 'operations'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "expenses",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Expenses\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Expenses\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "expenses",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-expenses-03. Get Bulk Upload Status by ID (Expenses)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'finance' permission or 'operations'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Expenses\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Expenses' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-expenses-04. Download Bulk Upload Template (Expenses)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "expenses",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'expenses' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'finance' permission or 'operations'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "expenses",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"expenses_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "Category,ExpenseHead,SpecificItem,VendorId,Nature,Amount,Entity,BuildingId,ApartmentId,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\n\"Utility\",\"Electricity\",\"Monthly bill\",\"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\"Service\",1250.50,\"General\",\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"\",\"2026-08-07\",\"BankTransfer\",\"Paid\",\"REF-BULK-001\",\"\",\"Bulk upload sample expense\",\"\",\"\",\"\",\"\",\"\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "expenses",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Maintenance Management",
+          "item": [
+            {
+              "name": "BU-maintenance-01. Start Bulk Upload (Maintenance)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'maintenance'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-maintenance-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "maintenance",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Maintenance\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "maintenance",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-maintenance-02. Get Bulk Upload Status (Maintenance)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "maintenance",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'maintenance' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "maintenance",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Maintenance\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Maintenance\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "maintenance",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-maintenance-03. Get Bulk Upload Status by ID (Maintenance)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Maintenance\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Maintenance' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-maintenance-04. Download Bulk Upload Template (Maintenance)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "maintenance",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'maintenance' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "maintenance",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"maintenance_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "Title,Description,Category,Priority,BuildingId,ApartmentId,VendorId,EquipmentId,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\n\"Bulk test request\",\"Bulk upload sample maintenance request\",\"Plumbing\",\"High\",\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"f7a3b822-29c4-52a8-ad29-c8be5d491f24\",\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Open\",1500,18000,\"2026-08-10\",\"\",\"Monthly\",\"\",\"Bulk upload sample maintenance\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "maintenance",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Equipment Management",
+          "item": [
+            {
+              "name": "BU-equipment-01. Start Bulk Upload (Equipment)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload"
+                  ],
+                  "query": []
+                },
+                "description": "Starts a background bulk upload for 'equipment'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-equipment-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Bulk upload started)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "equipment",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Equipment\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "equipment",
+                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
+                        },
+                        {
+                          "key": "fileUrl",
+                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
+                          "description": "URL returned by POST /api/upload/csv for the CSV file"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-equipment-02. Get Bulk Upload Status (Equipment)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "equipment",
+                      "description": "Optional module filter"
+                    }
+                  ]
+                },
+                "description": "Returns all bulk-upload jobs for 'equipment' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Status list)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "equipment",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Equipment\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Equipment\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
+                },
+                {
+                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "equipment",
+                          "description": "Optional. Filter the list to this module only. Omit to return all bulk uploads."
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-equipment-03. Get Bulk Upload Status by ID (Equipment)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "status",
+                    ":id"
+                  ],
+                  "query": []
+                },
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - Single job details)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/status/3f9c2a1e-0000-4000-8000-000000000001",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "status",
+                        ":id"
+                      ],
+                      "query": []
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Equipment\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Equipment' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "BU-equipment-04. Download Bulk Upload Template (Equipment)",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/template",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "template"
+                  ],
+                  "query": [
+                    {
+                      "key": "module",
+                      "value": "equipment",
+                      "description": "Module to generate the template for"
+                    }
+                  ]
+                },
+                "description": "Downloads a CSV template for 'equipment' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'operations' permission or 'operation'."
+              },
+              "response": [
+                {
+                  "name": "Success Example (200 - CSV template)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "equipment",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "text/csv"
+                    },
+                    {
+                      "key": "Content-Disposition",
+                      "value": "attachment; filename=\"equipment_bulk_upload_template.csv\""
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "BuildingId,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Bulk Test Pump\",\"Pump\",\"Kirloskar\",\"KM-40\",\"SN-BULK-001\",\"2026-01-01\",\"2028-01-01\",\"Operational\",\"Bulk upload sample equipment\",\"\""
+                },
+                {
+                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "originalRequest": {
+                    "auth": {
+                      "type": "noauth"
+                    },
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/bulk-upload/template",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "bulk-upload",
+                        "template"
+                      ],
+                      "query": [
+                        {
+                          "key": "module",
+                          "value": "equipment",
+                          "description": "Module to generate the template for"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Forbidden",
+                  "code": 403,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variable": [

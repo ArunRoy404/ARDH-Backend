@@ -31,6 +31,7 @@ public static class ConfigureServices
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<INotificationRecipientRepository, NotificationRecipientRepository>();
         services.AddScoped<IActivityRepository, ActivityRepository>();
+        services.AddScoped<IBulkUploadRepository, BulkUploadRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<ApplicationDbContextInitializer>();
 

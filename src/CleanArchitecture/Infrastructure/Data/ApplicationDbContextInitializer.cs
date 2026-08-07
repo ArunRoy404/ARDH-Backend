@@ -141,6 +141,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         _context.ForgotPassword.RemoveRange(_context.ForgotPassword.IgnoreQueryFilters());
         _context.Users.RemoveRange(_context.Users.IgnoreQueryFilters());
         _context.Settings.RemoveRange(_context.Settings.IgnoreQueryFilters());
+        _context.BulkUploads.RemoveRange(_context.BulkUploads.IgnoreQueryFilters());
         await _context.SaveChangesAsync();
         _logger.LogInformation("Database reset: all existing data removed.");
     }

@@ -106,7 +106,20 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             }
             else if (path.StartsWith("/api/upload", StringComparison.OrdinalIgnoreCase))
             {
-                if (!hasAdminPermission && !hasPropertyPermission)
+                // CSV uploads (used by bulk upload) are allowed for any user holding a module
+                // permission — the bulk-upload start endpoint enforces the per-module permission
+                // itself, and a bare file upload writes no data.
+                var isCsvUpload = path.Equals("/api/upload/csv", StringComparison.OrdinalIgnoreCase);
+
+                if (isCsvUpload)
+                {
+                    if (!hasAdminPermission && !hasPropertyPermission && !hasOperationsPermission && !hasFinancePermission)
+                    {
+                        context.Result = CreateForbiddenResult("Access denied. Permission required to access upload services.");
+                        return;
+                    }
+                }
+                else if (!hasAdminPermission && !hasPropertyPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Permission required to access upload services.");
                     return;

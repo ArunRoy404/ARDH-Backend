@@ -22,6 +22,7 @@ public interface IUnitOfWork
     INotificationRepository NotificationRepository { get; }
     INotificationRecipientRepository NotificationRecipientRepository { get; }
     IActivityRepository ActivityRepository { get; }
+    IBulkUploadRepository BulkUploadRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);
