@@ -125,11 +125,19 @@ public class ApiErrorDetail
             message.Contains("IncomeEntity", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("IncomeType", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("IncomePaymentMethod", StringComparison.OrdinalIgnoreCase) ||
-            message.Contains("IncomeStatus", StringComparison.OrdinalIgnoreCase))
+            message.Contains("IncomeStatus", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("expense record", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("expense entry", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("duplicate expense", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("water tank delivery", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseNature", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseEntity", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseStatus", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseCategory", StringComparison.OrdinalIgnoreCase))
         {
             return message;
         }
-        // ── end AMC contract / maintenance / income module ──────────────────────
+        // ── end AMC contract / maintenance / income / expense module ────────────
 
         // 1. JSON conversion errors
         if (message.Contains("JSON value could not be converted", StringComparison.OrdinalIgnoreCase) ||

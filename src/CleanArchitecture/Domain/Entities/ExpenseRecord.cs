@@ -16,7 +16,7 @@ public class ExpenseRecord
     public Guid? BuildingId { get; set; }
     public Guid? ApartmentId { get; set; }
     public DateTime ExpenseDate { get; set; }
-    public ExpensePaymentMethod PaymentMethod { get; set; }
+    public string PaymentMethod { get; set; } = string.Empty;
     public ExpenseStatus Status { get; set; }
     public string? Reference { get; set; }
     public string? AttachmentUrl { get; set; }

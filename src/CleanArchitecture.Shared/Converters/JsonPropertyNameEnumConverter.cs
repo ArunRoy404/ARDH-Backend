@@ -58,6 +58,10 @@ public sealed class JsonPropertyNameEnumConverter<TEnum> : JsonConverter<TEnum> 
             nameof(IncomeType) => "incomeType",
             nameof(IncomePaymentMethod) => "paymentMethod",
             nameof(IncomeStatus) => "status",
+            nameof(ExpenseNature) => "nature",
+            nameof(ExpenseEntity) => "entity",
+            nameof(ExpenseStatus) => "status",
+            nameof(ExpenseCategory) => "category",
             _ => typeof(TEnum).Name
         };
 

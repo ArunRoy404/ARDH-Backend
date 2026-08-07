@@ -26,7 +26,7 @@ public class ExpenseRecordViewModel
     public string? FlatNumber { get; set; }
     public ApartmentViewModel? Apartment { get; set; }
     public DateTime ExpenseDate { get; set; }
-    public ExpensePaymentMethod PaymentMethod { get; set; }
+    public string? PaymentMethod { get; set; }
     public ExpenseStatus Status { get; set; }
     public string? Reference { get; set; }
     public string? AttachmentUrl { get; set; }

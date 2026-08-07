@@ -23,6 +23,12 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     /// <summary>
     /// [EX-01] Retrieves all expense records with support for pagination, search, and filters.
     /// </summary>
+    /// <remarks>
+    /// Filter values (exact):
+    ///   category = Utility | Operational | Maintenance | Tax | Capital
+    ///   status = Draft | PendingPayment | Paid
+    ///   nature = Service | Material | Others
+    /// </remarks>
     [HttpGet]
     [SwaggerResponse(200, "List of expense records retrieved successfully.", typeof(PaginatedList<ExpenseRecordViewModel>))]
     [SwaggerResponse(401, "Unauthorized access.")]
@@ -61,6 +67,22 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     /// <summary>
     /// [EX-03] Creates a new expense record.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.
+    /// For ApartmentSpecific entity, apartmentId is also mandatory.
+    /// Valid enum values (exact):
+    ///   category = Utility | Operational | Maintenance | Tax | Capital (optional)
+    ///   nature = Service | Material | Others
+    ///   entity = General | ApartmentSpecific | BuildingLevel
+    ///   status = Draft | PendingPayment | Paid
+    /// paymentMethod is a free-form text value (for example: Cash, BankTransfer, Cheque, UPI, Card, Online).
+    /// Rules:
+    ///   - Amount must be greater than 0.
+    ///   - Expense date cannot be in the future.
+    ///   - A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.
+    ///   - For water tank deliveries, tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance and litersFilled
+    ///     must be provided, and the same tanker number at the same delivery time is rejected.
+    /// </remarks>
     [HttpPost]
     [SwaggerResponse(200, "Expense record created successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]
@@ -74,6 +96,22 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     /// <summary>
     /// [EX-04] Updates details of an existing expense record.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.
+    /// For ApartmentSpecific entity, apartmentId is also mandatory.
+    /// Valid enum values (exact):
+    ///   category = Utility | Operational | Maintenance | Tax | Capital (optional)
+    ///   nature = Service | Material | Others
+    ///   entity = General | ApartmentSpecific | BuildingLevel
+    ///   status = Draft | PendingPayment | Paid
+    /// paymentMethod is a free-form text value (for example: Cash, BankTransfer, Cheque, UPI, Card, Online).
+    /// Rules:
+    ///   - Amount must be greater than 0.
+    ///   - Expense date cannot be in the future.
+    ///   - A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.
+    ///   - For water tank deliveries, tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance and litersFilled
+    ///     must be provided, and the same tanker number at the same delivery time is rejected.
+    /// </remarks>
     [HttpPut("{id:guid}")]
     [SwaggerResponse(200, "Expense record updated successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]
@@ -116,6 +154,9 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     /// <summary>
     /// [EX-06] Updates the status of an expense record.
     /// </summary>
+    /// <remarks>
+    /// Valid status values (exact): Draft | PendingPayment | Paid
+    /// </remarks>
     [HttpPatch("{id:guid}/status")]
     [SwaggerResponse(200, "Expense record status updated successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]
@@ -130,6 +171,12 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     /// <summary>
     /// [EX-07] Exports all filtered expense records to a CSV file.
     /// </summary>
+    /// <remarks>
+    /// Filter values (exact):
+    ///   category = Utility | Operational | Maintenance | Tax | Capital
+    ///   status = Draft | PendingPayment | Paid
+    ///   nature = Service | Material | Others
+    /// </remarks>
     [HttpGet("download-csv")]
     [SwaggerResponse(200, "CSV file exported and downloaded successfully.", typeof(FileResult))]
     [SwaggerResponse(401, "Unauthorized access.")]

@@ -9,66 +9,83 @@ public class ExpenseRecordCreateRequestValidation : AbstractValidator<ExpenseRec
     public ExpenseRecordCreateRequestValidation()
     {
         RuleFor(x => x.Category)
-            .IsInEnum().WithMessage("A valid expense category type is required.");
+            .IsInEnum().WithMessage("A valid expense category is required. Valid values: Utility, Operational, Maintenance, Tax, Capital.");
 
         RuleFor(x => x.ExpenseHead)
-            .NotEmpty().When(x => x.Category == ExpenseCategory.Utility)
-            .WithMessage("Expense head (sub category) is required when category is set to Utility.");
+            .NotNull().WithMessage("Expense head is required.")
+            .NotEmpty().WithMessage("Expense head is required.");
 
         RuleFor(x => x.SpecificItem)
+            .NotNull().WithMessage("Specific item is required.")
             .NotEmpty().WithMessage("Specific item is required.");
 
         RuleFor(x => x.Nature)
-            .IsInEnum().WithMessage("A valid expense nature is required.");
+            .NotNull().WithMessage("Expense nature is required. Valid values: Service, Material, Others.")
+            .IsInEnum().WithMessage("Expense nature is required. Valid values: Service, Material, Others.");
 
         RuleFor(x => x.Amount)
+            .NotNull().WithMessage("Amount is required.")
             .GreaterThan(0).WithMessage("Amount must be greater than 0.");
 
         RuleFor(x => x.Entity)
-            .IsInEnum().WithMessage("A valid expense entity type is required.");
+            .NotNull().WithMessage("Expense entity is required. Valid values: General, ApartmentSpecific, BuildingLevel.")
+            .IsInEnum().WithMessage("Expense entity is required. Valid values: General, ApartmentSpecific, BuildingLevel.");
 
         RuleFor(x => x.BuildingId)
-            .NotEmpty().When(x => x.Entity == ExpenseEntity.BuildingLevel || x.Entity == ExpenseEntity.ApartmentSpecific)
-            .WithMessage("Building is required for Building Level or Apartment Specific entity.");
+            .NotNull().WithMessage("Please select a building.");
 
         RuleFor(x => x.ApartmentId)
             .NotEmpty().When(x => x.Entity == ExpenseEntity.ApartmentSpecific)
             .WithMessage("Apartment is required for Apartment Specific entity.");
 
         RuleFor(x => x.ExpenseDate)
-            .NotEmpty().WithMessage("Expense date is required.");
+            .NotNull().WithMessage("Expense date is required.")
+            .Must(x => !x.HasValue || x.Value.Date <= DateTime.UtcNow.AddHours(3).Date)
+            .WithMessage("Expense date cannot be in the future. Please use today's date or an earlier date.");
 
         RuleFor(x => x.PaymentMethod)
-            .IsInEnum().WithMessage("A valid payment method is required.");
+            .NotNull().WithMessage("Payment method is required. For example: Cash, BankTransfer, Cheque, UPI, Card.")
+            .NotEmpty().WithMessage("Payment method is required. For example: Cash, BankTransfer, Cheque, UPI, Card.");
 
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid status is required.");
+            .NotNull().WithMessage("Status is required. Valid values: Draft, PendingPayment, Paid.")
+            .IsInEnum().WithMessage("Status is required. Valid values: Draft, PendingPayment, Paid.");
 
-        // Water tank delivery fields conditional validation
+        // Water tank delivery fields - all or nothing, required for water tank deliveries
         RuleFor(x => x.TankerNumber)
-            .NotEmpty().When(x => IsWaterTankSubcategory(x.ExpenseHead))
-            .WithMessage("Tanker number is required for water tank delivery.");
+            .NotEmpty().When(x => RequiresTankerFields(x))
+            .WithMessage("Tanker number is required for water tank deliveries.");
 
         RuleFor(x => x.TimeOfDelivery)
-            .NotEmpty().When(x => IsWaterTankSubcategory(x.ExpenseHead))
-            .WithMessage("Time of delivery is required for water tank delivery.");
+            .NotEmpty().When(x => RequiresTankerFields(x))
+            .WithMessage("Delivery time is required for water tank deliveries.");
 
         RuleFor(x => x.DeliveryDriverName)
-            .NotEmpty().When(x => IsWaterTankSubcategory(x.ExpenseHead))
-            .WithMessage("Delivery driver name is required for water tank delivery.");
+            .NotEmpty().When(x => RequiresTankerFields(x))
+            .WithMessage("Delivery driver name is required for water tank deliveries.");
 
         RuleFor(x => x.ManagerInAttendance)
-            .NotEmpty().When(x => IsWaterTankSubcategory(x.ExpenseHead))
-            .WithMessage("Manager in attendance is required for water tank delivery.");
+            .NotEmpty().When(x => RequiresTankerFields(x))
+            .WithMessage("Manager in attendance is required for water tank deliveries.");
 
         RuleFor(x => x.LitersFilled)
-            .NotNull().When(x => IsWaterTankSubcategory(x.ExpenseHead))
-            .WithMessage("Liters filled is required for water tank delivery.")
-            .GreaterThan(0).When(x => IsWaterTankSubcategory(x.ExpenseHead))
+            .NotNull().When(x => RequiresTankerFields(x))
+            .WithMessage("Liters filled is required for water tank deliveries.")
+            .GreaterThan(0).When(x => RequiresTankerFields(x))
             .WithMessage("Liters filled must be greater than 0.");
     }
 
-    private bool IsWaterTankSubcategory(string? expenseHead)
+    private static bool RequiresTankerFields(ExpenseRecordCreateRequest x)
+    {
+        if (IsWaterTankSubcategory(x.ExpenseHead)) return true;
+        return !string.IsNullOrWhiteSpace(x.TankerNumber)
+            || x.TimeOfDelivery.HasValue
+            || !string.IsNullOrWhiteSpace(x.DeliveryDriverName)
+            || !string.IsNullOrWhiteSpace(x.ManagerInAttendance)
+            || x.LitersFilled.HasValue;
+    }
+
+    private static bool IsWaterTankSubcategory(string? expenseHead)
     {
         if (string.IsNullOrWhiteSpace(expenseHead)) return false;
         var eh = expenseHead.ToLowerInvariant();

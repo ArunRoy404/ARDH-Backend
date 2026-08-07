@@ -287,6 +287,9 @@ public class ExpenseRecordService(
 
         var userId = _currentUser.GetCurrentUserId();
 
+        await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, null, cancellationToken);
+        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, request.TimeOfDelivery, null, cancellationToken);
+
         var record = new ExpenseRecord
         {
             Id = Guid.NewGuid(),
@@ -294,14 +297,14 @@ public class ExpenseRecordService(
             ExpenseHead = request.ExpenseHead?.Trim(),
             SpecificItem = request.SpecificItem?.Trim(),
             VendorId = request.VendorId,
-            Nature = request.Nature,
-            Amount = request.Amount,
-            Entity = request.Entity,
+            Nature = request.Nature ?? ExpenseNature.Service,
+            Amount = request.Amount ?? 0,
+            Entity = request.Entity ?? ExpenseEntity.General,
             BuildingId = request.BuildingId,
             ApartmentId = request.ApartmentId,
-            ExpenseDate = request.ExpenseDate,
-            PaymentMethod = request.PaymentMethod,
-            Status = request.Status,
+            ExpenseDate = request.ExpenseDate ?? DateTime.UtcNow,
+            PaymentMethod = request.PaymentMethod?.Trim() ?? string.Empty,
+            Status = request.Status ?? ExpenseStatus.Draft,
             Reference = request.Reference?.Trim(),
             AttachmentUrl = request.AttachmentUrl?.Trim(),
             Description = request.Description?.Trim(),
@@ -375,18 +378,21 @@ public class ExpenseRecordService(
         var userId = _currentUser.GetCurrentUserId();
         var oldStatus = record.Status;
 
+        await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, id, cancellationToken);
+        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, request.TimeOfDelivery, id, cancellationToken);
+
         record.Category = request.Category;
         record.ExpenseHead = request.ExpenseHead?.Trim();
         record.SpecificItem = request.SpecificItem?.Trim();
         record.VendorId = request.VendorId;
-        record.Nature = request.Nature;
-        record.Amount = request.Amount;
-        record.Entity = request.Entity;
+        record.Nature = request.Nature ?? record.Nature;
+        record.Amount = request.Amount ?? record.Amount;
+        record.Entity = request.Entity ?? record.Entity;
         record.BuildingId = request.BuildingId;
         record.ApartmentId = request.ApartmentId;
-        record.ExpenseDate = request.ExpenseDate;
-        record.PaymentMethod = request.PaymentMethod;
-        record.Status = request.Status;
+        record.ExpenseDate = request.ExpenseDate ?? record.ExpenseDate;
+        record.PaymentMethod = request.PaymentMethod?.Trim() ?? record.PaymentMethod;
+        record.Status = request.Status ?? record.Status;
         record.Reference = request.Reference?.Trim();
         record.AttachmentUrl = request.AttachmentUrl?.Trim();
         record.Description = request.Description?.Trim();
@@ -474,7 +480,7 @@ public class ExpenseRecordService(
 
         var oldStatus = record.Status;
 
-        record.Status = request.Status;
+        record.Status = request.Status ?? record.Status;
         record.UpdatedAt = DateTime.UtcNow;
         record.UpdatedBy = userId;
 
@@ -594,6 +600,78 @@ public class ExpenseRecordService(
         }
 
         return System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+    }
+
+    /// <summary>
+    /// Rule: the same Amount + ExpenseDate + ExpenseHead + SpecificItem + Nature must not be recorded twice.
+    /// </summary>
+    private async Task EnsureNoDuplicateExpense(
+        decimal? amount,
+        DateTime? expenseDate,
+        string? expenseHead,
+        string? specificItem,
+        ExpenseNature? nature,
+        Guid? excludeId,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(expenseHead) || string.IsNullOrWhiteSpace(specificItem))
+        {
+            return;
+        }
+
+        var head = expenseHead.Trim().ToLower();
+        var item = specificItem.Trim().ToLower();
+        var date = expenseDate?.Date ?? DateTime.UtcNow.Date;
+        var amountValue = amount ?? 0;
+        var natureValue = nature ?? ExpenseNature.Service;
+
+        var exists = await _unitOfWork.ExpenseRecordRepository.AnyAsync(x =>
+            !x.IsDeleted &&
+            x.Id != (excludeId ?? Guid.Empty) &&
+            x.Amount == amountValue &&
+            x.ExpenseDate.Date == date &&
+            x.ExpenseHead != null && x.ExpenseHead.ToLower() == head &&
+            x.SpecificItem != null && x.SpecificItem.ToLower() == item &&
+            x.Nature == natureValue);
+
+        if (exists)
+        {
+            throw ExpenseRecordException.BadRequestException(
+                $"An expense entry with amount {amountValue:N2} SAR, expense date {date:yyyy-MM-dd}, " +
+                $"expense head '{expenseHead.Trim()}', specific item '{specificItem.Trim()}' and " +
+                $"nature '{natureValue}' already exists. Duplicate expense entries are not allowed.");
+        }
+    }
+
+    /// <summary>
+    /// Rule: the same tanker number at the same delivery time must not be recorded twice.
+    /// </summary>
+    private async Task EnsureNoDuplicateTankerDelivery(
+        string? tankerNumber,
+        DateTime? timeOfDelivery,
+        Guid? excludeId,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(tankerNumber) || !timeOfDelivery.HasValue)
+        {
+            return;
+        }
+
+        var tankerNo = tankerNumber.Trim().ToLower();
+        var deliveryTime = timeOfDelivery.Value;
+
+        var exists = await _unitOfWork.ExpenseRecordRepository.AnyAsync(x =>
+            !x.IsDeleted &&
+            x.Id != (excludeId ?? Guid.Empty) &&
+            x.TankerNumber != null && x.TankerNumber.ToLower() == tankerNo &&
+            x.TimeOfDelivery == deliveryTime);
+
+        if (exists)
+        {
+            throw ExpenseRecordException.BadRequestException(
+                $"A water tank delivery with tanker number '{tankerNumber.Trim()}' and delivery time " +
+                $"'{deliveryTime:yyyy-MM-dd HH:mm}' already exists. Duplicate water tank deliveries are not allowed.");
+        }
     }
 
     private static string EscapeCsv(string? val)

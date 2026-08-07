@@ -1,3 +1,4 @@
+using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models.Expenses;
 using FluentValidation;
 
@@ -8,6 +9,7 @@ public class ExpenseRecordStatusUpdateRequestValidation : AbstractValidator<Expe
     public ExpenseRecordStatusUpdateRequestValidation()
     {
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid status is required.");
+            .NotNull().WithMessage("Status is required. Valid values: Draft, PendingPayment, Paid.")
+            .IsInEnum().WithMessage("Status is required. Valid values: Draft, PendingPayment, Paid.");
     }
 }

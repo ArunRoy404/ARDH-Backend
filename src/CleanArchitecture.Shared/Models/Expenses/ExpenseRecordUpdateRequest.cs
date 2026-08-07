@@ -10,14 +10,14 @@ public class ExpenseRecordUpdateRequest
     public string? ExpenseHead { get; set; }
     public string? SpecificItem { get; set; }
     public Guid? VendorId { get; set; }
-    public ExpenseNature Nature { get; set; }
-    public decimal Amount { get; set; }
-    public ExpenseEntity Entity { get; set; }
+    public ExpenseNature? Nature { get; set; }
+    public decimal? Amount { get; set; }
+    public ExpenseEntity? Entity { get; set; }
     public Guid? BuildingId { get; set; }
     public Guid? ApartmentId { get; set; }
-    public DateTime ExpenseDate { get; set; }
-    public ExpensePaymentMethod PaymentMethod { get; set; }
-    public ExpenseStatus Status { get; set; }
+    public DateTime? ExpenseDate { get; set; }
+    public string? PaymentMethod { get; set; }
+    public ExpenseStatus? Status { get; set; }
     public string? Reference { get; set; }
     public string? AttachmentUrl { get; set; }
     public string? Description { get; set; }
