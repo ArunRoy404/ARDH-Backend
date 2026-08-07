@@ -80,7 +80,7 @@ public class ExpenseRecordUpdateRequestValidation : AbstractValidator<ExpenseRec
 
     private static bool RequiresTankerFields(ExpenseRecordUpdateRequest x)
     {
-        if (IsWaterTankSubcategory(x.ExpenseHead)) return true;
+        if (IsWaterTankerItem(x.SpecificItem)) return true;
         return !string.IsNullOrWhiteSpace(x.TankerNumber)
             || x.TimeOfDelivery.HasValue
             || !string.IsNullOrWhiteSpace(x.DeliveryDriverName)
@@ -88,10 +88,9 @@ public class ExpenseRecordUpdateRequestValidation : AbstractValidator<ExpenseRec
             || x.LitersFilled.HasValue;
     }
 
-    private static bool IsWaterTankSubcategory(string? expenseHead)
+    private static bool IsWaterTankerItem(string? specificItem)
     {
-        if (string.IsNullOrWhiteSpace(expenseHead)) return false;
-        var eh = expenseHead.ToLowerInvariant();
-        return eh.Contains("water tank") || eh.Contains("supplemental water") || eh.Contains("sweet water");
+        if (string.IsNullOrWhiteSpace(specificItem)) return false;
+        return specificItem.Trim().ToLowerInvariant().Contains("water tanker");
     }
 }
