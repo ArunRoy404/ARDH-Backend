@@ -135,9 +135,36 @@ dotnet ef migrations list --project src/CleanArchitecture/CleanArchitecture.cspr
 
 ## Part 3 — Delete ALL Database Data (Full Reset)
 
-There are three ways to wipe everything:
+There are four ways to wipe everything:
 
-### 3.1 Recommended — `SEED_MODE=reset` (wipes + re-seeds in one start)
+### 3.0 Wipe everything but keep one admin user — `SEED_MODE=wipe`
+
+The initializer also supports a wipe-only mode that deletes every row from every table
+(same FK-safe order as `SEED_MODE=reset`) and then seeds **only** the Super Admin user —
+no demo buildings, owners, tenants, etc.
+
+```bat
+:: Windows (PowerShell)
+$env:SEED_MODE="wipe"
+dotnet run --project src/CleanArchitecture\CleanArchitecture.csproj
+```
+
+```bash
+# Linux / macOS
+SEED_MODE=wipe dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj
+```
+
+After this the only row in the whole database is:
+
+| Name | Email | Role | Password |
+| :--- | :--- | :--- | :--- |
+| Super Admin | `admin@gmail.com` | `admin` | `P@ssw0rd` |
+
+Verify in the log: `Database wiped: only the admin user remains.`
+
+Unset (or unset in your shell) `SEED_MODE` afterwards, otherwise the **next** restart wipes again.
+
+### 3.1 Recommended (full demo reset) — `SEED_MODE=reset` (wipes + re-seeds in one start)
 
 The initializer supports an environment-variable driven reset:
 
@@ -320,7 +347,8 @@ curl -X POST http://localhost:5240/api/auth/sign-in \
 | Operation | Command |
 | :--- | :--- |
 | Start + auto-migrate + auto-seed | `dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj` |
-| Wipe + re-seed | `SEED_MODE=reset dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj` |
+| Wipe + re-seed (full demo data) | `SEED_MODE=reset dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj` |
+| Wipe + keep only admin user | `SEED_MODE=wipe dotnet run --project src/CleanArchitecture/CleanArchitecture.csproj` |
 | Apply migrations | `dotnet ef database update --project src/CleanArchitecture/CleanArchitecture.csproj` |
 | New migration | `dotnet ef migrations add <Name> --project src/CleanArchitecture/CleanArchitecture.csproj` |
 | Add user (API) | sign-in → `POST /api/users` |

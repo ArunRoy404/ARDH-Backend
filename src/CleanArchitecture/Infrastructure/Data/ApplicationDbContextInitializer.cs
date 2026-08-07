@@ -84,11 +84,26 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                 await _context.Database.MigrateAsync();
             }
 
-            // Optional full wipe: set SEED_MODE=reset to remove all data and re-seed from scratch
-            var resetMode = Environment.GetEnvironmentVariable("SEED_MODE")?.Trim().ToLowerInvariant() == "reset";
-            if (resetMode)
+            // Optional full wipe: set SEED_MODE=reset to remove all data and re-seed from scratch.
+            // Optional wipe-only: set SEED_MODE=wipe to remove all data and leave just the admin user.
+            // Optional no-seed: set SEED_MODE=none to skip all auto-seeding (migrations only),
+            // so empty tables are left empty instead of being filled with demo data.
+            var seedMode = Environment.GetEnvironmentVariable("SEED_MODE")?.Trim().ToLowerInvariant();
+            if (seedMode == "reset")
             {
                 await ResetDatabaseAsync();
+            }
+            else if (seedMode == "wipe")
+            {
+                await ResetDatabaseAsync();
+                await SeedAdminOnly();
+                _logger.LogInformation("Database wiped: only the admin user remains.");
+                return;
+            }
+            else if (seedMode == "none")
+            {
+                _logger.LogInformation("Seeding skipped (SEED_MODE=none).");
+                return;
             }
 
             await SeedUsers();
@@ -146,6 +161,31 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         _logger.LogInformation("Database reset: all existing data removed.");
     }
 
+    private static User CreateAdminUser() => new()
+    {
+        Id = AdminUserId,
+        Name = "Super Admin",
+        Email = "admin@gmail.com",
+        Phone = "+1234567890",
+        PasswordHash = "P@ssw0rd".Hash(),
+        Role = UserRole.admin,
+        Address = "123 Main St",
+        Permissions = "dashboard,properties,finance,operations,admin",
+        AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
+        IsActive = true,
+        CreatedAt = T0,
+        UpdatedAt = T0
+    };
+
+    /// <summary>Seeds only the admin user, no demo data. Used by SEED_MODE=wipe.</summary>
+    private async Task SeedAdminOnly()
+    {
+        if (await _context.Users.AnyAsync()) return;
+
+        await _context.Users.AddAsync(CreateAdminUser());
+        await _context.SaveChangesAsync();
+    }
+
     private async Task SeedUsers()
     {
         if (await _context.Users.AnyAsync()) return;
@@ -153,21 +193,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         await _context.Users.AddRangeAsync(
             new List<User>
             {
-                new()
-                {
-                    Id = AdminUserId,
-                    Name = "Super Admin",
-                    Email = "admin@gmail.com",
-                    Phone = "+1234567890",
-                    PasswordHash = "P@ssw0rd".Hash(),
-                    Role = UserRole.admin,
-                    Address = "123 Main St",
-                    Permissions = "dashboard,properties,finance,operations,admin",
-                    AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
-                    IsActive = true,
-                    CreatedAt = T0,
-                    UpdatedAt = T0
-                },
+                CreateAdminUser(),
                 new()
                 {
                     Id = ManagerUserId,
