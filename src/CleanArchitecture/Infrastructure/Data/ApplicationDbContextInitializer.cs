@@ -97,7 +97,8 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             {
                 await ResetDatabaseAsync();
                 await SeedAdminOnly();
-                _logger.LogInformation("Database wiped: only the admin user remains.");
+                await SeedSettings();
+                _logger.LogInformation("Database wiped: only the admin user and app settings remain.");
                 return;
             }
             else if (seedMode == "none")

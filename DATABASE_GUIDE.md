@@ -140,8 +140,10 @@ There are four ways to wipe everything:
 ### 3.0 Wipe everything but keep one admin user — `SEED_MODE=wipe`
 
 The initializer also supports a wipe-only mode that deletes every row from every table
-(same FK-safe order as `SEED_MODE=reset`) and then seeds **only** the Super Admin user —
-no demo buildings, owners, tenants, etc.
+(same FK-safe order as `SEED_MODE=reset`) and then seeds **only** the Super Admin user and
+the single required `Settings` row (company info + admin delete-password) — no demo
+buildings, owners, tenants, etc. The `Settings` row is required infrastructure, not demo
+data: `/api/settings` and any `X-Admin-Password`-gated endpoint 404 without it.
 
 ```bat
 :: Windows (PowerShell)
