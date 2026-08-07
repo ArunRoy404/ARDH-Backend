@@ -15,7 +15,7 @@ public interface IMaintenanceRequestService
         string? search,
         MaintenanceStatus? status,
         MaintenancePriority? priority,
-        MaintenanceCategory? category,
+        string? category,
         Guid? buildingId,
         Guid? vendorId,
         Guid? equipmentId,

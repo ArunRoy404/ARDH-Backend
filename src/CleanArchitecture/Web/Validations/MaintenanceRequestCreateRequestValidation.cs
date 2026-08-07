@@ -15,21 +15,45 @@ public class MaintenanceRequestCreateRequestValidation : AbstractValidator<Maint
             .NotEmpty().WithMessage("Description is required.");
 
         RuleFor(x => x.Category)
-            .IsInEnum().WithMessage("A valid category is required.");
+            .NotEmpty().WithMessage("Category is required.")
+            .MaximumLength(100).WithMessage("Category must not exceed 100 characters.");
 
         RuleFor(x => x.Priority)
-            .IsInEnum().WithMessage("A valid priority is required.");
+            .NotNull().WithMessage("Priority is required. Valid values: Low, Medium, High, Critical.")
+            .IsInEnum().WithMessage("Priority is invalid. Valid values: Low, Medium, High, Critical.");
 
         RuleFor(x => x.BuildingId)
             .NotEmpty().WithMessage("Building ID is required.");
 
+        RuleFor(x => x.ApartmentId)
+            .NotEmpty().WithMessage("Apartment ID is required.");
+
+        RuleFor(x => x.VendorId)
+            .NotEmpty().WithMessage("Vendor ID is required.");
+
+        RuleFor(x => x.EquipmentId)
+            .NotEmpty().WithMessage("Equipment ID is required.");
+
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid status is required.");
+            .NotNull().WithMessage("Status is required. Valid values: Open, InProgress, Complete, Cancelled.")
+            .IsInEnum().WithMessage("Status is invalid. Valid values: Open, InProgress, Complete, Cancelled.");
 
         RuleFor(x => x.EstimatedCost)
+            .NotNull().WithMessage("Estimated cost is required.")
             .GreaterThanOrEqualTo(0).WithMessage("Estimated cost must be greater than or equal to 0.");
 
         RuleFor(x => x.AnnualCost)
             .GreaterThanOrEqualTo(0).WithMessage("Annual cost must be greater than or equal to 0.");
+
+        RuleFor(x => x.ScheduledDate)
+            .NotEmpty().WithMessage("Scheduled date is required.");
+
+        RuleFor(x => x.RecurrenceFrequency)
+            .IsInEnum().WithMessage("Recurrence frequency is invalid. Valid values: Daily, Weekly, BiWeekly, Monthly, BiMonthly, Quarterly, HalfYearly, Yearly, BiYearly.")
+            .When(x => x.RecurrenceFrequency.HasValue);
+
+        RuleFor(x => x.StartDate)
+            .NotEmpty().WithMessage("Start date is required when a recurrence frequency is provided.")
+            .When(x => x.RecurrenceFrequency.HasValue);
     }
 }

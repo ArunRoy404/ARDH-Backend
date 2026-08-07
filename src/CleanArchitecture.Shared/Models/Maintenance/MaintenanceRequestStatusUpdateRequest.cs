@@ -4,5 +4,5 @@ namespace CleanArchitecture.Shared.Models.Maintenance;
 
 public class MaintenanceRequestStatusUpdateRequest
 {
-    public MaintenanceStatus Status { get; set; }
+    public MaintenanceStatus? Status { get; set; }
 }

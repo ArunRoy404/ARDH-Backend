@@ -8,6 +8,7 @@ public class MaintenanceRequestStatusUpdateRequestValidation : AbstractValidator
     public MaintenanceRequestStatusUpdateRequestValidation()
     {
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid status is required.");
+            .NotNull().WithMessage("Status is required. Valid values: Open, InProgress, Complete, Cancelled.")
+            .IsInEnum().WithMessage("A valid status is required. Valid values: Open, InProgress, Complete, Cancelled.");
     }
 }

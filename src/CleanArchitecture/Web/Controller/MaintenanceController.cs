@@ -31,7 +31,7 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
         [FromQuery] string? search = null,
         [FromQuery] MaintenanceStatus? status = null,
         [FromQuery] MaintenancePriority? priority = null,
-        [FromQuery] MaintenanceCategory? category = null,
+        [FromQuery] string? category = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? vendorId = null,
         [FromQuery] Guid? equipmentId = null,
@@ -71,6 +71,17 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// <summary>
     /// [M-03] Creates a new maintenance request.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: title, description, category, priority, status, buildingId, apartmentId, vendorId,
+    /// equipmentId, estimatedCost and scheduledDate. All other fields are optional.
+    /// category is a free-form string (any value, e.g. "Plumbing", "Electrical", "Lift").
+    /// Valid enum values (exact):
+    ///   priority = Low | Medium | High | Critical
+    ///   status = Open | InProgress | Complete | Cancelled
+    ///   recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly
+    /// When recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed
+    /// as startDate + frequency interval.
+    /// </remarks>
     [HttpPost]
     [SwaggerResponse(200, "Maintenance request created successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]
@@ -84,6 +95,14 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// <summary>
     /// [M-04] Updates details of an existing maintenance request.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: title, description, category, priority, status, buildingId, apartmentId, vendorId,
+    /// equipmentId, estimatedCost and scheduledDate. All other fields are optional.
+    /// Valid enum values (exact):
+    ///   priority = Low | Medium | High | Critical
+    ///   status = Open | InProgress | Complete | Cancelled
+    ///   recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly
+    /// </remarks>
     [HttpPut("{id:guid}")]
     [SwaggerResponse(200, "Maintenance request updated successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]

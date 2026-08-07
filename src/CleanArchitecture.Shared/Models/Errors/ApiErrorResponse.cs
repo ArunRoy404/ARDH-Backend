@@ -108,17 +108,20 @@ public class ApiErrorDetail
             return pathIndex > 0 ? message[..pathIndex] : message;
         }
 
-        // 3. AMC service messages are already written in plain language - keep them verbatim
+        // 3. AMC contract / maintenance service messages are already written in plain
+        //    language - keep them verbatim instead of replacing them with a generic phrase
         if (message.Contains("AMC contract", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("AMC code", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("contract number", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("paymentTerms", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("contractType", StringComparison.OrdinalIgnoreCase) ||
-            message.Contains("serviceFrequency", StringComparison.OrdinalIgnoreCase))
+            message.Contains("serviceFrequency", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("maintenance request", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("recurrence frequency", StringComparison.OrdinalIgnoreCase))
         {
             return message;
         }
-        // ── end AMC contract module ─────────────────────────────────────────────
+        // ── end AMC contract / maintenance module ───────────────────────────────
 
         // 1. JSON conversion errors
         if (message.Contains("JSON value could not be converted", StringComparison.OrdinalIgnoreCase) ||

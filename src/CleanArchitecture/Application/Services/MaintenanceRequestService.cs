@@ -33,7 +33,7 @@ public class MaintenanceRequestService(
         string? search,
         MaintenanceStatus? status,
         MaintenancePriority? priority,
-        MaintenanceCategory? category,
+        string? category,
         Guid? buildingId,
         Guid? vendorId,
         Guid? equipmentId,
@@ -68,9 +68,10 @@ public class MaintenanceRequestService(
             query = query.Where(x => x.Priority == priority.Value);
         }
 
-        if (category.HasValue)
+        if (!string.IsNullOrWhiteSpace(category))
         {
-            query = query.Where(x => x.Category == category.Value);
+            var cleanCategory = category.Trim();
+            query = query.Where(x => x.Category.Equals(cleanCategory, StringComparison.OrdinalIgnoreCase));
         }
 
         if (buildingId.HasValue)
@@ -134,6 +135,9 @@ public class MaintenanceRequestService(
             EstimatedCost = x.EstimatedCost,
             AnnualCost = x.AnnualCost,
             ScheduledDate = x.ScheduledDate,
+            StartDate = x.StartDate,
+            RecurrenceFrequency = x.RecurrenceFrequency,
+            NextMaintenanceDate = GetNextMaintenanceDate(x.StartDate, x.RecurrenceFrequency),
             ReceiptAttachmentUrl = x.ReceiptAttachmentUrl,
             Notes = x.Notes,
             CreatedAt = x.CreatedAt,
@@ -256,6 +260,9 @@ public class MaintenanceRequestService(
             EstimatedCost = request.EstimatedCost,
             AnnualCost = request.AnnualCost,
             ScheduledDate = request.ScheduledDate,
+            StartDate = request.StartDate,
+            RecurrenceFrequency = request.RecurrenceFrequency,
+            NextMaintenanceDate = GetNextMaintenanceDate(request.StartDate, request.RecurrenceFrequency),
             ReceiptAttachmentUrl = request.ReceiptAttachmentUrl,
             Notes = request.Notes,
             CreatedAt = request.CreatedAt,
@@ -307,16 +314,18 @@ public class MaintenanceRequestService(
             Id = Guid.NewGuid(),
             Title = request.Title.Trim(),
             Description = request.Description.Trim(),
-            Category = request.Category,
-            Priority = request.Priority,
-            Status = request.Status,
+            Category = request.Category.Trim(),
+            Priority = request.Priority ?? MaintenancePriority.Low,
+            Status = request.Status ?? MaintenanceStatus.Open,
             VendorId = request.VendorId,
             EquipmentId = request.EquipmentId,
             BuildingId = request.BuildingId,
             ApartmentId = request.ApartmentId,
-            EstimatedCost = request.EstimatedCost,
+            EstimatedCost = request.EstimatedCost ?? 0,
             AnnualCost = request.AnnualCost,
             ScheduledDate = request.ScheduledDate,
+            StartDate = request.StartDate,
+            RecurrenceFrequency = request.RecurrenceFrequency,
             ReceiptAttachmentUrl = request.ReceiptAttachmentUrl?.Trim(),
             Notes = request.Notes?.Trim(),
             CreatedAt = DateTime.UtcNow,
@@ -413,16 +422,18 @@ public class MaintenanceRequestService(
 
         maintenanceRequest.Title = request.Title.Trim();
         maintenanceRequest.Description = request.Description.Trim();
-        maintenanceRequest.Category = request.Category;
-        maintenanceRequest.Priority = request.Priority;
-        maintenanceRequest.Status = request.Status;
+        maintenanceRequest.Category = request.Category.Trim();
+        maintenanceRequest.Priority = request.Priority ?? maintenanceRequest.Priority;
+        maintenanceRequest.Status = request.Status ?? maintenanceRequest.Status;
         maintenanceRequest.BuildingId = request.BuildingId;
         maintenanceRequest.ApartmentId = request.ApartmentId;
         maintenanceRequest.VendorId = request.VendorId;
         maintenanceRequest.EquipmentId = request.EquipmentId;
-        maintenanceRequest.EstimatedCost = request.EstimatedCost;
+        maintenanceRequest.EstimatedCost = request.EstimatedCost ?? maintenanceRequest.EstimatedCost;
         maintenanceRequest.AnnualCost = request.AnnualCost;
         maintenanceRequest.ScheduledDate = request.ScheduledDate;
+        maintenanceRequest.StartDate = request.StartDate;
+        maintenanceRequest.RecurrenceFrequency = request.RecurrenceFrequency;
         maintenanceRequest.ReceiptAttachmentUrl = request.ReceiptAttachmentUrl?.Trim();
         maintenanceRequest.Notes = request.Notes?.Trim();
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
@@ -446,7 +457,7 @@ public class MaintenanceRequestService(
                 var newEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value);
                 if (newEq != null)
                 {
-                    newEq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
+                    newEq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress)
                         ? "UnderMaintenance"
                         : "Operational";
                     newEq.UpdatedAt = DateTime.UtcNow;
@@ -454,12 +465,12 @@ public class MaintenanceRequestService(
                 }
             }
         }
-        else if (request.EquipmentId.HasValue && oldStatus != request.Status)
+        else if (request.EquipmentId.HasValue && oldStatus != maintenanceRequest.Status)
         {
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value);
             if (eq != null)
             {
-                eq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
+                eq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress)
                     ? "UnderMaintenance"
                     : "Operational";
                 eq.UpdatedAt = DateTime.UtcNow;
@@ -470,7 +481,7 @@ public class MaintenanceRequestService(
         _unitOfWork.MaintenanceRequestRepository.Update(maintenanceRequest);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (oldStatus != request.Status)
+        if (oldStatus != maintenanceRequest.Status)
         {
             await _notificationService.CreateNotificationInternal(
                 "operations",
@@ -540,7 +551,7 @@ public class MaintenanceRequestService(
 
         var userId = _currentUser.GetCurrentUserId();
 
-        maintenanceRequest.Status = request.Status;
+        maintenanceRequest.Status = request.Status ?? maintenanceRequest.Status;
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
 
@@ -549,7 +560,7 @@ public class MaintenanceRequestService(
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
             if (eq != null)
             {
-                eq.Status = (request.Status == MaintenanceStatus.Open || request.Status == MaintenanceStatus.InProgress)
+                eq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress)
                     ? "UnderMaintenance"
                     : "Operational";
                 eq.UpdatedAt = DateTime.UtcNow;
@@ -607,5 +618,34 @@ public class MaintenanceRequestService(
             CancelledCount = cancelledCount,
             TotalCount = totalCount
         };
+    }
+
+    /// <summary>
+    /// Computes the date of the next recurring maintenance occurrence:
+    /// StartDate + the number of days defined by the recurrence frequency.
+    /// Returns null when either the start date or the frequency is not set.
+    /// </summary>
+    private static DateTime? GetNextMaintenanceDate(DateTime? startDate, MaintenanceRecurrenceFrequency? frequency)
+    {
+        if (!startDate.HasValue || !frequency.HasValue)
+        {
+            return null;
+        }
+
+        var days = frequency.Value switch
+        {
+            MaintenanceRecurrenceFrequency.Daily => 1,
+            MaintenanceRecurrenceFrequency.Weekly => 7,
+            MaintenanceRecurrenceFrequency.BiWeekly => 14,
+            MaintenanceRecurrenceFrequency.Monthly => 30,
+            MaintenanceRecurrenceFrequency.BiMonthly => 60,
+            MaintenanceRecurrenceFrequency.Quarterly => 90,
+            MaintenanceRecurrenceFrequency.HalfYearly => 182,
+            MaintenanceRecurrenceFrequency.Yearly => 365,
+            MaintenanceRecurrenceFrequency.BiYearly => 730,
+            _ => 0
+        };
+
+        return startDate.Value.AddDays(days);
     }
 }

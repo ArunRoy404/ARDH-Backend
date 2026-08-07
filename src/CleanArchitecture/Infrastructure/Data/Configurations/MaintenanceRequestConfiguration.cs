@@ -28,7 +28,6 @@ public class MaintenanceRequestConfiguration : IEntityTypeConfiguration<Maintena
 
         builder.Property(x => x.Category)
             .HasColumnName("category")
-            .HasConversion<string>()
             .HasMaxLength(100)
             .IsRequired();
 
@@ -69,6 +68,14 @@ public class MaintenanceRequestConfiguration : IEntityTypeConfiguration<Maintena
 
         builder.Property(x => x.ScheduledDate)
             .HasColumnName("scheduled_date");
+
+        builder.Property(x => x.StartDate)
+            .HasColumnName("start_date");
+
+        builder.Property(x => x.RecurrenceFrequency)
+            .HasColumnName("recurrence_frequency")
+            .HasConversion<string>()
+            .HasMaxLength(50);
 
         builder.Property(x => x.ReceiptAttachmentUrl)
             .HasColumnName("receipt_attachment_url")
