@@ -5908,7 +5908,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered owners to a CSV file.\nColumns: ID, FullName, Phone, Email, City, Address, IdType, IdNumber,\nBankName, AccountNumber, IfscCode, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+            "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
           },
           "response": [
             {
@@ -5942,7 +5942,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered owners to a CSV file.\nColumns: ID, FullName, Phone, Email, City, Address, IdType, IdNumber,\nBankName, AccountNumber, IfscCode, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+                "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
               },
               "status": "OK",
               "code": 200,
@@ -5958,7 +5958,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes,CreatedAt\n\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Amit Sharma\",\"+91 9988776655\",\"amit.sharma@example.com\",\"Mumbai\",\"45, Marine Drive\",\"Aadhar\",\"2233-4455-6677\",\"HDFC Bank\",\"50100223344556\",\"HDFC0000123\",\"Active\",\"Primary owner for block B.\",\"2026-07-20 12:00:00\""
+              "body": "ID,FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes,CreatedAt\n\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Amit Sharma\",\"+91 9988776655\",\"amit.sharma@example.com\",\"Mumbai\",\"45, Marine Drive\",\"Aadhar\",\"2233-4455-6677\",\"HDFC Bank\",\"50100223344556\",\"HDFC0000123\",\"Active\",\"Primary owner for block B.\",\"2026-07-20 12:00:00\"",
+              "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
             },
             {
               "name": "Error Example (403 - Missing Property Permission)",
@@ -5991,7 +5992,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered owners to a CSV file.\nColumns: ID, FullName, Phone, Email, City, Address, IdType, IdNumber,\nBankName, AccountNumber, IfscCode, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+                "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -6003,7 +6004,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}"
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}",
+              "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
             }
           ]
         }
@@ -6894,7 +6896,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered apartments to a CSV file.\nColumns: ID, BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType,\nAreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent,\nMaintenanceCharge, WaterCharge, CurrentTenantName, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+            "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
           },
           "response": [
             {
@@ -6943,7 +6945,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered apartments to a CSV file.\nColumns: ID, BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType,\nAreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent,\nMaintenanceCharge, WaterCharge, CurrentTenantName, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+                "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
               },
               "status": "OK",
               "code": 200,
@@ -6959,7 +6961,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,CurrentTenantName,Notes,CreatedAt\n\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Amit Sharma\",\"NST-7719\",\"1204-B\",12,\"3 BHK\",1450.00,3,3,True,\"P-15\",45000.00,3500.00,500.00,\"John Tenant\",\"\",\"2026-07-20 12:00:00\""
+              "body": "ID,BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,CurrentTenantName,Notes,CreatedAt\n\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Amit Sharma\",\"NST-7719\",\"1204-B\",12,\"3 BHK\",1450.00,3,3,True,\"P-15\",45000.00,3500.00,500.00,\"John Tenant\",\"\",\"2026-07-20 12:00:00\"",
+              "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
             },
             {
               "name": "Error Example (403 - Missing Property Permission)",
@@ -7007,7 +7010,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered apartments to a CSV file.\nColumns: ID, BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType,\nAreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent,\nMaintenanceCharge, WaterCharge, CurrentTenantName, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+                "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -7019,7 +7022,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}"
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}",
+              "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
             }
           ]
         }
@@ -8420,7 +8424,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered tenants to a CSV file.\nColumns: ID, BuildingName, FlatNumber, NestawayId, FullName, Phone, Email, IdType,\nIdNumber, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit,\nEmergencyContactName, EmergencyContactPhone, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+            "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
           },
           "response": [
             {
@@ -8464,7 +8468,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered tenants to a CSV file.\nColumns: ID, BuildingName, FlatNumber, NestawayId, FullName, Phone, Email, IdType,\nIdNumber, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit,\nEmergencyContactName, EmergencyContactPhone, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+                "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
               },
               "status": "OK",
               "code": 200,
@@ -8480,7 +8484,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,BuildingName,FlatNumber,NestawayId,FullName,Phone,Email,IdType,IdNumber,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"1204-B\",\"NST-7719\",\"John Tenant\",\"+91 9876543210\",\"john.tenant@example.com\",\"Passport\",\"J1234567\",\"2026-05-01\",\"2026-05-01\",\"2027-04-30\",45000.00,90000.00,\"Johns Father\",\"+91 9123456780\",\"Active\",\"\",\"2026-05-01 10:00:00\""
+              "body": "ID,BuildingName,FlatNumber,NestawayId,FullName,Phone,Email,IdType,IdNumber,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"1204-B\",\"NST-7719\",\"John Tenant\",\"+91 9876543210\",\"john.tenant@example.com\",\"Passport\",\"J1234567\",\"2026-05-01\",\"2026-05-01\",\"2027-04-30\",45000.00,90000.00,\"Johns Father\",\"+91 9123456780\",\"Active\",\"\",\"2026-05-01 10:00:00\"",
+              "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
             },
             {
               "name": "Error Example (403 - Missing Property Permission)",
@@ -8523,7 +8528,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered tenants to a CSV file.\nColumns: ID, BuildingName, FlatNumber, NestawayId, FullName, Phone, Email, IdType,\nIdNumber, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit,\nEmergencyContactName, EmergencyContactPhone, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+                "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -8535,7 +8540,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}"
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}",
+              "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
             }
           ]
         }
@@ -10128,7 +10134,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered equipment to a CSV file.\nColumns: ID, BuildingName, Name, Type, Brand, Model, SerialNumber,\nInstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+            "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
           },
           "response": [
             {
@@ -10172,7 +10178,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered equipment to a CSV file.\nColumns: ID, BuildingName, Name, Type, Brand, Model, SerialNumber,\nInstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+                "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
               },
               "status": "OK",
               "code": 200,
@@ -10188,7 +10194,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl,CreatedAt\n\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Passenger Lift 1\",\"Lift\",\"OTIS\",\"Gen2\",\"LFT-8812\",\"2025-01-15\",\"2027-01-15\",\"Operational\",\"Annual maintenance done.\",\"\",\"2026-07-20 12:00:00\""
+              "body": "ID,BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl,CreatedAt\n\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Passenger Lift 1\",\"Lift\",\"OTIS\",\"Gen2\",\"LFT-8812\",\"2025-01-15\",\"2027-01-15\",\"Operational\",\"Annual maintenance done.\",\"\",\"2026-07-20 12:00:00\"",
+              "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
             },
             {
               "name": "Error Example (403 - Missing Operations Permission)",
@@ -10231,7 +10238,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered equipment to a CSV file.\nColumns: ID, BuildingName, Name, Type, Brand, Model, SerialNumber,\nInstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+                "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -10243,7 +10250,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}"
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}",
+              "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
             }
           ]
         }
@@ -12678,7 +12686,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: ID, Title, Description, Category, Priority, Status, VendorName,\nVendorCompanyName, EquipmentName, BuildingName, FlatNumber, EstimatedCost,\nAnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, NextMaintenanceDate,\nReceiptAttachmentUrl, Notes, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
           },
           "response": [
             {
@@ -12742,7 +12750,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: ID, Title, Description, Category, Priority, Status, VendorName,\nVendorCompanyName, EquipmentName, BuildingName, FlatNumber, EstimatedCost,\nAnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, NextMaintenanceDate,\nReceiptAttachmentUrl, Notes, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
               },
               "status": "OK",
               "code": 200,
@@ -12758,7 +12766,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,Title,Description,Category,Priority,Status,VendorName,VendorCompanyName,EquipmentName,BuildingName,FlatNumber,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,NextMaintenanceDate,ReceiptAttachmentUrl,Notes,CreatedAt\n\"c1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Water leakage in Flat 302\",\"Ceiling leak in the master bathroom. Immediate attention required.\",\"Plumbing\",\"High\",\"Open\",\"Sunil Kumar\",\"Sunil Plumbing Works\",\"\",\"Grand Plaza Towers\",\"302\",2000.00,24000.00,\"2026-08-10\",\"\",\"\",\"\",\"\",\"Contact resident before visit.\",\"2026-08-07 09:00:00\""
+              "body": "ID,Title,Description,Category,Priority,Status,VendorName,VendorCompanyName,EquipmentName,BuildingName,FlatNumber,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,NextMaintenanceDate,ReceiptAttachmentUrl,Notes,CreatedAt\n\"c1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Water leakage in Flat 302\",\"Ceiling leak in the master bathroom. Immediate attention required.\",\"Plumbing\",\"High\",\"Open\",\"Sunil Kumar\",\"Sunil Plumbing Works\",\"\",\"Grand Plaza Towers\",\"302\",2000.00,24000.00,\"2026-08-10\",\"\",\"\",\"\",\"\",\"Contact resident before visit.\",\"2026-08-07 09:00:00\"",
+              "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
             },
             {
               "name": "Error Example (403 - Missing Operations Permission)",
@@ -12821,7 +12830,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: ID, Title, Description, Category, Priority, Status, VendorName,\nVendorCompanyName, EquipmentName, BuildingName, FlatNumber, EstimatedCost,\nAnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, NextMaintenanceDate,\nReceiptAttachmentUrl, Notes, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -12833,7 +12842,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}"
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}",
+              "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
             }
           ]
         }
@@ -14156,7 +14166,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered income records to a CSV file.\nColumns: ID, IncomeEntity, IncomeType, Amount, BuildingName, FlatNumber, PaymentDate,\nPaymentMethod, TransactionReference, Status, Notes, CreatedAt."
+            "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
           },
           "response": [
             {
@@ -14210,7 +14220,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered income records to a CSV file.\nColumns: ID, IncomeEntity, IncomeType, Amount, BuildingName, FlatNumber, PaymentDate,\nPaymentMethod, TransactionReference, Status, Notes, CreatedAt."
+                "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
               },
               "status": "OK",
               "code": 200,
@@ -14226,7 +14236,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"ApartmentWise\",\"Rent\",5000.00,\"Green Park Residency\",\"302\",\"2026-08-01\",\"BankTransfer\",\"TRX-2026-0801\",\"Paid\",\"\",\"2026-08-01 10:00:00\""
+              "body": "ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"ApartmentWise\",\"Rent\",5000.00,\"Green Park Residency\",\"302\",\"2026-08-01\",\"BankTransfer\",\"TRX-2026-0801\",\"Paid\",\"\",\"2026-08-01 10:00:00\"",
+              "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
             },
             {
               "name": "Error Example (403 - Missing Finance Permission)",
@@ -14279,7 +14290,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered income records to a CSV file.\nColumns: ID, IncomeEntity, IncomeType, Amount, BuildingName, FlatNumber, PaymentDate,\nPaymentMethod, TransactionReference, Status, Notes, CreatedAt."
+                "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -14291,7 +14302,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance permission required for this route.\"\n        }\n    ]\n}",
+              "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
             }
           ]
         }
@@ -15706,7 +15718,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered expense records to a CSV file.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital\nstatus = Draft | PendingPayment | Paid\nnature = Service | Material | Others"
+            "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
           },
           "response": [
             {
@@ -15770,7 +15782,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered expense records to a CSV file.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital\nstatus = Draft | PendingPayment | Paid\nnature = Service | Material | Others"
+                "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
               },
               "status": "OK",
               "code": 200,
@@ -15786,7 +15798,8 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt\n\"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\"Utility\",\"Electricity\",\"Monthly bill\",\"BESCOM\",\"BESCOM Ltd\",\"Service\",1250.00,\"General\",\"Green Park Residency\",\"\",\"2026-08-02\",\"BankTransfer\",\"Paid\",\"REF-001\",\"\",\"\",\"\",\"\",\"\",\"\",0,\"2026-08-02 09:00:00\""
+              "body": "ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt\n\"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\"Utility\",\"Electricity\",\"Monthly bill\",\"BESCOM\",\"BESCOM Ltd\",\"Service\",1250.00,\"General\",\"Green Park Residency\",\"\",\"2026-08-02\",\"BankTransfer\",\"Paid\",\"REF-001\",\"\",\"\",\"\",\"\",\"\",\"\",0,\"2026-08-02 09:00:00\"",
+              "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
             },
             {
               "name": "Error Example (403 - Missing Finance or Operations Permission)",
@@ -15849,7 +15862,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered expense records to a CSV file.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital\nstatus = Draft | PendingPayment | Paid\nnature = Service | Material | Others"
+                "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
               },
               "status": "Forbidden",
               "code": 403,
@@ -15861,7 +15874,8 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance or Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance or Operations permission required for this route.\"\n        }\n    ]\n}",
+              "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
             }
           ]
         }
