@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -119,6 +120,88 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             .ToList();
 
         return new PaginatedList<ApartmentViewModel>(items, totalCount, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        Guid? ownerId,
+        string? apartmentType,
+        string? status,
+        CancellationToken cancellationToken)
+    {
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
+
+        var query = apartments.AsQueryable();
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (ownerId.HasValue)
+        {
+            query = query.Where(x => x.OwnerId == ownerId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(apartmentType))
+        {
+            query = query.Where(x => x.ApartmentType == apartmentType.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var cleanStatus = status.Trim().ToLower();
+            if (cleanStatus == "occupied")
+            {
+                query = query.Where(x => x.CurrentTenantId != null);
+            }
+            else if (cleanStatus == "vacant")
+            {
+                query = query.Where(x => x.CurrentTenantId == null);
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var cleanSearch = search.Trim().ToLower();
+            query = query.Where(x =>
+                (x.NestawayId != null && x.NestawayId.ToLower().Contains(cleanSearch)) ||
+                (x.FlatNumber != null && x.FlatNumber.ToLower().Contains(cleanSearch)) ||
+                (x.ParkingSlot != null && x.ParkingSlot.ToLower().Contains(cleanSearch)) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
+                (ownerMap.ContainsKey(x.OwnerId) && ownerMap[x.OwnerId].ToLower().Contains(cleanSearch))
+            );
+        }
+
+        var list = query.ToList();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("ID,BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,CurrentTenantName,Notes,CreatedAt");
+
+        foreach (var a in list)
+        {
+            var bName = buildingMap.TryGetValue(a.BuildingId, out var bn) ? bn : "";
+            var oName = ownerMap.TryGetValue(a.OwnerId, out var on) ? on : "";
+            var tName = a.CurrentTenantId.HasValue && tenantMap.TryGetValue(a.CurrentTenantId.Value, out var tn) ? tn : "";
+
+            csv.AppendLine($"\"{a.Id}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(oName)}\",\"{EscapeCsv(a.NestawayId)}\",\"{EscapeCsv(a.FlatNumber)}\",{a.Floor},\"{EscapeCsv(a.ApartmentType)}\",{a.AreaSqft},{a.Bedrooms},{a.Bathrooms},{a.HasBalcony},\"{EscapeCsv(a.ParkingSlot)}\",{a.ExpectedRent},{a.MaintenanceCharge},{a.WaterCharge},\"{EscapeCsv(tName)}\",\"{EscapeCsv(a.Notes)}\",\"{a.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+        }
+
+        return Encoding.UTF8.GetBytes(csv.ToString());
+    }
+
+    private static string EscapeCsv(string? val)
+    {
+        if (string.IsNullOrEmpty(val)) return string.Empty;
+        return val.Replace("\"", "\"\"");
     }
 
     public async Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken)

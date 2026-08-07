@@ -38,6 +38,21 @@ public class OwnerController(IOwnerService ownerService, IUnitOfWork unitOfWork)
     }
 
     /// <summary>
+    /// [O-06] Exports owners to CSV with the same filters as the list endpoint.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file containing filtered owners.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] OwnerStatus? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _ownerService.ExportToCsv(search, status, cancellationToken);
+        return File(bytes, "text/csv", "owners.csv");
+    }
+
+    /// <summary>
     /// [O-02] Retrieves owner details by ID.
     /// </summary>
     [HttpGet("{id}")]

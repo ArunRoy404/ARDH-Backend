@@ -19,6 +19,13 @@ public interface IEquipmentService
 
     Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken);
 
+    Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        string? type,
+        string? status,
+        CancellationToken cancellationToken);
+
     Task Create(EquipmentCreateRequest request, CancellationToken cancellationToken);
 
     Task Update(Guid id, EquipmentUpdateRequest request, CancellationToken cancellationToken);

@@ -5876,6 +5876,136 @@
               "body": "{\n    \"success\": false,\n    \"message\": \"Owner with ID 'o1f3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Owner with ID 'o1f3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"Owner with ID 'o1f3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
             }
           ]
+        },
+        {
+          "name": "O-06. Download Owners CSV",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/owners/download-csv?search=&status=Active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "owners",
+                "download-csv"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term matching owner name, email, phone or city"
+                },
+                {
+                  "key": "status",
+                  "value": "Active",
+                  "description": "Filter by status. Exact values: Active, Inactive"
+                }
+              ]
+            },
+            "description": "Exports all filtered owners to a CSV file.\nColumns: ID, FullName, Phone, Email, City, Address, IdType, IdNumber,\nBankName, AccountNumber, IfscCode, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - CSV file)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/owners/download-csv?search=&status=Active",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "owners",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching owner name, email, phone or city"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Active",
+                      "description": "Filter by status. Exact values: Active, Inactive"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered owners to a CSV file.\nColumns: ID, FullName, Phone, Email, City, Address, IdType, IdNumber,\nBankName, AccountNumber, IfscCode, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"apartments.csv\""
+                }
+              ],
+              "cookie": [],
+              "body": "ID,FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes,CreatedAt\n\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Amit Sharma\",\"+91 9988776655\",\"amit.sharma@example.com\",\"Mumbai\",\"45, Marine Drive\",\"Aadhar\",\"2233-4455-6677\",\"HDFC Bank\",\"50100223344556\",\"HDFC0000123\",\"Active\",\"Primary owner for block B.\",\"2026-07-20 12:00:00\""
+            },
+            {
+              "name": "Error Example (403 - Missing Property Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/owners/download-csv?search=&status=Active",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "owners",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching owner name, email, phone or city"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Active",
+                      "description": "Filter by status. Exact values: Active, Inactive"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered owners to a CSV file.\nColumns: ID, FullName, Phone, Email, City, Address, IdType, IdNumber,\nBankName, AccountNumber, IfscCode, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}"
+            }
+          ]
         }
       ]
     },
@@ -6715,6 +6845,181 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": false,\n    \"message\": \"Apartment with ID 'a5c7b822-29c4-52a8-ad29-c8be5d491f32' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Apartment with ID 'a5c7b822-29c4-52a8-ad29-c8be5d491f32' was not found.\",\n            \"errorMessage\": \"Apartment with ID 'a5c7b822-29c4-52a8-ad29-c8be5d491f32' was not found.\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "AP-06. Download Apartments CSV",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/apartments/download-csv?search=&buildingId=&ownerId=&apartmentType=&status=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "apartments",
+                "download-csv"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term matching nestaway id, flat number, parking slot, building or owner name"
+                },
+                {
+                  "key": "buildingId",
+                  "value": "",
+                  "description": "Filter by building UUID"
+                },
+                {
+                  "key": "ownerId",
+                  "value": "",
+                  "description": "Filter by owner UUID"
+                },
+                {
+                  "key": "apartmentType",
+                  "value": "",
+                  "description": "Filter by apartment type (e.g. 1BHK, 2BHK, 3BHK)"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by occupancy: Occupied or Vacant"
+                }
+              ]
+            },
+            "description": "Exports all filtered apartments to a CSV file.\nColumns: ID, BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType,\nAreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent,\nMaintenanceCharge, WaterCharge, CurrentTenantName, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - CSV file)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/apartments/download-csv?search=&buildingId=&ownerId=&apartmentType=&status=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "apartments",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching nestaway id, flat number, parking slot, building or owner name"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "ownerId",
+                      "value": "",
+                      "description": "Filter by owner UUID"
+                    },
+                    {
+                      "key": "apartmentType",
+                      "value": "",
+                      "description": "Filter by apartment type (e.g. 1BHK, 2BHK, 3BHK)"
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "description": "Filter by occupancy: Occupied or Vacant"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered apartments to a CSV file.\nColumns: ID, BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType,\nAreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent,\nMaintenanceCharge, WaterCharge, CurrentTenantName, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"apartments.csv\""
+                }
+              ],
+              "cookie": [],
+              "body": "ID,BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,CurrentTenantName,Notes,CreatedAt\n\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Amit Sharma\",\"NST-7719\",\"1204-B\",12,\"3 BHK\",1450.00,3,3,True,\"P-15\",45000.00,3500.00,500.00,\"John Tenant\",\"\",\"2026-07-20 12:00:00\""
+            },
+            {
+              "name": "Error Example (403 - Missing Property Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/apartments/download-csv?search=&buildingId=&ownerId=&apartmentType=&status=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "apartments",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching nestaway id, flat number, parking slot, building or owner name"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "ownerId",
+                      "value": "",
+                      "description": "Filter by owner UUID"
+                    },
+                    {
+                      "key": "apartmentType",
+                      "value": "",
+                      "description": "Filter by apartment type (e.g. 1BHK, 2BHK, 3BHK)"
+                    },
+                    {
+                      "key": "status",
+                      "value": "",
+                      "description": "Filter by occupancy: Occupied or Vacant"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered apartments to a CSV file.\nColumns: ID, BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType,\nAreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent,\nMaintenanceCharge, WaterCharge, CurrentTenantName, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}"
             }
           ]
         }
@@ -8071,6 +8376,166 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": false,\n    \"message\": \"Move-out record with ID 'b1a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Move-out record with ID 'b1a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"Move-out record with ID 'b1a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "T-06. Download Tenants CSV",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tenants/download-csv?search=&buildingId=&apartmentId=&status=Active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tenants",
+                "download-csv"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term matching full name, phone, email, id number, building or flat number"
+                },
+                {
+                  "key": "buildingId",
+                  "value": "",
+                  "description": "Filter by building UUID"
+                },
+                {
+                  "key": "apartmentId",
+                  "value": "",
+                  "description": "Filter by apartment UUID"
+                },
+                {
+                  "key": "status",
+                  "value": "Active",
+                  "description": "Filter by status. Exact values: Active, Inactive"
+                }
+              ]
+            },
+            "description": "Exports all filtered tenants to a CSV file.\nColumns: ID, BuildingName, FlatNumber, NestawayId, FullName, Phone, Email, IdType,\nIdNumber, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit,\nEmergencyContactName, EmergencyContactPhone, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - CSV file)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/tenants/download-csv?search=&buildingId=&apartmentId=&status=Active",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "tenants",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching full name, phone, email, id number, building or flat number"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "apartmentId",
+                      "value": "",
+                      "description": "Filter by apartment UUID"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Active",
+                      "description": "Filter by status. Exact values: Active, Inactive"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered tenants to a CSV file.\nColumns: ID, BuildingName, FlatNumber, NestawayId, FullName, Phone, Email, IdType,\nIdNumber, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit,\nEmergencyContactName, EmergencyContactPhone, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"apartments.csv\""
+                }
+              ],
+              "cookie": [],
+              "body": "ID,BuildingName,FlatNumber,NestawayId,FullName,Phone,Email,IdType,IdNumber,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"1204-B\",\"NST-7719\",\"John Tenant\",\"+91 9876543210\",\"john.tenant@example.com\",\"Passport\",\"J1234567\",\"2026-05-01\",\"2026-05-01\",\"2027-04-30\",45000.00,90000.00,\"Johns Father\",\"+91 9123456780\",\"Active\",\"\",\"2026-05-01 10:00:00\""
+            },
+            {
+              "name": "Error Example (403 - Missing Property Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/tenants/download-csv?search=&buildingId=&apartmentId=&status=Active",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "tenants",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching full name, phone, email, id number, building or flat number"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "apartmentId",
+                      "value": "",
+                      "description": "Filter by apartment UUID"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Active",
+                      "description": "Filter by status. Exact values: Active, Inactive"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered tenants to a CSV file.\nColumns: ID, BuildingName, FlatNumber, NestawayId, FullName, Phone, Email, IdType,\nIdNumber, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit,\nEmergencyContactName, EmergencyContactPhone, Status, Notes, CreatedAt.\nRequires 'properties' permission (admin, property_manager or property role)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}"
             }
           ]
         }
@@ -9619,6 +10084,166 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": false,\n    \"message\": \"Equipment with ID 'e1a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Equipment with ID 'e1a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"Equipment with ID 'e1a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "E-07. Download Equipment CSV",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/equipment/download-csv?search=&buildingId=&type=Lift&status=Operational",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "equipment",
+                "download-csv"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term matching name, brand, model, serial number, notes or building name"
+                },
+                {
+                  "key": "buildingId",
+                  "value": "",
+                  "description": "Filter by building UUID"
+                },
+                {
+                  "key": "type",
+                  "value": "Lift",
+                  "description": "Filter by equipment type (e.g. Lift, Generator, AC, Pump)"
+                },
+                {
+                  "key": "status",
+                  "value": "Operational",
+                  "description": "Filter by status (e.g. Operational, UnderMaintenance, OutOfService)"
+                }
+              ]
+            },
+            "description": "Exports all filtered equipment to a CSV file.\nColumns: ID, BuildingName, Name, Type, Brand, Model, SerialNumber,\nInstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - CSV file)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/equipment/download-csv?search=&buildingId=&type=Lift&status=Operational",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equipment",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching name, brand, model, serial number, notes or building name"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "type",
+                      "value": "Lift",
+                      "description": "Filter by equipment type (e.g. Lift, Generator, AC, Pump)"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Operational",
+                      "description": "Filter by status (e.g. Operational, UnderMaintenance, OutOfService)"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered equipment to a CSV file.\nColumns: ID, BuildingName, Name, Type, Brand, Model, SerialNumber,\nInstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"apartments.csv\""
+                }
+              ],
+              "cookie": [],
+              "body": "ID,BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl,CreatedAt\n\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Passenger Lift 1\",\"Lift\",\"OTIS\",\"Gen2\",\"LFT-8812\",\"2025-01-15\",\"2027-01-15\",\"Operational\",\"Annual maintenance done.\",\"\",\"2026-07-20 12:00:00\""
+            },
+            {
+              "name": "Error Example (403 - Missing Operations Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/equipment/download-csv?search=&buildingId=&type=Lift&status=Operational",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equipment",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching name, brand, model, serial number, notes or building name"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "type",
+                      "value": "Lift",
+                      "description": "Filter by equipment type (e.g. Lift, Generator, AC, Pump)"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Operational",
+                      "description": "Filter by status (e.g. Operational, UnderMaintenance, OutOfService)"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered equipment to a CSV file.\nColumns: ID, BuildingName, Name, Type, Brand, Model, SerialNumber,\nInstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}"
             }
           ]
         }
@@ -11991,6 +12616,226 @@
               "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
+        },
+        {
+          "name": "M-09. Download Maintenance CSV",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/maintenance/download-csv?search=&status=Open&priority=High&category=Plumbing",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "maintenance",
+                "download-csv"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search term matching title, description, notes, building, flat, vendor or equipment"
+                },
+                {
+                  "key": "status",
+                  "value": "Open",
+                  "description": "Filter by status. Exact values: Open, InProgress, Complete, Cancelled"
+                },
+                {
+                  "key": "priority",
+                  "value": "High",
+                  "description": "Filter by priority. Exact values: Low, Medium, High, Critical"
+                },
+                {
+                  "key": "category",
+                  "value": "Plumbing",
+                  "description": "Filter by free-form category (e.g. Plumbing, Electrical, Lift)"
+                },
+                {
+                  "key": "buildingId",
+                  "value": "",
+                  "description": "Filter by building UUID"
+                },
+                {
+                  "key": "vendorId",
+                  "value": "",
+                  "description": "Filter by vendor UUID"
+                },
+                {
+                  "key": "equipmentId",
+                  "value": "",
+                  "description": "Filter by equipment UUID"
+                },
+                {
+                  "key": "apartmentId",
+                  "value": "",
+                  "description": "Filter by apartment UUID"
+                }
+              ]
+            },
+            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: ID, Title, Description, Category, Priority, Status, VendorName,\nVendorCompanyName, EquipmentName, BuildingName, FlatNumber, EstimatedCost,\nAnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, NextMaintenanceDate,\nReceiptAttachmentUrl, Notes, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - CSV file)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/maintenance/download-csv?search=&status=Open&priority=High&category=Plumbing",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "maintenance",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching title, description, notes, building, flat, vendor or equipment"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Open",
+                      "description": "Filter by status. Exact values: Open, InProgress, Complete, Cancelled"
+                    },
+                    {
+                      "key": "priority",
+                      "value": "High",
+                      "description": "Filter by priority. Exact values: Low, Medium, High, Critical"
+                    },
+                    {
+                      "key": "category",
+                      "value": "Plumbing",
+                      "description": "Filter by free-form category (e.g. Plumbing, Electrical, Lift)"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "vendorId",
+                      "value": "",
+                      "description": "Filter by vendor UUID"
+                    },
+                    {
+                      "key": "equipmentId",
+                      "value": "",
+                      "description": "Filter by equipment UUID"
+                    },
+                    {
+                      "key": "apartmentId",
+                      "value": "",
+                      "description": "Filter by apartment UUID"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: ID, Title, Description, Category, Priority, Status, VendorName,\nVendorCompanyName, EquipmentName, BuildingName, FlatNumber, EstimatedCost,\nAnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, NextMaintenanceDate,\nReceiptAttachmentUrl, Notes, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"apartments.csv\""
+                }
+              ],
+              "cookie": [],
+              "body": "ID,Title,Description,Category,Priority,Status,VendorName,VendorCompanyName,EquipmentName,BuildingName,FlatNumber,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,NextMaintenanceDate,ReceiptAttachmentUrl,Notes,CreatedAt\n\"c1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Water leakage in Flat 302\",\"Ceiling leak in the master bathroom. Immediate attention required.\",\"Plumbing\",\"High\",\"Open\",\"Sunil Kumar\",\"Sunil Plumbing Works\",\"\",\"Grand Plaza Towers\",\"302\",2000.00,24000.00,\"2026-08-10\",\"\",\"\",\"\",\"\",\"Contact resident before visit.\",\"2026-08-07 09:00:00\""
+            },
+            {
+              "name": "Error Example (403 - Missing Operations Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/maintenance/download-csv?search=&status=Open&priority=High&category=Plumbing",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "maintenance",
+                    "download-csv"
+                  ],
+                  "query": [
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching title, description, notes, building, flat, vendor or equipment"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Open",
+                      "description": "Filter by status. Exact values: Open, InProgress, Complete, Cancelled"
+                    },
+                    {
+                      "key": "priority",
+                      "value": "High",
+                      "description": "Filter by priority. Exact values: Low, Medium, High, Critical"
+                    },
+                    {
+                      "key": "category",
+                      "value": "Plumbing",
+                      "description": "Filter by free-form category (e.g. Plumbing, Electrical, Lift)"
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "",
+                      "description": "Filter by building UUID"
+                    },
+                    {
+                      "key": "vendorId",
+                      "value": "",
+                      "description": "Filter by vendor UUID"
+                    },
+                    {
+                      "key": "equipmentId",
+                      "value": "",
+                      "description": "Filter by equipment UUID"
+                    },
+                    {
+                      "key": "apartmentId",
+                      "value": "",
+                      "description": "Filter by apartment UUID"
+                    }
+                  ]
+                },
+                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: ID, Title, Description, Category, Priority, Status, VendorName,\nVendorCompanyName, EquipmentName, BuildingName, FlatNumber, EstimatedCost,\nAnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, NextMaintenanceDate,\nReceiptAttachmentUrl, Notes, CreatedAt.\nRequires 'operations' permission (admin, property_manager or operations role)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}"
+            }
+          ]
         }
       ]
     },
@@ -13369,15 +14214,19 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "json",
+              "_postman_previewlanguage": "text",
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "application/json"
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"income_records.csv\""
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"CSV file exported and downloaded successfully.\",\n    \"data\": null\n}"
+              "body": "ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"ApartmentWise\",\"Rent\",5000.00,\"Green Park Residency\",\"302\",\"2026-08-01\",\"BankTransfer\",\"TRX-2026-0801\",\"Paid\",\"\",\"2026-08-01 10:00:00\""
             },
             {
               "name": "Error Example (403 - Missing Finance Permission)",
@@ -14845,11 +15694,15 @@
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "application/json"
+                  "value": "text/csv"
+                },
+                {
+                  "key": "Content-Disposition",
+                  "value": "attachment; filename=\"expense_records.csv\""
                 }
               ],
               "cookie": [],
-              "body": "\"ID\",\"Category\",\"ExpenseHead\",\"SpecificItem\",\"VendorName\",\"VendorCompanyName\",\"Nature\",\"Amount\",\"Entity\",\"BuildingName\",\"FlatNumber\",\"ExpenseDate\",\"PaymentMethod\",\"Status\",\"Reference\",\"Description\",\"TankerNumber\",\"TimeOfDelivery\",\"DeliveryDriverName\",\"ManagerInAttendance\",\"LitersFilled\",\"CreatedAt\"\n\"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\"Utility\",\"Electricity Bill\",\"Common area lights\",\"BESCOM\",\"Bangalore Electricity\",\"Service\",12500.00,\"BuildingLevel\",\"Grand Plaza Towers\",\"\",\"2026-08-05\",\"BankTransfer\",\"Paid\",\"TXN123456789\",\"April bill\",\"\",\"\",\"\",\"\",\"\",\"2026-08-05 15:00:00\""
+              "body": "ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt\n\"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\"Utility\",\"Electricity\",\"Monthly bill\",\"BESCOM\",\"BESCOM Ltd\",\"Service\",1250.00,\"General\",\"Green Park Residency\",\"\",\"2026-08-02\",\"BankTransfer\",\"Paid\",\"REF-001\",\"\",\"\",\"\",\"\",\"\",\"\",0,\"2026-08-02 09:00:00\""
             },
             {
               "name": "Error Example (403 - Missing Finance or Operations Permission)",

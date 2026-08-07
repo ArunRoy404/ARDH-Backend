@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -147,6 +148,100 @@ public class MaintenanceRequestService(
         }).ToList();
 
         return new PaginatedList<MaintenanceRequestViewModel>(items, totalItems, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        MaintenanceStatus? status,
+        MaintenancePriority? priority,
+        string? category,
+        Guid? buildingId,
+        Guid? vendorId,
+        Guid? equipmentId,
+        Guid? apartmentId,
+        CancellationToken cancellationToken)
+    {
+        var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
+        var equipmentMap = equipmentList.ToDictionary(e => e.Id, e => e.Name);
+
+        var query = requests.AsQueryable();
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (priority.HasValue)
+        {
+            query = query.Where(x => x.Priority == priority.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            var cleanCategory = category.Trim();
+            query = query.Where(x => x.Category.Equals(cleanCategory, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (vendorId.HasValue)
+        {
+            query = query.Where(x => x.VendorId == vendorId.Value);
+        }
+
+        if (equipmentId.HasValue)
+        {
+            query = query.Where(x => x.EquipmentId == equipmentId.Value);
+        }
+
+        if (apartmentId.HasValue)
+        {
+            query = query.Where(x => x.ApartmentId == apartmentId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchLower = search.Trim().ToLower();
+            query = query.Where(x =>
+                x.Title.ToLower().Contains(searchLower) ||
+                x.Description.ToLower().Contains(searchLower) ||
+                (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(searchLower)) ||
+                (x.ApartmentId.HasValue && apartmentMap.ContainsKey(x.ApartmentId.Value) && apartmentMap[x.ApartmentId.Value].ToLower().Contains(searchLower)) ||
+                (x.VendorId.HasValue && vendorMap.ContainsKey(x.VendorId.Value) && (vendorMap[x.VendorId.Value].Name.ToLower().Contains(searchLower) || vendorMap[x.VendorId.Value].CompanyName.ToLower().Contains(searchLower))) ||
+                (x.EquipmentId.HasValue && equipmentMap.ContainsKey(x.EquipmentId.Value) && equipmentMap[x.EquipmentId.Value].ToLower().Contains(searchLower))
+            );
+        }
+
+        var list = query.OrderByDescending(x => x.CreatedAt).ToList();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("ID,Title,Description,Category,Priority,Status,VendorName,VendorCompanyName,EquipmentName,BuildingName,FlatNumber,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,NextMaintenanceDate,ReceiptAttachmentUrl,Notes,CreatedAt");
+
+        foreach (var r in list)
+        {
+            var vName = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v) ? v.Name : "";
+            var vComp = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v2) ? v2.CompanyName : "";
+            var eName = r.EquipmentId.HasValue && equipmentMap.TryGetValue(r.EquipmentId.Value, out var en) ? en : "";
+            var bName = buildingMap.TryGetValue(r.BuildingId, out var bn) ? bn : "";
+            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
+            var nextDate = GetNextMaintenanceDate(r.StartDate, r.RecurrenceFrequency);
+
+            csv.AppendLine($"\"{r.Id}\",\"{EscapeCsv(r.Title)}\",\"{EscapeCsv(r.Description)}\",\"{EscapeCsv(r.Category)}\",\"{r.Priority}\",\"{r.Status}\",\"{EscapeCsv(vName)}\",\"{EscapeCsv(vComp)}\",\"{EscapeCsv(eName)}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",{r.EstimatedCost},{r.AnnualCost},\"{r.ScheduledDate:yyyy-MM-dd}\",\"{r.StartDate:yyyy-MM-dd}\",\"{r.RecurrenceFrequency}\",\"{nextDate:yyyy-MM-dd}\",\"{EscapeCsv(r.ReceiptAttachmentUrl)}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+        }
+
+        return Encoding.UTF8.GetBytes(csv.ToString());
     }
 
     public async Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken)
@@ -618,6 +713,12 @@ public class MaintenanceRequestService(
             CancelledCount = cancelledCount,
             TotalCount = totalCount
         };
+    }
+
+    private static string EscapeCsv(string? val)
+    {
+        if (string.IsNullOrEmpty(val)) return string.Empty;
+        return val.Replace("\"", "\"\"");
     }
 
     /// <summary>

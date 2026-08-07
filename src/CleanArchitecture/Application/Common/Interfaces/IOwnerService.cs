@@ -11,6 +11,12 @@ public interface IOwnerService
 {
     Task<PaginatedList<OwnerViewModel>> GetPaginated(int page, int pageSize, string? search, OwnerStatus? status, CancellationToken cancellationToken);
     Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToCsv(
+        string? search,
+        OwnerStatus? status,
+        CancellationToken cancellationToken);
+
     Task Create(OwnerCreateRequest request, CancellationToken cancellationToken);
     Task Update(Guid id, OwnerUpdateRequest request, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);

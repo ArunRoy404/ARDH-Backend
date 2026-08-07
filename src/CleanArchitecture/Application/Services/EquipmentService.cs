@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -99,6 +100,69 @@ public class EquipmentService(
         }).ToList();
 
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        string? type,
+        string? status,
+        CancellationToken cancellationToken)
+    {
+        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+
+        var query = equipmentList.AsQueryable();
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(type))
+        {
+            var typeLower = type.Trim().ToLower();
+            query = query.Where(x => x.Type.ToLower() == typeLower);
+        }
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var statusLower = status.Trim().ToLower();
+            query = query.Where(x => x.Status.ToLower() == statusLower);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchLower = search.Trim().ToLower();
+            query = query.Where(x =>
+                x.Name.ToLower().Contains(searchLower) ||
+                x.Brand.ToLower().Contains(searchLower) ||
+                (x.Model != null && x.Model.ToLower().Contains(searchLower)) ||
+                (x.SerialNumber != null && x.SerialNumber.ToLower().Contains(searchLower)) ||
+                (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(searchLower)));
+        }
+
+        var list = query.OrderByDescending(x => x.CreatedAt).ToList();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("ID,BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl,CreatedAt");
+
+        foreach (var e in list)
+        {
+            var bName = buildingMap.TryGetValue(e.BuildingId, out var bn) ? bn : "";
+
+            csv.AppendLine($"\"{e.Id}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(e.Name)}\",\"{EscapeCsv(e.Type)}\",\"{EscapeCsv(e.Brand)}\",\"{EscapeCsv(e.Model)}\",\"{EscapeCsv(e.SerialNumber)}\",\"{e.InstallDate:yyyy-MM-dd}\",\"{e.WarrantyExpiryDate:yyyy-MM-dd}\",\"{EscapeCsv(e.Status)}\",\"{EscapeCsv(e.Notes)}\",\"{EscapeCsv(e.AttachmentUrl)}\",\"{e.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+        }
+
+        return Encoding.UTF8.GetBytes(csv.ToString());
+    }
+
+    private static string EscapeCsv(string? val)
+    {
+        if (string.IsNullOrEmpty(val)) return string.Empty;
+        return val.Replace("\"", "\"\"");
     }
 
     public async Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken)

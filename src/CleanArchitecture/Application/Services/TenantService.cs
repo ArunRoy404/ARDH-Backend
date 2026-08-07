@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -106,6 +107,73 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             .ToList();
 
         return new PaginatedList<TenantViewModel>(items, totalCount, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        Guid? apartmentId,
+        TenantStatus? status,
+        CancellationToken cancellationToken)
+    {
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => (a.FlatNumber, a.NestawayId));
+
+        var query = tenants.AsQueryable();
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (apartmentId.HasValue)
+        {
+            query = query.Where(x => x.ApartmentId == apartmentId.Value);
+        }
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var cleanSearch = search.Trim().ToLower();
+            query = query.Where(x =>
+                x.FullName.ToLower().Contains(cleanSearch) ||
+                x.Phone.ToLower().Contains(cleanSearch) ||
+                x.Email.ToLower().Contains(cleanSearch) ||
+                x.IdNumber.ToLower().Contains(cleanSearch) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
+                (apartmentMap.ContainsKey(x.ApartmentId) && apartmentMap[x.ApartmentId].FlatNumber.ToLower().Contains(cleanSearch))
+            );
+        }
+
+        var list = query.ToList();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("ID,BuildingName,FlatNumber,NestawayId,FullName,Phone,Email,IdType,IdNumber,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes,CreatedAt");
+
+        foreach (var t in list)
+        {
+            var bName = buildingMap.TryGetValue(t.BuildingId, out var bn) ? bn : "";
+            var flat = apartmentMap.TryGetValue(t.ApartmentId, out var ai) ? ai.FlatNumber : "";
+            var nest = apartmentMap.TryGetValue(t.ApartmentId, out ai) ? ai.NestawayId : "";
+
+            csv.AppendLine($"\"{t.Id}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(flat)}\",\"{EscapeCsv(nest)}\",\"{EscapeCsv(t.FullName)}\",\"{EscapeCsv(t.Phone)}\",\"{EscapeCsv(t.Email)}\",\"{t.IdType}\",\"{EscapeCsv(t.IdNumber)}\",\"{t.MoveInDate:yyyy-MM-dd}\",\"{t.LeaseStartDate:yyyy-MM-dd}\",\"{t.LeaseEndDate:yyyy-MM-dd}\",{t.MonthlyRent},{t.SecurityDeposit},\"{EscapeCsv(t.EmergencyContactName)}\",\"{EscapeCsv(t.EmergencyContactPhone)}\",\"{t.Status}\",\"{EscapeCsv(t.Notes)}\",\"{t.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+        }
+
+        return Encoding.UTF8.GetBytes(csv.ToString());
+    }
+
+    private static string EscapeCsv(string? val)
+    {
+        if (string.IsNullOrEmpty(val)) return string.Empty;
+        return val.Replace("\"", "\"\"");
     }
 
     public async Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken)

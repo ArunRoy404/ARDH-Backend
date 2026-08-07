@@ -119,15 +119,22 @@ Binary results (PDF/CSV/upload) bypass the wrapper.
 | Settings | `/api/settings` | GET, GET public (anon), PUT, PUT password | password change requires current |
 | Deleted History | `/api/deleted-history` | GET list, GET by id, POST restore, DELETE permanent | permanent delete requires admin pw |
 | Upload | `/api/upload` | image, document, id-proof, DELETE file | local storage |
-| Owners | `/api/owners` | CRUD + filters | uniqueness on name/phone/email/id/account |
-| Apartments | `/api/apartments` | CRUD + filters (status=Occupied/Vacant) | flat-number unique per building |
-| Tenants | `/api/tenants` | CRUD + move-out records (CRUD) | apartment must be vacant to move in |
+| Owners | `/api/owners` | CRUD + filters + CSV export | uniqueness on name/phone/email/id/account |
+| Apartments | `/api/apartments` | CRUD + filters (status=Occupied/Vacant) + CSV export | flat-number unique per building |
+| Tenants | `/api/tenants` | CRUD + move-out records (CRUD) + CSV export | apartment must be vacant to move in |
 | Vendors | `/api/vendors` | CRUD | vendorType free text |
-| Equipment | `/api/equipment` | CRUD + PATCH status | status free text |
+| Equipment | `/api/equipment` | CRUD + PATCH status + CSV export | status free text |
 | AMC Contracts | `/api/amc-contracts` | CRUD + stats | unique amcCode & contractNumber |
-| Maintenance | `/api/maintenance` | CRUD + stats + PATCH status + PATCH assign | recurrence fields |
+| Maintenance | `/api/maintenance` | CRUD + stats + PATCH status + PATCH assign + CSV export | recurrence fields |
 | Income | `/api/income` | CRUD + PATCH status + PDF receipt + CSV export | apartment must be occupied; duplicate guard |
 | Expenses | `/api/expenses` | CRUD + PATCH status + CSV export | tanker validation; duplicate guard |
+
+**CSV export endpoints (7 total):** `GET /api/{owners|apartments|tenants|equipment|maintenance|income|expenses}/download-csv` —
+each returns `File(bytes, "text/csv", "<module>.csv")` with the same query filters as its list
+endpoint. Owners/Apartments/Tenants require `properties` permission; Equipment/Maintenance
+require `operations`; Income/Expenses require `finance` (or `finance|operations` for expenses).
+CSV columns are the flat, human-readable projection of each ViewModel (IDs + resolved names).
+(Added 2026-08-07 — see §7.)
 | Notifications | `/api/notifications` | list, count, mark-read, read-all, delete, clear-all | per-user recipients |
 | Activities | `/api/activities` | list (paged, optional building filter) | read-only |
 | Dashboard | `/api/dashboard` | stats, occupancy, expense-breakdown, recent-payments, open-maintenance | optional buildingId |
@@ -227,3 +234,30 @@ deleted_histories`
 - ✅ All 190 endpoint checks pass against the fixed build.
 - ✅ Live server restarted on `http://localhost:5240` running the fixed code with a pristine DB.
 - 📄 `DATABASE_GUIDE.md` — 4-part terminal guide (seed / migrate / wipe / add user).
+
+## 8. CSV Export Feature (added 2026-08-07)
+
+Seven modules now expose a `GET /api/<module>/download-csv` endpoint that streams a `text/csv`
+file with the same filters as their list endpoint:
+
+| Module | Endpoint | File | Permission |
+| :--- | :--- | :--- | :--- |
+| Owners | `/api/owners/download-csv` | `owners.csv` | properties |
+| Apartments | `/api/apartments/download-csv` | `apartments.csv` | properties |
+| Tenants | `/api/tenants/download-csv` | `tenants.csv` | properties |
+| Equipment | `/api/equipment/download-csv` | `equipment.csv` | operations |
+| Maintenance | `/api/maintenance/download-csv` | `maintenance_requests.csv` | operations |
+| Income | `/api/income/download-csv` | `income_records.csv` | finance |
+| Expenses | `/api/expenses/download-csv` | `expense_records.csv` | finance or operations |
+
+Implementation mirrors the existing Income/Expenses pattern: each service exposes
+`ExportToCsv(...)` returning `byte[]` (UTF-8, quoted fields, `"` escaped), each controller has a
+`[HttpGet("download-csv")]` action, and every field is quoted so commas/newlines inside values
+are safe. CSV exports are **GET** requests, so the read-only `viewer` role can download them.
+
+All 7 endpoints were verified live against a freshly seeded DB (200 + `text/csv` + attachment
+header; filtered variants with search/status/type also pass; unauthenticated → 401).
+
+The Postman collection was updated with **5 new requests** (O-06, AP-06, T-06, E-07, M-09) each
+with full query-parameter docs + success (200 CSV) and error (403 permission) response examples,
+and the existing I-08/EX-07 CSV examples were corrected to show real CSV responses.

@@ -44,6 +44,28 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     }
 
     /// <summary>
+    /// [M-09] Exports maintenance requests to CSV with the same filters as the list endpoint.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file containing filtered maintenance requests.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] MaintenanceStatus? status = null,
+        [FromQuery] MaintenancePriority? priority = null,
+        [FromQuery] string? category = null,
+        [FromQuery] Guid? buildingId = null,
+        [FromQuery] Guid? vendorId = null,
+        [FromQuery] Guid? equipmentId = null,
+        [FromQuery] Guid? apartmentId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _maintenanceRequestService.ExportToCsv(
+            search, status, priority, category, buildingId, vendorId, equipmentId, apartmentId, cancellationToken);
+        return File(bytes, "text/csv", "maintenance_requests.csv");
+    }
+
+    /// <summary>
     /// [M-08] Retrieves maintenance request statistics.
     /// </summary>
     [HttpGet("stats")]

@@ -24,6 +24,17 @@ public interface IMaintenanceRequestService
 
     Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken);
 
+    Task<byte[]> ExportToCsv(
+        string? search,
+        MaintenanceStatus? status,
+        MaintenancePriority? priority,
+        string? category,
+        Guid? buildingId,
+        Guid? vendorId,
+        Guid? equipmentId,
+        Guid? apartmentId,
+        CancellationToken cancellationToken);
+
     Task Create(MaintenanceRequestCreateRequest request, CancellationToken cancellationToken);
 
     Task Update(Guid id, MaintenanceRequestUpdateRequest request, CancellationToken cancellationToken);

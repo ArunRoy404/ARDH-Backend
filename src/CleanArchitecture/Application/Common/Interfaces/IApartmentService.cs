@@ -19,6 +19,15 @@ public interface IApartmentService
         CancellationToken cancellationToken);
 
     Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        Guid? ownerId,
+        string? apartmentType,
+        string? status,
+        CancellationToken cancellationToken);
+
     Task Create(ApartmentCreateRequest request, CancellationToken cancellationToken);
     Task Update(Guid id, ApartmentUpdateRequest request, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);

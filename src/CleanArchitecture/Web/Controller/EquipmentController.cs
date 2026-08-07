@@ -38,6 +38,23 @@ public class EquipmentController(IEquipmentService equipmentService, IUnitOfWork
     }
 
     /// <summary>
+    /// [E-07] Exports equipment to CSV with the same filters as the list endpoint.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file containing filtered equipment.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] Guid? buildingId = null,
+        [FromQuery] string? type = null,
+        [FromQuery] string? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _equipmentService.ExportToCsv(search, buildingId, type, status, cancellationToken);
+        return File(bytes, "text/csv", "equipment.csv");
+    }
+
+    /// <summary>
     /// [E-02] Retrieves single equipment details by ID.
     /// </summary>
     [HttpGet("{id:guid}")]

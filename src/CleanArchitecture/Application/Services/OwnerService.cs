@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -69,6 +70,49 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
             .ToList();
 
         return new PaginatedList<OwnerViewModel>(items, totalCount, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        OwnerStatus? status,
+        CancellationToken cancellationToken)
+    {
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+        var query = owners.AsQueryable();
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var cleanSearch = search.Trim().ToLower();
+            query = query.Where(x =>
+                (x.FullName != null && x.FullName.ToLower().Contains(cleanSearch)) ||
+                (x.Email != null && x.Email.ToLower().Contains(cleanSearch)) ||
+                (x.Phone != null && x.Phone.ToLower().Contains(cleanSearch)) ||
+                (x.City != null && x.City.ToLower().Contains(cleanSearch))
+            );
+        }
+
+        var list = query.ToList();
+
+        var csv = new StringBuilder();
+        csv.AppendLine("ID,FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes,CreatedAt");
+
+        foreach (var o in list)
+        {
+            csv.AppendLine($"\"{o.Id}\",\"{EscapeCsv(o.FullName)}\",\"{EscapeCsv(o.Phone)}\",\"{EscapeCsv(o.Email)}\",\"{EscapeCsv(o.City)}\",\"{EscapeCsv(o.Address)}\",\"{o.IdType}\",\"{EscapeCsv(o.IdNumber)}\",\"{EscapeCsv(o.BankName)}\",\"{EscapeCsv(o.AccountNumber)}\",\"{EscapeCsv(o.IfscCode)}\",\"{o.Status}\",\"{EscapeCsv(o.Notes)}\",\"{o.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+        }
+
+        return Encoding.UTF8.GetBytes(csv.ToString());
+    }
+
+    private static string EscapeCsv(string? val)
+    {
+        if (string.IsNullOrEmpty(val)) return string.Empty;
+        return val.Replace("\"", "\"\"");
     }
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)
