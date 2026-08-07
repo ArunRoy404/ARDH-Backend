@@ -128,7 +128,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
     private static readonly Dictionary<UserRole, UserPermission[]> DefaultRolePermissions = new()
     {
         [UserRole.admin] = Enum.GetValues<UserPermission>(),
-        [UserRole.viewer] = Enum.GetValues<UserPermission>(),
+        // Viewer is read-only: gets all module permissions for viewing but never admin.
+        [UserRole.viewer] = [UserPermission.dashboard, UserPermission.properties, UserPermission.finance, UserPermission.operations],
         [UserRole.property_manager] = [UserPermission.operations],
         [UserRole.accountant] = [UserPermission.finance],
     };
