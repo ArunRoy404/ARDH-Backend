@@ -16644,7 +16644,18 @@
               ],
               "query": []
             },
-            "description": "Uploads a CSV file to the server and returns its URL. Pass this URL to the bulk-upload start endpoint.\nAllowed format: .csv only.\nRequires admin or properties permission (same as the other upload endpoints)."
+            "description": "Uploads a CSV file to the server and returns its URL. Pass this URL to the bulk-upload start endpoint.\nAllowed format: .csv only.\nRequires admin or properties permission (same as the other upload endpoints).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [],
+                  "description": "Select the CSV file to upload"
+                }
+              ]
+            }
           },
           "response": [
             {
@@ -16725,7 +16736,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -16737,7 +16753,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'apartments'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-apartments-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'."
+                "description": "Starts a background bulk upload for 'apartments'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-apartments-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"apartments\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -16747,7 +16767,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -16757,18 +16782,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "apartments",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"apartments\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -16789,8 +16807,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -16800,18 +16823,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "apartments",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"apartments\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",
@@ -17122,7 +17138,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -17134,7 +17155,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'tenants'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-tenants-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'."
+                "description": "Starts a background bulk upload for 'tenants'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-tenants-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"tenants\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -17144,7 +17169,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -17154,18 +17184,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "tenants",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"tenants\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -17186,8 +17209,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -17197,18 +17225,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "tenants",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"tenants\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",
@@ -17519,7 +17540,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -17531,7 +17557,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'owners'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-owners-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'."
+                "description": "Starts a background bulk upload for 'owners'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-owners-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"owners\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -17541,7 +17571,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -17551,18 +17586,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "owners",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"owners\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -17583,8 +17611,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -17594,18 +17627,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "owners",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"owners\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",
@@ -17916,7 +17942,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -17928,7 +17959,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'income'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-income-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'finance' permission."
+                "description": "Starts a background bulk upload for 'income'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-income-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'finance' permission.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"income\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -17938,7 +17973,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -17948,18 +17988,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "income",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"income\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -17980,8 +18013,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -17991,18 +18029,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "income",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"income\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",
@@ -18313,7 +18344,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -18325,7 +18361,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'expenses'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-expenses-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'finance' permission or 'operations'."
+                "description": "Starts a background bulk upload for 'expenses'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-expenses-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'finance' permission or 'operations'.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"expenses\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -18335,7 +18375,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -18345,18 +18390,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "expenses",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"expenses\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -18377,8 +18415,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -18388,18 +18431,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "expenses",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"expenses\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",
@@ -18710,7 +18746,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -18722,7 +18763,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'maintenance'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-maintenance-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'."
+                "description": "Starts a background bulk upload for 'maintenance'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-maintenance-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"maintenance\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -18732,7 +18777,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -18742,18 +18792,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "maintenance",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"maintenance\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -18774,8 +18817,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -18785,18 +18833,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "maintenance",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"maintenance\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",
@@ -19107,7 +19148,12 @@
                   "type": "noauth"
                 },
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
                 "url": {
                   "raw": "{{baseUrl}}/api/bulk-upload",
                   "host": [
@@ -19119,7 +19165,11 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'equipment'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-equipment-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'."
+                "description": "Starts a background bulk upload for 'equipment'. First upload the CSV via POST /api/upload/csv, then pass the returned URL.\nProcessing runs in the background; poll BU-equipment-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed CSV (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"equipment\",\n  \"fileUrl\": \"{{baseUrl}}/image/<uploaded-csv-file>.csv\"\n}"
+                }
               },
               "response": [
                 {
@@ -19129,7 +19179,12 @@
                       "type": "noauth"
                     },
                     "method": "POST",
-                    "header": [],
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -19139,18 +19194,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "equipment",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"equipment\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "OK",
@@ -19171,8 +19219,13 @@
                     "auth": {
                       "type": "noauth"
                     },
-                    "method": "GET",
-                    "header": [],
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
                     "url": {
                       "raw": "{{baseUrl}}/api/bulk-upload",
                       "host": [
@@ -19182,18 +19235,11 @@
                         "api",
                         "bulk-upload"
                       ],
-                      "query": [
-                        {
-                          "key": "module",
-                          "value": "equipment",
-                          "description": "Module to bulk upload. Exact values: apartments, tenants, owners, income, expenses, maintenance, equipment"
-                        },
-                        {
-                          "key": "fileUrl",
-                          "value": "{{baseUrl}}/image/<uploaded-csv-file>.csv",
-                          "description": "URL returned by POST /api/upload/csv for the CSV file"
-                        }
-                      ]
+                      "query": []
+                    },
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"module\": \"equipment\",\n  \"fileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n}"
                     }
                   },
                   "status": "Forbidden",

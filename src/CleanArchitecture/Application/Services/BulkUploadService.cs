@@ -68,12 +68,19 @@ public class BulkUploadService(
             throw BulkUploadException.BadRequestException("FileUrl is required. Upload the CSV file first (POST /api/upload/csv) and pass the returned URL.");
         }
 
+        var fileUrl = request.FileUrl.Trim();
+        var matches = System.Text.RegularExpressions.Regex.Matches(fileUrl, @"https?://", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matches.Count > 1)
+        {
+            fileUrl = fileUrl.Substring(0, matches[1].Index);
+        }
+
         var record = new BulkUpload
         {
             Id = Guid.NewGuid(),
             Module = moduleName,
             Status = BulkUploadStatus.Processing.ToString(),
-            OriginalFileUrl = request.FileUrl.Trim(),
+            OriginalFileUrl = fileUrl,
             TotalCount = 0,
             SuccessCount = 0,
             FailedCount = 0,
@@ -109,9 +116,26 @@ public class BulkUploadService(
         _unitOfWork.BulkUploadRepository.Update(record); // entity loaded AsNoTracking -> re-attach
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        List<string> headers = null;
+        List<List<string>> rows = null;
+
         try
         {
-            var (headers, rows) = ReadCsv(record.OriginalFileUrl);
+            (headers, rows) = ReadCsv(record.OriginalFileUrl);
+        }
+        catch (Exception ex)
+        {
+            record.GlobalError = ToReadableError(ex);
+            record.Status = BulkUploadStatus.Failed.ToString();
+            record.FinishedAt = DateTime.UtcNow;
+            record.UpdatedAt = DateTime.UtcNow;
+            _unitOfWork.BulkUploadRepository.Update(record);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        try
+        {
             var headerIndex = CsvHelper.BuildHeaderIndex(headers);
 
             // Global check: mandatory columns must be present
@@ -121,9 +145,26 @@ public class BulkUploadService(
 
             if (missing.Count > 0)
             {
-                record.GlobalError =
-                    $"Missing required column(s): {string.Join(", ", missing)}. Download the template for '{record.Module}' to see the exact column names.";
+                var globalError = $"Missing required column(s): {string.Join(", ", missing)}. Download the template for '{record.Module}' to see the exact column names.";
+                record.GlobalError = globalError;
                 record.Status = BulkUploadStatus.Failed.ToString();
+
+                var processed = new List<List<string>> { headers.Concat(new[] { "status", "error" }).ToList() };
+                var total = 0;
+                foreach (var row in rows.Skip(1))
+                {
+                    if (row.All(string.IsNullOrWhiteSpace))
+                    {
+                        continue;
+                    }
+                    total++;
+                    processed.Add(PadAndAppendStatus(row, headers.Count, "Failed", globalError));
+                }
+
+                record.TotalCount = total;
+                record.SuccessCount = 0;
+                record.FailedCount = total;
+                record.ProcessedFileUrl = await WriteProcessedCsvAsync(record.Id, processed, cancellationToken);
                 record.FinishedAt = DateTime.UtcNow;
                 record.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.BulkUploadRepository.Update(record);
@@ -131,9 +172,9 @@ public class BulkUploadService(
                 return;
             }
 
-            var processed = new List<List<string>> { headers.Concat(new[] { "status", "error" }).ToList() };
+            var processedList = new List<List<string>> { headers.Concat(new[] { "status", "error" }).ToList() };
 
-            var total = 0;
+            var totalRows = 0;
             var success = 0;
             var failed = 0;
 
@@ -145,14 +186,14 @@ public class BulkUploadService(
                     continue;
                 }
 
-                total++;
+                totalRows++;
 
                 var (request, errors) = ParseRow(record.Module, row, headerIndex);
 
                 if (request == null || errors.Count > 0)
                 {
                     failed++;
-                    processed.Add(row.Concat(new[] { "Failed", string.Join("; ", errors) }).ToList());
+                    processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", string.Join("; ", errors)));
                     continue;
                 }
 
@@ -160,18 +201,18 @@ public class BulkUploadService(
                 {
                     await CreateRecord(record.Module, request, cancellationToken);
                     success++;
-                    processed.Add(row.Concat(new[] { "Success", string.Empty }).ToList());
+                    processedList.Add(PadAndAppendStatus(row, headers.Count, "Success", string.Empty));
                 }
                 catch (Exception ex)
                 {
                     failed++;
-                    processed.Add(row.Concat(new[] { "Failed", ToReadableError(ex) }).ToList());
+                    processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", ToReadableError(ex)));
                 }
             }
 
-            var processedUrl = await WriteProcessedCsvAsync(record.Id, processed, cancellationToken);
+            var processedUrl = await WriteProcessedCsvAsync(record.Id, processedList, cancellationToken);
 
-            record.TotalCount = total;
+            record.TotalCount = totalRows;
             record.SuccessCount = success;
             record.FailedCount = failed;
             record.ProcessedFileUrl = processedUrl;
@@ -719,13 +760,30 @@ public class BulkUploadService(
 
     private static BulkUploadViewModel ToViewModel(BulkUpload bulkUpload)
     {
+        var originalFileUrl = bulkUpload.OriginalFileUrl;
+        var matchesOriginal = System.Text.RegularExpressions.Regex.Matches(originalFileUrl, @"https?://", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (matchesOriginal.Count > 1)
+        {
+            originalFileUrl = originalFileUrl.Substring(0, matchesOriginal[1].Index);
+        }
+
+        var processedFileUrl = bulkUpload.ProcessedFileUrl;
+        if (!string.IsNullOrEmpty(processedFileUrl))
+        {
+            var matchesProcessed = System.Text.RegularExpressions.Regex.Matches(processedFileUrl, @"https?://", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (matchesProcessed.Count > 1)
+            {
+                processedFileUrl = processedFileUrl.Substring(0, matchesProcessed[1].Index);
+            }
+        }
+
         return new BulkUploadViewModel
         {
             Id = bulkUpload.Id,
             Module = ToModuleEnum(bulkUpload.Module) ?? BulkUploadModule.Apartments,
             Status = Enum.TryParse<BulkUploadStatus>(bulkUpload.Status, true, out var status) ? status : BulkUploadStatus.Processing,
-            OriginalFileUrl = bulkUpload.OriginalFileUrl,
-            ProcessedFileUrl = bulkUpload.ProcessedFileUrl,
+            OriginalFileUrl = originalFileUrl,
+            ProcessedFileUrl = processedFileUrl,
             TotalCount = bulkUpload.TotalCount,
             SuccessCount = bulkUpload.SuccessCount,
             FailedCount = bulkUpload.FailedCount,
@@ -748,6 +806,18 @@ public class BulkUploadService(
             return innerFriendly.Message;
         }
         return "An unexpected error occurred while processing this row. Please check the values and try again.";
+    }
+
+    private static List<string> PadAndAppendStatus(List<string> row, int targetHeaderCount, string status, string error)
+    {
+        var padded = new List<string>(row);
+        while (padded.Count < targetHeaderCount)
+        {
+            padded.Add(string.Empty);
+        }
+        padded.Add(status);
+        padded.Add(error);
+        return padded;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
