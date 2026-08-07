@@ -98,21 +98,31 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
 
         var list = query.ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "FullName", "Phone", "Email", "City", "Address", "IdType", "IdNumber", "BankName", "AccountNumber", "IfscCode", "Status", "Notes" };
+        rows.Add(headers);
 
         foreach (var o in list)
         {
-            csv.AppendLine($"\"{o.Id}\",\"{EscapeCsv(o.FullName)}\",\"{EscapeCsv(o.Phone)}\",\"{EscapeCsv(o.Email)}\",\"{EscapeCsv(o.City)}\",\"{EscapeCsv(o.Address)}\",\"{o.IdType}\",\"{EscapeCsv(o.IdNumber)}\",\"{EscapeCsv(o.BankName)}\",\"{EscapeCsv(o.AccountNumber)}\",\"{EscapeCsv(o.IfscCode)}\",\"{o.Status}\",\"{EscapeCsv(o.Notes)}\",\"{o.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                o.FullName ?? string.Empty,
+                o.Phone ?? string.Empty,
+                o.Email ?? string.Empty,
+                o.City ?? string.Empty,
+                o.Address ?? string.Empty,
+                o.IdType.ToString(),
+                o.IdNumber ?? string.Empty,
+                o.BankName ?? string.Empty,
+                o.AccountNumber ?? string.Empty,
+                o.IfscCode ?? string.Empty,
+                o.Status.ToString(),
+                o.Notes ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
-    }
-
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)

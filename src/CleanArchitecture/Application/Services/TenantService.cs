@@ -155,25 +155,36 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
         var list = query.ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,BuildingName,FlatNumber,NestawayId,FullName,Phone,Email,IdType,IdNumber,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "BuildingId", "ApartmentId", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" };
+        rows.Add(headers);
 
         foreach (var t in list)
         {
-            var bName = buildingMap.TryGetValue(t.BuildingId, out var bn) ? bn : "";
-            var flat = apartmentMap.TryGetValue(t.ApartmentId, out var ai) ? ai.FlatNumber : "";
-            var nest = apartmentMap.TryGetValue(t.ApartmentId, out ai) ? ai.NestawayId : "";
-
-            csv.AppendLine($"\"{t.Id}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(flat)}\",\"{EscapeCsv(nest)}\",\"{EscapeCsv(t.FullName)}\",\"{EscapeCsv(t.Phone)}\",\"{EscapeCsv(t.Email)}\",\"{t.IdType}\",\"{EscapeCsv(t.IdNumber)}\",\"{t.MoveInDate:yyyy-MM-dd}\",\"{t.LeaseStartDate:yyyy-MM-dd}\",\"{t.LeaseEndDate:yyyy-MM-dd}\",{t.MonthlyRent},{t.SecurityDeposit},\"{EscapeCsv(t.EmergencyContactName)}\",\"{EscapeCsv(t.EmergencyContactPhone)}\",\"{t.Status}\",\"{EscapeCsv(t.Notes)}\",\"{t.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                t.BuildingId.ToString(),
+                t.ApartmentId.ToString(),
+                t.FullName ?? string.Empty,
+                t.Phone ?? string.Empty,
+                t.Email ?? string.Empty,
+                t.IdType.ToString(),
+                t.IdNumber ?? string.Empty,
+                t.IdProofAttachmentUrl ?? string.Empty,
+                t.MoveInDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                t.LeaseStartDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                t.LeaseEndDate.HasValue ? t.LeaseEndDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                t.MonthlyRent.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                t.SecurityDeposit.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                t.EmergencyContactName ?? string.Empty,
+                t.EmergencyContactPhone ?? string.Empty,
+                t.Status.ToString(),
+                t.Notes ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
-    }
-
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     public async Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken)

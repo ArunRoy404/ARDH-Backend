@@ -146,24 +146,33 @@ public class EquipmentService(
 
         var list = query.OrderByDescending(x => x.CreatedAt).ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "BuildingId", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" };
+        rows.Add(headers);
 
         foreach (var e in list)
         {
-            var bName = buildingMap.TryGetValue(e.BuildingId, out var bn) ? bn : "";
-
-            csv.AppendLine($"\"{e.Id}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(e.Name)}\",\"{EscapeCsv(e.Type)}\",\"{EscapeCsv(e.Brand)}\",\"{EscapeCsv(e.Model)}\",\"{EscapeCsv(e.SerialNumber)}\",\"{e.InstallDate:yyyy-MM-dd}\",\"{e.WarrantyExpiryDate:yyyy-MM-dd}\",\"{EscapeCsv(e.Status)}\",\"{EscapeCsv(e.Notes)}\",\"{EscapeCsv(e.AttachmentUrl)}\",\"{e.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                e.BuildingId.ToString(),
+                e.Name ?? string.Empty,
+                e.Type ?? string.Empty,
+                e.Brand ?? string.Empty,
+                e.Model ?? string.Empty,
+                e.SerialNumber ?? string.Empty,
+                e.InstallDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                e.WarrantyExpiryDate.HasValue ? e.WarrantyExpiryDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                e.Status ?? string.Empty,
+                e.Notes ?? string.Empty,
+                e.AttachmentUrl ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
-    }
+
 
     public async Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {

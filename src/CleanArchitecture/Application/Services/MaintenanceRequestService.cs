@@ -226,22 +226,35 @@ public class MaintenanceRequestService(
 
         var list = query.OrderByDescending(x => x.CreatedAt).ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,Title,Description,Category,Priority,Status,VendorName,VendorCompanyName,EquipmentName,BuildingName,FlatNumber,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,NextMaintenanceDate,ReceiptAttachmentUrl,Notes,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "Title", "Description", "Category", "Priority", "BuildingId", "ApartmentId", "VendorId", "EquipmentId", "Status", "EstimatedCost", "AnnualCost", "ScheduledDate", "StartDate", "RecurrenceFrequency", "ReceiptAttachmentUrl", "Notes" };
+        rows.Add(headers);
 
         foreach (var r in list)
         {
-            var vName = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v) ? v.Name : "";
-            var vComp = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v2) ? v2.CompanyName : "";
-            var eName = r.EquipmentId.HasValue && equipmentMap.TryGetValue(r.EquipmentId.Value, out var en) ? en : "";
-            var bName = buildingMap.TryGetValue(r.BuildingId, out var bn) ? bn : "";
-            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-            var nextDate = GetNextMaintenanceDate(r.StartDate, r.RecurrenceFrequency);
-
-            csv.AppendLine($"\"{r.Id}\",\"{EscapeCsv(r.Title)}\",\"{EscapeCsv(r.Description)}\",\"{EscapeCsv(r.Category)}\",\"{r.Priority}\",\"{r.Status}\",\"{EscapeCsv(vName)}\",\"{EscapeCsv(vComp)}\",\"{EscapeCsv(eName)}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",{r.EstimatedCost},{r.AnnualCost},\"{r.ScheduledDate:yyyy-MM-dd}\",\"{r.StartDate:yyyy-MM-dd}\",\"{r.RecurrenceFrequency}\",\"{nextDate:yyyy-MM-dd}\",\"{EscapeCsv(r.ReceiptAttachmentUrl)}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                r.Title ?? string.Empty,
+                r.Description ?? string.Empty,
+                r.Category ?? string.Empty,
+                r.Priority.ToString(),
+                r.BuildingId.ToString(),
+                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.VendorId.HasValue ? r.VendorId.Value.ToString() : string.Empty,
+                r.EquipmentId.HasValue ? r.EquipmentId.Value.ToString() : string.Empty,
+                r.Status.ToString(),
+                r.EstimatedCost.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                r.AnnualCost.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                r.ScheduledDate.HasValue ? r.ScheduledDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                r.StartDate.HasValue ? r.StartDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                r.RecurrenceFrequency.HasValue ? r.RecurrenceFrequency.Value.ToString() : string.Empty,
+                r.ReceiptAttachmentUrl ?? string.Empty,
+                r.Notes ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     public async Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken)
@@ -715,11 +728,7 @@ public class MaintenanceRequestService(
         };
     }
 
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
-    }
+
 
     /// <summary>
     /// Computes the date of the next recurring maintenance occurrence:

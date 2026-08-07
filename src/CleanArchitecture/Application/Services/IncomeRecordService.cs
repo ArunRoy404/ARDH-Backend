@@ -572,8 +572,6 @@ public class IncomeRecordService(
         var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
@@ -618,18 +616,30 @@ public class IncomeRecordService(
 
         var list = query.OrderByDescending(x => x.PaymentDate).ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "IncomeEntity", "IncomeType", "Amount", "BuildingId", "ApartmentId", "PaymentDate", "PaymentMethod", "TransactionReference", "Status", "Notes", "AttachmentUrl" };
+        rows.Add(headers);
 
         foreach (var r in list)
         {
-            var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-
-            csv.AppendLine($"\"{r.Id}\",\"{r.IncomeEntity}\",\"{r.IncomeType}\",{r.Amount:F2},\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.PaymentDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{EscapeCsv(r.TransactionReference)}\",\"{r.Status}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                r.IncomeEntity.ToString(),
+                r.IncomeType.ToString(),
+                r.Amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                r.BuildingId.HasValue ? r.BuildingId.Value.ToString() : string.Empty,
+                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.PaymentDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                r.PaymentMethod.ToString(),
+                r.TransactionReference ?? string.Empty,
+                r.Status.ToString(),
+                r.Notes ?? string.Empty,
+                r.AttachmentUrl ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     /// <summary>
@@ -669,9 +679,5 @@ public class IncomeRecordService(
         }
     }
 
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
-    }
+
 }

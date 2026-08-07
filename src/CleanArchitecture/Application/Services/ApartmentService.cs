@@ -133,8 +133,6 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
-        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
@@ -183,25 +181,34 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
 
         var list = query.ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,CurrentTenantName,Notes,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "BuildingId", "OwnerId", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" };
+        rows.Add(headers);
 
         foreach (var a in list)
         {
-            var bName = buildingMap.TryGetValue(a.BuildingId, out var bn) ? bn : "";
-            var oName = ownerMap.TryGetValue(a.OwnerId, out var on) ? on : "";
-            var tName = a.CurrentTenantId.HasValue && tenantMap.TryGetValue(a.CurrentTenantId.Value, out var tn) ? tn : "";
-
-            csv.AppendLine($"\"{a.Id}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(oName)}\",\"{EscapeCsv(a.NestawayId)}\",\"{EscapeCsv(a.FlatNumber)}\",{a.Floor},\"{EscapeCsv(a.ApartmentType)}\",{a.AreaSqft},{a.Bedrooms},{a.Bathrooms},{a.HasBalcony},\"{EscapeCsv(a.ParkingSlot)}\",{a.ExpectedRent},{a.MaintenanceCharge},{a.WaterCharge},\"{EscapeCsv(tName)}\",\"{EscapeCsv(a.Notes)}\",\"{a.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                a.BuildingId.ToString(),
+                a.OwnerId.ToString(),
+                a.NestawayId ?? string.Empty,
+                a.FlatNumber ?? string.Empty,
+                a.Floor.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.ApartmentType ?? string.Empty,
+                a.AreaSqft.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.Bedrooms.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.Bathrooms.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.HasBalcony.ToString().ToLowerInvariant(),
+                a.ParkingSlot ?? string.Empty,
+                a.ExpectedRent.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.MaintenanceCharge.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.WaterCharge.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.Notes ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
-    }
-
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     public async Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken)

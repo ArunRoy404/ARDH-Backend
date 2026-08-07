@@ -597,22 +597,39 @@ public class ExpenseRecordService(
 
         var list = query.OrderByDescending(x => x.ExpenseDate).ToList();
 
-        var csv = new System.Text.StringBuilder();
-        csv.AppendLine("ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "Category", "ExpenseHead", "SpecificItem", "VendorId", "Nature", "Amount", "Entity", "BuildingId", "ApartmentId", "ExpenseDate", "PaymentMethod", "Status", "Reference", "AttachmentUrl", "Description", "TankerNumber", "TimeOfDelivery", "DeliveryDriverName", "ManagerInAttendance", "LitersFilled" };
+        rows.Add(headers);
 
         foreach (var r in list)
         {
-            var vName = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v) ? v.Name : "";
-            var vComp = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v2) ? v2.CompanyName : "";
-            var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-
-            var deliveryTime = r.TimeOfDelivery.HasValue ? r.TimeOfDelivery.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
-
-            csv.AppendLine($"\"{r.Id}\",\"{r.Category}\",\"{EscapeCsv(r.ExpenseHead)}\",\"{EscapeCsv(r.SpecificItem)}\",\"{EscapeCsv(vName)}\",\"{EscapeCsv(vComp)}\",\"{r.Nature}\",{r.Amount:F2},\"{r.Entity}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.ExpenseDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{r.Status}\",\"{EscapeCsv(r.Reference)}\",\"{EscapeCsv(r.Description)}\",\"{EscapeCsv(r.TankerNumber)}\",\"{deliveryTime}\",\"{EscapeCsv(r.DeliveryDriverName)}\",\"{EscapeCsv(r.ManagerInAttendance)}\",\"{r.LitersFilled}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                r.Category.ToString(),
+                r.ExpenseHead ?? string.Empty,
+                r.SpecificItem ?? string.Empty,
+                r.VendorId.HasValue ? r.VendorId.Value.ToString() : string.Empty,
+                r.Nature.ToString(),
+                r.Amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                r.Entity.ToString(),
+                r.BuildingId.HasValue ? r.BuildingId.Value.ToString() : string.Empty,
+                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.ExpenseDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                r.PaymentMethod ?? string.Empty,
+                r.Status.ToString(),
+                r.Reference ?? string.Empty,
+                r.AttachmentUrl ?? string.Empty,
+                r.Description ?? string.Empty,
+                r.TankerNumber ?? string.Empty,
+                r.TimeOfDelivery.HasValue ? r.TimeOfDelivery.Value.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                r.DeliveryDriverName ?? string.Empty,
+                r.ManagerInAttendance ?? string.Empty,
+                r.LitersFilled.HasValue ? r.LitersFilled.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : string.Empty
+            });
         }
 
-        return System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return System.Text.Encoding.UTF8.GetBytes(csvText);
     }
 
     /// <summary>
@@ -687,9 +704,5 @@ public class ExpenseRecordService(
         }
     }
 
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return "";
-        return val.Replace("\"", "\"\"");
-    }
+
 }
