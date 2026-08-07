@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
@@ -287,8 +288,14 @@ public class ExpenseRecordService(
 
         var userId = _currentUser.GetCurrentUserId();
 
+        if (!TimeOfDeliveryHelper.TryParse(request.TimeOfDelivery, request.ExpenseDate, out var timeOfDelivery))
+        {
+            throw ExpenseRecordException.BadRequestException(
+                "Time of delivery must be a valid time (e.g. '13:31', '01:31 PM') or a full date-time.");
+        }
+
         await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, null, cancellationToken);
-        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, request.TimeOfDelivery, null, cancellationToken);
+        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, timeOfDelivery, null, cancellationToken);
 
         var record = new ExpenseRecord
         {
@@ -309,7 +316,7 @@ public class ExpenseRecordService(
             AttachmentUrl = request.AttachmentUrl?.Trim(),
             Description = request.Description?.Trim(),
             TankerNumber = request.TankerNumber?.Trim(),
-            TimeOfDelivery = request.TimeOfDelivery,
+            TimeOfDelivery = timeOfDelivery,
             DeliveryDriverName = request.DeliveryDriverName?.Trim(),
             ManagerInAttendance = request.ManagerInAttendance?.Trim(),
             LitersFilled = request.LitersFilled,
@@ -378,8 +385,14 @@ public class ExpenseRecordService(
         var userId = _currentUser.GetCurrentUserId();
         var oldStatus = record.Status;
 
+        if (!TimeOfDeliveryHelper.TryParse(request.TimeOfDelivery, request.ExpenseDate, out var timeOfDelivery))
+        {
+            throw ExpenseRecordException.BadRequestException(
+                "Time of delivery must be a valid time (e.g. '13:31', '01:31 PM') or a full date-time.");
+        }
+
         await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, id, cancellationToken);
-        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, request.TimeOfDelivery, id, cancellationToken);
+        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, timeOfDelivery, id, cancellationToken);
 
         record.Category = request.Category;
         record.ExpenseHead = request.ExpenseHead?.Trim();
@@ -397,7 +410,7 @@ public class ExpenseRecordService(
         record.AttachmentUrl = request.AttachmentUrl?.Trim();
         record.Description = request.Description?.Trim();
         record.TankerNumber = request.TankerNumber?.Trim();
-        record.TimeOfDelivery = request.TimeOfDelivery;
+        record.TimeOfDelivery = timeOfDelivery;
         record.DeliveryDriverName = request.DeliveryDriverName?.Trim();
         record.ManagerInAttendance = request.ManagerInAttendance?.Trim();
         record.LitersFilled = request.LitersFilled;

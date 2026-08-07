@@ -481,7 +481,7 @@ public class BulkUploadService(
             AttachmentUrl = GetOptional(row, h, "AttachmentUrl"),
             Description = GetOptional(row, h, "Description"),
             TankerNumber = GetOptional(row, h, "TankerNumber"),
-            TimeOfDelivery = GetDate(row, h, "TimeOfDelivery", "TimeOfDelivery", errors),
+            TimeOfDelivery = GetOptional(row, h, "TimeOfDelivery"),
             DeliveryDriverName = GetOptional(row, h, "DeliveryDriverName"),
             ManagerInAttendance = GetOptional(row, h, "ManagerInAttendance"),
             LitersFilled = GetInt(row, h, "LitersFilled", "LitersFilled", errors)

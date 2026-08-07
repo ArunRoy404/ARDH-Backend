@@ -24,7 +24,9 @@ public class ExpenseRecordUpdateRequest
 
     // Water Tank fields
     public string? TankerNumber { get; set; }
-    public DateTime? TimeOfDelivery { get; set; }
+
+    /// <summary>Accepts either a bare time (e.g. "13:31", "01:31 PM") combined with ExpenseDate, or a full ISO date-time.</summary>
+    public string? TimeOfDelivery { get; set; }
     public string? DeliveryDriverName { get; set; }
     public string? ManagerInAttendance { get; set; }
     public int? LitersFilled { get; set; }

@@ -1,3 +1,4 @@
+using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models.Expenses;
 using FluentValidation;
@@ -58,7 +59,9 @@ public class ExpenseRecordCreateRequestValidation : AbstractValidator<ExpenseRec
 
         RuleFor(x => x.TimeOfDelivery)
             .NotEmpty().When(x => RequiresTankerFields(x))
-            .WithMessage("Delivery time is required for water tank deliveries.");
+            .WithMessage("Delivery time is required for water tank deliveries.")
+            .Must(v => string.IsNullOrWhiteSpace(v) || TimeOfDeliveryHelper.TryParse(v, null, out _))
+            .WithMessage("Time of delivery must be a valid time (e.g. '13:31', '01:31 PM') or a full date-time.");
 
         RuleFor(x => x.DeliveryDriverName)
             .NotEmpty().When(x => RequiresTankerFields(x))
@@ -79,7 +82,7 @@ public class ExpenseRecordCreateRequestValidation : AbstractValidator<ExpenseRec
     {
         if (IsWaterTankerItem(x.SpecificItem)) return true;
         return !string.IsNullOrWhiteSpace(x.TankerNumber)
-            || x.TimeOfDelivery.HasValue
+            || !string.IsNullOrWhiteSpace(x.TimeOfDelivery)
             || !string.IsNullOrWhiteSpace(x.DeliveryDriverName)
             || !string.IsNullOrWhiteSpace(x.ManagerInAttendance)
             || x.LitersFilled.HasValue;
