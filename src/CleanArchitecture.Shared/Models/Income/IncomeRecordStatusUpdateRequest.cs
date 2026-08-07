@@ -4,5 +4,5 @@ namespace CleanArchitecture.Shared.Models.Income;
 
 public class IncomeRecordStatusUpdateRequest
 {
-    public IncomeStatus Status { get; set; }
+    public IncomeStatus? Status { get; set; }
 }

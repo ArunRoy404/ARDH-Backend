@@ -108,8 +108,8 @@ public class ApiErrorDetail
             return pathIndex > 0 ? message[..pathIndex] : message;
         }
 
-        // 3. AMC contract / maintenance service messages are already written in plain
-        //    language - keep them verbatim instead of replacing them with a generic phrase
+        // 3. AMC contract / maintenance / income service messages are already written
+        //    in plain language - keep them verbatim instead of replacing them with a generic phrase
         if (message.Contains("AMC contract", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("AMC code", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("contract number", StringComparison.OrdinalIgnoreCase) ||
@@ -117,11 +117,19 @@ public class ApiErrorDetail
             message.Contains("contractType", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("serviceFrequency", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("maintenance request", StringComparison.OrdinalIgnoreCase) ||
-            message.Contains("recurrence frequency", StringComparison.OrdinalIgnoreCase))
+            message.Contains("recurrence frequency", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("income record", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("income entry", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("duplicate income", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("occupied apartments", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomeEntity", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomeType", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomePaymentMethod", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomeStatus", StringComparison.OrdinalIgnoreCase))
         {
             return message;
         }
-        // ── end AMC contract / maintenance module ───────────────────────────────
+        // ── end AMC contract / maintenance / income module ──────────────────────
 
         // 1. JSON conversion errors
         if (message.Contains("JSON value could not be converted", StringComparison.OrdinalIgnoreCase) ||

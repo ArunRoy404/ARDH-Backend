@@ -247,9 +247,6 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                             var moveouts = await _unitOfWork.TenantMoveOutRecordRepository.GetAllAsync(x => x.TenantId == t.Id);
                             _unitOfWork.TenantMoveOutRecordRepository.DeleteRange(moveouts);
 
-                            var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => x.TenantId == t.Id);
-                            _unitOfWork.IncomeRecordRepository.DeleteRange(incomes);
-
                             _unitOfWork.TenantRepository.Delete(t);
                         }
 
@@ -303,9 +300,6 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                             var moveouts = await _unitOfWork.TenantMoveOutRecordRepository.GetAllAsync(x => x.TenantId == t.Id);
                             _unitOfWork.TenantMoveOutRecordRepository.DeleteRange(moveouts);
 
-                            var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => x.TenantId == t.Id);
-                            _unitOfWork.IncomeRecordRepository.DeleteRange(incomes);
-
                             _unitOfWork.TenantRepository.Delete(t);
                         }
 
@@ -335,9 +329,6 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                         var moveouts = await _unitOfWork.TenantMoveOutRecordRepository.GetAllAsync(x => x.TenantId == t.Id);
                         _unitOfWork.TenantMoveOutRecordRepository.DeleteRange(moveouts);
 
-                        var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => x.TenantId == t.Id);
-                        _unitOfWork.IncomeRecordRepository.DeleteRange(incomes);
-
                         _unitOfWork.TenantRepository.Delete(t);
                     }
 
@@ -360,9 +351,6 @@ public class DeletedHistoryService(IUnitOfWork unitOfWork, ICurrentUser currentU
                 {
                     var moveouts = await _unitOfWork.TenantMoveOutRecordRepository.GetAllAsync(x => x.TenantId == tenant.Id);
                     _unitOfWork.TenantMoveOutRecordRepository.DeleteRange(moveouts);
-
-                    var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => x.TenantId == tenant.Id);
-                    _unitOfWork.IncomeRecordRepository.DeleteRange(incomes);
 
                     _unitOfWork.TenantRepository.Delete(tenant);
                 }

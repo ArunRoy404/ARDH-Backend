@@ -54,6 +54,10 @@ public sealed class JsonPropertyNameEnumConverter<TEnum> : JsonConverter<TEnum> 
             nameof(MaintenanceRecurrenceFrequency) => "recurrenceFrequency",
             nameof(MaintenanceStatus) => "status",
             nameof(MaintenancePriority) => "priority",
+            nameof(IncomeEntity) => "incomeEntity",
+            nameof(IncomeType) => "incomeType",
+            nameof(IncomePaymentMethod) => "paymentMethod",
+            nameof(IncomeStatus) => "status",
             _ => typeof(TEnum).Name
         };
 

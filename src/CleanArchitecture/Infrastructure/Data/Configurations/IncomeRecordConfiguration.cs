@@ -33,19 +33,11 @@ public class IncomeRecordConfiguration : IEntityTypeConfiguration<IncomeRecord>
             .HasColumnType("decimal(14,2)")
             .IsRequired();
 
-        builder.Property(x => x.TenantId)
-            .HasColumnName("tenant_id");
-
         builder.Property(x => x.BuildingId)
             .HasColumnName("building_id");
 
         builder.Property(x => x.ApartmentId)
             .HasColumnName("apartment_id");
-
-        builder.Property(x => x.Period)
-            .HasColumnName("period")
-            .HasMaxLength(50)
-            .IsRequired();
 
         builder.Property(x => x.PaymentDate)
             .HasColumnName("payment_date")
@@ -88,11 +80,6 @@ public class IncomeRecordConfiguration : IEntityTypeConfiguration<IncomeRecord>
 
         builder.Property(x => x.UpdatedBy)
             .HasColumnName("updated_by");
-
-        builder.HasOne(x => x.Tenant)
-            .WithMany()
-            .HasForeignKey(x => x.TenantId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Building)
             .WithMany()
