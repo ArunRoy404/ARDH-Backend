@@ -31,7 +31,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     private static readonly Guid BuildingGptId = Guid.Parse("b1f7b822-29c4-52a8-ad29-c8be5d491f24");   // Grand Plaza Towers
     private static readonly Guid BuildingOakId = Guid.Parse("c2f7b822-29c4-52a8-ad29-c8be5d491f25");   // Oakridge Residency
 
-    private static readonly Guid OwnerRahulId = Guid.Parse("o1f3b822-29c4-52a8-ad29-c8be5d491f24");   // Rahul Verma
+    private static readonly Guid OwnerRahulId = Guid.Parse("b3f3b822-29c4-52a8-ad29-c8be5d491f24");   // Rahul Verma
     private static readonly Guid OwnerAmitId = Guid.Parse("f1a3b822-29c4-52a8-ad29-c8be5d491f24");    // Amit Sharma
 
     private static readonly Guid Apt302Id = Guid.Parse("a1f3b822-29c4-52a8-ad29-c8be5d491f24");       // Flat 302 (GPT)
@@ -40,12 +40,12 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     private static readonly Guid AptOak301Id = Guid.Parse("d2f3b822-29c4-52a8-ad29-c8be5d491f24");    // Flat 301 (Oakridge)
     private static readonly Guid AptOak102Id = Guid.Parse("d3f3b822-29c4-52a8-ad29-c8be5d491f24");    // Flat 102 (Oakridge)
 
-    private static readonly Guid TenantArjunId = Guid.Parse("t1f3b822-29c4-52a8-ad29-c8be5d491f24");  // Arjun Mehta
+    private static readonly Guid TenantArjunId = Guid.Parse("a3f3b822-29c4-52a8-ad29-c8be5d491f24");  // Arjun Mehta
     private static readonly Guid TenantJohnId = Guid.Parse("c1f7b822-29c4-52a8-ad29-c8be5d491f24");   // John Tenant
 
-    private static readonly Guid VendorSunilId = Guid.Parse("v1a3b822-29c4-52a8-ad29-c8be5d491f24");  // Sunil Plumbing
+    private static readonly Guid VendorSunilId = Guid.Parse("f7a3b822-29c4-52a8-ad29-c8be5d491f24");  // Sunil Plumbing
     private static readonly Guid VendorRajeshId = Guid.Parse("d1a3b822-29c4-52a8-ad29-c8be5d491f24"); // Sharma Elevator
-    private static readonly Guid VendorBescomId = Guid.Parse("v4c7b822-29c4-52a8-ad29-c8be5d491f41"); // BESCOM
+    private static readonly Guid VendorBescomId = Guid.Parse("f7c7b822-29c4-52a8-ad29-c8be5d491f41"); // BESCOM
 
     private static readonly Guid EquipLiftId = Guid.Parse("e1a3b822-29c4-52a8-ad29-c8be5d491f24");    // OTIS Elevator Block A
     private static readonly Guid EquipPumpId = Guid.Parse("e2c7b822-29c4-52a8-ad29-c8be5d491f24");    // Water Pump Block A
@@ -53,9 +53,9 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
 
     private static readonly Guid AmcElevatorId = Guid.Parse("f2a3b822-29c4-52a8-ad29-c8be5d491f24");
 
-    private static readonly Guid MaintLeakId = Guid.Parse("m1f3b822-29c4-52a8-ad29-c8be5d491f24");
-    private static readonly Guid MaintAcId = Guid.Parse("m2f3b822-29c4-52a8-ad29-c8be5d491f24");
-    private static readonly Guid MaintParkingId = Guid.Parse("m3f3b822-29c4-52a8-ad29-c8be5d491f24");
+    private static readonly Guid MaintLeakId = Guid.Parse("c1f3b822-29c4-52a8-ad29-c8be5d491f24");
+    private static readonly Guid MaintAcId = Guid.Parse("c2f3b822-29c4-52a8-ad29-c8be5d491f24");
+    private static readonly Guid MaintParkingId = Guid.Parse("c3f3b822-29c4-52a8-ad29-c8be5d491f24");
 
     private static readonly Guid Income302Id = Guid.Parse("f4b3b822-29c4-52a8-ad29-c8be5d491f24");
     private static readonly Guid DeletedHistoryBuildingId = Guid.Parse("4da2b822-29c4-52a8-ad29-c8be5d491f24");
@@ -116,26 +116,31 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     }
 
     /// <summary>Deletes every row (FK-safe order) before re-seeding.</summary>
+    /// <remarks>
+    /// Uses IgnoreQueryFilters() so that soft-deleted (IsDeleted = true) rows are
+    /// also physically removed; otherwise they remain in the tables and block the
+    /// deletes via foreign-key constraints.
+    /// </remarks>
     private async Task ResetDatabaseAsync()
     {
-        _context.NotificationRecipients.RemoveRange(_context.NotificationRecipients);
-        _context.Notifications.RemoveRange(_context.Notifications);
-        _context.Activities.RemoveRange(_context.Activities);
-        _context.DeletedHistories.RemoveRange(_context.DeletedHistories);
-        _context.TenantMoveOutRecords.RemoveRange(_context.TenantMoveOutRecords);
-        _context.IncomeRecords.RemoveRange(_context.IncomeRecords);
-        _context.ExpenseRecords.RemoveRange(_context.ExpenseRecords);
-        _context.MaintenanceRequests.RemoveRange(_context.MaintenanceRequests);
-        _context.AmcContracts.RemoveRange(_context.AmcContracts);
-        _context.Equipment.RemoveRange(_context.Equipment);
-        _context.Tenants.RemoveRange(_context.Tenants);
-        _context.Apartments.RemoveRange(_context.Apartments);
-        _context.Owners.RemoveRange(_context.Owners);
-        _context.Vendors.RemoveRange(_context.Vendors);
-        _context.Buildings.RemoveRange(_context.Buildings);
-        _context.ForgotPassword.RemoveRange(_context.ForgotPassword);
-        _context.Users.RemoveRange(_context.Users);
-        _context.Settings.RemoveRange(_context.Settings);
+        _context.NotificationRecipients.RemoveRange(_context.NotificationRecipients.IgnoreQueryFilters());
+        _context.Notifications.RemoveRange(_context.Notifications.IgnoreQueryFilters());
+        _context.Activities.RemoveRange(_context.Activities.IgnoreQueryFilters());
+        _context.DeletedHistories.RemoveRange(_context.DeletedHistories.IgnoreQueryFilters());
+        _context.TenantMoveOutRecords.RemoveRange(_context.TenantMoveOutRecords.IgnoreQueryFilters());
+        _context.IncomeRecords.RemoveRange(_context.IncomeRecords.IgnoreQueryFilters());
+        _context.ExpenseRecords.RemoveRange(_context.ExpenseRecords.IgnoreQueryFilters());
+        _context.MaintenanceRequests.RemoveRange(_context.MaintenanceRequests.IgnoreQueryFilters());
+        _context.AmcContracts.RemoveRange(_context.AmcContracts.IgnoreQueryFilters());
+        _context.Equipment.RemoveRange(_context.Equipment.IgnoreQueryFilters());
+        _context.Tenants.RemoveRange(_context.Tenants.IgnoreQueryFilters());
+        _context.Apartments.RemoveRange(_context.Apartments.IgnoreQueryFilters());
+        _context.Owners.RemoveRange(_context.Owners.IgnoreQueryFilters());
+        _context.Vendors.RemoveRange(_context.Vendors.IgnoreQueryFilters());
+        _context.Buildings.RemoveRange(_context.Buildings.IgnoreQueryFilters());
+        _context.ForgotPassword.RemoveRange(_context.ForgotPassword.IgnoreQueryFilters());
+        _context.Users.RemoveRange(_context.Users.IgnoreQueryFilters());
+        _context.Settings.RemoveRange(_context.Settings.IgnoreQueryFilters());
         await _context.SaveChangesAsync();
         _logger.LogInformation("Database reset: all existing data removed.");
     }
