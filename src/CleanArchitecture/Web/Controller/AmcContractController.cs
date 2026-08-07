@@ -70,6 +70,11 @@ public class AmcContractController(IAmcContractService amcContractService, IUnit
     /// <remarks>
     /// Mandatory fields: AMC code, contract number, contract title, contract type, equipment ID, vendor ID,
     /// start date, end date, contract amount, payment terms, and service frequency. All other fields are optional.
+    /// Valid enum values (exact):
+    ///   contractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other
+    ///   paymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other
+    ///   serviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime
+    ///   status = Active | Expiring | Expired | Cancelled
     /// AMC code and contract number must each be unique across all contracts (including soft-deleted ones).
     /// </remarks>
     [HttpPost]
@@ -88,6 +93,11 @@ public class AmcContractController(IAmcContractService amcContractService, IUnit
     /// <remarks>
     /// Mandatory fields: AMC code, contract number, contract title, contract type, equipment ID, vendor ID,
     /// start date, end date, contract amount, payment terms, and service frequency. All other fields are optional.
+    /// Valid enum values (exact):
+    ///   contractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other
+    ///   paymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other
+    ///   serviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime
+    ///   status = Active | Expiring | Expired | Cancelled
     /// AMC code and contract number must each remain unique across all other contracts (including soft-deleted ones).
     /// </remarks>
     [HttpPut("{id:guid}")]

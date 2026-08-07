@@ -5888,12 +5888,12 @@
                 {
                   "key": "status",
                   "value": "Active",
-                  "description": "Filter by AMC status: Active, Expiring, Expired, Cancelled"
+                  "description": "Filter by AMC status. Exact values: Active, Expiring, Expired, Cancelled"
                 },
                 {
                   "key": "contractType",
                   "value": "Comprehensive",
-                  "description": "Filter by contract type: Comprehensive, Non-Comprehensive, Preventative Maintenance, Breakdown Maintenance, Operations & Maintenance, Other"
+                  "description": "Filter by contract type. Exact values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other"
                 },
                 {
                   "key": "vendorId",
@@ -5907,7 +5907,7 @@
                 }
               ]
             },
-            "description": "Retrieves a paginated list of AMC contracts with optional search and filters."
+            "description": "Retrieves a paginated list of AMC contracts with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\nstatus = Active | Expiring | Expired | Cancelled\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other"
           },
           "response": [
             {
@@ -5946,12 +5946,12 @@
                     {
                       "key": "status",
                       "value": "Active",
-                      "description": "Filter by AMC status: Active, Expiring, Expired, Cancelled"
+                      "description": "Filter by AMC status. Exact values: Active, Expiring, Expired, Cancelled"
                     },
                     {
                       "key": "contractType",
                       "value": "Comprehensive",
-                      "description": "Filter by contract type: Comprehensive, Non-Comprehensive, Preventative Maintenance, Breakdown Maintenance, Operations & Maintenance, Other"
+                      "description": "Filter by contract type. Exact values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other"
                     },
                     {
                       "key": "vendorId",
@@ -5965,7 +5965,7 @@
                     }
                   ]
                 },
-                "description": "Retrieves a paginated list of AMC contracts with optional search and filters."
+                "description": "Retrieves a paginated list of AMC contracts with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\nstatus = Active | Expiring | Expired | Cancelled\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other"
               },
               "status": "OK",
               "code": 200,
@@ -5977,7 +5977,76 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"amcCode\": \"AMC-2026-001\",\n                \"contractNumber\": \"CON-88192-A\",\n                \"contractTitle\": \"Elevator Maintenance Contract Block A\",\n                \"contractType\": \"comprehensive\",\n                \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"equipmentName\": \"OTIS Elevator Block A\",\n                \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Rajesh Sharma\",\n                \"vendorCompanyName\": \"Sharma Elevator Services\",\n                \"startDate\": \"2026-07-20T00:00:00Z\",\n                \"endDate\": \"2027-07-20T00:00:00Z\",\n                \"contractAmount\": 120000,\n                \"paymentTerms\": \"quarterly\",\n                \"serviceFrequency\": \"monthly\",\n                \"coverageDetails\": \"All spare parts and labour included.\",\n                \"exclusions\": \"Damage due to natural disasters.\",\n                \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n                \"remarks\": \"Renewed for 1 year.\",\n                \"status\": \"active\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n                \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"amcCode\": \"AMC-2026-001\",\n                \"contractNumber\": \"CN-OTIS-2026-881\",\n                \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\",\n                \"contractType\": \"Comprehensive\",\n                \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"equipmentName\": \"OTIS Elevator Block A\",\n                \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Rajesh Sharma\",\n                \"vendorCompanyName\": \"Sharma Elevator Services\",\n                \"startDate\": \"2026-07-20T00:00:00Z\",\n                \"endDate\": \"2027-07-20T00:00:00Z\",\n                \"contractAmount\": 120000.00,\n                \"paymentTerms\": \"QuarterlyAdvance\",\n                \"serviceFrequency\": \"Quarterly\",\n                \"coverageDetails\": \"All spare parts and labour included.\",\n                \"exclusions\": \"Damage due to natural disasters.\",\n                \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n                \"remarks\": \"Renewed for 1 year.\",\n                \"status\": \"Active\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+            },
+            {
+              "name": "Error Example (403 - Missing Operations Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts?page=1&pageSize=10&search=&status=Active&contractType=Comprehensive",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "Page number (default: 1)"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10",
+                      "description": "Items per page (default: 10)"
+                    },
+                    {
+                      "key": "search",
+                      "value": "",
+                      "description": "Search term matching AMC code, contract number, contract title, coverage, exclusions, remarks, equipment name, vendor name"
+                    },
+                    {
+                      "key": "status",
+                      "value": "Active",
+                      "description": "Filter by AMC status. Exact values: Active, Expiring, Expired, Cancelled"
+                    },
+                    {
+                      "key": "contractType",
+                      "value": "Comprehensive",
+                      "description": "Filter by contract type. Exact values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other"
+                    },
+                    {
+                      "key": "vendorId",
+                      "value": "",
+                      "description": "Filter by vendor UUID"
+                    },
+                    {
+                      "key": "equipmentId",
+                      "value": "",
+                      "description": "Filter by equipment UUID"
+                    }
+                  ]
+                },
+                "description": "Retrieves a paginated list of AMC contracts with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\nstatus = Active | Expiring | Expired | Cancelled\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other"
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6048,7 +6117,47 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"amcCode\": \"AMC-2026-001\",\n        \"contractNumber\": \"CON-88192-A\",\n        \"contractTitle\": \"Elevator Maintenance Contract Block A\",\n        \"contractType\": \"comprehensive\",\n        \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"equipmentName\": \"OTIS Elevator Block A\",\n        \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"vendorName\": \"Rajesh Sharma\",\n        \"vendorCompanyName\": \"Sharma Elevator Services\",\n        \"startDate\": \"2026-07-20T00:00:00Z\",\n        \"endDate\": \"2027-07-20T00:00:00Z\",\n        \"contractAmount\": 120000,\n        \"paymentTerms\": \"quarterly\",\n        \"serviceFrequency\": \"monthly\",\n        \"coverageDetails\": \"All spare parts and labour included.\",\n        \"exclusions\": \"Damage due to natural disasters.\",\n        \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n        \"remarks\": \"Renewed for 1 year.\",\n        \"status\": \"active\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"equipment\": {\n            \"id\": \"eq13b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"name\": \"Otis Passenger Lift A\",\n            \"type\": \"Lift\",\n            \"brand\": \"Otis\",\n            \"model\": \"Gen2\",\n            \"serialNumber\": \"OTIS-55512\",\n            \"installDate\": \"2026-07-20T12:00:00Z\",\n            \"warrantyExpiryDate\": \"2028-07-20T12:00:00Z\",\n            \"status\": \"Operational\",\n            \"notes\": \"Main passenger lift\",\n            \"attachmentUrl\": \"https://example.com/lift_specs.pdf\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        \"vendor\": {\n            \"id\": \"v1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"name\": \"Rajesh Electrician\",\n            \"companyName\": \"Rajesh Electrical Solutions\",\n            \"phone\": \"+919999888877\",\n            \"email\": \"rajesh@solutions.com\",\n            \"vendorType\": \"Electrical\",\n            \"gstNumber\": \"27AAAAA1111A1Z1\",\n            \"address\": \"Sector 5, Nerul\",\n            \"status\": \"Active\",\n            \"notes\": \"Preferred electrician for all building units\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n            \"updatedBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"amcCode\": \"AMC-2026-001\",\n        \"contractNumber\": \"CN-OTIS-2026-881\",\n        \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\",\n        \"contractType\": \"Comprehensive\",\n        \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"equipmentName\": \"OTIS Elevator Block A\",\n        \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"vendorName\": \"Rajesh Sharma\",\n        \"vendorCompanyName\": \"Sharma Elevator Services\",\n        \"startDate\": \"2026-07-20T00:00:00Z\",\n        \"endDate\": \"2027-07-20T00:00:00Z\",\n        \"contractAmount\": 120000.00,\n        \"paymentTerms\": \"QuarterlyAdvance\",\n        \"serviceFrequency\": \"Quarterly\",\n        \"coverageDetails\": \"All spare parts and labour included.\",\n        \"exclusions\": \"Damage due to natural disasters.\",\n        \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n        \"remarks\": \"Renewed for 1 year.\",\n        \"status\": \"Active\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": \"Admin\",\n        \"updatedBy\": \"Admin\",\n        \"equipment\": {\n            \"id\": \"eq13b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingId\": \"a4f3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"name\": \"Otis Passenger Lift A\",\n            \"type\": \"Lift\",\n            \"brand\": \"Otis\",\n            \"model\": \"Gen2\",\n            \"serialNumber\": \"OTIS-55512\",\n            \"installDate\": \"2026-07-20T12:00:00Z\",\n            \"warrantyExpiryDate\": \"2028-07-20T12:00:00Z\",\n            \"status\": \"Operational\",\n            \"notes\": \"Main passenger lift\",\n            \"attachmentUrl\": \"https://example.com/lift_specs.pdf\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"Admin\",\n            \"updatedBy\": \"Admin\"\n        },\n        \"vendor\": {\n            \"id\": \"v1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"name\": \"Rajesh Sharma\",\n            \"companyName\": \"Sharma Elevator Services\",\n            \"phone\": \"+919999888877\",\n            \"email\": \"rajesh@solutions.com\",\n            \"vendorType\": \"Elevator Service\",\n            \"gstNumber\": \"27AAAAA1111A1Z1\",\n            \"address\": \"Sector 5, Nerul\",\n            \"status\": \"Active\",\n            \"notes\": \"Preferred elevator vendor for all building units\",\n            \"createdAt\": \"2026-07-20T12:00:00Z\",\n            \"updatedAt\": \"2026-07-21T18:00:00Z\",\n            \"createdBy\": \"Admin\",\n            \"updatedBy\": \"Admin\"\n        }\n    }\n}"
+            },
+            {
+              "name": "Error Example (404 - Contract Not Found)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "replace-with-amc-contract-uuid",
+                      "description": "AMC Contract unique identifier (UUID)"
+                    }
+                  ]
+                },
+                "description": "Retrieves details of a single AMC contract by UUID."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6071,7 +6180,7 @@
                 "stats"
               ]
             },
-            "description": "Retrieves summary statistics (Active count, Expiring count, Expired count, Cancelled count, Total count) for AMC contracts."
+            "description": "Retrieves summary statistics for AMC contracts:\nactiveCount, expiringInThirtyDaysCount (expiring within the next 30 days), expiredCount, cancelledCount, totalCount."
           },
           "response": [
             {
@@ -6093,7 +6202,7 @@
                     "stats"
                   ]
                 },
-                "description": "Retrieves summary statistics (Active count, Expiring count, Expired count, Cancelled count, Total count) for AMC contracts."
+                "description": "Retrieves summary statistics for AMC contracts:\nactiveCount, expiringInThirtyDaysCount (expiring within the next 30 days), expiredCount, cancelledCount, totalCount."
               },
               "status": "OK",
               "code": 200,
@@ -6105,7 +6214,40 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"activeCount\": 5,\n        \"expiredCount\": 1,\n        \"cancelledCount\": 0,\n        \"totalCount\": 8,\n        \"expiringInThirtyDaysCount\": 2\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"activeCount\": 5,\n        \"expiringInThirtyDaysCount\": 2,\n        \"expiredCount\": 1,\n        \"cancelledCount\": 0,\n        \"totalCount\": 8\n    }\n}"
+            },
+            {
+              "name": "Error Example (403 - Missing Operations Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/stats",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    "stats"
+                  ]
+                },
+                "description": "Retrieves summary statistics for AMC contracts:\nactiveCount, expiringInThirtyDaysCount (expiring within the next 30 days), expiredCount, cancelledCount, totalCount."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6124,7 +6266,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // [REQUIRED] Unique AMC code (must not duplicate any existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881\", // [REQUIRED] Official vendor contract number (must not duplicate any existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\", // [REQUIRED] Display title of contract\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Type: Comprehensive, Non-Comprehensive, Preventative Maintenance, Breakdown Maintenance, Operations & Maintenance, Other\n    \"equipmentId\": \"replace-with-equipment-uuid\", // [REQUIRED] Associated equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // [REQUIRED] Associated vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Contract start date\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] Contract end date (must be after start date)\n    \"contractAmount\": 150000.00, // [REQUIRED] Total contract value/amount\n    \"paymentTerms\": \"Quarterly Advance\", // [REQUIRED] Payment terms: Bank Transfer, Cheque, Cash, UPI / Digital Transfer, Quarterly Advance, Monthly Postpaid, Other\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Service frequency: Monthly, Quarterly, Half-Yearly, Yearly, One Time\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing\", // [optional] Covered scope\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Excluded items/scenarios\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026.pdf\", // [optional] URL to signed contract document\n    \"remarks\": \"Signed directly with Otis Regional Director\", // [optional] Internal remarks\n    \"status\": \"Active\" // [optional] Contract status: Active, Expiring, Expired, Cancelled (defaults to Active)\n}"
+              "raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // [REQUIRED] Unique AMC code (must not duplicate any existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881\", // [REQUIRED] Official vendor contract number (must not duplicate any existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\", // [REQUIRED] Display title of contract\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Exact values: Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\n    \"equipmentId\": \"replace-with-equipment-uuid\", // [REQUIRED] Associated equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // [REQUIRED] Associated vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Contract start date (ISO 8601)\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] Contract end date (ISO 8601, must be after startDate)\n    \"contractAmount\": 150000.00, // [REQUIRED] Total contract value/amount\n    \"paymentTerms\": \"QuarterlyAdvance\", // [REQUIRED] Exact values: BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Exact values: Monthly | Quarterly | HalfYearly | Yearly | OneTime\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing\", // [optional] Covered scope\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Excluded items/scenarios\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026.pdf\", // [optional] URL to signed contract document\n    \"remarks\": \"Signed directly with Otis Regional Director\", // [optional] Internal remarks\n    \"status\": \"Active\" // [optional] Exact values: Active | Expiring | Expired | Cancelled (defaults to Active)\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/amc-contracts",
@@ -6136,7 +6278,7 @@
                 "amc-contracts"
               ]
             },
-            "description": "Creates a new AMC contract record. Mandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional. amcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+            "description": "Creates a new AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled (defaults to Active)\namcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
           },
           "response": [
             {
@@ -6152,10 +6294,6 @@
                     "value": "application/json"
                   }
                 ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // [REQUIRED] Unique AMC code (must not duplicate any existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881\", // [REQUIRED] Official vendor contract number (must not duplicate any existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\", // [REQUIRED] Display title of contract\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Type: Comprehensive, Non-Comprehensive, Preventative Maintenance, Breakdown Maintenance, Operations & Maintenance, Other\n    \"equipmentId\": \"replace-with-equipment-uuid\", // [REQUIRED] Associated equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // [REQUIRED] Associated vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Contract start date\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] Contract end date (must be after start date)\n    \"contractAmount\": 150000.00, // [REQUIRED] Total contract value/amount\n    \"paymentTerms\": \"Quarterly Advance\", // [REQUIRED] Payment terms: Bank Transfer, Cheque, Cash, UPI / Digital Transfer, Quarterly Advance, Monthly Postpaid, Other\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Service frequency: Monthly, Quarterly, Half-Yearly, Yearly, One Time\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing\", // [optional] Covered scope\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Excluded items/scenarios\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026.pdf\", // [optional] URL to signed contract document\n    \"remarks\": \"Signed directly with Otis Regional Director\", // [optional] Internal remarks\n    \"status\": \"Active\" // [optional] Contract status: Active, Expiring, Expired, Cancelled (defaults to Active)\n}"
-                },
                 "url": {
                   "raw": "{{baseUrl}}/api/amc-contracts",
                   "host": [
@@ -6166,7 +6304,7 @@
                     "amc-contracts"
                   ]
                 },
-                "description": "Creates a new AMC contract record. Mandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional. amcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+                "description": "Creates a new AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled (defaults to Active)\namcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
               },
               "status": "OK",
               "code": 200,
@@ -6179,6 +6317,117 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"AMC contract created successfully.\",\n    \"data\": null\n}"
+            },
+            {
+              "name": "Error Example (400 - Invalid paymentTerms value)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts"
+                  ]
+                },
+                "description": "Creates a new AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled (defaults to Active)\namcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other. Path: $.paymentTerms | LineNumber: 10 | BytePositionInLine: 39.\",\n            \"errorMessage\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Duplicate AMC code)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts"
+                  ]
+                },
+                "description": "Creates a new AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled (defaults to Active)\namcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"AMC Contract with code 'AMC-2026-0001' already exists.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"AMC Contract with code 'AMC-2026-0001' already exists.\",\n            \"errorMessage\": \"AMC Contract with code 'AMC-2026-0001' already exists.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (403 - Missing Operations Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts"
+                  ]
+                },
+                "description": "Creates a new AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled (defaults to Active)\namcCode and contractNumber must each be unique across all contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6197,7 +6446,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // [REQUIRED] Unique AMC code (must not duplicate any other existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881-R1\", // [REQUIRED] Updated contract number (must not duplicate any other existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026 (Revised)\", // [REQUIRED] Updated title\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Contract type\n    \"equipmentId\": \"replace-with-equipment-uuid\", // [REQUIRED] Equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // [REQUIRED] Vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Start date\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] End date (must be after start date)\n    \"contractAmount\": 155000.00, // [REQUIRED] Updated amount\n    \"paymentTerms\": \"Quarterly Advance\", // [REQUIRED] Payment terms\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Service frequency\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing plus emergency dispatch\", // [optional] Updated coverage\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Exclusions\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026-revised.pdf\", // [optional] Updated document link\n    \"remarks\": \"Revised amount following SLA addendum\", // [optional] Updated remarks\n    \"status\": \"Active\" // [optional] Contract status: Active, Expiring, Expired, Cancelled\n}"
+              "raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // [REQUIRED] Unique AMC code (must not duplicate any other existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881-R1\", // [REQUIRED] Updated contract number (must not duplicate any other existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026 (Revised)\", // [REQUIRED] Updated title\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Exact values: Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\n    \"equipmentId\": \"replace-with-equipment-uuid\", // [REQUIRED] Equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // [REQUIRED] Vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Start date (ISO 8601)\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] End date (ISO 8601, must be after startDate)\n    \"contractAmount\": 155000.00, // [REQUIRED] Updated amount\n    \"paymentTerms\": \"QuarterlyAdvance\", // [REQUIRED] Exact values: BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Exact values: Monthly | Quarterly | HalfYearly | Yearly | OneTime\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing plus emergency dispatch\", // [optional] Updated coverage\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Exclusions\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026-revised.pdf\", // [optional] Updated document link\n    \"remarks\": \"Revised amount following SLA addendum\", // [optional] Updated remarks\n    \"status\": \"Active\" // [optional] Exact values: Active | Expiring | Expired | Cancelled\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/amc-contracts/:id",
@@ -6217,7 +6466,7 @@
                 }
               ]
             },
-            "description": "Updates details of an existing AMC contract record. Mandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional. amcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+            "description": "Updates details of an existing AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled\namcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
           },
           "response": [
             {
@@ -6233,10 +6482,6 @@
                     "value": "application/json"
                   }
                 ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"amcCode\": \"AMC-2026-0001\", // [REQUIRED] Unique AMC code (must not duplicate any other existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881-R1\", // [REQUIRED] Updated contract number (must not duplicate any other existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026 (Revised)\", // [REQUIRED] Updated title\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Contract type\n    \"equipmentId\": \"replace-with-equipment-uuid\", // [REQUIRED] Equipment UUID\n    \"vendorId\": \"replace-with-vendor-uuid\", // [REQUIRED] Vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Start date\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] End date (must be after start date)\n    \"contractAmount\": 155000.00, // [REQUIRED] Updated amount\n    \"paymentTerms\": \"Quarterly Advance\", // [REQUIRED] Payment terms\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Service frequency\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing plus emergency dispatch\", // [optional] Updated coverage\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Exclusions\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026-revised.pdf\", // [optional] Updated document link\n    \"remarks\": \"Revised amount following SLA addendum\", // [optional] Updated remarks\n    \"status\": \"Active\" // [optional] Contract status: Active, Expiring, Expired, Cancelled\n}"
-                },
                 "url": {
                   "raw": "{{baseUrl}}/api/amc-contracts/:id",
                   "host": [
@@ -6255,7 +6500,7 @@
                     }
                   ]
                 },
-                "description": "Updates details of an existing AMC contract record. Mandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional. amcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+                "description": "Updates details of an existing AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled\namcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
               },
               "status": "OK",
               "code": 200,
@@ -6268,6 +6513,141 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"AMC contract updated successfully.\",\n    \"data\": null\n}"
+            },
+            {
+              "name": "Error Example (400 - Invalid paymentTerms value)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "replace-with-amc-contract-uuid",
+                      "description": "AMC Contract unique identifier (UUID)"
+                    }
+                  ]
+                },
+                "description": "Updates details of an existing AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled\namcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other. Path: $.paymentTerms | LineNumber: 10 | BytePositionInLine: 39.\",\n            \"errorMessage\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (404 - Contract Not Found)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "replace-with-amc-contract-uuid",
+                      "description": "AMC Contract unique identifier (UUID)"
+                    }
+                  ]
+                },
+                "description": "Updates details of an existing AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled\namcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (403 - Missing Operations Permission)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "replace-with-amc-contract-uuid",
+                      "description": "AMC Contract unique identifier (UUID)"
+                    }
+                  ]
+                },
+                "description": "Updates details of an existing AMC contract record.\nMandatory fields: amcCode, contractNumber, contractTitle, contractType, equipmentId, vendorId, startDate, endDate, contractAmount, paymentTerms, serviceFrequency. All other fields are optional.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\npaymentTerms = BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\nserviceFrequency = Monthly | Quarterly | HalfYearly | Yearly | OneTime\nstatus = Active | Expiring | Expired | Cancelled\namcCode and contractNumber must each remain unique across all other contracts, including previously soft-deleted ones (returns 400 on duplicates)."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6282,7 +6662,7 @@
               {
                 "key": "X-Admin-Password",
                 "value": "adminpassword",
-                "description": "Header to supply admin password for deletion"
+                "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
               }
             ],
             "url": {
@@ -6299,7 +6679,7 @@
                 {
                   "key": "password",
                   "value": "adminpassword",
-                  "description": "Admin password query parameter to verify deletion"
+                  "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                 }
               ],
               "variable": [
@@ -6310,7 +6690,7 @@
                 }
               ]
             },
-            "description": "Soft-deletes an AMC contract record."
+            "description": "Soft-deletes an AMC contract record (requires the admin password via ?password= query parameter or X-Admin-Password header)."
           },
           "response": [
             {
@@ -6324,7 +6704,7 @@
                   {
                     "key": "X-Admin-Password",
                     "value": "adminpassword",
-                    "description": "Header to supply admin password for deletion"
+                    "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
@@ -6341,7 +6721,7 @@
                     {
                       "key": "password",
                       "value": "adminpassword",
-                      "description": "Admin password query parameter to verify deletion"
+                      "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
                   "variable": [
@@ -6352,7 +6732,7 @@
                     }
                   ]
                 },
-                "description": "Soft-deletes an AMC contract record."
+                "description": "Soft-deletes an AMC contract record (requires the admin password via ?password= query parameter or X-Admin-Password header)."
               },
               "status": "OK",
               "code": 200,
@@ -6364,7 +6744,113 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"AMC contract deleted successfully.\",\n    \"data\": null\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"AMC Contract deleted successfully.\",\n    \"data\": null\n}"
+            },
+            {
+              "name": "Error Example (400 - Invalid Admin Password)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "X-Admin-Password",
+                    "value": "adminpassword",
+                    "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    ":id"
+                  ],
+                  "query": [
+                    {
+                      "key": "password",
+                      "value": "adminpassword",
+                      "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "replace-with-amc-contract-uuid",
+                      "description": "AMC Contract unique identifier (UUID)"
+                    }
+                  ]
+                },
+                "description": "Soft-deletes an AMC contract record (requires the admin password via ?password= query parameter or X-Admin-Password header)."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid Admin password.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"Invalid Admin password.\",\n            \"errorMessage\": \"The administrator password you entered is incorrect.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (404 - Contract Not Found)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "X-Admin-Password",
+                    "value": "adminpassword",
+                    "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "amc-contracts",
+                    ":id"
+                  ],
+                  "query": [
+                    {
+                      "key": "password",
+                      "value": "adminpassword",
+                      "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "replace-with-amc-contract-uuid",
+                      "description": "AMC Contract unique identifier (UUID)"
+                    }
+                  ]
+                },
+                "description": "Soft-deletes an AMC contract record (requires the admin password via ?password= query parameter or X-Admin-Password header)."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"AMC Contract with ID 'f2a3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
             }
           ]
         }

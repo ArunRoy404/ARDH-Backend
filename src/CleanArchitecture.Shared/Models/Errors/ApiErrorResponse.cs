@@ -89,6 +89,37 @@ public class ApiErrorDetail
             return "Please provide the request body.";
         }
 
+        // ── AMC contract module ─────────────────────────────────────────────────
+        // 1. Invalid enum values (raw type-level conversion errors)
+        if (message.Contains("AmcPaymentTerm", StringComparison.OrdinalIgnoreCase))
+            return "The paymentTerms value is invalid. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.";
+        if (message.Contains("AmcContractType", StringComparison.OrdinalIgnoreCase))
+            return "The contractType value is invalid. Valid values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other.";
+        if (message.Contains("AmcServiceFrequency", StringComparison.OrdinalIgnoreCase))
+            return "The serviceFrequency value is invalid. Valid values: Monthly, Quarterly, HalfYearly, Yearly, OneTime.";
+        if (message.Contains("AmcStatus", StringComparison.OrdinalIgnoreCase))
+            return "The status value is invalid. Valid values: Active, Expiring, Expired, Cancelled.";
+
+        // 2. Friendly message already produced by the AMC enum converter - keep it, drop the JSON path suffix
+        //    (System.Text.Json appends it in the form " Path: $.paymentTerms | LineNumber: ... | BytePositionInLine: ...")
+        if (message.Contains("Valid values:", StringComparison.OrdinalIgnoreCase))
+        {
+            var pathIndex = message.IndexOf(" Path:", StringComparison.OrdinalIgnoreCase);
+            return pathIndex > 0 ? message[..pathIndex] : message;
+        }
+
+        // 3. AMC service messages are already written in plain language - keep them verbatim
+        if (message.Contains("AMC contract", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("AMC code", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("contract number", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("paymentTerms", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("contractType", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("serviceFrequency", StringComparison.OrdinalIgnoreCase))
+        {
+            return message;
+        }
+        // ── end AMC contract module ─────────────────────────────────────────────
+
         // 1. JSON conversion errors
         if (message.Contains("JSON value could not be converted", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("Could not convert", StringComparison.OrdinalIgnoreCase))

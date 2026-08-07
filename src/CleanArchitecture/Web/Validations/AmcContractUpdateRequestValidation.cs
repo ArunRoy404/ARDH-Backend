@@ -20,7 +20,7 @@ public class AmcContractUpdateRequestValidation : AbstractValidator<AmcContractU
             .MaximumLength(255).WithMessage("Contract title must not exceed 255 characters.");
 
         RuleFor(x => x.ContractType)
-            .IsInEnum().WithMessage("A valid contract type is required.");
+            .IsInEnum().WithMessage("Contract type is invalid. Valid values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other.");
 
         RuleFor(x => x.EquipmentId)
             .NotEmpty().WithMessage("Equipment ID is required.");
@@ -39,12 +39,12 @@ public class AmcContractUpdateRequestValidation : AbstractValidator<AmcContractU
             .GreaterThanOrEqualTo(0).WithMessage("Contract amount must be greater than or equal to 0.");
 
         RuleFor(x => x.PaymentTerms)
-            .IsInEnum().WithMessage("A valid payment term is required.");
+            .IsInEnum().WithMessage("Payment terms is invalid. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.");
 
         RuleFor(x => x.ServiceFrequency)
-            .IsInEnum().WithMessage("A valid service frequency is required.");
+            .IsInEnum().WithMessage("Service frequency is invalid. Valid values: Monthly, Quarterly, HalfYearly, Yearly, OneTime.");
 
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid status is required.");
+            .IsInEnum().WithMessage("Status is invalid. Valid values: Active, Expiring, Expired, Cancelled.");
     }
 }
