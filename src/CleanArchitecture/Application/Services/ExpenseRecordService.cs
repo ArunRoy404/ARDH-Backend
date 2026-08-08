@@ -391,8 +391,27 @@ public class ExpenseRecordService(
                 "Time of delivery must be a valid time (e.g. '13:31', '01:31 PM') or a full date-time.");
         }
 
-        await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, id, cancellationToken);
-        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, timeOfDelivery, id, cancellationToken);
+        var expenseSignatureChanged =
+            request.Amount != record.Amount ||
+            request.ExpenseDate?.Date != record.ExpenseDate.Date ||
+            !string.Equals(request.ExpenseHead?.Trim(), record.ExpenseHead, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(request.SpecificItem?.Trim(), record.SpecificItem, StringComparison.OrdinalIgnoreCase) ||
+            request.Nature != record.Nature ||
+            request.Status != record.Status;
+
+        if (expenseSignatureChanged)
+        {
+            await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, id, cancellationToken);
+        }
+
+        var tankerSignatureChanged =
+            !string.Equals(request.TankerNumber?.Trim(), record.TankerNumber, StringComparison.OrdinalIgnoreCase) ||
+            timeOfDelivery != record.TimeOfDelivery;
+
+        if (tankerSignatureChanged)
+        {
+            await EnsureNoDuplicateTankerDelivery(request.TankerNumber, timeOfDelivery, id, cancellationToken);
+        }
 
         record.Category = request.Category;
         record.ExpenseHead = request.ExpenseHead?.Trim();
