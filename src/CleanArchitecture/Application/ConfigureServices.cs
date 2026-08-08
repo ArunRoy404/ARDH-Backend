@@ -32,6 +32,10 @@ public static class ConfigureServices
         services.AddTransient<IDashboardService, DashboardService>();
         services.AddTransient<IReportService, ReportService>();
 
+        services.AddTransient<IBulkUploadService, BulkUploadService>();
+        services.AddSingleton<IBulkUploadQueue, BulkUploadQueue>();
+        services.AddHostedService<BulkUploadBackgroundService>();
+
         services.AddTransient<ICurrentTime, CurrentTime>();
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddTransient<ITokenService, TokenService>();

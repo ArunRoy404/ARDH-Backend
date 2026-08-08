@@ -4,5 +4,5 @@ namespace CleanArchitecture.Shared.Models.Expenses;
 
 public class ExpenseRecordStatusUpdateRequest
 {
-    public ExpenseStatus Status { get; set; }
+    public ExpenseStatus? Status { get; set; }
 }

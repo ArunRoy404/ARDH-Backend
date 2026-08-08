@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using CleanArchitecture.Shared.Converters;
 
 namespace CleanArchitecture.Shared.Domain.Enums;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+[JsonConverter(typeof(JsonPropertyNameEnumConverter<ExpenseStatus>))]
 public enum ExpenseStatus
 {
     Draft,

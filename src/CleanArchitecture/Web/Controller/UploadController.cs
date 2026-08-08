@@ -72,6 +72,32 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
     }
 
     /// <summary>
+    /// [F-05] Upload CSV file (for bulk uploads)
+    /// </summary>
+    [HttpPost("csv")]
+    [SwaggerOperation(Summary = "[F-05] Upload CSV file (for bulk uploads)")]
+    [SwaggerResponse(200, "CSV file uploaded successfully.")]
+    [SwaggerResponse(400, "Invalid CSV format or size.")]
+    public async Task<IActionResult> UploadCsv(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest(new { message = "No file uploaded." });
+        }
+
+        var allowedExtensions = new[] { ".csv" };
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+        if (!allowedExtensions.Contains(extension))
+        {
+            return BadRequest(new { message = "Invalid file format. Only .csv files are allowed." });
+        }
+
+        var url = await SaveFileAsync(file, extension);
+        return Ok(new { url });
+    }
+
+    /// <summary>
     /// [F-03] Upload tenant ID proof document (PDF, DOC, etc.)
     /// </summary>
     [HttpPost("id-proof")]

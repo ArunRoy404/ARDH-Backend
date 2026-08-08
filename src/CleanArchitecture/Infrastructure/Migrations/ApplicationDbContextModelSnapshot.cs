@@ -171,6 +171,9 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.HasIndex("AmcCode")
                         .IsUnique();
 
+                    b.HasIndex("ContractNumber")
+                        .IsUnique();
+
                     b.HasIndex("EquipmentId");
 
                     b.HasIndex("VendorId");
@@ -359,6 +362,78 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("buildings", (string)null);
                 });
 
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BulkUpload", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("FailedCount")
+                        .HasColumnType("int")
+                        .HasColumnName("failed_count");
+
+                    b.Property<DateTime?>("FinishedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("finished_at");
+
+                    b.Property<string>("GlobalError")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("global_error");
+
+                    b.Property<string>("Module")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("module");
+
+                    b.Property<string>("OriginalFileUrl")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("original_file_url");
+
+                    b.Property<string>("ProcessedFileUrl")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)")
+                        .HasColumnName("processed_file_url");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("started_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("status");
+
+                    b.Property<int>("SuccessCount")
+                        .HasColumnType("int")
+                        .HasColumnName("success_count");
+
+                    b.Property<int>("TotalCount")
+                        .HasColumnType("int")
+                        .HasColumnName("total_count");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Module", "CreatedAt");
+
+                    b.ToTable("bulk_uploads", (string)null);
+                });
+
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.DeletedHistory", b =>
                 {
                     b.Property<Guid>("Id")
@@ -401,16 +476,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("AmcExpiryDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("amc_expiry_date");
-
-                    b.Property<Guid>("AmcVendorId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("amc_vendor_id");
-
                     b.Property<string>("AttachmentUrl")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
                         .HasColumnName("attachment_url");
@@ -440,12 +506,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastServiceDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("last_service_date");
-
                     b.Property<string>("Model")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("model");
@@ -456,17 +517,11 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
-                    b.Property<DateTime>("NextServiceDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("next_service_date");
-
                     b.Property<string>("Notes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("notes");
 
                     b.Property<string>("SerialNumber")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("serial_number");
@@ -491,13 +546,11 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("updated_by");
 
-                    b.Property<DateTime>("WarrantyExpiryDate")
+                    b.Property<DateTime?>("WarrantyExpiryDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("warranty_expiry_date");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AmcVendorId");
 
                     b.HasIndex("BuildingId");
 
@@ -728,21 +781,11 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("payment_method");
 
-                    b.Property<string>("Period")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("period");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("status");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("tenant_id");
 
                     b.Property<string>("TransactionReference")
                         .HasMaxLength(255)
@@ -762,8 +805,6 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.HasIndex("ApartmentId");
 
                     b.HasIndex("BuildingId");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("income_records", (string)null);
                 });
@@ -831,9 +872,18 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasColumnType("nvarchar(1000)")
                         .HasColumnName("receipt_attachment_url");
 
+                    b.Property<string>("RecurrenceFrequency")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("recurrence_frequency");
+
                     b.Property<DateTime?>("ScheduledDate")
                         .HasColumnType("datetime2")
                         .HasColumnName("scheduled_date");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("start_date");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1415,8 +1465,8 @@ namespace CleanArchitecture.Infrastructure.Migrations
 
                     b.Property<string>("VendorType")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
                         .HasColumnName("vendor_type");
 
                     b.HasKey("Id");
@@ -1474,19 +1524,11 @@ namespace CleanArchitecture.Infrastructure.Migrations
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.Equipment", b =>
                 {
-                    b.HasOne("CleanArchitecture.Domain.Entities.Vendor", "AmcVendor")
-                        .WithMany()
-                        .HasForeignKey("AmcVendorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("CleanArchitecture.Domain.Entities.Building", "Building")
                         .WithMany()
                         .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("AmcVendor");
 
                     b.Navigation("Building");
                 });
@@ -1527,16 +1569,9 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("CleanArchitecture.Domain.Entities.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Apartment");
 
                     b.Navigation("Building");
-
-                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.MaintenanceRequest", b =>

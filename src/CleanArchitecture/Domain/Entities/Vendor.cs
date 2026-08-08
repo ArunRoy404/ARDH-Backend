@@ -10,7 +10,7 @@ public class Vendor
     public string CompanyName { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public string Email { get; set; } = null!;
-    public VendorType VendorType { get; set; }
+    public string VendorType { get; set; } = null!;
     public string GstNumber { get; set; } = null!;
     public string Address { get; set; } = null!;
     public VendorStatus Status { get; set; } = VendorStatus.Active;

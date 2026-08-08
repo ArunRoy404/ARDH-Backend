@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
 using Microsoft.AspNetCore.Authorization;
@@ -30,13 +29,29 @@ public class EquipmentController(IEquipmentService equipmentService, IUnitOfWork
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
-        [FromQuery] EquipmentType? type = null,
-        [FromQuery] EquipmentStatus? status = null,
-        [FromQuery] Guid? amcVendorId = null,
+        [FromQuery] string? type = null,
+        [FromQuery] string? status = null,
         CancellationToken cancellationToken = default)
     {
-        var equipment = await _equipmentService.GetPaginated(page, pageSize, search, buildingId, type, status, amcVendorId, cancellationToken);
+        var equipment = await _equipmentService.GetPaginated(page, pageSize, search, buildingId, type, status, cancellationToken);
         return Ok(equipment);
+    }
+
+    /// <summary>
+    /// [E-07] Exports equipment to CSV with the same filters as the list endpoint.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file containing filtered equipment.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] Guid? buildingId = null,
+        [FromQuery] string? type = null,
+        [FromQuery] string? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _equipmentService.ExportToCsv(search, buildingId, type, status, cancellationToken);
+        return File(bytes, "text/csv", "equipment.csv");
     }
 
     /// <summary>

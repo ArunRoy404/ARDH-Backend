@@ -24,6 +24,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<NotificationRecipient> NotificationRecipients { get; set; }
     public DbSet<Activity> Activities { get; set; }
+    public DbSet<BulkUpload> BulkUploads { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

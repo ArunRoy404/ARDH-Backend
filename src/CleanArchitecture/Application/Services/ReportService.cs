@@ -32,13 +32,11 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
         var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
         var query = records.AsQueryable();
 
@@ -70,13 +68,10 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
             IncomeEntity = x.IncomeEntity,
             IncomeType = x.IncomeType,
             Amount = x.Amount,
-            TenantId = x.TenantId,
-            TenantName = x.TenantId.HasValue && tenantMap.TryGetValue(x.TenantId.Value, out var tName) ? tName : null,
             BuildingId = x.BuildingId,
             BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
             ApartmentId = x.ApartmentId,
             FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var fNum) ? fNum : null,
-            Period = x.Period,
             PaymentDate = x.PaymentDate,
             PaymentMethod = x.PaymentMethod,
             TransactionReference = x.TransactionReference,
@@ -230,11 +225,9 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
             var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
             var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
             var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-            var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
 
             var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
             var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-            var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
             var query = records.AsQueryable();
             if (buildingId.HasValue) query = query.Where(x => x.BuildingId == buildingId.Value);
@@ -243,14 +236,13 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
 
             var list = query.OrderByDescending(x => x.PaymentDate).ToList();
 
-            csv.AppendLine("ID,IncomeEntity,IncomeType,Amount,TenantName,BuildingName,FlatNumber,Period,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt");
+            csv.AppendLine("ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt");
             foreach (var r in list)
             {
-                var tName = r.TenantId.HasValue && tenantMap.TryGetValue(r.TenantId.Value, out var tn) ? tn : "";
                 var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
                 var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
 
-                csv.AppendLine($"\"{r.Id}\",\"{r.IncomeEntity}\",\"{r.IncomeType}\",{r.Amount:F2},\"{EscapeCsv(tName)}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{EscapeCsv(r.Period)}\",\"{r.PaymentDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{EscapeCsv(r.TransactionReference)}\",\"{r.Status}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+                csv.AppendLine($"\"{r.Id}\",\"{r.IncomeEntity}\",\"{r.IncomeType}\",{r.Amount:F2},\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.PaymentDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{EscapeCsv(r.TransactionReference)}\",\"{r.Status}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
             }
         }
         else if (typeLower == "expense")
@@ -325,7 +317,7 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
                     Date = inc.PaymentDate,
                     Type = "Income",
                     Category = inc.IncomeType.ToString(),
-                    Description = $"Received from {inc.IncomeEntity} for period {inc.Period}",
+                    Description = $"Received from {inc.IncomeEntity}",
                     Amount = inc.Amount,
                     BuildingId = inc.BuildingId,
                     ApartmentId = inc.ApartmentId,

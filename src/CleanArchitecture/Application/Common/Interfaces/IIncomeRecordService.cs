@@ -16,7 +16,6 @@ public interface IIncomeRecordService
         IncomeType? incomeType,
         IncomeStatus? status,
         Guid? buildingId,
-        Guid? tenantId,
         Guid? apartmentId,
         DateTime? startDate,
         DateTime? endDate,
@@ -39,7 +38,6 @@ public interface IIncomeRecordService
         IncomeType? incomeType,
         IncomeStatus? status,
         Guid? buildingId,
-        Guid? tenantId,
         DateTime? startDate,
         DateTime? endDate,
         CancellationToken cancellationToken);

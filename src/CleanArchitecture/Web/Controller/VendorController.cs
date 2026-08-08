@@ -29,7 +29,7 @@ public class VendorController(IVendorService vendorService, IUnitOfWork unitOfWo
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10,
         [FromQuery] string? search = null,
-        [FromQuery] VendorType? vendorType = null,
+        [FromQuery] string? vendorType = null,
         [FromQuery] VendorStatus? status = null,
         CancellationToken cancellationToken = default)
     {

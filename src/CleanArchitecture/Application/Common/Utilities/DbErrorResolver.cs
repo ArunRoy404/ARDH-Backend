@@ -86,7 +86,9 @@ public static class DbErrorResolver
 
         if (!string.IsNullOrWhiteSpace(field))
         {
-            return $"A {entity} with this {field} already exists. Please use a different {field}.";
+            // "An AMC contract ..." instead of "A AMC contract ..."
+            var article = entity.StartsWith("AMC", StringComparison.OrdinalIgnoreCase) ? "An" : "A";
+            return $"{article} {entity} with this {field} already exists. Please use a different {field}.";
         }
 
         return "A record with the same value already exists. Please check your input for duplicates.";
@@ -103,6 +105,7 @@ public static class DbErrorResolver
             "apartments" => "apartment",
             "equipment" => "equipment",
             "amccontracts" => "AMC contract",
+            "amc_contracts" => "AMC contract",
             _ => "record"
         };
 
@@ -163,6 +166,11 @@ public static class DbErrorResolver
         if (lower.Contains("amccode") || lower.Contains("amc_code"))
         {
             return "AMC code";
+        }
+
+        if (lower.Contains("contractnumber") || lower.Contains("contract_number"))
+        {
+            return "contract number";
         }
 
         return string.Empty;

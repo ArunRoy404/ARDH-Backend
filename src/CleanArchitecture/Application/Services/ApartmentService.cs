@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -119,6 +120,95 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             .ToList();
 
         return new PaginatedList<ApartmentViewModel>(items, totalCount, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        Guid? ownerId,
+        string? apartmentType,
+        string? status,
+        CancellationToken cancellationToken)
+    {
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
+
+        var query = apartments.AsQueryable();
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (ownerId.HasValue)
+        {
+            query = query.Where(x => x.OwnerId == ownerId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(apartmentType))
+        {
+            query = query.Where(x => x.ApartmentType == apartmentType.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var cleanStatus = status.Trim().ToLower();
+            if (cleanStatus == "occupied")
+            {
+                query = query.Where(x => x.CurrentTenantId != null);
+            }
+            else if (cleanStatus == "vacant")
+            {
+                query = query.Where(x => x.CurrentTenantId == null);
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var cleanSearch = search.Trim().ToLower();
+            query = query.Where(x =>
+                (x.NestawayId != null && x.NestawayId.ToLower().Contains(cleanSearch)) ||
+                (x.FlatNumber != null && x.FlatNumber.ToLower().Contains(cleanSearch)) ||
+                (x.ParkingSlot != null && x.ParkingSlot.ToLower().Contains(cleanSearch)) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
+                (ownerMap.ContainsKey(x.OwnerId) && ownerMap[x.OwnerId].ToLower().Contains(cleanSearch))
+            );
+        }
+
+        var list = query.ToList();
+
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "BuildingId", "OwnerId", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" };
+        rows.Add(headers);
+
+        foreach (var a in list)
+        {
+            rows.Add(new List<string>
+            {
+                a.BuildingId.ToString(),
+                a.OwnerId.ToString(),
+                a.NestawayId ?? string.Empty,
+                a.FlatNumber ?? string.Empty,
+                a.Floor.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.ApartmentType ?? string.Empty,
+                a.AreaSqft.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.Bedrooms.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.Bathrooms.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.HasBalcony.ToString().ToLowerInvariant(),
+                a.ParkingSlot ?? string.Empty,
+                a.ExpectedRent.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.MaintenanceCharge.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.WaterCharge.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                a.Notes ?? string.Empty
+            });
+        }
+
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     public async Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken)

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
@@ -287,6 +288,15 @@ public class ExpenseRecordService(
 
         var userId = _currentUser.GetCurrentUserId();
 
+        if (!TimeOfDeliveryHelper.TryParse(request.TimeOfDelivery, request.ExpenseDate, out var timeOfDelivery))
+        {
+            throw ExpenseRecordException.BadRequestException(
+                "Time of delivery must be a valid time (e.g. '13:31', '01:31 PM') or a full date-time.");
+        }
+
+        await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, null, cancellationToken);
+        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, timeOfDelivery, null, cancellationToken);
+
         var record = new ExpenseRecord
         {
             Id = Guid.NewGuid(),
@@ -294,19 +304,19 @@ public class ExpenseRecordService(
             ExpenseHead = request.ExpenseHead?.Trim(),
             SpecificItem = request.SpecificItem?.Trim(),
             VendorId = request.VendorId,
-            Nature = request.Nature,
-            Amount = request.Amount,
-            Entity = request.Entity,
+            Nature = request.Nature ?? ExpenseNature.Service,
+            Amount = request.Amount ?? 0,
+            Entity = request.Entity ?? ExpenseEntity.General,
             BuildingId = request.BuildingId,
             ApartmentId = request.ApartmentId,
-            ExpenseDate = request.ExpenseDate,
-            PaymentMethod = request.PaymentMethod,
-            Status = request.Status,
+            ExpenseDate = request.ExpenseDate ?? DateTime.UtcNow,
+            PaymentMethod = request.PaymentMethod?.Trim() ?? string.Empty,
+            Status = request.Status ?? ExpenseStatus.Draft,
             Reference = request.Reference?.Trim(),
             AttachmentUrl = request.AttachmentUrl?.Trim(),
             Description = request.Description?.Trim(),
             TankerNumber = request.TankerNumber?.Trim(),
-            TimeOfDelivery = request.TimeOfDelivery,
+            TimeOfDelivery = timeOfDelivery,
             DeliveryDriverName = request.DeliveryDriverName?.Trim(),
             ManagerInAttendance = request.ManagerInAttendance?.Trim(),
             LitersFilled = request.LitersFilled,
@@ -375,23 +385,32 @@ public class ExpenseRecordService(
         var userId = _currentUser.GetCurrentUserId();
         var oldStatus = record.Status;
 
+        if (!TimeOfDeliveryHelper.TryParse(request.TimeOfDelivery, request.ExpenseDate, out var timeOfDelivery))
+        {
+            throw ExpenseRecordException.BadRequestException(
+                "Time of delivery must be a valid time (e.g. '13:31', '01:31 PM') or a full date-time.");
+        }
+
+        await EnsureNoDuplicateExpense(request.Amount, request.ExpenseDate, request.ExpenseHead, request.SpecificItem, request.Nature, id, cancellationToken);
+        await EnsureNoDuplicateTankerDelivery(request.TankerNumber, timeOfDelivery, id, cancellationToken);
+
         record.Category = request.Category;
         record.ExpenseHead = request.ExpenseHead?.Trim();
         record.SpecificItem = request.SpecificItem?.Trim();
         record.VendorId = request.VendorId;
-        record.Nature = request.Nature;
-        record.Amount = request.Amount;
-        record.Entity = request.Entity;
+        record.Nature = request.Nature ?? record.Nature;
+        record.Amount = request.Amount ?? record.Amount;
+        record.Entity = request.Entity ?? record.Entity;
         record.BuildingId = request.BuildingId;
         record.ApartmentId = request.ApartmentId;
-        record.ExpenseDate = request.ExpenseDate;
-        record.PaymentMethod = request.PaymentMethod;
-        record.Status = request.Status;
+        record.ExpenseDate = request.ExpenseDate ?? record.ExpenseDate;
+        record.PaymentMethod = request.PaymentMethod?.Trim() ?? record.PaymentMethod;
+        record.Status = request.Status ?? record.Status;
         record.Reference = request.Reference?.Trim();
         record.AttachmentUrl = request.AttachmentUrl?.Trim();
         record.Description = request.Description?.Trim();
         record.TankerNumber = request.TankerNumber?.Trim();
-        record.TimeOfDelivery = request.TimeOfDelivery;
+        record.TimeOfDelivery = timeOfDelivery;
         record.DeliveryDriverName = request.DeliveryDriverName?.Trim();
         record.ManagerInAttendance = request.ManagerInAttendance?.Trim();
         record.LitersFilled = request.LitersFilled;
@@ -474,7 +493,7 @@ public class ExpenseRecordService(
 
         var oldStatus = record.Status;
 
-        record.Status = request.Status;
+        record.Status = request.Status ?? record.Status;
         record.UpdatedAt = DateTime.UtcNow;
         record.UpdatedBy = userId;
 
@@ -578,27 +597,112 @@ public class ExpenseRecordService(
 
         var list = query.OrderByDescending(x => x.ExpenseDate).ToList();
 
-        var csv = new System.Text.StringBuilder();
-        csv.AppendLine("ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "Category", "ExpenseHead", "SpecificItem", "VendorId", "Nature", "Amount", "Entity", "BuildingId", "ApartmentId", "ExpenseDate", "PaymentMethod", "Status", "Reference", "AttachmentUrl", "Description", "TankerNumber", "TimeOfDelivery", "DeliveryDriverName", "ManagerInAttendance", "LitersFilled" };
+        rows.Add(headers);
 
         foreach (var r in list)
         {
-            var vName = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v) ? v.Name : "";
-            var vComp = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v2) ? v2.CompanyName : "";
-            var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-
-            var deliveryTime = r.TimeOfDelivery.HasValue ? r.TimeOfDelivery.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
-
-            csv.AppendLine($"\"{r.Id}\",\"{r.Category}\",\"{EscapeCsv(r.ExpenseHead)}\",\"{EscapeCsv(r.SpecificItem)}\",\"{EscapeCsv(vName)}\",\"{EscapeCsv(vComp)}\",\"{r.Nature}\",{r.Amount:F2},\"{r.Entity}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.ExpenseDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{r.Status}\",\"{EscapeCsv(r.Reference)}\",\"{EscapeCsv(r.Description)}\",\"{EscapeCsv(r.TankerNumber)}\",\"{deliveryTime}\",\"{EscapeCsv(r.DeliveryDriverName)}\",\"{EscapeCsv(r.ManagerInAttendance)}\",\"{r.LitersFilled}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                r.Category.ToString(),
+                r.ExpenseHead ?? string.Empty,
+                r.SpecificItem ?? string.Empty,
+                r.VendorId.HasValue ? r.VendorId.Value.ToString() : string.Empty,
+                r.Nature.ToString(),
+                r.Amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                r.Entity.ToString(),
+                r.BuildingId.HasValue ? r.BuildingId.Value.ToString() : string.Empty,
+                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.ExpenseDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                r.PaymentMethod ?? string.Empty,
+                r.Status.ToString(),
+                r.Reference ?? string.Empty,
+                r.AttachmentUrl ?? string.Empty,
+                r.Description ?? string.Empty,
+                r.TankerNumber ?? string.Empty,
+                r.TimeOfDelivery.HasValue ? r.TimeOfDelivery.Value.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                r.DeliveryDriverName ?? string.Empty,
+                r.ManagerInAttendance ?? string.Empty,
+                r.LitersFilled.HasValue ? r.LitersFilled.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : string.Empty
+            });
         }
 
-        return System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return System.Text.Encoding.UTF8.GetBytes(csvText);
     }
 
-    private static string EscapeCsv(string? val)
+    /// <summary>
+    /// Rule: the same Amount + ExpenseDate + ExpenseHead + SpecificItem + Nature must not be recorded twice.
+    /// </summary>
+    private async Task EnsureNoDuplicateExpense(
+        decimal? amount,
+        DateTime? expenseDate,
+        string? expenseHead,
+        string? specificItem,
+        ExpenseNature? nature,
+        Guid? excludeId,
+        CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(val)) return "";
-        return val.Replace("\"", "\"\"");
+        if (string.IsNullOrWhiteSpace(expenseHead) || string.IsNullOrWhiteSpace(specificItem))
+        {
+            return;
+        }
+
+        var head = expenseHead.Trim().ToLower();
+        var item = specificItem.Trim().ToLower();
+        var date = expenseDate?.Date ?? DateTime.UtcNow.Date;
+        var amountValue = amount ?? 0;
+        var natureValue = nature ?? ExpenseNature.Service;
+
+        var exists = await _unitOfWork.ExpenseRecordRepository.AnyAsync(x =>
+            !x.IsDeleted &&
+            x.Id != (excludeId ?? Guid.Empty) &&
+            x.Amount == amountValue &&
+            x.ExpenseDate.Date == date &&
+            x.ExpenseHead != null && x.ExpenseHead.ToLower() == head &&
+            x.SpecificItem != null && x.SpecificItem.ToLower() == item &&
+            x.Nature == natureValue);
+
+        if (exists)
+        {
+            throw ExpenseRecordException.BadRequestException(
+                $"An expense entry with amount {amountValue:N2} SAR, expense date {date:yyyy-MM-dd}, " +
+                $"expense head '{expenseHead.Trim()}', specific item '{specificItem.Trim()}' and " +
+                $"nature '{natureValue}' already exists. Duplicate expense entries are not allowed.");
+        }
     }
+
+    /// <summary>
+    /// Rule: the same tanker number at the same delivery time must not be recorded twice.
+    /// </summary>
+    private async Task EnsureNoDuplicateTankerDelivery(
+        string? tankerNumber,
+        DateTime? timeOfDelivery,
+        Guid? excludeId,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(tankerNumber) || !timeOfDelivery.HasValue)
+        {
+            return;
+        }
+
+        var tankerNo = tankerNumber.Trim().ToLower();
+        var deliveryTime = timeOfDelivery.Value;
+
+        var exists = await _unitOfWork.ExpenseRecordRepository.AnyAsync(x =>
+            !x.IsDeleted &&
+            x.Id != (excludeId ?? Guid.Empty) &&
+            x.TankerNumber != null && x.TankerNumber.ToLower() == tankerNo &&
+            x.TimeOfDelivery == deliveryTime);
+
+        if (exists)
+        {
+            throw ExpenseRecordException.BadRequestException(
+                $"A water tank delivery with tanker number '{tankerNumber.Trim()}' and delivery time " +
+                $"'{deliveryTime:yyyy-MM-dd HH:mm}' already exists. Duplicate water tank deliveries are not allowed.");
+        }
+    }
+
+
 }

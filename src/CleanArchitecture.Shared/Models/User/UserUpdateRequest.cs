@@ -28,8 +28,7 @@ public class UserUpdateRequest
 
     public bool IsActive { get; set; } = true;
 
-    [Required]
-    public string Permissions { get; set; } = string.Empty;
+    public string? Permissions { get; set; }
 
     [Required]
     [JsonPropertyName("avatarURL")]

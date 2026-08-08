@@ -125,6 +125,29 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
         };
     }
 
+    private static readonly Dictionary<UserRole, UserPermission[]> DefaultRolePermissions = new()
+    {
+        [UserRole.admin] = Enum.GetValues<UserPermission>(),
+        // Viewer is read-only: gets all module permissions for viewing but never admin.
+        [UserRole.viewer] = [UserPermission.dashboard, UserPermission.properties, UserPermission.finance, UserPermission.operations],
+        [UserRole.property_manager] = [UserPermission.operations],
+        [UserRole.accountant] = [UserPermission.finance],
+    };
+
+    private static string ResolvePermissions(UserRole role, string? requestedPermissions)
+    {
+        var requested = (requestedPermissions ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(p => Enum.TryParse<UserPermission>(p, true, out _))
+            .Select(p => Enum.Parse<UserPermission>(p, true));
+
+        var permissions = new HashSet<UserPermission>(
+            DefaultRolePermissions.TryGetValue(role, out var defaults) ? defaults : []);
+        permissions.UnionWith(requested);
+
+        return string.Join(",", Enum.GetValues<UserPermission>().Where(permissions.Contains));
+    }
+
     public async Task Create(UserCreateRequest request, CancellationToken cancellationToken)
     {
         var isEmailExist = await _unitOfWork.UserRepository.AnyIncludingDeletedAsync(x => x.Email == request.Email);
@@ -142,7 +165,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
             PasswordHash = request.Password.Hash(),
             Address = request.Address,
             Role = request.Role,
-            Permissions = request.Permissions,
+            Permissions = ResolvePermissions(request.Role, request.Permissions),
             AvatarUrl = request.AvatarUrl,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
@@ -176,7 +199,7 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
         user.Address = request.Address;
         user.Role = request.Role;
         user.IsActive = request.IsActive;
-        user.Permissions = request.Permissions;
+        user.Permissions = ResolvePermissions(request.Role, request.Permissions);
         user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
         user.UpdatedBy = _currentUser.GetCurrentUserId();

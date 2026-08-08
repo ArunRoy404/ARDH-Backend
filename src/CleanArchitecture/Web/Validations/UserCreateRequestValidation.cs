@@ -38,7 +38,6 @@ public class UserCreateRequestValidation : AbstractValidator<UserCreateRequest>
             .IsInEnum().WithMessage("A valid role is required.");
 
         RuleFor(x => x.Permissions)
-            .NotEmpty().WithMessage("Permissions are required.")
             .Must(BeValidPermissions).WithMessage("Permissions must only contain: dashboard, properties, finance, operations, admin.");
 
         RuleFor(x => x.AvatarUrl)
@@ -46,15 +45,12 @@ public class UserCreateRequestValidation : AbstractValidator<UserCreateRequest>
             .MaximumLength(500).WithMessage("Avatar URL must not exceed 500 characters.");
     }
 
-    private bool BeValidPermissions(string permissions)
+    private bool BeValidPermissions(string? permissions)
     {
         if (string.IsNullOrWhiteSpace(permissions))
-            return false;
+            return true;
 
         var parts = permissions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        
-        if (parts.Length == 0)
-            return false;
 
         return parts.All(p => Enum.TryParse<UserPermission>(p, out _));
     }

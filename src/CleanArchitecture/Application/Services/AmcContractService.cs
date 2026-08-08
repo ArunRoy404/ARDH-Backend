@@ -148,10 +148,6 @@ public class AmcContractService(
                 SerialNumber = equipment.SerialNumber,
                 InstallDate = equipment.InstallDate,
                 WarrantyExpiryDate = equipment.WarrantyExpiryDate,
-                AmcVendorId = equipment.AmcVendorId,
-                AmcExpiryDate = equipment.AmcExpiryDate,
-                LastServiceDate = equipment.LastServiceDate,
-                NextServiceDate = equipment.NextServiceDate,
                 Status = equipment.Status,
                 Notes = equipment.Notes,
                 AttachmentUrl = equipment.AttachmentUrl,
@@ -239,20 +235,18 @@ public class AmcContractService(
             throw AmcContractException.BadRequestException("The specified vendor does not exist.");
         }
 
-        string amcCode;
-        if (!string.IsNullOrWhiteSpace(request.AmcCode))
+        var amcCode = request.AmcCode.Trim();
+        var codeExists = await _unitOfWork.AmcContractRepository.AnyIncludingDeletedAsync(x => x.AmcCode.ToLower() == amcCode.ToLower());
+        if (codeExists)
         {
-            amcCode = request.AmcCode.Trim();
-            var codeExists = await _unitOfWork.AmcContractRepository.AnyIncludingDeletedAsync(x => x.AmcCode.ToLower() == amcCode.ToLower());
-            if (codeExists)
-            {
-                throw AmcContractException.BadRequestException($"AMC Contract with code '{amcCode}' already exists.");
-            }
+            throw AmcContractException.BadRequestException($"AMC Contract with code '{amcCode}' already exists.");
         }
-        else
+
+        var contractNumber = request.ContractNumber.Trim();
+        var contractNumberExists = await _unitOfWork.AmcContractRepository.AnyIncludingDeletedAsync(x => x.ContractNumber.ToLower() == contractNumber.ToLower());
+        if (contractNumberExists)
         {
-            var count = await _unitOfWork.AmcContractRepository.CountAsync(x => true);
-            amcCode = $"AMC-{DateTime.UtcNow:yyyy}-{(count + 1):D4}";
+            throw AmcContractException.BadRequestException($"AMC Contract with contract number '{contractNumber}' already exists.");
         }
 
         var userId = _currentUser.GetCurrentUserId();
@@ -261,7 +255,7 @@ public class AmcContractService(
         {
             Id = Guid.NewGuid(),
             AmcCode = amcCode,
-            ContractNumber = request.ContractNumber.Trim(),
+            ContractNumber = contractNumber,
             ContractTitle = request.ContractTitle.Trim(),
             ContractType = request.ContractType,
             EquipmentId = request.EquipmentId,
@@ -281,21 +275,9 @@ public class AmcContractService(
             CreatedBy = userId
         };
 
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
-        if (equipment != null)
-        {
-            equipment.AmcVendorId = contract.VendorId;
-            equipment.AmcExpiryDate = contract.EndDate;
-            equipment.UpdatedAt = DateTime.UtcNow;
-        }
-
         await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
             await _unitOfWork.AmcContractRepository.AddAsync(contract);
-            if (equipment != null)
-            {
-                _unitOfWork.EquipmentRepository.Update(equipment);
-            }
         }, cancellationToken);
 
         await _notificationService.CreateNotificationInternal("operations", "AMC Contract Created", $"AMC contract '{contract.ContractTitle}' ({contract.AmcCode}) was created.", cancellationToken);
@@ -318,9 +300,24 @@ public class AmcContractService(
             throw AmcContractException.BadRequestException("The specified vendor does not exist.");
         }
 
+        var amcCode = request.AmcCode.Trim();
+        var codeExists = await _unitOfWork.AmcContractRepository.AnyIncludingDeletedAsync(x => x.Id != id && x.AmcCode.ToLower() == amcCode.ToLower());
+        if (codeExists)
+        {
+            throw AmcContractException.BadRequestException($"AMC Contract with code '{amcCode}' already exists.");
+        }
+
+        var contractNumber = request.ContractNumber.Trim();
+        var contractNumberExists = await _unitOfWork.AmcContractRepository.AnyIncludingDeletedAsync(x => x.Id != id && x.ContractNumber.ToLower() == contractNumber.ToLower());
+        if (contractNumberExists)
+        {
+            throw AmcContractException.BadRequestException($"AMC Contract with contract number '{contractNumber}' already exists.");
+        }
+
         var userId = _currentUser.GetCurrentUserId();
 
-        contract.ContractNumber = request.ContractNumber.Trim();
+        contract.AmcCode = amcCode;
+        contract.ContractNumber = contractNumber;
         contract.ContractTitle = request.ContractTitle.Trim();
         contract.ContractType = request.ContractType;
         contract.EquipmentId = request.EquipmentId;
@@ -337,15 +334,6 @@ public class AmcContractService(
         contract.Status = request.Status;
         contract.UpdatedAt = DateTime.UtcNow;
         contract.UpdatedBy = userId;
-
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);
-        if (equipment != null)
-        {
-            equipment.AmcVendorId = contract.VendorId;
-            equipment.AmcExpiryDate = contract.EndDate;
-            equipment.UpdatedAt = DateTime.UtcNow;
-            _unitOfWork.EquipmentRepository.Update(equipment);
-        }
 
         _unitOfWork.AmcContractRepository.Update(contract);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

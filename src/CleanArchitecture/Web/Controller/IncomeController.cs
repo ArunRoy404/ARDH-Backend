@@ -32,14 +32,13 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
         [FromQuery] IncomeType? incomeType = null,
         [FromQuery] IncomeStatus? status = null,
         [FromQuery] Guid? buildingId = null,
-        [FromQuery] Guid? tenantId = null,
         [FromQuery] Guid? apartmentId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
         var result = await _incomeRecordService.GetPaginated(
-            page, pageSize, search, incomeType, status, buildingId, tenantId, apartmentId, startDate, endDate, cancellationToken);
+            page, pageSize, search, incomeType, status, buildingId, apartmentId, startDate, endDate, cancellationToken);
         return Ok(result);
     }
 
@@ -59,6 +58,19 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
     /// <summary>
     /// [I-03] Creates a new income record.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: incomeEntity, incomeType, amount, paymentDate, paymentMethod and status.
+    /// For ApartmentWise income, buildingId and apartmentId are also mandatory.
+    /// Valid enum values (exact):
+    ///   incomeEntity = ApartmentWise | GeneralOthers
+    ///   incomeType = Rent | Maintenance | SecurityDeposit | WaterCharge | Others
+    ///   paymentMethod = TransferFromNestaway | DirectFromTenant | Cash | BankTransfer | Cheque | Others
+    ///   status = Paid | Pending | Overdue | Partial
+    /// Rules:
+    ///   - Amount must be greater than 0.
+    ///   - Income for an apartment is only allowed when the apartment is occupied.
+    ///   - A duplicate entry (same apartment + income type + amount + payment month) is rejected.
+    /// </remarks>
     [HttpPost]
     [SwaggerResponse(200, "Income record created successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]
@@ -72,6 +84,19 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
     /// <summary>
     /// [I-04] Updates details of an existing income record.
     /// </summary>
+    /// <remarks>
+    /// Mandatory fields: incomeEntity, incomeType, amount, paymentDate, paymentMethod and status.
+    /// For ApartmentWise income, buildingId and apartmentId are also mandatory.
+    /// Valid enum values (exact):
+    ///   incomeEntity = ApartmentWise | GeneralOthers
+    ///   incomeType = Rent | Maintenance | SecurityDeposit | WaterCharge | Others
+    ///   paymentMethod = TransferFromNestaway | DirectFromTenant | Cash | BankTransfer | Cheque | Others
+    ///   status = Paid | Pending | Overdue | Partial
+    /// Rules:
+    ///   - Amount must be greater than 0.
+    ///   - Income for an apartment is only allowed when the apartment is occupied.
+    ///   - A duplicate entry (same apartment + income type + amount + payment month) is rejected.
+    /// </remarks>
     [HttpPut("{id:guid}")]
     [SwaggerResponse(200, "Income record updated successfully.")]
     [SwaggerResponse(400, "Invalid request payload.")]
@@ -149,13 +174,12 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
         [FromQuery] IncomeType? incomeType = null,
         [FromQuery] IncomeStatus? status = null,
         [FromQuery] Guid? buildingId = null,
-        [FromQuery] Guid? tenantId = null,
         [FromQuery] DateTime? startDate = null,
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
         var bytes = await _incomeRecordService.ExportToCsv(
-            search, incomeType, status, buildingId, tenantId, startDate, endDate, cancellationToken);
+            search, incomeType, status, buildingId, startDate, endDate, cancellationToken);
         return File(bytes, "text/csv", "income_records.csv");
     }
 }

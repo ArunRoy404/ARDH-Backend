@@ -19,6 +19,14 @@ public interface ITenantService
         CancellationToken cancellationToken);
 
     Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        Guid? apartmentId,
+        TenantStatus? status,
+        CancellationToken cancellationToken);
+
     Task Create(TenantCreateRequest request, CancellationToken cancellationToken);
     Task Update(Guid id, TenantUpdateRequest request, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);

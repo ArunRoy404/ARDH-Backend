@@ -89,6 +89,56 @@ public class ApiErrorDetail
             return "Please provide the request body.";
         }
 
+        // ── AMC contract module ─────────────────────────────────────────────────
+        // 1. Invalid enum values (raw type-level conversion errors)
+        if (message.Contains("AmcPaymentTerm", StringComparison.OrdinalIgnoreCase))
+            return "The paymentTerms value is invalid. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.";
+        if (message.Contains("AmcContractType", StringComparison.OrdinalIgnoreCase))
+            return "The contractType value is invalid. Valid values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other.";
+        if (message.Contains("AmcServiceFrequency", StringComparison.OrdinalIgnoreCase))
+            return "The serviceFrequency value is invalid. Valid values: Monthly, Quarterly, HalfYearly, Yearly, OneTime.";
+        if (message.Contains("AmcStatus", StringComparison.OrdinalIgnoreCase))
+            return "The status value is invalid. Valid values: Active, Expiring, Expired, Cancelled.";
+
+        // 2. Friendly message already produced by the AMC enum converter - keep it, drop the JSON path suffix
+        //    (System.Text.Json appends it in the form " Path: $.paymentTerms | LineNumber: ... | BytePositionInLine: ...")
+        if (message.Contains("Valid values:", StringComparison.OrdinalIgnoreCase))
+        {
+            var pathIndex = message.IndexOf(" Path:", StringComparison.OrdinalIgnoreCase);
+            return pathIndex > 0 ? message[..pathIndex] : message;
+        }
+
+        // 3. AMC contract / maintenance / income service messages are already written
+        //    in plain language - keep them verbatim instead of replacing them with a generic phrase
+        if (message.Contains("AMC contract", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("AMC code", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("contract number", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("paymentTerms", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("contractType", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("serviceFrequency", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("maintenance request", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("recurrence frequency", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("income record", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("income entry", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("duplicate income", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("occupied apartments", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomeEntity", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomeType", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomePaymentMethod", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("IncomeStatus", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("expense record", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("expense entry", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("duplicate expense", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("water tank delivery", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseNature", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseEntity", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseStatus", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("ExpenseCategory", StringComparison.OrdinalIgnoreCase))
+        {
+            return message;
+        }
+        // ── end AMC contract / maintenance / income / expense module ────────────
+
         // 1. JSON conversion errors
         if (message.Contains("JSON value could not be converted", StringComparison.OrdinalIgnoreCase) ||
             message.Contains("Could not convert", StringComparison.OrdinalIgnoreCase))
@@ -105,6 +155,8 @@ public class ApiErrorDetail
                 return "You need to choose a valid vendor.";
             if (message.Contains("equipmentId", StringComparison.OrdinalIgnoreCase))
                 return "You need to choose a valid equipment.";
+            if (message.Contains("status", StringComparison.OrdinalIgnoreCase))
+                return "Please provide a valid status value.";
             if (message.Contains("flatNumber", StringComparison.OrdinalIgnoreCase))
                 return "Please enter a valid flat number.";
             if (message.Contains("floor", StringComparison.OrdinalIgnoreCase))

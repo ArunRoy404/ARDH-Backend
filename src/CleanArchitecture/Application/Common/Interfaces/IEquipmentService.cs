@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
 
@@ -14,12 +13,18 @@ public interface IEquipmentService
         int pageSize,
         string? search,
         Guid? buildingId,
-        EquipmentType? type,
-        EquipmentStatus? status,
-        Guid? amcVendorId,
+        string? type,
+        string? status,
         CancellationToken cancellationToken);
 
     Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        string? type,
+        string? status,
+        CancellationToken cancellationToken);
 
     Task Create(EquipmentCreateRequest request, CancellationToken cancellationToken);
 

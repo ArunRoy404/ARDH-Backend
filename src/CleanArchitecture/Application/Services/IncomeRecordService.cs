@@ -10,7 +10,6 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Income;
-using CleanArchitecture.Shared.Models.Tenant;
 using CleanArchitecture.Shared.Models.Building;
 using CleanArchitecture.Shared.Models.Apartment;
 
@@ -34,7 +33,6 @@ public class IncomeRecordService(
         IncomeType? incomeType,
         IncomeStatus? status,
         Guid? buildingId,
-        Guid? tenantId,
         Guid? apartmentId,
         DateTime? startDate,
         DateTime? endDate,
@@ -46,13 +44,11 @@ public class IncomeRecordService(
         var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
         var query = records.AsQueryable();
 
@@ -69,11 +65,6 @@ public class IncomeRecordService(
         if (buildingId.HasValue)
         {
             query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (tenantId.HasValue)
-        {
-            query = query.Where(x => x.TenantId == tenantId.Value);
         }
 
         if (apartmentId.HasValue)
@@ -95,11 +86,9 @@ public class IncomeRecordService(
         {
             var searchLower = search.Trim().ToLower();
             query = query.Where(x =>
-                x.Period.ToLower().Contains(searchLower) ||
                 (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
                 (x.TransactionReference != null && x.TransactionReference.ToLower().Contains(searchLower)) ||
                 (x.BuildingId.HasValue && buildingMap.ContainsKey(x.BuildingId.Value) && buildingMap[x.BuildingId.Value].ToLower().Contains(searchLower)) ||
-                (x.TenantId.HasValue && tenantMap.ContainsKey(x.TenantId.Value) && tenantMap[x.TenantId.Value].ToLower().Contains(searchLower)) ||
                 (x.ApartmentId.HasValue && apartmentMap.ContainsKey(x.ApartmentId.Value) && apartmentMap[x.ApartmentId.Value].ToLower().Contains(searchLower))
             );
         }
@@ -117,13 +106,10 @@ public class IncomeRecordService(
             IncomeEntity = x.IncomeEntity,
             IncomeType = x.IncomeType,
             Amount = x.Amount,
-            TenantId = x.TenantId,
-            TenantName = x.TenantId.HasValue && tenantMap.TryGetValue(x.TenantId.Value, out var tName) ? tName : null,
             BuildingId = x.BuildingId,
             BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
             ApartmentId = x.ApartmentId,
             FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var fNum) ? fNum : null,
-            Period = x.Period,
             PaymentDate = x.PaymentDate,
             PaymentMethod = x.PaymentMethod,
             TransactionReference = x.TransactionReference,
@@ -146,7 +132,6 @@ public class IncomeRecordService(
 
         var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
         var apartment = record.ApartmentId.HasValue ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value) : null;
-        var tenant = record.TenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value) : null;
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var currentTenant = apartment != null && apartment.CurrentTenantId.HasValue ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == apartment.CurrentTenantId.Value) : null;
@@ -157,33 +142,6 @@ public class IncomeRecordService(
             IncomeEntity = record.IncomeEntity,
             IncomeType = record.IncomeType,
             Amount = record.Amount,
-            TenantId = record.TenantId,
-            TenantName = tenant != null ? tenant.FullName : null,
-            Tenant = tenant == null ? null : new TenantViewModel
-            {
-                Id = tenant.Id,
-                BuildingId = tenant.BuildingId,
-                ApartmentId = tenant.ApartmentId,
-                FullName = tenant.FullName,
-                Phone = tenant.Phone,
-                Email = tenant.Email,
-                IdType = tenant.IdType,
-                IdNumber = tenant.IdNumber,
-                IdProofAttachmentUrl = tenant.IdProofAttachmentUrl,
-                MoveInDate = tenant.MoveInDate,
-                LeaseStartDate = tenant.LeaseStartDate,
-                LeaseEndDate = tenant.LeaseEndDate,
-                MonthlyRent = tenant.MonthlyRent,
-                SecurityDeposit = tenant.SecurityDeposit,
-                EmergencyContactName = tenant.EmergencyContactName,
-                EmergencyContactPhone = tenant.EmergencyContactPhone,
-                Status = tenant.Status,
-                Notes = tenant.Notes,
-                CreatedAt = tenant.CreatedAt,
-                UpdatedAt = tenant.UpdatedAt,
-                CreatedBy = tenant.CreatedBy.HasValue && userMap.TryGetValue(tenant.CreatedBy.Value, out var tcb) ? tcb : null,
-                UpdatedBy = tenant.UpdatedBy.HasValue && userMap.TryGetValue(tenant.UpdatedBy.Value, out var tub) ? tub : null
-            },
             BuildingId = record.BuildingId,
             BuildingName = building?.BuildingName,
             Building = building == null ? null : new BuildingViewModel
@@ -231,7 +189,6 @@ public class IncomeRecordService(
                 CreatedBy = apartment.CreatedBy.HasValue && userMap.TryGetValue(apartment.CreatedBy.Value, out var acb) ? acb : null,
                 UpdatedBy = apartment.UpdatedBy.HasValue && userMap.TryGetValue(apartment.UpdatedBy.Value, out var aub) ? aub : null
             },
-            Period = record.Period,
             PaymentDate = record.PaymentDate,
             PaymentMethod = record.PaymentMethod,
             TransactionReference = record.TransactionReference,
@@ -247,49 +204,56 @@ public class IncomeRecordService(
 
     public async Task Create(IncomeRecordCreateRequest request, CancellationToken cancellationToken)
     {
+        // Resolve the entity/type early for the duplicate + occupied checks below.
+        var incomeEntity = request.IncomeEntity ?? IncomeEntity.ApartmentWise;
+        var incomeType = request.IncomeType ?? IncomeType.Rent;
+        var amount = request.Amount ?? 0;
+        var paymentDate = request.PaymentDate ?? DateTime.UtcNow;
+        var paymentMethod = request.PaymentMethod ?? IncomePaymentMethod.BankTransfer;
+        var status = request.Status ?? IncomeStatus.Pending;
+
         if (request.BuildingId.HasValue)
         {
             var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value);
             if (!buildingExists)
             {
-                throw IncomeRecordException.BadRequestException("The specified building does not exist.");
+                throw IncomeRecordException.BadRequestException("The specified building does not exist. Please choose a valid building.");
             }
         }
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
-            if (!apartmentExists)
+            var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId.Value);
+            if (apartment == null)
             {
-                throw IncomeRecordException.BadRequestException("The specified apartment does not exist.");
+                throw IncomeRecordException.BadRequestException("The specified apartment does not exist. Please choose a valid apartment.");
+            }
+
+            // Income entries are only allowed for apartments that are currently occupied.
+            if (incomeEntity == IncomeEntity.ApartmentWise &&
+                (apartment.CurrentTenantId == null || apartment.CurrentTenantId == Guid.Empty))
+            {
+                throw IncomeRecordException.BadRequestException(
+                    $"Income entries can only be recorded for occupied apartments. Flat {apartment.FlatNumber} is currently vacant.");
             }
         }
 
-        if (request.TenantId.HasValue)
-        {
-            var tenantExists = await _unitOfWork.TenantRepository.AnyAsync(x => x.Id == request.TenantId.Value);
-            if (!tenantExists)
-            {
-                throw IncomeRecordException.BadRequestException("The specified tenant does not exist.");
-            }
-        }
+        await EnsureNoDuplicate(apartmentId: request.ApartmentId, incomeType, amount, paymentDate, excludeId: null);
 
         var userId = _currentUser.GetCurrentUserId();
 
         var record = new IncomeRecord
         {
             Id = Guid.NewGuid(),
-            IncomeEntity = request.IncomeEntity,
-            IncomeType = request.IncomeType,
-            Amount = request.Amount,
-            TenantId = request.TenantId,
+            IncomeEntity = incomeEntity,
+            IncomeType = incomeType,
+            Amount = amount,
             BuildingId = request.BuildingId,
             ApartmentId = request.ApartmentId,
-            Period = request.Period.Trim(),
-            PaymentDate = request.PaymentDate,
-            PaymentMethod = request.PaymentMethod,
+            PaymentDate = paymentDate,
+            PaymentMethod = paymentMethod,
             TransactionReference = request.TransactionReference?.Trim(),
-            Status = request.Status,
+            Status = status,
             Notes = request.Notes?.Trim(),
             AttachmentUrl = request.AttachmentUrl?.Trim(),
             CreatedAt = DateTime.UtcNow,
@@ -301,28 +265,24 @@ public class IncomeRecordService(
 
         if (record.Status == IncomeStatus.Paid)
         {
-            var tenant = record.TenantId.HasValue
-                ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value)
-                : null;
             var apartment = record.ApartmentId.HasValue
                 ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value)
                 : null;
-            
-            var tenantName = tenant?.FullName ?? "Tenant";
-            var flatStr = apartment != null ? $" (Flat {apartment.FlatNumber})" : "";
-            
+
+            var flatStr = apartment != null ? $" for Flat {apartment.FlatNumber}" : "";
+
             await _activityService.CreateActivity(
                 "Create",
                 "IncomeRecord",
                 record.Id,
                 record.BuildingId,
-                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                $"Income of {record.Amount:N0} ({record.IncomeType}) received{flatStr}.",
                 cancellationToken);
 
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Payment Received",
-                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                $"Income of {record.Amount:N0} ({record.IncomeType}) received{flatStr}.",
                 cancellationToken);
         }
 
@@ -331,7 +291,7 @@ public class IncomeRecordService(
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Payment Overdue",
-                $"Payment for period '{record.Period}' is overdue. Amount: {record.Amount}.",
+                $"A payment of {record.Amount:N0} ({record.IncomeType}) is overdue.",
                 cancellationToken);
         }
     }
@@ -343,46 +303,51 @@ public class IncomeRecordService(
 
         var oldStatus = record.Status;
 
+        var incomeEntity = request.IncomeEntity ?? record.IncomeEntity;
+        var incomeType = request.IncomeType ?? record.IncomeType;
+        var amount = request.Amount ?? record.Amount;
+        var paymentDate = request.PaymentDate ?? record.PaymentDate;
+        var paymentMethod = request.PaymentMethod ?? record.PaymentMethod;
+        var status = request.Status ?? record.Status;
+
         if (request.BuildingId.HasValue)
         {
             var buildingExists = await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == request.BuildingId.Value);
             if (!buildingExists)
             {
-                throw IncomeRecordException.BadRequestException("The specified building does not exist.");
+                throw IncomeRecordException.BadRequestException("The specified building does not exist. Please choose a valid building.");
             }
         }
 
         if (request.ApartmentId.HasValue)
         {
-            var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == request.ApartmentId.Value);
-            if (!apartmentExists)
+            var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == request.ApartmentId.Value);
+            if (apartment == null)
             {
-                throw IncomeRecordException.BadRequestException("The specified apartment does not exist.");
+                throw IncomeRecordException.BadRequestException("The specified apartment does not exist. Please choose a valid apartment.");
+            }
+
+            if (incomeEntity == IncomeEntity.ApartmentWise &&
+                (apartment.CurrentTenantId == null || apartment.CurrentTenantId == Guid.Empty))
+            {
+                throw IncomeRecordException.BadRequestException(
+                    $"Income entries can only be recorded for occupied apartments. Flat {apartment.FlatNumber} is currently vacant.");
             }
         }
 
-        if (request.TenantId.HasValue)
-        {
-            var tenantExists = await _unitOfWork.TenantRepository.AnyAsync(x => x.Id == request.TenantId.Value);
-            if (!tenantExists)
-            {
-                throw IncomeRecordException.BadRequestException("The specified tenant does not exist.");
-            }
-        }
+        await EnsureNoDuplicate(request.ApartmentId, incomeType, amount, paymentDate, excludeId: id);
 
         var userId = _currentUser.GetCurrentUserId();
 
-        record.IncomeEntity = request.IncomeEntity;
-        record.IncomeType = request.IncomeType;
-        record.Amount = request.Amount;
-        record.TenantId = request.TenantId;
+        record.IncomeEntity = incomeEntity;
+        record.IncomeType = incomeType;
+        record.Amount = amount;
         record.BuildingId = request.BuildingId;
         record.ApartmentId = request.ApartmentId;
-        record.Period = request.Period.Trim();
-        record.PaymentDate = request.PaymentDate;
-        record.PaymentMethod = request.PaymentMethod;
+        record.PaymentDate = paymentDate;
+        record.PaymentMethod = paymentMethod;
         record.TransactionReference = request.TransactionReference?.Trim();
-        record.Status = request.Status;
+        record.Status = status;
         record.Notes = request.Notes?.Trim();
         record.AttachmentUrl = request.AttachmentUrl?.Trim();
         record.UpdatedAt = DateTime.UtcNow;
@@ -393,28 +358,24 @@ public class IncomeRecordService(
 
         if (record.Status == IncomeStatus.Paid && oldStatus != IncomeStatus.Paid)
         {
-            var tenant = record.TenantId.HasValue
-                ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value)
-                : null;
             var apartment = record.ApartmentId.HasValue
                 ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value)
                 : null;
-            
-            var tenantName = tenant?.FullName ?? "Tenant";
-            var flatStr = apartment != null ? $" (Flat {apartment.FlatNumber})" : "";
-            
+
+            var flatStr = apartment != null ? $" for Flat {apartment.FlatNumber}" : "";
+
             await _activityService.CreateActivity(
                 "Update",
                 "IncomeRecord",
                 record.Id,
                 record.BuildingId,
-                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                $"Income of {record.Amount:N0} ({record.IncomeType}) received{flatStr}.",
                 cancellationToken);
 
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Payment Received",
-                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                $"Income of {record.Amount:N0} ({record.IncomeType}) received{flatStr}.",
                 cancellationToken);
         }
 
@@ -423,7 +384,7 @@ public class IncomeRecordService(
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Payment Overdue",
-                $"Payment for period '{record.Period}' is overdue. Amount: {record.Amount}.",
+                $"A payment of {record.Amount:N0} ({record.IncomeType}) is overdue.",
                 cancellationToken);
         }
     }
@@ -475,8 +436,9 @@ public class IncomeRecordService(
 
         var userId = _currentUser.GetCurrentUserId();
         var oldStatus = record.Status;
+        var status = request.Status ?? record.Status;
 
-        record.Status = request.Status;
+        record.Status = status;
         record.UpdatedAt = DateTime.UtcNow;
         record.UpdatedBy = userId;
 
@@ -485,28 +447,24 @@ public class IncomeRecordService(
 
         if (record.Status == IncomeStatus.Paid && oldStatus != IncomeStatus.Paid)
         {
-            var tenant = record.TenantId.HasValue
-                ? await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value)
-                : null;
             var apartment = record.ApartmentId.HasValue
                 ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == record.ApartmentId.Value)
                 : null;
-            
-            var tenantName = tenant?.FullName ?? "Tenant";
-            var flatStr = apartment != null ? $" (Flat {apartment.FlatNumber})" : "";
-            
+
+            var flatStr = apartment != null ? $" for Flat {apartment.FlatNumber}" : "";
+
             await _activityService.CreateActivity(
                 "StatusChange",
                 "IncomeRecord",
                 record.Id,
                 record.BuildingId,
-                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                $"Income of {record.Amount:N0} ({record.IncomeType}) received{flatStr}.",
                 cancellationToken);
 
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Payment Received",
-                $"Rent payment of {record.Amount:N0} received from {tenantName}{flatStr}.",
+                $"Income of {record.Amount:N0} ({record.IncomeType}) received{flatStr}.",
                 cancellationToken);
         }
 
@@ -515,7 +473,7 @@ public class IncomeRecordService(
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Payment Overdue",
-                $"Payment for period '{record.Period}' is overdue. Amount: {record.Amount}.",
+                $"A payment of {record.Amount:N0} ({record.IncomeType}) is overdue.",
                 cancellationToken);
         }
     }
@@ -530,12 +488,6 @@ public class IncomeRecordService(
         {
             var b = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value);
             if (b != null) buildingName = b.BuildingName;
-        }
-        var tenantName = "N/A";
-        if (record.TenantId.HasValue)
-        {
-            var t = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == record.TenantId.Value);
-            if (t != null) tenantName = t.FullName;
         }
         var flatNumber = "N/A";
         if (record.ApartmentId.HasValue)
@@ -573,13 +525,9 @@ public class IncomeRecordService(
             "0 -20 Td\n" +
             $"(Amount: {record.Amount:F2} SAR) Tj\n" +
             "0 -20 Td\n" +
-            $"(Tenant Name: {tenantName}) Tj\n" +
-            "0 -20 Td\n" +
             $"(Building: {buildingName}) Tj\n" +
             "0 -20 Td\n" +
             $"(Apartment / Flat: {flatNumber}) Tj\n" +
-            "0 -20 Td\n" +
-            $"(Period: {record.Period}) Tj\n" +
             "0 -20 Td\n" +
             $"(Payment Date: {record.PaymentDate:yyyy-MM-dd}) Tj\n" +
             "0 -20 Td\n" +
@@ -617,7 +565,6 @@ public class IncomeRecordService(
         IncomeType? incomeType,
         IncomeStatus? status,
         Guid? buildingId,
-        Guid? tenantId,
         DateTime? startDate,
         DateTime? endDate,
         CancellationToken cancellationToken)
@@ -625,13 +572,9 @@ public class IncomeRecordService(
         var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
 
         var query = records.AsQueryable();
 
@@ -650,11 +593,6 @@ public class IncomeRecordService(
             query = query.Where(x => x.BuildingId == buildingId.Value);
         }
 
-        if (tenantId.HasValue)
-        {
-            query = query.Where(x => x.TenantId == tenantId.Value);
-        }
-
         if (startDate.HasValue)
         {
             query = query.Where(x => x.PaymentDate >= startDate.Value);
@@ -669,35 +607,77 @@ public class IncomeRecordService(
         {
             var searchLower = search.Trim().ToLower();
             query = query.Where(x =>
-                x.Period.ToLower().Contains(searchLower) ||
                 (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
                 (x.TransactionReference != null && x.TransactionReference.ToLower().Contains(searchLower)) ||
                 (x.BuildingId.HasValue && buildingMap.ContainsKey(x.BuildingId.Value) && buildingMap[x.BuildingId.Value].ToLower().Contains(searchLower)) ||
-                (x.TenantId.HasValue && tenantMap.ContainsKey(x.TenantId.Value) && tenantMap[x.TenantId.Value].ToLower().Contains(searchLower)) ||
                 (x.ApartmentId.HasValue && apartmentMap.ContainsKey(x.ApartmentId.Value) && apartmentMap[x.ApartmentId.Value].ToLower().Contains(searchLower))
             );
         }
 
         var list = query.OrderByDescending(x => x.PaymentDate).ToList();
 
-        var csv = new StringBuilder();
-        csv.AppendLine("ID,IncomeEntity,IncomeType,Amount,TenantName,BuildingName,FlatNumber,Period,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt");
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "IncomeEntity", "IncomeType", "Amount", "BuildingId", "ApartmentId", "PaymentDate", "PaymentMethod", "TransactionReference", "Status", "Notes", "AttachmentUrl" };
+        rows.Add(headers);
 
         foreach (var r in list)
         {
-            var tName = r.TenantId.HasValue && tenantMap.TryGetValue(r.TenantId.Value, out var tn) ? tn : "";
-            var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-
-            csv.AppendLine($"\"{r.Id}\",\"{r.IncomeEntity}\",\"{r.IncomeType}\",{r.Amount:F2},\"{EscapeCsv(tName)}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{EscapeCsv(r.Period)}\",\"{r.PaymentDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{EscapeCsv(r.TransactionReference)}\",\"{r.Status}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
+            rows.Add(new List<string>
+            {
+                r.IncomeEntity.ToString(),
+                r.IncomeType.ToString(),
+                r.Amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                r.BuildingId.HasValue ? r.BuildingId.Value.ToString() : string.Empty,
+                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.PaymentDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                r.PaymentMethod.ToString(),
+                r.TransactionReference ?? string.Empty,
+                r.Status.ToString(),
+                r.Notes ?? string.Empty,
+                r.AttachmentUrl ?? string.Empty
+            });
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
-    private static string EscapeCsv(string? val)
+    /// <summary>
+    /// Rejects a duplicate income entry: the same apartment, income type, amount
+    /// and payment month are not allowed more than once.
+    /// </summary>
+    private async Task EnsureNoDuplicate(
+        Guid? apartmentId,
+        IncomeType incomeType,
+        decimal amount,
+        DateTime paymentDate,
+        Guid? excludeId)
     {
-        if (string.IsNullOrEmpty(val)) return string.Empty;
-        return val.Replace("\"", "\"\"");
+        if (!apartmentId.HasValue)
+        {
+            return;
+        }
+
+        var monthStart = new DateTime(paymentDate.Year, paymentDate.Month, 1);
+        var monthEnd = monthStart.AddMonths(1);
+
+        var duplicate = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x =>
+            x.Id != (excludeId ?? Guid.Empty) &&
+            x.ApartmentId == apartmentId.Value &&
+            x.IncomeType == incomeType &&
+            x.Amount == amount &&
+            x.PaymentDate >= monthStart &&
+            x.PaymentDate < monthEnd);
+
+        if (duplicate != null)
+        {
+            var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == apartmentId.Value);
+            var flat = apartment?.FlatNumber ?? "this apartment";
+
+            throw IncomeRecordException.BadRequestException(
+                $"A {incomeType} entry of {amount:N2} SAR for Flat {flat} already exists for {monthStart:MMMM yyyy}. Duplicate income entries are not allowed.");
+        }
     }
+
+
 }

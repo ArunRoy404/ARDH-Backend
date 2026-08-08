@@ -31,6 +31,7 @@ public class UnitOfWork : IUnitOfWork
     public INotificationRepository NotificationRepository { get; }
     public INotificationRecipientRepository NotificationRecipientRepository { get; }
     public IActivityRepository ActivityRepository { get; }
+    public IBulkUploadRepository BulkUploadRepository { get; }
  
     public UnitOfWork(ApplicationDbContext dbContext)
     {
@@ -53,6 +54,7 @@ public class UnitOfWork : IUnitOfWork
         NotificationRepository = new NotificationRepository(_context);
         NotificationRecipientRepository = new NotificationRecipientRepository(_context);
         ActivityRepository = new ActivityRepository(_context);
+        BulkUploadRepository = new BulkUploadRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

@@ -1,15 +1,14 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Equipment;
 using CleanArchitecture.Shared.Models.Building;
-using CleanArchitecture.Shared.Models.Vendor;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -27,9 +26,8 @@ public class EquipmentService(
         int pageSize,
         string? search,
         Guid? buildingId,
-        EquipmentType? type,
-        EquipmentStatus? status,
-        Guid? amcVendorId,
+        string? type,
+        string? status,
         CancellationToken cancellationToken)
     {
         page = Math.Max(1, page);
@@ -37,12 +35,10 @@ public class EquipmentService(
 
         var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
 
         var query = equipmentList.AsQueryable();
 
@@ -51,19 +47,16 @@ public class EquipmentService(
             query = query.Where(x => x.BuildingId == buildingId.Value);
         }
 
-        if (type.HasValue)
+        if (!string.IsNullOrWhiteSpace(type))
         {
-            query = query.Where(x => x.Type == type.Value);
+            var typeLower = type.Trim().ToLower();
+            query = query.Where(x => x.Type.ToLower() == typeLower);
         }
 
-        if (status.HasValue)
+        if (!string.IsNullOrWhiteSpace(status))
         {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
-        if (amcVendorId.HasValue)
-        {
-            query = query.Where(x => x.AmcVendorId == amcVendorId.Value);
+            var statusLower = status.Trim().ToLower();
+            query = query.Where(x => x.Status.ToLower() == statusLower);
         }
 
         if (!string.IsNullOrWhiteSpace(search))
@@ -72,11 +65,10 @@ public class EquipmentService(
             query = query.Where(x =>
                 x.Name.ToLower().Contains(searchLower) ||
                 x.Brand.ToLower().Contains(searchLower) ||
-                x.Model.ToLower().Contains(searchLower) ||
-                x.SerialNumber.ToLower().Contains(searchLower) ||
-                x.Notes.ToLower().Contains(searchLower) ||
-                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(searchLower)) ||
-                (vendorMap.ContainsKey(x.AmcVendorId) && (vendorMap[x.AmcVendorId].Name.ToLower().Contains(searchLower) || vendorMap[x.AmcVendorId].CompanyName.ToLower().Contains(searchLower))));
+                (x.Model != null && x.Model.ToLower().Contains(searchLower)) ||
+                (x.SerialNumber != null && x.SerialNumber.ToLower().Contains(searchLower)) ||
+                (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(searchLower)));
         }
 
         var totalItems = query.Count();
@@ -98,12 +90,6 @@ public class EquipmentService(
             SerialNumber = x.SerialNumber,
             InstallDate = x.InstallDate,
             WarrantyExpiryDate = x.WarrantyExpiryDate,
-            AmcVendorId = x.AmcVendorId,
-            AmcVendorName = vendorMap.TryGetValue(x.AmcVendorId, out var vInfo) ? vInfo.Name : "Unknown Vendor",
-            AmcVendorCompanyName = vendorMap.TryGetValue(x.AmcVendorId, out vInfo) ? vInfo.CompanyName : "Unknown Vendor",
-            AmcExpiryDate = x.AmcExpiryDate,
-            LastServiceDate = x.LastServiceDate,
-            NextServiceDate = x.NextServiceDate,
             Status = x.Status,
             Notes = x.Notes,
             AttachmentUrl = x.AttachmentUrl,
@@ -116,13 +102,84 @@ public class EquipmentService(
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
     }
 
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        Guid? buildingId,
+        string? type,
+        string? status,
+        CancellationToken cancellationToken)
+    {
+        var equipmentList = await _unitOfWork.EquipmentRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+
+        var query = equipmentList.AsQueryable();
+
+        if (buildingId.HasValue)
+        {
+            query = query.Where(x => x.BuildingId == buildingId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(type))
+        {
+            var typeLower = type.Trim().ToLower();
+            query = query.Where(x => x.Type.ToLower() == typeLower);
+        }
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            var statusLower = status.Trim().ToLower();
+            query = query.Where(x => x.Status.ToLower() == statusLower);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchLower = search.Trim().ToLower();
+            query = query.Where(x =>
+                x.Name.ToLower().Contains(searchLower) ||
+                x.Brand.ToLower().Contains(searchLower) ||
+                (x.Model != null && x.Model.ToLower().Contains(searchLower)) ||
+                (x.SerialNumber != null && x.SerialNumber.ToLower().Contains(searchLower)) ||
+                (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
+                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(searchLower)));
+        }
+
+        var list = query.OrderByDescending(x => x.CreatedAt).ToList();
+
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "BuildingId", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" };
+        rows.Add(headers);
+
+        foreach (var e in list)
+        {
+            rows.Add(new List<string>
+            {
+                e.BuildingId.ToString(),
+                e.Name ?? string.Empty,
+                e.Type ?? string.Empty,
+                e.Brand ?? string.Empty,
+                e.Model ?? string.Empty,
+                e.SerialNumber ?? string.Empty,
+                e.InstallDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                e.WarrantyExpiryDate.HasValue ? e.WarrantyExpiryDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : string.Empty,
+                e.Status ?? string.Empty,
+                e.Notes ?? string.Empty,
+                e.AttachmentUrl ?? string.Empty
+            });
+        }
+
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
+    }
+
+
+
     public async Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
         var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == equipment.AmcVendorId);
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
@@ -157,29 +214,6 @@ public class EquipmentService(
             SerialNumber = equipment.SerialNumber,
             InstallDate = equipment.InstallDate,
             WarrantyExpiryDate = equipment.WarrantyExpiryDate,
-            AmcVendorId = equipment.AmcVendorId,
-            AmcVendorName = vendor?.Name ?? "Unknown Vendor",
-            AmcVendorCompanyName = vendor?.CompanyName ?? "Unknown Vendor",
-            AmcVendor = vendor == null ? null : new VendorViewModel
-            {
-                Id = vendor.Id,
-                Name = vendor.Name,
-                CompanyName = vendor.CompanyName,
-                Phone = vendor.Phone,
-                Email = vendor.Email,
-                VendorType = vendor.VendorType,
-                GstNumber = vendor.GstNumber,
-                Address = vendor.Address,
-                Status = vendor.Status,
-                Notes = vendor.Notes,
-                CreatedAt = vendor.CreatedAt,
-                UpdatedAt = vendor.UpdatedAt,
-                CreatedBy = vendor.CreatedBy.HasValue && userMap.TryGetValue(vendor.CreatedBy.Value, out var vcb) ? vcb : null,
-                UpdatedBy = vendor.UpdatedBy.HasValue && userMap.TryGetValue(vendor.UpdatedBy.Value, out var vub) ? vub : null
-            },
-            AmcExpiryDate = equipment.AmcExpiryDate,
-            LastServiceDate = equipment.LastServiceDate,
-            NextServiceDate = equipment.NextServiceDate,
             Status = equipment.Status,
             Notes = equipment.Notes,
             AttachmentUrl = equipment.AttachmentUrl,
@@ -198,30 +232,20 @@ public class EquipmentService(
             throw EquipmentException.BadRequestException("The specified building does not exist.");
         }
 
-        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.AmcVendorId);
-        if (!vendorExists)
-        {
-            throw EquipmentException.BadRequestException("The specified AMC vendor does not exist.");
-        }
-
         var equipment = new Equipment
         {
             Id = Guid.NewGuid(),
             BuildingId = request.BuildingId,
             Name = request.Name.Trim(),
-            Type = request.Type,
+            Type = request.Type.Trim(),
             Brand = request.Brand.Trim(),
-            Model = request.Model.Trim(),
-            SerialNumber = request.SerialNumber.Trim(),
+            Model = string.IsNullOrWhiteSpace(request.Model) ? null : request.Model.Trim(),
+            SerialNumber = string.IsNullOrWhiteSpace(request.SerialNumber) ? null : request.SerialNumber.Trim(),
             InstallDate = request.InstallDate,
             WarrantyExpiryDate = request.WarrantyExpiryDate,
-            AmcVendorId = request.AmcVendorId,
-            AmcExpiryDate = request.AmcExpiryDate,
-            LastServiceDate = request.LastServiceDate,
-            NextServiceDate = request.NextServiceDate,
-            Status = request.Status,
-            Notes = request.Notes?.Trim() ?? string.Empty,
-            AttachmentUrl = request.AttachmentUrl?.Trim() ?? string.Empty,
+            Status = request.Status.Trim(),
+            Notes = string.IsNullOrWhiteSpace(request.Notes) ? null : request.Notes.Trim(),
+            AttachmentUrl = string.IsNullOrWhiteSpace(request.AttachmentUrl) ? null : request.AttachmentUrl.Trim(),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
@@ -244,27 +268,17 @@ public class EquipmentService(
             throw EquipmentException.BadRequestException("The specified building does not exist.");
         }
 
-        var vendorExists = await _unitOfWork.VendorRepository.AnyAsync(x => x.Id == request.AmcVendorId);
-        if (!vendorExists)
-        {
-            throw EquipmentException.BadRequestException("The specified AMC vendor does not exist.");
-        }
-
         equipment.BuildingId = request.BuildingId;
         equipment.Name = request.Name.Trim();
-        equipment.Type = request.Type;
+        equipment.Type = request.Type.Trim();
         equipment.Brand = request.Brand.Trim();
-        equipment.Model = request.Model.Trim();
-        equipment.SerialNumber = request.SerialNumber.Trim();
+        equipment.Model = string.IsNullOrWhiteSpace(request.Model) ? null : request.Model.Trim();
+        equipment.SerialNumber = string.IsNullOrWhiteSpace(request.SerialNumber) ? null : request.SerialNumber.Trim();
         equipment.InstallDate = request.InstallDate;
         equipment.WarrantyExpiryDate = request.WarrantyExpiryDate;
-        equipment.AmcVendorId = request.AmcVendorId;
-        equipment.AmcExpiryDate = request.AmcExpiryDate;
-        equipment.LastServiceDate = request.LastServiceDate;
-        equipment.NextServiceDate = request.NextServiceDate;
-        equipment.Status = request.Status;
-        equipment.Notes = request.Notes?.Trim() ?? string.Empty;
-        equipment.AttachmentUrl = request.AttachmentUrl?.Trim() ?? string.Empty;
+        equipment.Status = request.Status.Trim();
+        equipment.Notes = string.IsNullOrWhiteSpace(request.Notes) ? null : request.Notes.Trim();
+        equipment.AttachmentUrl = string.IsNullOrWhiteSpace(request.AttachmentUrl) ? null : request.AttachmentUrl.Trim();
         equipment.UpdatedAt = DateTime.UtcNow;
 
         _unitOfWork.EquipmentRepository.Update(equipment);
@@ -278,7 +292,7 @@ public class EquipmentService(
         var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
-        equipment.Status = request.Status;
+        equipment.Status = request.Status.Trim();
         equipment.UpdatedAt = DateTime.UtcNow;
         equipment.UpdatedBy = _currentUser.GetCurrentUserId();
 
@@ -304,7 +318,7 @@ public class EquipmentService(
             Id = Guid.NewGuid(),
             EntityType = "Equipment",
             EntityId = equipment.Id,
-            EntityTitle = $"{equipment.Name} ({equipment.Brand} {equipment.Model})",
+            EntityTitle = $"{equipment.Name} ({equipment.Brand})",
             DeletedBy = _currentUser.GetCurrentUserId(),
             DeletedAt = now
         };

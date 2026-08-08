@@ -40,6 +40,24 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
     }
 
     /// <summary>
+    /// [AP-06] Exports apartments to CSV with the same filters as the list endpoint.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file containing filtered apartments.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] Guid? buildingId = null,
+        [FromQuery] Guid? ownerId = null,
+        [FromQuery] string? apartmentType = null,
+        [FromQuery] string? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _apartmentService.ExportToCsv(search, buildingId, ownerId, apartmentType, status, cancellationToken);
+        return File(bytes, "text/csv", "apartments.csv");
+    }
+
+    /// <summary>
     /// [AP-02] Retrieves single apartment details by ID.
     /// </summary>
     [HttpGet("{id}")]

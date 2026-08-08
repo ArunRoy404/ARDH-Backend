@@ -5,7 +5,7 @@ namespace CleanArchitecture.Shared.Models.AmcContract;
 
 public class AmcContractCreateRequest
 {
-    public string? AmcCode { get; set; }
+    public string AmcCode { get; set; } = string.Empty;
     public string ContractNumber { get; set; } = string.Empty;
     public string ContractTitle { get; set; } = string.Empty;
     public AmcContractType ContractType { get; set; }

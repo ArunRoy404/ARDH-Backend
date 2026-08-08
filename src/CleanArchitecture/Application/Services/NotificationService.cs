@@ -211,8 +211,12 @@ public class NotificationService(
         foreach (var tenant in activeTenants)
         {
             var leaseEndDateStr = tenant.LeaseEndDate?.ToString("yyyy-MM-dd") ?? string.Empty;
+            var apartment = tenant.ApartmentId != Guid.Empty
+                ? await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId)
+                : null;
+            var flatLabel = apartment?.FlatNumber ?? "Unknown Flat";
             var title = $"Lease Expiring: {tenant.FullName}";
-            var detail = $"Lease for {tenant.FullName} is expiring on {leaseEndDateStr}. Flat: {tenant.ApartmentId}.";
+            var detail = $"Lease for {tenant.FullName} is expiring on {leaseEndDateStr}. Flat: {flatLabel}.";
 
             // Verify if we have already generated a notification for this specific title and type
             var exists = await _unitOfWork.NotificationRepository.AnyAsync(

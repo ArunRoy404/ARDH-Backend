@@ -15,39 +15,24 @@ public class EquipmentUpdateRequestValidation : AbstractValidator<EquipmentUpdat
             .MaximumLength(255).WithMessage("Equipment name must not exceed 255 characters.");
 
         RuleFor(x => x.Type)
-            .IsInEnum().WithMessage("A valid equipment type is required.");
+            .NotEmpty().WithMessage("Equipment type is required.")
+            .MaximumLength(100).WithMessage("Equipment type must not exceed 100 characters.");
 
         RuleFor(x => x.Brand)
             .NotEmpty().WithMessage("Brand is required.")
             .MaximumLength(255).WithMessage("Brand must not exceed 255 characters.");
 
         RuleFor(x => x.Model)
-            .NotEmpty().WithMessage("Model is required.")
             .MaximumLength(255).WithMessage("Model must not exceed 255 characters.");
 
         RuleFor(x => x.SerialNumber)
-            .NotEmpty().WithMessage("Serial number is required.")
             .MaximumLength(255).WithMessage("Serial number must not exceed 255 characters.");
 
         RuleFor(x => x.InstallDate)
             .NotEmpty().WithMessage("Install date is required.");
 
-        RuleFor(x => x.WarrantyExpiryDate)
-            .NotEmpty().WithMessage("Warranty expiry date is required.");
-
-        RuleFor(x => x.AmcVendorId)
-            .NotEmpty().WithMessage("AMC vendor ID is required.");
-
-        RuleFor(x => x.AmcExpiryDate)
-            .NotEmpty().WithMessage("AMC expiry date is required.");
-
-        RuleFor(x => x.LastServiceDate)
-            .NotEmpty().WithMessage("Last service date is required.");
-
-        RuleFor(x => x.NextServiceDate)
-            .NotEmpty().WithMessage("Next service date is required.");
-
         RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("A valid equipment status is required.");
+            .NotEmpty().WithMessage("Equipment status is required.")
+            .MaximumLength(50).WithMessage("Equipment status must not exceed 50 characters.");
     }
 }

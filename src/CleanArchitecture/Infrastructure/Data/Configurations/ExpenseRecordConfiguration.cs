@@ -62,7 +62,6 @@ public class ExpenseRecordConfiguration : IEntityTypeConfiguration<ExpenseRecord
 
         builder.Property(x => x.PaymentMethod)
             .HasColumnName("payment_method")
-            .HasConversion<string>()
             .HasMaxLength(100)
             .IsRequired();
 

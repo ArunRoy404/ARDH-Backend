@@ -57,7 +57,6 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             // Route Permission Check (Applies to ALL HTTP methods including GET)
             if (path.StartsWith("/api/users", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/settings", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/deleted-history", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasAdminPermission)
@@ -89,7 +88,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 }
             }
             else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
-                     path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase))
+                     path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase))
             {
                 if (!hasFinancePermission)
                 {
@@ -97,9 +96,30 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                     return;
                 }
             }
+            else if (path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!hasFinancePermission && !hasOperationsPermission)
+                {
+                    context.Result = CreateForbiddenResult("Access denied. Finance or Operations permission required for this route.");
+                    return;
+                }
+            }
             else if (path.StartsWith("/api/upload", StringComparison.OrdinalIgnoreCase))
             {
-                if (!hasAdminPermission && !hasPropertyPermission)
+                // CSV uploads (used by bulk upload) are allowed for any user holding a module
+                // permission — the bulk-upload start endpoint enforces the per-module permission
+                // itself, and a bare file upload writes no data.
+                var isCsvUpload = path.Equals("/api/upload/csv", StringComparison.OrdinalIgnoreCase);
+
+                if (isCsvUpload)
+                {
+                    if (!hasAdminPermission && !hasPropertyPermission && !hasOperationsPermission && !hasFinancePermission)
+                    {
+                        context.Result = CreateForbiddenResult("Access denied. Permission required to access upload services.");
+                        return;
+                    }
+                }
+                else if (!hasAdminPermission && !hasPropertyPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Permission required to access upload services.");
                     return;

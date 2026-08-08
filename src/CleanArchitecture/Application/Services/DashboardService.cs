@@ -166,8 +166,10 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
         var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
         var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
-        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
 
         var query = records.AsQueryable();
         var totalItems = query.Count();
@@ -181,7 +183,8 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
 
         var items = pageRecords.Select(x => new DashboardRecentPaymentViewModel
         {
-            TenantName = x.TenantId.HasValue && tenantMap.TryGetValue(x.TenantId.Value, out var name) ? name : "Unknown Tenant",
+            FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var flat) ? flat : null,
+            BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
             IncomeType = x.IncomeType.ToString(),
             PaymentDate = x.PaymentDate,
             Amount = x.Amount,

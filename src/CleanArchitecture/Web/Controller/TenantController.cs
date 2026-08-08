@@ -40,6 +40,23 @@ public class TenantController(ITenantService tenantService, ITenantMoveOutServic
     }
 
     /// <summary>
+    /// [T-06] Exports tenants to CSV with the same filters as the list endpoint.
+    /// </summary>
+    [HttpGet("download-csv")]
+    [SwaggerResponse(200, "CSV file containing filtered tenants.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    public async Task<IActionResult> DownloadCsv(
+        [FromQuery] string? search = null,
+        [FromQuery] Guid? buildingId = null,
+        [FromQuery] Guid? apartmentId = null,
+        [FromQuery] TenantStatus? status = null,
+        CancellationToken cancellationToken = default)
+    {
+        var bytes = await _tenantService.ExportToCsv(search, buildingId, apartmentId, status, cancellationToken);
+        return File(bytes, "text/csv", "tenants.csv");
+    }
+
+    /// <summary>
     /// [T-02] Retrieves single tenant details by ID.
     /// </summary>
     [HttpGet("{id:guid}")]

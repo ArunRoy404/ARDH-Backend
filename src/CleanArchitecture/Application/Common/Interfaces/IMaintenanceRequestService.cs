@@ -15,7 +15,7 @@ public interface IMaintenanceRequestService
         string? search,
         MaintenanceStatus? status,
         MaintenancePriority? priority,
-        MaintenanceCategory? category,
+        string? category,
         Guid? buildingId,
         Guid? vendorId,
         Guid? equipmentId,
@@ -23,6 +23,17 @@ public interface IMaintenanceRequestService
         CancellationToken cancellationToken);
 
     Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken);
+
+    Task<byte[]> ExportToCsv(
+        string? search,
+        MaintenanceStatus? status,
+        MaintenancePriority? priority,
+        string? category,
+        Guid? buildingId,
+        Guid? vendorId,
+        Guid? equipmentId,
+        Guid? apartmentId,
+        CancellationToken cancellationToken);
 
     Task Create(MaintenanceRequestCreateRequest request, CancellationToken cancellationToken);
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
@@ -69,6 +70,59 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
             .ToList();
 
         return new PaginatedList<OwnerViewModel>(items, totalCount, page, pageSize);
+    }
+
+    public async Task<byte[]> ExportToCsv(
+        string? search,
+        OwnerStatus? status,
+        CancellationToken cancellationToken)
+    {
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+        var query = owners.AsQueryable();
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var cleanSearch = search.Trim().ToLower();
+            query = query.Where(x =>
+                (x.FullName != null && x.FullName.ToLower().Contains(cleanSearch)) ||
+                (x.Email != null && x.Email.ToLower().Contains(cleanSearch)) ||
+                (x.Phone != null && x.Phone.ToLower().Contains(cleanSearch)) ||
+                (x.City != null && x.City.ToLower().Contains(cleanSearch))
+            );
+        }
+
+        var list = query.ToList();
+
+        var rows = new List<List<string>>();
+        var headers = new List<string> { "FullName", "Phone", "Email", "City", "Address", "IdType", "IdNumber", "BankName", "AccountNumber", "IfscCode", "Status", "Notes" };
+        rows.Add(headers);
+
+        foreach (var o in list)
+        {
+            rows.Add(new List<string>
+            {
+                o.FullName ?? string.Empty,
+                o.Phone ?? string.Empty,
+                o.Email ?? string.Empty,
+                o.City ?? string.Empty,
+                o.Address ?? string.Empty,
+                o.IdType.ToString(),
+                o.IdNumber ?? string.Empty,
+                o.BankName ?? string.Empty,
+                o.AccountNumber ?? string.Empty,
+                o.IfscCode ?? string.Empty,
+                o.Status.ToString(),
+                o.Notes ?? string.Empty
+            });
+        }
+
+        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)
