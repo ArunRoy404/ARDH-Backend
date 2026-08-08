@@ -335,7 +335,17 @@ public class IncomeRecordService(
             }
         }
 
-        await EnsureNoDuplicate(request.ApartmentId, incomeType, amount, paymentDate, excludeId: id);
+        var duplicateSignatureChanged =
+            request.ApartmentId != record.ApartmentId ||
+            incomeType != record.IncomeType ||
+            amount != record.Amount ||
+            paymentDate.Date != record.PaymentDate.Date ||
+            status != record.Status;
+
+        if (duplicateSignatureChanged)
+        {
+            await EnsureNoDuplicate(request.ApartmentId, incomeType, amount, paymentDate, excludeId: id);
+        }
 
         var userId = _currentUser.GetCurrentUserId();
 

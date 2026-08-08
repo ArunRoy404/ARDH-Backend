@@ -8,9 +8,6 @@ public class IncomeRecordUpdateRequestValidation : AbstractValidator<IncomeRecor
 {
     public IncomeRecordUpdateRequestValidation()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Income record ID is required.");
-
         RuleFor(x => x.IncomeEntity)
             .NotNull().WithMessage("Income entity is required. Valid values: ApartmentWise, GeneralOthers.")
             .IsInEnum().WithMessage("Income entity is invalid. Valid values: ApartmentWise, GeneralOthers.");

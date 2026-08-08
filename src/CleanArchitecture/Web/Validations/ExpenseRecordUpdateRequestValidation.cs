@@ -9,9 +9,6 @@ public class ExpenseRecordUpdateRequestValidation : AbstractValidator<ExpenseRec
 {
     public ExpenseRecordUpdateRequestValidation()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Expense record ID is required.");
-
         RuleFor(x => x.Category)
             .IsInEnum().WithMessage("A valid expense category is required. Valid values: Utility, Operational, Maintenance, Tax, Capital.");
 

@@ -7,9 +7,6 @@ public class MaintenanceRequestUpdateRequestValidation : AbstractValidator<Maint
 {
     public MaintenanceRequestUpdateRequestValidation()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.");
-
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Title is required.")
             .MaximumLength(255).WithMessage("Title must not exceed 255 characters.");
