@@ -53,6 +53,7 @@ public class MailConfigurations
 {
     [Required]
     public string From { get; set; }
+    public string DisplayName { get; set; } = string.Empty;
     [Required]
     public string Host { get; set; }
     [Required]

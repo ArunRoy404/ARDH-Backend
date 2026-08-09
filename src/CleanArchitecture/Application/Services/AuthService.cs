@@ -16,11 +16,13 @@ public class AuthService(
     ITokenService tokenService,
     ICurrentUser currentUser,
     ICookieService cookieService,
+    IMailService mailService,
     ILogger<AuthService> logger) : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
     private readonly ICookieService _cookieService = cookieService;
+    private readonly IMailService _mailService = mailService;
     private readonly ITokenService _tokenService = tokenService;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly ILogger<AuthService> _logger = logger;
@@ -67,8 +69,7 @@ public class AuthService(
         await _unitOfWork.ExecuteTransactionAsync(
             async () => await _unitOfWork.ForgotPasswordRepository.AddAsync(resetPassword), token);
 
-        // Log the OTP for visual/testing confirmation, and mock sending email
-        _logger.LogInformation("Password reset OTP generated for {email}: {otp}", user.Email, "123456");
+        await SendOtpEmailAsync(user.Email, resetPassword.OTP);
     }
 
     public async Task<bool> VerifyOtp(VerifyOtpRequest request, CancellationToken token)
@@ -155,6 +156,23 @@ public class AuthService(
         await _unitOfWork.ExecuteTransactionAsync(
             async () => await _unitOfWork.ForgotPasswordRepository.AddAsync(resetPassword), token);
 
-        _logger.LogInformation("Password reset OTP resent/generated for {email}: {otp}", user.Email, "123456");
+        await SendOtpEmailAsync(user.Email, resetPassword.OTP);
+    }
+
+    private async Task SendOtpEmailAsync(string email, string otp)
+    {
+        var subject = "Ardh - Password Reset OTP";
+        var htmlMessage = $@"
+            <div style=""font-family:Arial, sans-serif; max-width:480px; margin:0 auto; padding:24px; border:1px solid #e5e7eb; border-radius:12px;"">
+                <h2 style=""margin:0 0 8px; color:#111827;"">Password Reset Request</h2>
+                <p style=""margin:0 0 16px; color:#374151;"">Use the one-time code below to reset your password. It expires in 10 minutes.</p>
+                <div style=""padding:16px; background:#f3f4f6; border-radius:8px; text-align:center; font-size:32px; font-weight:bold; letter-spacing:8px; color:#1f2937;"">{otp}</div>
+                <p style=""margin:16px 0 0; color:#6b7280; font-size:12px;"">If you did not request this, you can safely ignore this email.</p>
+            </div>";
+
+        _logger.LogInformation("Password reset OTP generated for {email}: {otp}", email, otp);
+
+        await _mailService.SendEmailAsync(email, subject, htmlMessage);
+        _logger.LogInformation("Password reset OTP sent by email to {email}", email);
     }
 }
