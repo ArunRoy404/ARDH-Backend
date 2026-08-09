@@ -11,6 +11,7 @@ public class AppSettings
     public ConnectionStrings ConnectionStrings { get; set; }
     public Identity Identity { get; set; }
     public MailConfigurations MailConfigurations { get; set; }
+    public AdminSettings AdminSettings { get; set; }
     public FileStorageSettings FileStorageSettings { get; set; }
     public CloudinarySettings Cloudinary { get; set; }
     public bool UseInMemoryDatabase { get; set; }
@@ -56,6 +57,11 @@ public class MailConfigurations
     public string DisplayName { get; set; } = string.Empty;
     [Required]
     public string ApiKey { get; set; }
+}
+
+public class AdminSettings
+{
+    public string Password { get; set; } = string.Empty;
 }
 
 public class RequestResponse
