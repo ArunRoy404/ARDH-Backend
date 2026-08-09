@@ -54,7 +54,27 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             var hasOperationsPermission = isPropertyManagerRole || permissionList.Contains("operations") || permissionList.Contains("operation") || hasAdminPermission;
             var hasFinancePermission = isPropertyManagerRole || permissionList.Contains("finance") || hasAdminPermission;
 
-            // Route Permission Check (Applies to ALL HTTP methods including GET)
+            // GET requests to these data modules are readable by any authenticated user,
+            // regardless of permission. Only mutating methods (POST/PUT/PATCH/DELETE) are
+            // permission-gated below. Every other module (users, settings, deleted-history,
+            // upload, notifications, activities, dashboard) keeps requiring permission on GET too.
+            var isGetMethod = HttpMethods.IsGet(httpContext.Request.Method);
+            var isOpenReadModule = path.StartsWith("/api/buildings", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/owners", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/apartments", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/tenants", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/vendors", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/equipment", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/amc-contracts", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/maintenance", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase);
+
+            var skipModulePermissionCheck = isGetMethod && isOpenReadModule;
+
+            // Route Permission Check (Applies to ALL HTTP methods including GET, except the
+            // open-read modules above on GET)
             if (path.StartsWith("/api/users", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/settings", StringComparison.OrdinalIgnoreCase) ||
                 path.StartsWith("/api/deleted-history", StringComparison.OrdinalIgnoreCase))
@@ -70,7 +90,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                      path.StartsWith("/api/apartments", StringComparison.OrdinalIgnoreCase) ||
                      path.StartsWith("/api/tenants", StringComparison.OrdinalIgnoreCase))
             {
-                if (!hasPropertyPermission)
+                if (!skipModulePermissionCheck && !hasPropertyPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Property permission required for this route.");
                     return;
@@ -81,7 +101,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                      path.StartsWith("/api/amc-contracts", StringComparison.OrdinalIgnoreCase) ||
                      path.StartsWith("/api/maintenance", StringComparison.OrdinalIgnoreCase))
             {
-                if (!hasOperationsPermission)
+                if (!skipModulePermissionCheck && !hasOperationsPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Operations permission required for this route.");
                     return;
@@ -90,7 +110,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             else if (path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
                      path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase))
             {
-                if (!hasFinancePermission)
+                if (!skipModulePermissionCheck && !hasFinancePermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Finance permission required for this route.");
                     return;
@@ -98,7 +118,7 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             }
             else if (path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase))
             {
-                if (!hasFinancePermission && !hasOperationsPermission)
+                if (!skipModulePermissionCheck && !hasFinancePermission && !hasOperationsPermission)
                 {
                     context.Result = CreateForbiddenResult("Access denied. Finance or Operations permission required for this route.");
                     return;
