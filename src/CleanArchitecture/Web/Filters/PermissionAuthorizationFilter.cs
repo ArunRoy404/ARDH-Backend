@@ -126,24 +126,11 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             }
             else if (path.StartsWith("/api/upload", StringComparison.OrdinalIgnoreCase))
             {
-                // CSV uploads (used by bulk upload) are allowed for any user holding a module
-                // permission — the bulk-upload start endpoint enforces the per-module permission
-                // itself, and a bare file upload writes no data.
-                var isCsvUpload = path.Equals("/api/upload/csv", StringComparison.OrdinalIgnoreCase);
-
-                if (isCsvUpload)
-                {
-                    if (!hasAdminPermission && !hasPropertyPermission && !hasOperationsPermission && !hasFinancePermission)
-                    {
-                        context.Result = CreateForbiddenResult("Access denied. Permission required to access upload services.");
-                        return;
-                    }
-                }
-                else if (!hasAdminPermission && !hasPropertyPermission)
-                {
-                    context.Result = CreateForbiddenResult("Access denied. Permission required to access upload services.");
-                    return;
-                }
+                // File upload/delete (image, document, csv, id-proof) is a generic utility used
+                // across every module's forms (attaching receipts, id proofs, bulk-upload CSVs,
+                // etc.), so it is open to any authenticated user regardless of permission. The
+                // viewer-role write block below still applies, since viewer is meant to be
+                // read-only.
             }
             else if (path.StartsWith("/api/notifications", StringComparison.OrdinalIgnoreCase) ||
                      path.StartsWith("/api/activities", StringComparison.OrdinalIgnoreCase) ||
