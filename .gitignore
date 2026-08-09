@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# captured dev console log
+server_log.txt
+
 # User-specific files
 *.rsuser
 *.suo
