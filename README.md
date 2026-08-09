@@ -149,7 +149,9 @@ These endpoints manage user sessions, profile details, and password recovery.
     }
     ```
     > [!NOTE]
-    > The OTP is randomly generated per request. For local development it is also logged to the backend console and sent via SMTP (Ethereal in dev — which does not deliver to real inboxes).
+    > The OTP is randomly generated per request. For local development it is also logged to the backend console and sent via the [Resend](https://resend.com) API. Emails are sent from the address configured under `MailConfigurations:From` in `appsettings.Development.json` (default `onboarding@resend.dev`, which only delivers to the account owner's inbox — replace it with your verified domain, e.g. `no-reply@yourdomain.com`, to send to real recipients).
+    >
+    > **Secrets live in a gitignored `.env` file at the repo root** (Resend API key, SQL connection string, `BaseURL`) and are loaded at startup by `DotEnvExtension.LoadDotEnv()` using .NET env-var naming (e.g. `MailConfigurations__ApiKey`, `ConnectionStrings__DefaultConnection`). In production, set the same variables as real environment variables instead (or `RESEND_API_KEY` — the SDK falls back to it automatically when `ApiKey` is empty).
 
 #### 5. Verify OTP
 *   **Route**: `POST /api/auth/verify-otp`

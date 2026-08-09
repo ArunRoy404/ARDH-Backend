@@ -40,6 +40,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.7" />
     <PackageVersion Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageVersion Include="CloudinaryDotNet" Version="1.26.2" />
+    <PackageVersion Include="Resend" Version="0.8.0" />
   </ItemGroup>
   <!-- unittest and integration test library -->
   <ItemGroup>

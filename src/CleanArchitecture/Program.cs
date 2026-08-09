@@ -2,6 +2,10 @@ using CleanArchitecture.Application.Common;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Web.Extensions;
 
+// Load the local .env file (if present) into environment variables before configuration
+// is built, so secrets (API keys, connection strings) stay out of the repository.
+DotEnvExtension.LoadDotEnv();
+
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration.Get<AppSettings>()

@@ -55,11 +55,7 @@ public class MailConfigurations
     public string From { get; set; }
     public string DisplayName { get; set; } = string.Empty;
     [Required]
-    public string Host { get; set; }
-    [Required]
-    public string Password { get; set; }
-    [Required]
-    public int Port { get; set; }
+    public string ApiKey { get; set; }
 }
 
 public class RequestResponse
