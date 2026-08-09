@@ -113,7 +113,7 @@ Binary results (PDF/CSV/upload) bypass the wrapper.
 
 | Module | Base route | Endpoints | Notes |
 | :--- | :--- | :--- | :--- |
-| Auth | `/api/auth` | sign-in, forgot-password, verify-otp, reset-password, resend-otp, logout, profile | OTP demo = `123456`, logged to console |
+| Auth | `/api/auth` | sign-in, forgot-password, verify-otp, reset-password, resend-otp, logout, profile | OTP randomly generated; logged to console + emailed via SMTP |
 | Users | `/api/users` | GET list, GET by id, POST, PUT, DELETE(soft), PATCH toggle-status | DELETE requires admin password |
 | Buildings | `/api/buildings` | GET list, GET by id, GET stats, POST, PUT, DELETE | stats endpoint |
 | Settings | `/api/settings` | GET, GET public (anon), PUT, PUT password | password change requires current |

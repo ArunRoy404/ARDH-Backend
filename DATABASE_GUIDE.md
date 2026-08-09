@@ -4,7 +4,7 @@ This guide covers four independent database operations for the **ARDH Property M
 (`src/CleanArchitecture`), which runs on **.NET 8.0 / EF Core 8 / SQL Server**.
 
 > **Connection string** (used by all examples below):
-> `Server=localhost;Database=ARDHDB;User ID=SA;Password=ARDHDatabase404;TrustServerCertificate=True;MultipleActiveResultSets=true`
+> `Server=localhost;Database=ARDHDB;User ID=SA;Password=<your-password>;TrustServerCertificate=True;MultipleActiveResultSets=true`
 >
 > **Project path**: `src/CleanArchitecture/CleanArchitecture.csproj`
 >
@@ -208,7 +208,7 @@ Verify in the log: `Database reset: all existing data removed.`
 
 ```bash
 # Needs sqlcmd / SSMS. Adjust credentials as needed.
-/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'ARDHDatabase404' -C -Q "
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P '<your-password>' -C -Q "
 IF DB_ID('ARDHDB') IS NOT NULL
 BEGIN
     ALTER DATABASE ARDHDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -222,7 +222,7 @@ Then start the app once — it recreates the DB from migrations and seeds it (se
 ### 3.3 Delete table data manually (without re-seed)
 
 ```bash
-/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'ARDHDatabase404' -C -d ARDHDB -Q "
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P '<your-password>' -C -d ARDHDB -Q "
 DELETE FROM notification_recipients;
 DELETE FROM notifications;
 DELETE FROM activities;
@@ -312,7 +312,7 @@ $2a$11$FlBWtAKLk6BAW2bQkB/jqeG/Ba93z9t3X.iafYTq/zSGeWGb/sAYG
 Then insert (note: `users` table, `password_hash` column stores the BCrypt hash, `is_deleted = 0`):
 
 ```bash
-/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'ARDHDatabase404' -C -d ARDHDB -Q "
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P '<your-password>' -C -d ARDHDB -Q "
 INSERT INTO users
     (id, name, email, phone, password_hash, role, address, permissions, avatar_url,
      is_active, last_login_at, refresh_token, created_at, updated_at, created_by, updated_by, is_deleted)

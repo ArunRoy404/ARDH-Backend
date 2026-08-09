@@ -1,35 +1,28 @@
-using System.Net;
-using System.Net.Mail;
 using CleanArchitecture.Application.Common;
 using CleanArchitecture.Application.Common.Interfaces;
+using Resend;
 
 namespace CleanArchitecture.Application.Services;
 
-public class MailService(AppSettings appSettings) : IMailService
+public class MailService(AppSettings appSettings, IResend resend) : IMailService
 {
     private readonly MailConfigurations _mailSettings = appSettings.MailConfigurations;
+    private readonly IResend _resend = resend;
 
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         string fromMail = _mailSettings.From;
-        string fromPassword = _mailSettings.Password;
+        string fromDisplayName = string.IsNullOrWhiteSpace(_mailSettings.DisplayName) ? fromMail : _mailSettings.DisplayName;
+        string from = fromDisplayName == fromMail ? fromMail : $"{fromDisplayName} <{fromMail}>";
 
-        MailMessage message = new()
+        var message = new EmailMessage
         {
-            From = new MailAddress(fromMail),
-            Subject = subject
+            From = from,
+            Subject = subject,
+            HtmlBody = "<html><body>" + htmlMessage + "</body></html>"
         };
-        message.To.Add(new MailAddress(email));
-        message.Body = "<html><body>" + htmlMessage + "</body></html>";
-        message.IsBodyHtml = true;
+        message.To.Add(email);
 
-        var smtpClient = new SmtpClient(_mailSettings.Host)
-        {
-            Port = _mailSettings.Port,
-            Credentials = new NetworkCredential(fromMail, fromPassword),
-            EnableSsl = true,
-        };
-
-        await smtpClient.SendMailAsync(message);
+        await _resend.EmailSendAsync(message);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common;
 using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
@@ -18,10 +19,11 @@ namespace CleanArchitecture.Infrastructure.Data;
 /// To wipe all existing data and re-seed from scratch, set the environment variable
 /// SEED_MODE=reset before starting the application (e.g. `SEED_MODE=reset dotnet run`).
 /// </summary>
-public class ApplicationDbContextInitializer(ApplicationDbContext context, ILoggerFactory logger)
+public class ApplicationDbContextInitializer(ApplicationDbContext context, ILoggerFactory logger, AppSettings appSettings)
 {
     private readonly ApplicationDbContext _context = context;
     private readonly ILogger _logger = logger.CreateLogger<ApplicationDbContextInitializer>();
+    private readonly AppSettings _appSettings = appSettings;
 
     // ── Canonical IDs (must match the Postman collection) ──────────────────────
     private static readonly Guid AdminUserId = Guid.Parse("7ca6dfd0-bfd8-4f10-977b-608b8b4081c7");
@@ -937,7 +939,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             Address = "123 Main Street, Bangalore, India",
             Icon = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
             Fav = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
-            AdminPassword = "adminpassword".Hash(),
+            AdminPassword = (_appSettings.AdminSettings?.Password ?? "adminpassword").Hash(),
             UpdatedBy = AdminUserId,
             UpdatedAt = T0
         });

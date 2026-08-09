@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Interfaces;
-using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Income;
@@ -14,160 +14,54 @@ using CleanArchitecture.Shared.Models.Reports;
 
 namespace CleanArchitecture.Application.Services;
 
-public class ReportService(IUnitOfWork unitOfWork) : IReportService
+public class ReportService(
+    IUnitOfWork unitOfWork,
+    IIncomeRecordService incomeRecordService,
+    IExpenseRecordService expenseRecordService) : IReportService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IIncomeRecordService _incomeRecordService = incomeRecordService;
+    private readonly IExpenseRecordService _expenseRecordService = expenseRecordService;
 
-    public async Task<PaginatedList<IncomeRecordViewModel>> GetIncomeReport(
+    public Task<PaginatedList<IncomeRecordViewModel>> GetIncomeReport(
         Guid? buildingId,
         DateTime? startDate,
         DateTime? endDate,
         int page,
         int pageSize,
         CancellationToken cancellationToken)
-    {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 100);
+        => _incomeRecordService.GetPaginated(
+            page,
+            pageSize,
+            search: null,
+            incomeType: null,
+            status: null,
+            buildingId: buildingId,
+            apartmentId: null,
+            startDate: startDate,
+            endDate: endDate,
+            cancellationToken: cancellationToken);
 
-        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-
-        var query = records.AsQueryable();
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.PaymentDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.PaymentDate <= endDate.Value);
-        }
-
-        var totalItems = query.Count();
-        var pageEntities = query
-            .OrderByDescending(x => x.PaymentDate)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var items = pageEntities.Select(x => new IncomeRecordViewModel
-        {
-            Id = x.Id,
-            IncomeEntity = x.IncomeEntity,
-            IncomeType = x.IncomeType,
-            Amount = x.Amount,
-            BuildingId = x.BuildingId,
-            BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
-            ApartmentId = x.ApartmentId,
-            FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var fNum) ? fNum : null,
-            PaymentDate = x.PaymentDate,
-            PaymentMethod = x.PaymentMethod,
-            TransactionReference = x.TransactionReference,
-            Status = x.Status,
-            Notes = x.Notes,
-            AttachmentUrl = x.AttachmentUrl,
-            CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
-            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null
-        }).ToList();
-
-        return new PaginatedList<IncomeRecordViewModel>(items, totalItems, page, pageSize);
-    }
-
-    public async Task<PaginatedList<ExpenseRecordViewModel>> GetExpenseReport(
+    public Task<PaginatedList<ExpenseRecordViewModel>> GetExpenseReport(
         Guid? buildingId,
         DateTime? startDate,
         DateTime? endDate,
         int page,
         int pageSize,
         CancellationToken cancellationToken)
-    {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 100);
-
-        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
-
-        var query = records.AsQueryable();
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.ExpenseDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.ExpenseDate <= endDate.Value);
-        }
-
-        var totalItems = query.Count();
-        var pageEntities = query
-            .OrderByDescending(x => x.ExpenseDate)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var items = pageEntities.Select(x => new ExpenseRecordViewModel
-        {
-            Id = x.Id,
-            Category = x.Category,
-            ExpenseHead = x.ExpenseHead,
-            SpecificItem = x.SpecificItem,
-            VendorId = x.VendorId,
-            VendorName = x.VendorId.HasValue && vendorMap.TryGetValue(x.VendorId.Value, out var v) ? v.Name : null,
-            VendorCompanyName = x.VendorId.HasValue && vendorMap.TryGetValue(x.VendorId.Value, out var v2) ? v2.CompanyName : null,
-            Nature = x.Nature,
-            Amount = x.Amount,
-            Entity = x.Entity,
-            BuildingId = x.BuildingId,
-            BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
-            ApartmentId = x.ApartmentId,
-            FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var fNum) ? fNum : null,
-            ExpenseDate = x.ExpenseDate,
-            PaymentMethod = x.PaymentMethod,
-            Status = x.Status,
-            Reference = x.Reference,
-            AttachmentUrl = x.AttachmentUrl,
-            Description = x.Description,
-            TankerNumber = x.TankerNumber,
-            TimeOfDelivery = x.TimeOfDelivery,
-            DeliveryDriverName = x.DeliveryDriverName,
-            ManagerInAttendance = x.ManagerInAttendance,
-            LitersFilled = x.LitersFilled,
-            CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt,
-            CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
-            UpdatedBy = x.UpdatedBy.HasValue && userMap.TryGetValue(x.UpdatedBy.Value, out var ub) ? ub : null
-        }).ToList();
-
-        return new PaginatedList<ExpenseRecordViewModel>(items, totalItems, page, pageSize);
-    }
+        => _expenseRecordService.GetPaginated(
+            page,
+            pageSize,
+            search: null,
+            category: null,
+            status: null,
+            nature: null,
+            buildingId: buildingId,
+            vendorId: null,
+            apartmentId: null,
+            startDate: startDate,
+            endDate: endDate,
+            cancellationToken: cancellationToken);
 
     public async Task<ReportStatsViewModel> GetReportStats(
         Guid? buildingId,
@@ -175,6 +69,9 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
         DateTime? endDate,
         CancellationToken cancellationToken)
     {
+        // Only needs Amount/Status/BuildingId/date per record — no building/apartment/vendor
+        // name lookups, so a lean direct repository fetch stays leaner than routing through
+        // GetPaginated (which would build full ViewModels just to be summed and discarded).
         var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
         var expenses = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
 
@@ -217,148 +114,124 @@ public class ReportService(IUnitOfWork unitOfWork) : IReportService
         DateTime? endDate,
         CancellationToken cancellationToken)
     {
-        var csv = new StringBuilder();
         var typeLower = type?.Trim().ToLower() ?? "combined";
 
         if (typeLower == "income")
         {
-            var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
-            var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-            var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-
-            var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-            var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-
-            var query = records.AsQueryable();
-            if (buildingId.HasValue) query = query.Where(x => x.BuildingId == buildingId.Value);
-            if (startDate.HasValue) query = query.Where(x => x.PaymentDate >= startDate.Value);
-            if (endDate.HasValue) query = query.Where(x => x.PaymentDate <= endDate.Value);
-
-            var list = query.OrderByDescending(x => x.PaymentDate).ToList();
-
-            csv.AppendLine("ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt");
-            foreach (var r in list)
-            {
-                var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-                var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-
-                csv.AppendLine($"\"{r.Id}\",\"{r.IncomeEntity}\",\"{r.IncomeType}\",{r.Amount:F2},\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.PaymentDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{EscapeCsv(r.TransactionReference)}\",\"{r.Status}\",\"{EscapeCsv(r.Notes)}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
-            }
+            return await _incomeRecordService.ExportToCsv(
+                search: null,
+                incomeType: null,
+                status: null,
+                buildingId: buildingId,
+                startDate: startDate,
+                endDate: endDate,
+                cancellationToken: cancellationToken);
         }
-        else if (typeLower == "expense")
+
+        if (typeLower == "expense")
         {
-            var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
-            var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-            var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-            var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
-
-            var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-            var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-            var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
-
-            var query = records.AsQueryable();
-            if (buildingId.HasValue) query = query.Where(x => x.BuildingId == buildingId.Value);
-            if (startDate.HasValue) query = query.Where(x => x.ExpenseDate >= startDate.Value);
-            if (endDate.HasValue) query = query.Where(x => x.ExpenseDate <= endDate.Value);
-
-            var list = query.OrderByDescending(x => x.ExpenseDate).ToList();
-
-            csv.AppendLine("ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt");
-            foreach (var r in list)
-            {
-                var vName = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v) ? v.Name : "";
-                var vComp = r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var v2) ? v2.CompanyName : "";
-                var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-                var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-                var deliveryTime = r.TimeOfDelivery.HasValue ? r.TimeOfDelivery.Value.ToString("yyyy-MM-dd HH:mm:ss") : "";
-
-                csv.AppendLine($"\"{r.Id}\",\"{r.Category}\",\"{EscapeCsv(r.ExpenseHead)}\",\"{EscapeCsv(r.SpecificItem)}\",\"{EscapeCsv(vName)}\",\"{EscapeCsv(vComp)}\",\"{r.Nature}\",{r.Amount:F2},\"{r.Entity}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\",\"{r.ExpenseDate:yyyy-MM-dd}\",\"{r.PaymentMethod}\",\"{r.Status}\",\"{EscapeCsv(r.Reference)}\",\"{EscapeCsv(r.Description)}\",\"{EscapeCsv(r.TankerNumber)}\",\"{deliveryTime}\",\"{EscapeCsv(r.DeliveryDriverName)}\",\"{EscapeCsv(r.ManagerInAttendance)}\",\"{r.LitersFilled}\",\"{r.CreatedAt:yyyy-MM-dd HH:mm:ss}\"");
-            }
+            return await _expenseRecordService.ExportToCsv(
+                search: null,
+                category: null,
+                status: null,
+                nature: null,
+                buildingId: buildingId,
+                vendorId: null,
+                startDate: startDate,
+                endDate: endDate,
+                cancellationToken: cancellationToken);
         }
-        else
+
+        // Combined transaction ledger merging income + expense into one dated feed — unique to
+        // Reports, no equivalent method exists on the income/expense services to delegate to.
+        var incomeRecords = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
+        var expenseRecords = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+
+        var incomeQuery = incomeRecords.AsQueryable();
+        var expenseQuery = expenseRecords.AsQueryable();
+
+        if (buildingId.HasValue)
         {
-            // Combined Transaction Ledger
-            var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
-            var expenses = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
-            var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-            var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-
-            var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-            var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-
-            var incomeQuery = incomes.AsQueryable();
-            var expenseQuery = expenses.AsQueryable();
-
-            if (buildingId.HasValue)
-            {
-                incomeQuery = incomeQuery.Where(x => x.BuildingId == buildingId.Value);
-                expenseQuery = expenseQuery.Where(x => x.BuildingId == buildingId.Value);
-            }
-
-            if (startDate.HasValue)
-            {
-                incomeQuery = incomeQuery.Where(x => x.PaymentDate >= startDate.Value);
-                expenseQuery = expenseQuery.Where(x => x.ExpenseDate >= startDate.Value);
-            }
-
-            if (endDate.HasValue)
-            {
-                incomeQuery = incomeQuery.Where(x => x.PaymentDate <= endDate.Value);
-                expenseQuery = expenseQuery.Where(x => x.ExpenseDate <= endDate.Value);
-            }
-
-            // Create a unified list of ledger items
-            var ledgerItems = new List<LedgerItem>();
-
-            foreach (var inc in incomeQuery.ToList())
-            {
-                ledgerItems.Add(new LedgerItem
-                {
-                    Date = inc.PaymentDate,
-                    Type = "Income",
-                    Category = inc.IncomeType.ToString(),
-                    Description = $"Received from {inc.IncomeEntity}",
-                    Amount = inc.Amount,
-                    BuildingId = inc.BuildingId,
-                    ApartmentId = inc.ApartmentId,
-                    Status = inc.Status.ToString()
-                });
-            }
-
-            foreach (var exp in expenseQuery.ToList())
-            {
-                ledgerItems.Add(new LedgerItem
-                {
-                    Date = exp.ExpenseDate,
-                    Type = "Expense",
-                    Category = exp.Category.ToString(),
-                    Description = string.IsNullOrEmpty(exp.SpecificItem) ? exp.ExpenseHead ?? "Expense" : exp.SpecificItem,
-                    Amount = -exp.Amount, // negative for expense
-                    BuildingId = exp.BuildingId,
-                    ApartmentId = exp.ApartmentId,
-                    Status = exp.Status.ToString()
-                });
-            }
-
-            var list = ledgerItems.OrderByDescending(x => x.Date).ToList();
-
-            csv.AppendLine("Date,Type,Category,Description,Amount,Status,BuildingName,FlatNumber");
-            foreach (var r in list)
-            {
-                var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : "";
-                var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : "";
-
-                csv.AppendLine($"\"{r.Date:yyyy-MM-dd}\",\"{r.Type}\",\"{r.Category}\",\"{EscapeCsv(r.Description)}\",{r.Amount:F2},\"{r.Status}\",\"{EscapeCsv(bName)}\",\"{EscapeCsv(fNum)}\"");
-            }
+            incomeQuery = incomeQuery.Where(x => x.BuildingId == buildingId.Value);
+            expenseQuery = expenseQuery.Where(x => x.BuildingId == buildingId.Value);
         }
 
-        return Encoding.UTF8.GetBytes(csv.ToString());
-    }
+        if (startDate.HasValue)
+        {
+            incomeQuery = incomeQuery.Where(x => x.PaymentDate >= startDate.Value);
+            expenseQuery = expenseQuery.Where(x => x.ExpenseDate >= startDate.Value);
+        }
 
-    private static string EscapeCsv(string? val)
-    {
-        if (string.IsNullOrEmpty(val)) return "";
-        return val.Replace("\"", "\"\"");
+        if (endDate.HasValue)
+        {
+            incomeQuery = incomeQuery.Where(x => x.PaymentDate <= endDate.Value);
+            expenseQuery = expenseQuery.Where(x => x.ExpenseDate <= endDate.Value);
+        }
+
+        var ledgerItems = new List<LedgerItem>();
+
+        foreach (var inc in incomeQuery.ToList())
+        {
+            ledgerItems.Add(new LedgerItem
+            {
+                Date = inc.PaymentDate,
+                Type = "Income",
+                Category = inc.IncomeType.ToString(),
+                Description = $"Received from {inc.IncomeEntity}",
+                Amount = inc.Amount,
+                BuildingId = inc.BuildingId,
+                ApartmentId = inc.ApartmentId,
+                Status = inc.Status.ToString()
+            });
+        }
+
+        foreach (var exp in expenseQuery.ToList())
+        {
+            ledgerItems.Add(new LedgerItem
+            {
+                Date = exp.ExpenseDate,
+                Type = "Expense",
+                Category = exp.Category.ToString(),
+                Description = string.IsNullOrEmpty(exp.SpecificItem) ? exp.ExpenseHead ?? "Expense" : exp.SpecificItem,
+                Amount = -exp.Amount, // negative for expense
+                BuildingId = exp.BuildingId,
+                ApartmentId = exp.ApartmentId,
+                Status = exp.Status.ToString()
+            });
+        }
+
+        var list = ledgerItems.OrderByDescending(x => x.Date).ToList();
+
+        var rows = new List<List<string>>
+        {
+            new() { "Date", "Type", "Category", "Description", "Amount", "Status", "BuildingName", "FlatNumber" }
+        };
+
+        foreach (var r in list)
+        {
+            var bName = r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var bn) ? bn : string.Empty;
+            var fNum = r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var fn) ? fn : string.Empty;
+
+            rows.Add(new List<string>
+            {
+                r.Date.ToString("yyyy-MM-dd"),
+                r.Type,
+                r.Category,
+                r.Description,
+                r.Amount.ToString("F2"),
+                r.Status,
+                bName,
+                fNum
+            });
+        }
+
+        var csvText = CsvHelper.BuildCsv(rows);
+        return Encoding.UTF8.GetBytes(csvText);
     }
 
     private class LedgerItem
