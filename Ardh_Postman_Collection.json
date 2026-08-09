@@ -1143,7 +1143,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"name\": \"Super Admin\",\n        \"email\": \"admin@gmail.com\",\n        \"phone\": \"+1234567890\",\n        \"address\": \"123 Main St\",\n        \"role\": \"admin\",\n        \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n        \"city\": \"123 Main St\",\n        \"isActive\": true,\n        \"permissions\": \"dashboard,properties,finance,operations,admin\",\n        \"lastLoginAt\": \"2026-08-07T09:30:00Z\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": null,\n        \"updatedBy\": null\n    }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"admin\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"city\": \"123 Main St\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,properties,finance,operations,admin\",\n    \"lastLoginAt\": \"2026-08-07T09:30:00Z\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\"\n  }\n}"
             }
           ]
         },
@@ -2760,60 +2760,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"address\": \"123 Skyline Boulevard\",\n                \"city\": \"New York\",\n                \"state\": \"NY\",\n                \"country\": \"USA\",\n                \"googleMapLink\": \"https://maps.google.com/?q=123+Skyline+Boulevard+New+York\",\n                \"totalFloors\": 24,\n                \"parkingDetails\": \"Basement Level 1 & 2, 150 Slots Available\",\n                \"status\": \"active\",\n                \"description\": \"Premium luxury residence building in Manhattan with scenic city views and standard amenities.\",\n                \"imageUrl\": \"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"c2f7b822-29c4-52a8-ad29-c8be5d491f25\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"address\": \"456 Pinecrest Heights\",\n                \"city\": \"Seattle\",\n                \"state\": \"WA\",\n                \"country\": \"USA\",\n                \"googleMapLink\": \"https://maps.google.com/?q=456+Pinecrest+Heights+Seattle\",\n                \"totalFloors\": 10,\n                \"parkingDetails\": \"Ground floor open parking, 50 Slots Available\",\n                \"status\": \"active\",\n                \"description\": \"Cozy residential complex situated in a quiet suburban neighborhood with nearby parks.\",\n                \"imageUrl\": \"https://images.unsplash.com/photo-1564013799919-ab600027ffc6\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 2,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/buildings?page=1&pageSize=10&search=&status=",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "buildings"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search by building name, city or state"
-                    },
-                    {
-                      "key": "status",
-                      "value": "",
-                      "description": "Filter by status. Exact values: active | inactive"
-                    }
-                  ]
-                },
-                "description": "Lists buildings with pagination and optional filters."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -4606,7 +4552,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"https://api.ardh.com/uploads/3d60a25e-6a9b-4878-ac7d-e71a56d4655f.png\"\n    }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"https://api.ardh.com/image/3d60a25e-6a9b-4878-ac7d-e71a56d4655f.png\"\n  }\n}"
             },
             {
               "name": "Error Example (400 - Invalid Format)",
@@ -4650,10 +4596,10 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid image format. Allowed formats: .png, .jpg, .jpeg, .webp\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"Invalid image format. Allowed formats: .png, .jpg, .jpeg, .webp\",\n            \"errorMessage\": \"Invalid image format. Allowed formats: .png, .jpg, .jpeg, .webp\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid image format. Allowed formats: .png, .jpg, .jpeg, .webp\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid image format. Allowed formats: .png, .jpg, .jpeg, .webp\",\n      \"errorMessage\": \"Invalid image format. Allowed formats: .png, .jpg, .jpeg, .webp\"\n    }\n  ]\n}"
             },
             {
-              "name": "Error Example (403 - Access Denied)",
+              "name": "Error Example (403 - Viewer Write Blocked)",
               "originalRequest": {
                 "auth": {
                   "type": "noauth"
@@ -4694,7 +4640,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Permission required to access upload services.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Permission required to access upload services.\",\n            \"errorMessage\": \"Access denied. Permission required to access upload services.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Users with 'viewer' role only have view (GET) permissions.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.unauthorized\",\n      \"message\": \"Users with 'viewer' role only have view (GET) permissions.\",\n      \"errorMessage\": \"Users with 'viewer' role only have view (GET) permissions.\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -4773,7 +4719,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"https://api.ardh.com/uploads/e8b7a13c-9b3f-4d2e-8c5a-27f6a0b1c2d3.pdf\"\n    }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"https://api.ardh.com/image/e8b7a13c-9b3f-4d2e-8c5a-27f6a0b1c2d3.pdf\"\n  }\n}"
             },
             {
               "name": "Error Example (400 - Invalid Format)",
@@ -4817,10 +4763,10 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv\",\n            \"errorMessage\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv\",\n      \"errorMessage\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .xls, .xlsx, .txt, .csv\"\n    }\n  ]\n}"
             },
             {
-              "name": "Error Example (403 - Access Denied)",
+              "name": "Error Example (403 - Viewer Write Blocked)",
               "originalRequest": {
                 "auth": {
                   "type": "noauth"
@@ -4861,7 +4807,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Permission required to access upload services.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Permission required to access upload services.\",\n            \"errorMessage\": \"Access denied. Permission required to access upload services.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Users with 'viewer' role only have view (GET) permissions.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.unauthorized\",\n      \"message\": \"Users with 'viewer' role only have view (GET) permissions.\",\n      \"errorMessage\": \"Users with 'viewer' role only have view (GET) permissions.\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -4940,7 +4886,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"https://api.ardh.com/uploads/c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f.jpg\"\n    }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"https://api.ardh.com/image/c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f.jpg\"\n  }\n}"
             },
             {
               "name": "Error Example (400 - Invalid Format)",
@@ -4984,10 +4930,10 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .jpg, .jpeg, .png\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .jpg, .jpeg, .png\",\n            \"errorMessage\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .jpg, .jpeg, .png\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .jpg, .jpeg, .png\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .jpg, .jpeg, .png\",\n      \"errorMessage\": \"Invalid document format. Allowed formats: .pdf, .doc, .docx, .jpg, .jpeg, .png\"\n    }\n  ]\n}"
             },
             {
-              "name": "Error Example (403 - Access Denied)",
+              "name": "Error Example (403 - Viewer Write Blocked)",
               "originalRequest": {
                 "auth": {
                   "type": "noauth"
@@ -5028,7 +4974,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Permission required to access upload services.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Permission required to access upload services.\",\n            \"errorMessage\": \"Access denied. Permission required to access upload services.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Users with 'viewer' role only have view (GET) permissions.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.unauthorized\",\n      \"message\": \"Users with 'viewer' role only have view (GET) permissions.\",\n      \"errorMessage\": \"Users with 'viewer' role only have view (GET) permissions.\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -5118,7 +5064,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"File with ID '3d60a25e-6a9b-4878-ac7d-e71a56d4655f' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"File with ID '3d60a25e-6a9b-4878-ac7d-e71a56d4655f' was not found.\",\n            \"errorMessage\": \"File with ID '3d60a25e-6a9b-4878-ac7d-e71a56d4655f' was not found.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"File not found.\",\n  \"errors\": [\n    {\n      \"message\": \"File not found.\",\n      \"errorMessage\": \"File not found.\"\n    }\n  ]\n}"
             }
           ]
         }
@@ -5224,60 +5170,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"o1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"fullName\": \"Rahul Verma\",\n                \"phone\": \"+91 9876500011\",\n                \"email\": \"rahul.verma@example.com\",\n                \"city\": \"Mumbai\",\n                \"address\": \"45, Marine Drive\",\n                \"idType\": \"Aadhar\",\n                \"idNumber\": \"1234-5678-9012\",\n                \"bankName\": \"HDFC Bank\",\n                \"accountNumber\": \"50100123456789\",\n                \"ifscCode\": \"HDFC0000123\",\n                \"status\": \"Active\",\n                \"notes\": \"Primary owner for block A.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"fullName\": \"Amit Sharma\",\n                \"phone\": \"+91 9988776655\",\n                \"email\": \"amit.sharma@example.com\",\n                \"city\": \"Mumbai\",\n                \"address\": \"45, Marine Drive\",\n                \"idType\": \"Aadhar\",\n                \"idNumber\": \"2233-4455-6677\",\n                \"bankName\": \"HDFC Bank\",\n                \"accountNumber\": \"50100223344556\",\n                \"ifscCode\": \"HDFC0000123\",\n                \"status\": \"Active\",\n                \"notes\": \"Primary owner for block B.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 2,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/owners?page=1&pageSize=10&search=&status=",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "owners"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search by name, email, phone or city"
-                    },
-                    {
-                      "key": "status",
-                      "value": "",
-                      "description": "Filter by status. Exact values: Active | Inactive | Pending"
-                    }
-                  ]
-                },
-                "description": "Lists owners with pagination and optional filters."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -5908,7 +5800,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
+            "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -5958,53 +5850,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes,CreatedAt\n\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Amit Sharma\",\"+91 9988776655\",\"amit.sharma@example.com\",\"Mumbai\",\"45, Marine Drive\",\"Aadhar\",\"2233-4455-6677\",\"HDFC Bank\",\"50100223344556\",\"HDFC0000123\",\"Active\",\"Primary owner for block B.\",\"2026-07-20 12:00:00\"",
-              "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Property Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/owners/download-csv?search=&status=Active",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "owners",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching owner name, email, phone or city"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Active",
-                      "description": "Filter by status. Exact values: Active, Inactive"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}",
+              "body": "FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes\nRahul Verma,+91 9876500011,rahul.verma@example.com,Mumbai,\"45, Marine Drive\",Aadhar,1234-5678-9012,HDFC Bank,50100123456789,HDFC0000123,Active,Primary owner for block A.",
               "description": "Exports all filtered owners to a CSV file.\nColumns: FullName, Phone, Email, City, Address, IdType, IdNumber, BankName, AccountNumber, IfscCode, Status, Notes.\nRequires 'properties' permission."
             }
           ]
@@ -6141,75 +5987,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"ownerId\": \"o1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"ownerName\": \"Rahul Verma\",\n                \"nestawayId\": \"NEST-302-AA\",\n                \"flatNumber\": \"302\",\n                \"floor\": 3,\n                \"apartmentType\": \"2 BHK\",\n                \"areaSqft\": 1050,\n                \"bedrooms\": 2,\n                \"bathrooms\": 2,\n                \"hasBalcony\": true,\n                \"parkingSlot\": \"P-12\",\n                \"expectedRent\": 85000,\n                \"maintenanceCharge\": 4500,\n                \"waterCharge\": 800,\n                \"currentTenantId\": \"t1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"currentTenantName\": \"Arjun Mehta\",\n                \"notes\": \"Corner unit, good sunlight.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"ownerId\": \"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"ownerName\": \"Amit Sharma\",\n                \"nestawayId\": \"NST-7719\",\n                \"flatNumber\": \"1204-B\",\n                \"floor\": 12,\n                \"apartmentType\": \"3 BHK\",\n                \"areaSqft\": 1450,\n                \"bedrooms\": 3,\n                \"bathrooms\": 3,\n                \"hasBalcony\": true,\n                \"parkingSlot\": \"P-15\",\n                \"expectedRent\": 45000,\n                \"maintenanceCharge\": 3500,\n                \"waterCharge\": 500,\n                \"currentTenantId\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"currentTenantName\": \"John Tenant\",\n                \"notes\": null,\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"ownerId\": \"o1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"ownerName\": \"Rahul Verma\",\n                \"nestawayId\": \"NEST-101-AA\",\n                \"flatNumber\": \"101\",\n                \"floor\": 1,\n                \"apartmentType\": \"1 BHK\",\n                \"areaSqft\": 600,\n                \"bedrooms\": 1,\n                \"bathrooms\": 1,\n                \"hasBalcony\": false,\n                \"parkingSlot\": \"P-01\",\n                \"expectedRent\": 20000,\n                \"maintenanceCharge\": 1500,\n                \"waterCharge\": 300,\n                \"currentTenantId\": null,\n                \"currentTenantName\": null,\n                \"notes\": null,\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"d2f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"ownerId\": \"o1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"ownerName\": \"Amit Sharma\",\n                \"nestawayId\": \"NEST-101-AA\",\n                \"flatNumber\": \"301\",\n                \"floor\": 1,\n                \"apartmentType\": \"2 BHK\",\n                \"areaSqft\": 600,\n                \"bedrooms\": 2,\n                \"bathrooms\": 2,\n                \"hasBalcony\": true,\n                \"parkingSlot\": \"P-01\",\n                \"expectedRent\": 20000,\n                \"maintenanceCharge\": 1500,\n                \"waterCharge\": 300,\n                \"currentTenantId\": null,\n                \"currentTenantName\": null,\n                \"notes\": null,\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"d3f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"ownerId\": \"o1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"ownerName\": \"Amit Sharma\",\n                \"nestawayId\": \"NEST-101-AA\",\n                \"flatNumber\": \"102\",\n                \"floor\": 1,\n                \"apartmentType\": \"1 BHK\",\n                \"areaSqft\": 600,\n                \"bedrooms\": 1,\n                \"bathrooms\": 1,\n                \"hasBalcony\": false,\n                \"parkingSlot\": \"P-01\",\n                \"expectedRent\": 20000,\n                \"maintenanceCharge\": 1500,\n                \"waterCharge\": 300,\n                \"currentTenantId\": null,\n                \"currentTenantName\": null,\n                \"notes\": null,\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 5,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/apartments?page=1&pageSize=10&search=&buildingId=&ownerId=&apartmentType=&status=",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "apartments"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search by flat number, nestaway ID, parking slot, building or owner"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "ownerId",
-                      "value": "",
-                      "description": "Filter by owner UUID"
-                    },
-                    {
-                      "key": "apartmentType",
-                      "value": "",
-                      "description": "Filter by type, e.g. 1 BHK, 2 BHK, 3 BHK"
-                    },
-                    {
-                      "key": "status",
-                      "value": "",
-                      "description": "Filter by occupancy: occupied | vacant"
-                    }
-                  ]
-                },
-                "description": "Lists apartments with pagination and optional filters."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6708,7 +6485,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/apartments/a5c7b822-29c4-52a8-ad29-c8be5d491f32?password=adminpassword",
+              "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -6737,7 +6514,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/apartments/a5c7b822-29c4-52a8-ad29-c8be5d491f32?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6777,7 +6554,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/apartments/a5c7b822-29c4-52a8-ad29-c8be5d491f32?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6817,7 +6594,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/apartments/a5c7b822-29c4-52a8-ad29-c8be5d491f32?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6846,7 +6623,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Apartment with ID 'a5c7b822-29c4-52a8-ad29-c8be5d491f32' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Apartment with ID 'a5c7b822-29c4-52a8-ad29-c8be5d491f32' was not found.\",\n            \"errorMessage\": \"Apartment with ID 'a5c7b822-29c4-52a8-ad29-c8be5d491f32' was not found.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Apartment with ID 'a1f3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Apartment with ID 'a1f3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\",\n            \"errorMessage\": \"Apartment with ID 'a1f3b822-29c4-52a8-ad29-c8be5d491f24' was not found.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6896,7 +6673,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
+            "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -6961,68 +6738,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,CurrentTenantName,Notes,CreatedAt\n\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Amit Sharma\",\"NST-7719\",\"1204-B\",12,\"3 BHK\",1450.00,3,3,True,\"P-15\",45000.00,3500.00,500.00,\"John Tenant\",\"\",\"2026-07-20 12:00:00\"",
-              "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Property Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/apartments/download-csv?search=&buildingId=&ownerId=&apartmentType=&status=",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "apartments",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching nestaway id, flat number, parking slot, building or owner name"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "ownerId",
-                      "value": "",
-                      "description": "Filter by owner UUID"
-                    },
-                    {
-                      "key": "apartmentType",
-                      "value": "",
-                      "description": "Filter by apartment type (e.g. 1BHK, 2BHK, 3BHK)"
-                    },
-                    {
-                      "key": "status",
-                      "value": "",
-                      "description": "Filter by occupancy: Occupied or Vacant"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}",
+              "body": "BuildingId,OwnerId,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\nb1f7b822-29c4-52a8-ad29-c8be5d491f24,f1a3b822-29c4-52a8-ad29-c8be5d491f24,NST-7719,1204-B,12,3 BHK,1450,3,3,true,P-15,45000,3500,500,",
               "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
             }
           ]
@@ -7148,70 +6864,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"t1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"302\",\n                \"nestawayId\": \"NEST-302-AA\",\n                \"fullName\": \"Arjun Mehta\",\n                \"phone\": \"+91 9876543210\",\n                \"email\": \"arjun.mehta@example.com\",\n                \"idType\": \"Aadhar\",\n                \"idNumber\": \"9988-7766-5544\",\n                \"idProofAttachmentUrl\": \"https://example.com/uploads/idproof.pdf\",\n                \"moveInDate\": \"2026-05-01T12:00:00Z\",\n                \"leaseStartDate\": \"2026-05-01T12:00:00Z\",\n                \"leaseEndDate\": \"2027-04-30T12:00:00Z\",\n                \"monthlyRent\": 85000,\n                \"securityDeposit\": 170000,\n                \"emergencyContactName\": \"Priya Mehta\",\n                \"emergencyContactPhone\": \"+91 9876543200\",\n                \"status\": \"Active\",\n                \"notes\": \"Responsible tenant\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"e2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"1204-B\",\n                \"nestawayId\": \"NST-7719\",\n                \"fullName\": \"John Tenant\",\n                \"phone\": \"+15550199\",\n                \"email\": \"john.t@gmail.com\",\n                \"idType\": \"Passport\",\n                \"idNumber\": \"Z1234567\",\n                \"idProofAttachmentUrl\": \"https://example.com/uploads/idproof.pdf\",\n                \"moveInDate\": \"2026-07-20T12:00:00Z\",\n                \"leaseStartDate\": \"2026-07-20T12:00:00Z\",\n                \"leaseEndDate\": \"2027-07-20T12:00:00Z\",\n                \"monthlyRent\": 45000,\n                \"securityDeposit\": 90000,\n                \"emergencyContactName\": \"Jane Tenant\",\n                \"emergencyContactPhone\": \"+15550200\",\n                \"status\": \"Active\",\n                \"notes\": \"Responsible tenant\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 2,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/tenants?page=1&pageSize=10&search=&buildingId=&apartmentId=&status=Active",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "tenants"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search by name, phone, email, ID number, building or flat"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "apartmentId",
-                      "value": "",
-                      "description": "Filter by apartment UUID"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Active",
-                      "description": "Filter by status. Exact values: Active | Moved Out"
-                    }
-                  ]
-                },
-                "description": "Lists tenants with pagination and optional filters."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -8237,7 +7889,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out?password=adminpassword",
+              "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -8247,15 +7899,9 @@
                 "c1f7b822-29c4-52a8-ad29-c8be5d491f24",
                 "move-out"
               ],
-              "query": [
-                {
-                  "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
-                }
-              ]
+              "query": []
             },
-            "description": "Soft-deletes the move-out record of a tenant.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes the move-out record of a tenant."
           },
           "response": [
             {
@@ -8267,7 +7913,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -8277,15 +7923,9 @@
                     "c1f7b822-29c4-52a8-ad29-c8be5d491f24",
                     "move-out"
                   ],
-                  "query": [
-                    {
-                      "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
-                    }
-                  ]
+                  "query": []
                 },
-                "description": "Soft-deletes the move-out record of a tenant.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes the move-out record of a tenant."
               },
               "status": "OK",
               "code": 200,
@@ -8300,47 +7940,6 @@
               "body": "{\n    \"success\": true,\n    \"message\": \"Move-out record deleted successfully.\",\n    \"data\": null\n}"
             },
             {
-              "name": "Error Example (400 - Invalid Admin Password)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out?password=adminpassword",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "tenants",
-                    "c1f7b822-29c4-52a8-ad29-c8be5d491f24",
-                    "move-out"
-                  ],
-                  "query": [
-                    {
-                      "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
-                    }
-                  ]
-                },
-                "description": "Soft-deletes the move-out record of a tenant.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid Admin password.\",\n    \"errors\": [\n        {\n            \"message\": \"Invalid Admin password.\",\n            \"errorMessage\": \"The administrator password you entered is incorrect.\"\n        }\n    ]\n}"
-            },
-            {
               "name": "Error Example (404 - Not Found)",
               "originalRequest": {
                 "auth": {
@@ -8349,7 +7948,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/tenants/c1f7b822-29c4-52a8-ad29-c8be5d491f24/move-out",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -8359,15 +7958,9 @@
                     "c1f7b822-29c4-52a8-ad29-c8be5d491f24",
                     "move-out"
                   ],
-                  "query": [
-                    {
-                      "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
-                    }
-                  ]
+                  "query": []
                 },
-                "description": "Soft-deletes the move-out record of a tenant.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes the move-out record of a tenant."
               },
               "status": "Not Found",
               "code": 404,
@@ -8424,7 +8017,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
+            "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -8484,63 +8077,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,BuildingName,FlatNumber,NestawayId,FullName,Phone,Email,IdType,IdNumber,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"1204-B\",\"NST-7719\",\"John Tenant\",\"+91 9876543210\",\"john.tenant@example.com\",\"Passport\",\"J1234567\",\"2026-05-01\",\"2026-05-01\",\"2027-04-30\",45000.00,90000.00,\"Johns Father\",\"+91 9123456780\",\"Active\",\"\",\"2026-05-01 10:00:00\"",
-              "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Property Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/tenants/download-csv?search=&buildingId=&apartmentId=&status=Active",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "tenants",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching full name, phone, email, id number, building or flat number"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "apartmentId",
-                      "value": "",
-                      "description": "Filter by apartment UUID"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Active",
-                      "description": "Filter by status. Exact values: Active, Inactive"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Property permission required for this route.\"\n    }\n}",
+              "body": "BuildingId,ApartmentId,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\nb1f7b822-29c4-52a8-ad29-c8be5d491f24,e2a3b822-29c4-52a8-ad29-c8be5d491f24,John Tenant,+15550199,john.t@gmail.com,Passport,Z1234567,https://example.com/uploads/idproof.pdf,2026-07-20,2026-07-20,2027-07-20,45000,90000,Jane Tenant,+15550200,Active,",
               "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
             }
           ]
@@ -8656,65 +8193,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"v1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Sunil Kumar\",\n                \"companyName\": \"Sunil Plumbing Services\",\n                \"phone\": \"+919888776655\",\n                \"email\": \"sunil@plumbing.com\",\n                \"vendorType\": \"Plumbing\",\n                \"gstNumber\": \"27BBBBB2222B1Z2\",\n                \"address\": \"Shop 12, Market Road\",\n                \"status\": \"Active\",\n                \"notes\": \"Preferred plumber for all building units\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Rajesh Sharma\",\n                \"companyName\": \"Sharma Elevator Services\",\n                \"phone\": \"+919999888877\",\n                \"email\": \"rajesh@solutions.com\",\n                \"vendorType\": \"Elevator Service\",\n                \"gstNumber\": \"27AAAAA1111A1Z1\",\n                \"address\": \"Sector 5, Nerul\",\n                \"status\": \"Active\",\n                \"notes\": \"Preferred elevator vendor for all building units\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"name\": \"BESCOM\",\n                \"companyName\": \"Bangalore Electricity\",\n                \"phone\": \"+91 9876500112\",\n                \"email\": \"billing@bescom.example.com\",\n                \"vendorType\": \"Electricity\",\n                \"gstNumber\": \"29AAAAA1111A1Z2\",\n                \"address\": \"12 MG Road, Bangalore\",\n                \"status\": \"Active\",\n                \"notes\": \"Electricity supplier for common areas\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/vendors?page=1&pageSize=10&search=&vendorType=Plumbing&status=Active",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "vendors"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search by name, company, email or phone"
-                    },
-                    {
-                      "key": "vendorType",
-                      "value": "Plumbing",
-                      "description": "Filter by vendor type (free text), e.g. Plumbing, Elevator Service, Electricity"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Active",
-                      "description": "Filter by status. Exact values: Active | Inactive"
-                    }
-                  ]
-                },
-                "description": "Lists vendors with pagination and optional filters."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -9352,70 +8830,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"name\": \"OTIS Elevator Block A\",\n                \"type\": \"Lift\",\n                \"brand\": \"OTIS\",\n                \"model\": \"Gen2\",\n                \"serialNumber\": \"OTIS-55291-A\",\n                \"installDate\": \"2024-01-15T00:00:00Z\",\n                \"warrantyExpiryDate\": \"2027-01-15T00:00:00Z\",\n                \"status\": \"Operational\",\n                \"notes\": \"Working perfectly.\",\n                \"attachmentUrl\": \"https://example.com/uploads/manual.pdf\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"e2c7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"name\": \"Water Pump Block A\",\n                \"type\": \"Pump\",\n                \"brand\": \"Kirloskar\",\n                \"model\": \"KDS-1520\",\n                \"serialNumber\": \"KIR-88123\",\n                \"installDate\": \"2024-01-15T00:00:00Z\",\n                \"warrantyExpiryDate\": \"2027-01-15T00:00:00Z\",\n                \"status\": \"Operational\",\n                \"notes\": \"Main water pump for Block A\",\n                \"attachmentUrl\": null,\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"e3c7b822-29c4-52a8-ad29-c8be5d491f25\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"name\": \"Diesel Generator\",\n                \"type\": \"Generator\",\n                \"brand\": \"Cummins\",\n                \"model\": \"C30D5\",\n                \"serialNumber\": \"CUM-99120\",\n                \"installDate\": \"2023-06-01T00:00:00Z\",\n                \"warrantyExpiryDate\": \"2026-06-01T00:00:00Z\",\n                \"status\": \"Operational\",\n                \"notes\": \"Backup power for common areas\",\n                \"attachmentUrl\": null,\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/equipment?page=1&pageSize=10&search=&buildingId=&type=Lift&status=Operational",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equipment"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search by name, brand, model or serial number"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "type",
-                      "value": "Lift",
-                      "description": "Filter by type (free text), e.g. Lift, Pump, Generator"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Operational",
-                      "description": "Filter by status (free text), e.g. Operational, UnderMaintenance, OutOfService"
-                    }
-                  ]
-                },
-                "description": "Lists equipment with pagination and optional filters."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -10134,7 +9548,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
+            "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -10194,63 +9608,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl,CreatedAt\n\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Grand Plaza Towers\",\"Passenger Lift 1\",\"Lift\",\"OTIS\",\"Gen2\",\"LFT-8812\",\"2025-01-15\",\"2027-01-15\",\"Operational\",\"Annual maintenance done.\",\"\",\"2026-07-20 12:00:00\"",
-              "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/equipment/download-csv?search=&buildingId=&type=Lift&status=Operational",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equipment",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching name, brand, model, serial number, notes or building name"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "type",
-                      "value": "Lift",
-                      "description": "Filter by equipment type (e.g. Lift, Generator, AC, Pump)"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Operational",
-                      "description": "Filter by status (e.g. Operational, UnderMaintenance, OutOfService)"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}",
+              "body": "BuildingId,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\nb1f7b822-29c4-52a8-ad29-c8be5d491f24,OTIS Elevator Block A,Lift,OTIS,Gen2,OTIS-55291-A,2024-01-15,2027-01-15,Operational,Working perfectly.,https://example.com/uploads/manual.pdf",
               "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
             }
           ]
@@ -10386,75 +9744,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f2a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"amcCode\": \"AMC-2026-001\",\n                \"contractNumber\": \"CN-OTIS-2026-881\",\n                \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026\",\n                \"contractType\": \"Comprehensive\",\n                \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"equipmentName\": \"OTIS Elevator Block A\",\n                \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Rajesh Sharma\",\n                \"vendorCompanyName\": \"Sharma Elevator Services\",\n                \"startDate\": \"2026-07-20T00:00:00Z\",\n                \"endDate\": \"2027-07-20T00:00:00Z\",\n                \"contractAmount\": 120000.00,\n                \"paymentTerms\": \"QuarterlyAdvance\",\n                \"serviceFrequency\": \"Quarterly\",\n                \"coverageDetails\": \"All spare parts and labour included.\",\n                \"exclusions\": \"Damage due to natural disasters.\",\n                \"documentLink\": \"https://example.com/uploads/contract.pdf\",\n                \"remarks\": \"Renewed for 1 year.\",\n                \"status\": \"Active\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Missing Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts?page=1&pageSize=10&search=&status=Active&contractType=Comprehensive",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "amc-contracts"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default: 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default: 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching AMC code, contract number, contract title, coverage, exclusions, remarks, equipment name, vendor name"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Active",
-                      "description": "Filter by AMC status. Exact values: Active, Expiring, Expired, Cancelled"
-                    },
-                    {
-                      "key": "contractType",
-                      "value": "Comprehensive",
-                      "description": "Filter by contract type. Exact values: Comprehensive, NonComprehensive, PreventativeMaintenance, BreakdownMaintenance, OperationsAndMaintenance, Other"
-                    },
-                    {
-                      "key": "vendorId",
-                      "value": "",
-                      "description": "Filter by vendor UUID"
-                    },
-                    {
-                      "key": "equipmentId",
-                      "value": "",
-                      "description": "Filter by equipment UUID"
-                    }
-                  ]
-                },
-                "description": "Retrieves a paginated list of AMC contracts with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\nstatus = Active | Expiring | Expired | Cancelled\ncontractType = Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other"
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -10467,7 +9756,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/amc-contracts/:id",
+              "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -10496,7 +9785,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10536,7 +9825,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10623,39 +9912,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"activeCount\": 5,\n        \"expiringInThirtyDaysCount\": 2,\n        \"expiredCount\": 1,\n        \"cancelledCount\": 0,\n        \"totalCount\": 8\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Missing Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/stats",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "amc-contracts",
-                    "stats"
-                  ]
-                },
-                "description": "Retrieves summary statistics for AMC contracts:\nactiveCount, expiringInThirtyDaysCount (expiring within the next 30 days), expiredCount, cancelledCount, totalCount."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -10761,7 +10017,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other. Path: $.paymentTerms | LineNumber: 10 | BytePositionInLine: 39.\",\n            \"errorMessage\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.bad_request\",\n      \"message\": \"The value 'MonthlyAdvance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other. Path: $.paymentTerms | LineNumber: 10 | BytePositionInLine: 39.\",\n      \"errorMessage\": \"The value 'MonthlyAdvance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.\"\n    }\n  ]\n}"
             },
             {
               "name": "Error Example (400 - Duplicate AMC code)",
@@ -10857,7 +10113,7 @@
               "raw": "{\n    \"amcCode\": \"AMC-2026-001\", // [REQUIRED] Unique AMC code (must not duplicate any other existing or soft-deleted contract's code)\n    \"contractNumber\": \"CN-OTIS-2026-881-R1\", // [REQUIRED] Updated contract number (must not duplicate any other existing or soft-deleted contract's number)\n    \"contractTitle\": \"Annual Elevator Comprehensive Maintenance 2026 (Revised)\", // [REQUIRED] Updated title\n    \"contractType\": \"Comprehensive\", // [REQUIRED] Exact values: Comprehensive | NonComprehensive | PreventativeMaintenance | BreakdownMaintenance | OperationsAndMaintenance | Other\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Equipment UUID\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Vendor UUID\n    \"startDate\": \"2026-01-01T00:00:00Z\", // [REQUIRED] Start date (ISO 8601)\n    \"endDate\": \"2026-12-31T00:00:00Z\", // [REQUIRED] End date (ISO 8601, must be after startDate)\n    \"contractAmount\": 155000.00, // [REQUIRED] Updated amount\n    \"paymentTerms\": \"QuarterlyAdvance\", // [REQUIRED] Exact values: BankTransfer | Cheque | Cash | UpiDigitalTransfer | QuarterlyAdvance | MonthlyPostpaid | Other\n    \"serviceFrequency\": \"Quarterly\", // [REQUIRED] Exact values: Monthly | Quarterly | HalfYearly | Yearly | OneTime\n    \"coverageDetails\": \"Includes all replacement spare parts, 24/7 breakdown support, and quarterly scheduled servicing plus emergency dispatch\", // [optional] Updated coverage\n    \"exclusions\": \"Damage caused by external power surges or user vandalism\", // [optional] Exclusions\n    \"documentLink\": \"https://example.com/contracts/amc-otis-2026-revised.pdf\", // [optional] Updated document link\n    \"remarks\": \"Revised amount following SLA addendum\", // [optional] Updated remarks\n    \"status\": \"Active\" // [optional] Exact values: Active | Expiring | Expired | Cancelled\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/amc-contracts/:id",
+              "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -10891,7 +10147,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10936,7 +10192,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10965,7 +10221,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Validation failed.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other. Path: $.paymentTerms | LineNumber: 10 | BytePositionInLine: 39.\",\n            \"errorMessage\": \"The value 'Quarterly Advance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.bad_request\",\n      \"message\": \"The value 'MonthlyAdvance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other. Path: $.paymentTerms | LineNumber: 10 | BytePositionInLine: 39.\",\n      \"errorMessage\": \"The value 'MonthlyAdvance' is not valid for paymentTerms. Valid values: BankTransfer, Cheque, Cash, UpiDigitalTransfer, QuarterlyAdvance, MonthlyPostpaid, Other.\"\n    }\n  ]\n}"
             },
             {
               "name": "Error Example (404 - Contract Not Found)",
@@ -10981,7 +10237,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11026,7 +10282,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11074,7 +10330,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+              "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -11116,7 +10372,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11169,7 +10425,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11222,7 +10478,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/amc-contracts/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11423,90 +10679,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"m1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"Water leakage in Flat 302\",\n                \"description\": \"Ceiling leak in the master bathroom. Immediate attention required.\",\n                \"category\": \"Plumbing\",\n                \"priority\": \"High\",\n                \"status\": \"Open\",\n                \"vendorId\": \"v1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"vendorName\": \"Sunil Kumar\",\n                \"vendorCompanyName\": \"Sunil Plumbing Services\",\n                \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"equipmentName\": \"Water Pump Block A\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"302\",\n                \"estimatedCost\": 15000.00,\n                \"annualCost\": 180000.00,\n                \"scheduledDate\": \"2026-07-25T09:00:00Z\",\n                \"startDate\": \"2026-07-20T09:00:00Z\",\n                \"recurrenceFrequency\": \"Weekly\",\n                \"nextMaintenanceDate\": \"2026-07-27T09:00:00Z\",\n                \"notes\": \"Tenant reported leak on 18 July.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Missing Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/maintenance?page=1&pageSize=10&search=&status=Open&priority=High&category=Plumbing",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "maintenance"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default: 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default: 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching title, description, notes, building name, flat number, vendor name, equipment name"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Open",
-                      "description": "Filter by status. Exact values: Open, InProgress, Complete, Cancelled"
-                    },
-                    {
-                      "key": "priority",
-                      "value": "High",
-                      "description": "Filter by priority. Exact values: Low, Medium, High, Critical"
-                    },
-                    {
-                      "key": "category",
-                      "value": "Plumbing",
-                      "description": "Filter by category (free-form string, case-insensitive exact match). Any value, e.g. Plumbing, Electrical, Lift"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "vendorId",
-                      "value": "",
-                      "description": "Filter by vendor UUID"
-                    },
-                    {
-                      "key": "equipmentId",
-                      "value": "",
-                      "description": "Filter by equipment UUID"
-                    },
-                    {
-                      "key": "apartmentId",
-                      "value": "",
-                      "description": "Filter by apartment UUID"
-                    }
-                  ]
-                },
-                "description": "Retrieves a paginated list of maintenance requests with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\nstatus = Open | InProgress | Complete | Cancelled\npriority = Low | Medium | High | Critical\ncategory is a free-form string (any value, matched case-insensitively)."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -11519,7 +10691,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/maintenance/:id",
+              "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -11548,7 +10720,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11588,7 +10760,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11819,7 +10991,7 @@
               "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Leak resolved, repainting scheduled.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"InProgress\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Apartment UUID\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Vendor UUID\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Equipment UUID\n    \"estimatedCost\": 16500.00, // [REQUIRED] Updated estimated cost\n    \"scheduledDate\": \"2026-07-26T09:00:00Z\", // [REQUIRED] Updated scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/maintenance/:id",
+              "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -11853,7 +11025,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11898,7 +11070,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11943,7 +11115,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11988,7 +11160,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12033,7 +11205,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12081,7 +11253,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/maintenance/:id?password=adminpassword",
+              "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -12123,7 +11295,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12176,7 +11348,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12229,7 +11401,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12287,7 +11459,7 @@
               "raw": "{\n    \"status\": \"InProgress\" // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/maintenance/:id/status",
+              "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24/status",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -12322,7 +11494,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id/status",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24/status",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12368,7 +11540,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id/status",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24/status",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12420,7 +11592,7 @@
               "raw": "{\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\" // [REQUIRED] Vendor UUID to assign\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/maintenance/:id/assign",
+              "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24/assign",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -12455,7 +11627,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id/assign",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24/assign",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12501,7 +11673,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/:id/assign",
+                  "raw": "{{baseUrl}}m1f3b822-29c4-52a8-ad29-c8be5d491f24/assign",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12589,39 +11761,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"openCount\": 3,\n        \"inProgressCount\": 2,\n        \"completeCount\": 12,\n        \"cancelledCount\": 1,\n        \"totalCount\": 18\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Missing Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/stats",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "maintenance",
-                    "stats"
-                  ]
-                },
-                "description": "Retrieves maintenance request statistics:\nopenCount, inProgressCount, completeCount, cancelledCount, totalCount."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -12686,7 +11825,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
+            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -12766,83 +11905,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,Title,Description,Category,Priority,Status,VendorName,VendorCompanyName,EquipmentName,BuildingName,FlatNumber,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,NextMaintenanceDate,ReceiptAttachmentUrl,Notes,CreatedAt\n\"c1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"Water leakage in Flat 302\",\"Ceiling leak in the master bathroom. Immediate attention required.\",\"Plumbing\",\"High\",\"Open\",\"Sunil Kumar\",\"Sunil Plumbing Works\",\"\",\"Grand Plaza Towers\",\"302\",2000.00,24000.00,\"2026-08-10\",\"\",\"\",\"\",\"\",\"Contact resident before visit.\",\"2026-08-07 09:00:00\"",
-              "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/maintenance/download-csv?search=&status=Open&priority=High&category=Plumbing",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "maintenance",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching title, description, notes, building, flat, vendor or equipment"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Open",
-                      "description": "Filter by status. Exact values: Open, InProgress, Complete, Cancelled"
-                    },
-                    {
-                      "key": "priority",
-                      "value": "High",
-                      "description": "Filter by priority. Exact values: Low, Medium, High, Critical"
-                    },
-                    {
-                      "key": "category",
-                      "value": "Plumbing",
-                      "description": "Filter by free-form category (e.g. Plumbing, Electrical, Lift)"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "vendorId",
-                      "value": "",
-                      "description": "Filter by vendor UUID"
-                    },
-                    {
-                      "key": "equipmentId",
-                      "value": "",
-                      "description": "Filter by equipment UUID"
-                    },
-                    {
-                      "key": "apartmentId",
-                      "value": "",
-                      "description": "Filter by apartment UUID"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this route.\"\n    }\n}",
+              "body": "Title,Description,Category,Priority,BuildingId,ApartmentId,VendorId,EquipmentId,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\nWater leakage in Flat 302,Ceiling leak in the master bathroom. Immediate attention required.,Plumbing,High,b1f7b822-29c4-52a8-ad29-c8be5d491f24,a1f3b822-29c4-52a8-ad29-c8be5d491f24,v1a3b822-29c4-52a8-ad29-c8be5d491f24,e1a3b822-29c4-52a8-ad29-c8be5d491f24,Open,15000,180000,2026-07-25,2026-07-20,Weekly,,Tenant reported leak on 18 July.",
               "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
             }
           ]
@@ -12998,85 +12061,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f4b3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"incomeEntity\": \"ApartmentWise\",\n                \"incomeType\": \"Rent\",\n                \"amount\": 85000.00,\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"302\",\n                \"paymentDate\": \"2026-07-25T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"transactionReference\": \"TXN-88231\",\n                \"status\": \"Paid\",\n                \"notes\": \"Rent for Flat 302.\",\n                \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\",\n                \"createdAt\": \"2026-07-25T12:00:00Z\",\n                \"updatedAt\": \"2026-07-26T18:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Missing Finance Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/income?page=1&pageSize=10&search=&incomeType=Rent&status=Paid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "income"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default: 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default: 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching notes, transaction reference, building name or flat number"
-                    },
-                    {
-                      "key": "incomeType",
-                      "value": "Rent",
-                      "description": "Filter by income type. Exact values: Rent, Maintenance, SecurityDeposit, WaterCharge, Others"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Paid",
-                      "description": "Filter by status. Exact values: Paid, Pending, Overdue, Partial"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "apartmentId",
-                      "value": "",
-                      "description": "Filter by apartment UUID"
-                    },
-                    {
-                      "key": "startDate",
-                      "value": "",
-                      "description": "Filter records with paymentDate >= startDate (YYYY-MM-DD)"
-                    },
-                    {
-                      "key": "endDate",
-                      "value": "",
-                      "description": "Filter records with paymentDate <= endDate (YYYY-MM-DD)"
-                    }
-                  ]
-                },
-                "description": "Retrieves a paginated list of income records with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\nincomeType = Rent | Maintenance | SecurityDeposit | WaterCharge | Others\nstatus = Paid | Pending | Overdue | Partial"
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -13089,7 +12073,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/income/:id",
+              "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -13118,7 +12102,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13158,7 +12142,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13463,7 +12447,7 @@
               "raw": "{\n    \"incomeEntity\": \"ApartmentWise\", // [REQUIRED] Exact values: ApartmentWise | GeneralOthers\n    \"incomeType\": \"Rent\", // [REQUIRED] Exact values: Rent | Maintenance | SecurityDeposit | WaterCharge | Others\n    \"amount\": 16500.00, // [REQUIRED] Amount must be greater than 0\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentWise] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentWise] Apartment UUID (must be occupied)\n    \"paymentDate\": \"2026-07-26T00:00:00Z\", // [REQUIRED] Payment date (ISO 8601)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Exact values: TransferFromNestaway | DirectFromTenant | Cash | BankTransfer | Cheque | Others\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Paid | Pending | Overdue | Partial\n    \"transactionReference\": \"TXN-88231\", // [optional] Bank/transfer reference\n    \"notes\": \"Rent for Flat 302.\", // [optional] Internal notes\n    \"attachmentUrl\": \"https://example.com/uploads/receipt.pdf\" // [optional] Receipt/document URL\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/income/:id",
+              "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -13497,7 +12481,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13542,7 +12526,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13587,7 +12571,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13632,7 +12616,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13680,7 +12664,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/income/:id?password=adminpassword",
+              "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -13722,7 +12706,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13775,7 +12759,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13828,7 +12812,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id?password=adminpassword",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13886,7 +12870,7 @@
               "raw": "{\n    \"status\": \"Overdue\" // [REQUIRED] Exact values: Paid | Pending | Overdue | Partial\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/income/:id/status",
+              "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24/status",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -13921,7 +12905,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id/status",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24/status",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13967,7 +12951,7 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/:id/status",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24/status",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -14010,7 +12994,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/income/download/:id",
+              "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -14040,7 +13024,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/download/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -14070,7 +13054,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"CSV file exported and downloaded successfully.\",\n    \"data\": null\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"PDF receipt generated and downloaded successfully.\",\n  \"data\": null\n}"
             },
             {
               "name": "Error Example (404 - Record Not Found)",
@@ -14081,7 +13065,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/income/download/:id",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -14166,7 +13150,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
+            "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -14236,73 +13220,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,CreatedAt\n\"c1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"ApartmentWise\",\"Rent\",5000.00,\"Green Park Residency\",\"302\",\"2026-08-01\",\"BankTransfer\",\"TRX-2026-0801\",\"Paid\",\"\",\"2026-08-01 10:00:00\"",
-              "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Finance Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/income/download-csv?search=&incomeType=Rent&status=Paid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "income",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching notes, transaction reference, building name or flat number"
-                    },
-                    {
-                      "key": "incomeType",
-                      "value": "Rent",
-                      "description": "Filter by income type. Exact values: Rent, Maintenance, SecurityDeposit, WaterCharge, Others"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Paid",
-                      "description": "Filter by status. Exact values: Paid, Pending, Overdue, Partial"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "startDate",
-                      "value": "",
-                      "description": "Filter records with paymentDate >= startDate (YYYY-MM-DD)"
-                    },
-                    {
-                      "key": "endDate",
-                      "value": "",
-                      "description": "Filter records with paymentDate <= endDate (YYYY-MM-DD)"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance permission required for this route.\"\n        }\n    ]\n}",
+              "body": "IncomeEntity,IncomeType,Amount,BuildingId,ApartmentId,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\nApartmentWise,Rent,85000,b1f7b822-29c4-52a8-ad29-c8be5d491f24,a1f3b822-29c4-52a8-ad29-c8be5d491f24,2026-07-25,BankTransfer,TXN-88231,Paid,Rent for Flat 302.,https://example.com/uploads/receipt.pdf",
               "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
             }
           ]
@@ -14478,95 +13396,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n                \"category\": \"Utility\",\n                \"expenseHead\": \"Electricity Bill\",\n                \"specificItem\": \"Common area lights\",\n                \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"vendorName\": \"BESCOM\",\n                \"vendorCompanyName\": \"Bangalore Electricity\",\n                \"nature\": \"Service\",\n                \"amount\": 12500.0,\n                \"entity\": \"BuildingLevel\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": null,\n                \"flatNumber\": null,\n                \"expenseDate\": \"2026-08-05T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"status\": \"Paid\",\n                \"reference\": \"TXN123456789\",\n                \"attachmentUrl\": null,\n                \"description\": \"April bill\",\n                \"tankerNumber\": null,\n                \"timeOfDelivery\": null,\n                \"deliveryDriverName\": null,\n                \"managerInAttendance\": null,\n                \"litersFilled\": null,\n                \"createdAt\": \"2026-08-05T15:00:00Z\",\n                \"updatedAt\": \"2026-08-05T15:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Missing Finance or Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/expenses?page=1&pageSize=10&search=&category=Utility&status=Paid&nature=Service",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "expenses"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default: 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default: 10)"
-                    },
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching expense head, specific item, reference or description"
-                    },
-                    {
-                      "key": "category",
-                      "value": "Utility",
-                      "description": "Filter by category. Exact values: Utility, Operational, Maintenance, Tax, Capital"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Paid",
-                      "description": "Filter by status. Exact values: Draft, PendingPayment, Paid"
-                    },
-                    {
-                      "key": "nature",
-                      "value": "Service",
-                      "description": "Filter by nature. Exact values: Service, Material, Others"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "vendorId",
-                      "value": "",
-                      "description": "Filter by vendor UUID"
-                    },
-                    {
-                      "key": "apartmentId",
-                      "value": "",
-                      "description": "Filter by apartment UUID"
-                    },
-                    {
-                      "key": "startDate",
-                      "value": "",
-                      "description": "Filter records with expenseDate >= startDate (YYYY-MM-DD)"
-                    },
-                    {
-                      "key": "endDate",
-                      "value": "",
-                      "description": "Filter records with expenseDate <= endDate (YYYY-MM-DD)"
-                    }
-                  ]
-                },
-                "description": "Retrieves a paginated list of expense records with optional search and filters.\nEnum query values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital\nstatus = Draft | PendingPayment | Paid\nnature = Service | Material | Others"
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance or Operations permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -15718,7 +14547,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
+            "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -15798,83 +14627,7 @@
                 }
               ],
               "cookie": [],
-              "body": "ID,Category,ExpenseHead,SpecificItem,VendorName,VendorCompanyName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled,CreatedAt\n\"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\"Utility\",\"Electricity\",\"Monthly bill\",\"BESCOM\",\"BESCOM Ltd\",\"Service\",1250.00,\"General\",\"Green Park Residency\",\"\",\"2026-08-02\",\"BankTransfer\",\"Paid\",\"REF-001\",\"\",\"\",\"\",\"\",\"\",\"\",0,\"2026-08-02 09:00:00\"",
-              "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
-            },
-            {
-              "name": "Error Example (403 - Missing Finance or Operations Permission)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/expenses/download-csv?search=&category=Utility&status=Paid&nature=Service",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "expenses",
-                    "download-csv"
-                  ],
-                  "query": [
-                    {
-                      "key": "search",
-                      "value": "",
-                      "description": "Search term matching expense head, specific item, reference or description"
-                    },
-                    {
-                      "key": "category",
-                      "value": "Utility",
-                      "description": "Filter by category. Exact values: Utility, Operational, Maintenance, Tax, Capital"
-                    },
-                    {
-                      "key": "status",
-                      "value": "Paid",
-                      "description": "Filter by status. Exact values: Draft, PendingPayment, Paid"
-                    },
-                    {
-                      "key": "nature",
-                      "value": "Service",
-                      "description": "Filter by nature. Exact values: Service, Material, Others"
-                    },
-                    {
-                      "key": "buildingId",
-                      "value": "",
-                      "description": "Filter by building UUID"
-                    },
-                    {
-                      "key": "vendorId",
-                      "value": "",
-                      "description": "Filter by vendor UUID"
-                    },
-                    {
-                      "key": "startDate",
-                      "value": "",
-                      "description": "Filter records with expenseDate >= startDate (YYYY-MM-DD)"
-                    },
-                    {
-                      "key": "endDate",
-                      "value": "",
-                      "description": "Filter records with expenseDate <= endDate (YYYY-MM-DD)"
-                    }
-                  ]
-                },
-                "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance or Operations permission required for this route.\"\n        }\n    ]\n}",
+              "body": "Category,ExpenseHead,SpecificItem,VendorId,Nature,Amount,Entity,BuildingId,ApartmentId,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\nUtility,Electricity Bill,Common area lights,v4c7b822-29c4-52a8-ad29-c8be5d491f41,Service,12500,BuildingLevel,b1f7b822-29c4-52a8-ad29-c8be5d491f24,,2026-08-05,BankTransfer,Paid,TXN123456789,,April bill,,,,,0",
               "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
             }
           ]
@@ -16216,7 +14969,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f01' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f01' was not found.\",\n            \"errorMessage\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f01' was not found.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f01' was not found for the current user.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.not_found\",\n      \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f01' was not found for the current user.\",\n      \"errorMessage\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f01' was not found for the current user.\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -16396,7 +15149,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f02' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f02' was not found.\",\n            \"errorMessage\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f02' was not found.\"\n        }\n    ]\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f02' was not found for the current user.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.not_found\",\n      \"message\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f02' was not found for the current user.\",\n      \"errorMessage\": \"Notification assignment with ID 'e4f3b822-29c4-52a8-ad29-c8be5d491f02' was not found for the current user.\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -16658,7 +15411,7 @@
               ],
               "query": []
             },
-            "description": "Uploads a CSV file to the server and returns its URL. Pass this URL to the bulk-upload start endpoint.\nAllowed format: .csv only.\nRequires admin or properties permission (same as the other upload endpoints).",
+            "description": "Uploads a CSV file to the server and returns its URL. Pass this URL to the bulk-upload start endpoint.\nAllowed format: .csv only.\nOpen to any authenticated user; the 'viewer' role cannot upload (viewer is read-only).",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -16703,7 +15456,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"url\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n    }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\"\n  }\n}"
             },
             {
               "name": "Error Example (400 - Invalid format)",
@@ -16736,7 +15489,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Invalid file format. Only .csv files are allowed.\"\n}"
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid file format. Only .csv files are allowed.\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid file format. Only .csv files are allowed.\",\n      \"errorMessage\": \"Invalid file format. Only .csv files are allowed.\"\n    }\n  ]\n}"
             }
           ]
         },
@@ -16816,7 +15569,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Apartments\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -16854,7 +15607,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -16927,7 +15680,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Apartments\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Apartments\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -16963,7 +15716,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -17100,7 +15853,7 @@
                   "body": "BuildingId,OwnerId,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"NST-BULK-001\",\"999\",9,\"3 BHK\",1100,3,2,true,\"P-99\",45000,3000,500,\"Bulk upload sample apartment\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17136,7 +15889,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
@@ -17218,7 +15971,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Tenants\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17256,7 +16009,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -17329,7 +16082,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Tenants\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Tenants\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17365,7 +16118,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -17425,7 +16178,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Tenants\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Tenants' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n    \"module\": \"Tenants\",\n    \"status\": \"Failed\",\n    \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n    \"processedFileUrl\": null,\n    \"totalCount\": 0,\n    \"successCount\": 0,\n    \"failedCount\": 0,\n    \"globalError\": \"Missing required column(s): apartmentid, idnumber, monthlyrent. Download the template for 'tenants' to see the exact column names.\",\n    \"startedAt\": \"2026-08-07T10:00:00\",\n    \"finishedAt\": \"2026-08-07T10:00:01\",\n    \"createdAt\": \"2026-08-07T10:00:00\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n  }\n}"
                 }
               ]
             },
@@ -17502,7 +16255,7 @@
                   "body": "BuildingId,ApartmentId,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\"Bulk Test Tenant\",\"+91 9000000000\",\"bulk.tenant@example.com\",\"Aadhar\",\"TENANT-BULK-001\",\"\",\"2026-09-01\",\"2026-09-01\",\"2027-08-31\",45000,90000,\"Emergency Contact\",\"+91 9000000001\",\"Active\",\"Bulk upload sample tenant\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17538,7 +16291,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
@@ -17620,7 +16373,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Owners\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17658,7 +16411,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -17731,7 +16484,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Owners\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Owners\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17767,7 +16520,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -17827,7 +16580,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Owners\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Owners' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n    \"module\": \"Owners\",\n    \"status\": \"Failed\",\n    \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n    \"processedFileUrl\": null,\n    \"totalCount\": 0,\n    \"successCount\": 0,\n    \"failedCount\": 0,\n    \"globalError\": \"Missing required column(s): email, bankname, accountnumber. Download the template for 'owners' to see the exact column names.\",\n    \"startedAt\": \"2026-08-07T10:00:00\",\n    \"finishedAt\": \"2026-08-07T10:00:01\",\n    \"createdAt\": \"2026-08-07T10:00:00\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n  }\n}"
                 }
               ]
             },
@@ -17904,7 +16657,7 @@
                   "body": "FullName,Phone,Email,City,Address,IdType,IdNumber,BankName,AccountNumber,IfscCode,Status,Notes\n\"Bulk Test Owner\",\"+91 9000000002\",\"bulk.owner@example.com\",\"Mumbai\",\"1, Test Street\",\"Aadhar\",\"OWNER-BULK-001\",\"HDFC Bank\",\"88888888888\",\"HDFC0000999\",\"Active\",\"Bulk upload sample owner\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Properties Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -17940,7 +16693,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Properties permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
@@ -18022,7 +16775,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Income\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18060,7 +16813,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -18133,7 +16886,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Income\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Income\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18169,7 +16922,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -18229,7 +16982,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Income\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Income' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n    \"module\": \"Income\",\n    \"status\": \"Failed\",\n    \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n    \"processedFileUrl\": null,\n    \"totalCount\": 0,\n    \"successCount\": 0,\n    \"failedCount\": 0,\n    \"globalError\": \"Missing required column(s): amount, paymentdate, paymentmethod. Download the template for 'income' to see the exact column names.\",\n    \"startedAt\": \"2026-08-07T10:00:00\",\n    \"finishedAt\": \"2026-08-07T10:00:01\",\n    \"createdAt\": \"2026-08-07T10:00:00\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n  }\n}"
                 }
               ]
             },
@@ -18306,7 +17059,7 @@
                   "body": "IncomeEntity,IncomeType,Amount,BuildingId,ApartmentId,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\n\"ApartmentWise\",\"Rent\",45000,\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"2026-09-05\",\"BankTransfer\",\"TRX-BULK-001\",\"Paid\",\"Bulk upload sample income\",\"\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18342,7 +17095,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
@@ -18424,7 +17177,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Expenses\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18462,7 +17215,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -18535,7 +17288,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Expenses\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Expenses\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18571,7 +17324,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -18631,7 +17384,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Expenses\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Expenses' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n    \"module\": \"Expenses\",\n    \"status\": \"Failed\",\n    \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n    \"processedFileUrl\": null,\n    \"totalCount\": 0,\n    \"successCount\": 0,\n    \"failedCount\": 0,\n    \"globalError\": \"Missing required column(s): nature, amount, buildingid. Download the template for 'expenses' to see the exact column names.\",\n    \"startedAt\": \"2026-08-07T10:00:00\",\n    \"finishedAt\": \"2026-08-07T10:00:01\",\n    \"createdAt\": \"2026-08-07T10:00:00\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n  }\n}"
                 }
               ]
             },
@@ -18708,7 +17461,7 @@
                   "body": "Category,ExpenseHead,SpecificItem,VendorId,Nature,Amount,Entity,BuildingId,ApartmentId,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\n\"Utility\",\"Electricity\",\"Monthly bill\",\"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\"Service\",1250.50,\"General\",\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"\",\"2026-08-07\",\"BankTransfer\",\"Paid\",\"REF-BULK-001\",\"\",\"Bulk upload sample expense\",\"\",\"\",\"\",\"\",\"\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Finance Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18744,7 +17497,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Finance permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
@@ -18826,7 +17579,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Maintenance\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18864,7 +17617,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -18937,7 +17690,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Maintenance\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Maintenance\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -18973,7 +17726,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -19033,7 +17786,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Maintenance\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Maintenance' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n    \"module\": \"Maintenance\",\n    \"status\": \"Failed\",\n    \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n    \"processedFileUrl\": null,\n    \"totalCount\": 0,\n    \"successCount\": 0,\n    \"failedCount\": 0,\n    \"globalError\": \"Missing required column(s): priority, estimatedcost, scheduleddate. Download the template for 'maintenance' to see the exact column names.\",\n    \"startedAt\": \"2026-08-07T10:00:00\",\n    \"finishedAt\": \"2026-08-07T10:00:01\",\n    \"createdAt\": \"2026-08-07T10:00:00\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n  }\n}"
                 }
               ]
             },
@@ -19110,7 +17863,7 @@
                   "body": "Title,Description,Category,Priority,BuildingId,ApartmentId,VendorId,EquipmentId,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\n\"Bulk test request\",\"Bulk upload sample maintenance request\",\"Plumbing\",\"High\",\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"f7a3b822-29c4-52a8-ad29-c8be5d491f24\",\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Open\",1500,18000,\"2026-08-10\",\"\",\"Monthly\",\"\",\"Bulk upload sample maintenance\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -19146,7 +17899,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
@@ -19228,7 +17981,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Equipment\",\n        \"status\": \"Processing\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": null,\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": null,\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -19266,7 +18019,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -19339,7 +18092,7 @@
                   "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n            \"module\": \"Equipment\",\n            \"status\": \"Finished\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n            \"processedFileUrl\": \"{{baseUrl}}/image/bulk_processed_3f9c2a1e.csv\",\n            \"totalCount\": 100,\n            \"successCount\": 96,\n            \"failedCount\": 4,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:00:00\",\n            \"finishedAt\": \"2026-08-07T10:00:02\",\n            \"createdAt\": \"2026-08-07T10:00:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        },\n        {\n            \"id\": \"3f9c2a1e-0000-4000-8000-000000000002\",\n            \"module\": \"Equipment\",\n            \"status\": \"Processing\",\n            \"originalFileUrl\": \"{{baseUrl}}/image/d84db9c6-1111-2222-3333-444455556666.csv\",\n            \"processedFileUrl\": null,\n            \"totalCount\": 0,\n            \"successCount\": 0,\n            \"failedCount\": 0,\n            \"globalError\": null,\n            \"startedAt\": \"2026-08-07T10:05:00\",\n            \"finishedAt\": null,\n            \"createdAt\": \"2026-08-07T10:05:00\",\n            \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n        }\n    ]\n}"
                 },
                 {
-                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -19375,7 +18128,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             },
@@ -19435,7 +18188,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n        \"module\": \"Equipment\",\n        \"status\": \"Failed\",\n        \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n        \"processedFileUrl\": null,\n        \"totalCount\": 0,\n        \"successCount\": 0,\n        \"failedCount\": 0,\n        \"globalError\": \"Missing required column(s): ownerid, nestawayid, apartmenttype. Download the template for 'Equipment' to see the exact column names.\",\n        \"startedAt\": \"2026-08-07T10:00:00\",\n        \"finishedAt\": \"2026-08-07T10:00:01\",\n        \"createdAt\": \"2026-08-07T10:00:00\",\n        \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n    }\n}"
+                  "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"3f9c2a1e-0000-4000-8000-000000000001\",\n    \"module\": \"Equipment\",\n    \"status\": \"Failed\",\n    \"originalFileUrl\": \"{{baseUrl}}/image/70e0c845-d356-4c25-add4-a1461dcade3b.csv\",\n    \"processedFileUrl\": null,\n    \"totalCount\": 0,\n    \"successCount\": 0,\n    \"failedCount\": 0,\n    \"globalError\": \"Missing required column(s): installdate, status. Download the template for 'equipment' to see the exact column names.\",\n    \"startedAt\": \"2026-08-07T10:00:00\",\n    \"finishedAt\": \"2026-08-07T10:00:01\",\n    \"createdAt\": \"2026-08-07T10:00:00\",\n    \"createdBy\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\"\n  }\n}"
                 }
               ]
             },
@@ -19512,7 +18265,7 @@
                   "body": "BuildingId,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Bulk Test Pump\",\"Pump\",\"Kirloskar\",\"KM-40\",\"SN-BULK-001\",\"2026-01-01\",\"2028-01-01\",\"Operational\",\"Bulk upload sample equipment\",\"\""
                 },
                 {
-                  "name": "Error Example (403 - Missing Operations Permission)",
+                  "name": "Error Example (403 - Empty Forbidden Response)",
                   "originalRequest": {
                     "auth": {
                       "type": "noauth"
@@ -19548,7 +18301,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "{\n    \"error\": {\n        \"code\": \"ARDH.UNAUTHORIZED\",\n        \"message\": \"Access denied. Operations permission required for this module.\"\n    }\n}"
+                  "body": ""
                 }
               ]
             }
