@@ -149,7 +149,7 @@ These endpoints manage user sessions, profile details, and password recovery.
     }
     ```
     > [!NOTE]
-    > For local development, the generated OTP is logged to the backend console application log to bypass SMTP email requirements.
+    > The OTP is randomly generated per request. For local development it is also logged to the backend console and sent via SMTP (Ethereal in dev — which does not deliver to real inboxes).
 
 #### 5. Verify OTP
 *   **Route**: `POST /api/auth/verify-otp`

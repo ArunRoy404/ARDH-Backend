@@ -1171,7 +1171,7 @@
                 "resend-otp"
               ]
             },
-            "description": "Resends the password-reset OTP to the given email.\nThe demo OTP is always 123456 (it is only logged, not emailed).\nBody: email",
+            "description": "Resends the password-reset OTP to the given email.\nThe OTP is randomly generated and logged to the backend console.\nBody: email",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n}"
@@ -1202,7 +1202,7 @@
                     "resend-otp"
                   ]
                 },
-                "description": "Resends the password-reset OTP to the given email.\nThe demo OTP is always 123456 (it is only logged, not emailed).\nBody: email",
+                "description": "Resends the password-reset OTP to the given email.\nThe OTP is randomly generated and logged to the backend console.\nBody: email",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n}"
@@ -1244,7 +1244,7 @@
                     "resend-otp"
                   ]
                 },
-                "description": "Resends the password-reset OTP to the given email.\nThe demo OTP is always 123456 (it is only logged, not emailed).\nBody: email",
+                "description": "Resends the password-reset OTP to the given email.\nThe OTP is randomly generated and logged to the backend console.\nBody: email",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n}"
@@ -1288,7 +1288,7 @@
                 "forgot-password"
               ]
             },
-            "description": "Requests a password-reset OTP for the given email.\nThe demo OTP is always 123456.\nBody: email",
+            "description": "Requests a password-reset OTP for the given email.\nThe OTP is randomly generated and logged to the backend console.\nBody: email",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n}"
@@ -1319,7 +1319,7 @@
                     "forgot-password"
                   ]
                 },
-                "description": "Requests a password-reset OTP for the given email.\nThe demo OTP is always 123456.\nBody: email",
+                "description": "Requests a password-reset OTP for the given email.\nThe OTP is randomly generated and logged to the backend console.\nBody: email",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n}"
@@ -1361,7 +1361,7 @@
                     "forgot-password"
                   ]
                 },
-                "description": "Requests a password-reset OTP for the given email.\nThe demo OTP is always 123456.\nBody: email",
+                "description": "Requests a password-reset OTP for the given email.\nThe OTP is randomly generated and logged to the backend console.\nBody: email",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n}"
@@ -1408,7 +1408,7 @@
             "description": "Verifies the OTP sent to the email. OTP is valid for 10 minutes.\nBody: email, otp",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] 6-digit OTP (demo value is always 123456)\n}"
+              "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] 6-digit OTP from forgot-password (server log / email)\n}"
             }
           },
           "response": [
@@ -1439,7 +1439,7 @@
                 "description": "Verifies the OTP sent to the email. OTP is valid for 10 minutes.\nBody: email, otp",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] 6-digit OTP (demo value is always 123456)\n}"
+                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] 6-digit OTP from forgot-password (server log / email)\n}"
                 }
               },
               "status": "OK",
@@ -1481,7 +1481,7 @@
                 "description": "Verifies the OTP sent to the email. OTP is valid for 10 minutes.\nBody: email, otp",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] 6-digit OTP (demo value is always 123456)\n}"
+                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] 6-digit OTP from forgot-password (server log / email)\n}"
                 }
               },
               "status": "Bad Request",
@@ -1525,7 +1525,7 @@
             "description": "Resets the user password using a verified OTP.\nBody: email, otp, newPassword, confirmNewPassword (must match, min 6 chars)",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] Verified OTP\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+              "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] OTP from forgot-password (server log / email)\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
             }
           },
           "response": [
@@ -1556,7 +1556,7 @@
                 "description": "Resets the user password using a verified OTP.\nBody: email, otp, newPassword, confirmNewPassword (must match, min 6 chars)",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] Verified OTP\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] OTP from forgot-password (server log / email)\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
                 }
               },
               "status": "OK",
@@ -1598,7 +1598,7 @@
                 "description": "Resets the user password using a verified OTP.\nBody: email, otp, newPassword, confirmNewPassword (must match, min 6 chars)",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] Verified OTP\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] OTP from forgot-password (server log / email)\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
                 }
               },
               "status": "Bad Request",
@@ -1640,7 +1640,7 @@
                 "description": "Resets the user password using a verified OTP.\nBody: email, otp, newPassword, confirmNewPassword (must match, min 6 chars)",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] Verified OTP\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                  "raw": "{\n    \"email\": \"admin@gmail.com\", // [REQUIRED] Email of the registered user\n    \"otp\": \"123456\", // [REQUIRED] OTP from forgot-password (server log / email)\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
                 }
               },
               "status": "Bad Request",

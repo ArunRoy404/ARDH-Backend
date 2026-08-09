@@ -61,7 +61,7 @@ public class AuthService(
         {
             UserId = user.Id,
             Email = user.Email,
-            OTP = "123456",
+            OTP = StringHelper.GenerateRandom(100000, 1000000).ToString(),
             Token = Guid.NewGuid().ToString(),
             DateTime = DateTime.UtcNow
         };
@@ -148,7 +148,7 @@ public class AuthService(
         {
             UserId = user.Id,
             Email = user.Email,
-            OTP = "123456",
+            OTP = StringHelper.GenerateRandom(100000, 1000000).ToString(),
             Token = Guid.NewGuid().ToString(),
             DateTime = DateTime.UtcNow
         };
