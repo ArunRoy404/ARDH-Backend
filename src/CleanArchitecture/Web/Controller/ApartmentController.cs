@@ -40,12 +40,12 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
     }
 
     /// <summary>
-    /// [AP-06] Exports apartments to CSV with the same filters as the list endpoint.
+    /// [AP-06] Exports apartments to XLSX with the same filters as the list endpoint.
     /// </summary>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file containing filtered apartments.")]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file containing filtered apartments.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? ownerId = null,
@@ -53,8 +53,8 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
         [FromQuery] string? status = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _apartmentService.ExportToCsv(search, buildingId, ownerId, apartmentType, status, cancellationToken);
-        return File(bytes, "text/csv", "apartments.csv");
+        var bytes = await _apartmentService.ExportToXlsx(search, buildingId, ownerId, apartmentType, status, cancellationToken);
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "apartments.xlsx");
     }
 
     /// <summary>

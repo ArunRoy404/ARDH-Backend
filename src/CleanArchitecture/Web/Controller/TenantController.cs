@@ -40,20 +40,20 @@ public class TenantController(ITenantService tenantService, ITenantMoveOutServic
     }
 
     /// <summary>
-    /// [T-06] Exports tenants to CSV with the same filters as the list endpoint.
+    /// [T-06] Exports tenants to XLSX with the same filters as the list endpoint.
     /// </summary>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file containing filtered tenants.")]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file containing filtered tenants.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] Guid? apartmentId = null,
         [FromQuery] TenantStatus? status = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _tenantService.ExportToCsv(search, buildingId, apartmentId, status, cancellationToken);
-        return File(bytes, "text/csv", "tenants.csv");
+        var bytes = await _tenantService.ExportToXlsx(search, buildingId, apartmentId, status, cancellationToken);
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "tenants.xlsx");
     }
 
     /// <summary>

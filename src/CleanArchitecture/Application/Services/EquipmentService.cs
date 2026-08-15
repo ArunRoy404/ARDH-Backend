@@ -102,7 +102,7 @@ public class EquipmentService(
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         Guid? buildingId,
         string? type,
@@ -168,8 +168,7 @@ public class EquipmentService(
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
 

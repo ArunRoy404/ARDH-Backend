@@ -65,7 +65,7 @@ public class BulkUploadService(
 
         if (string.IsNullOrWhiteSpace(request.FileUrl))
         {
-            throw BulkUploadException.BadRequestException("FileUrl is required. Upload the CSV file first (POST /api/upload/csv) and pass the returned URL.");
+            throw BulkUploadException.BadRequestException("FileUrl is required. Upload the XLSX file first (POST /api/upload/xlsx) and pass the returned URL.");
         }
 
         var fileUrl = request.FileUrl.Trim();
@@ -121,7 +121,7 @@ public class BulkUploadService(
 
         try
         {
-            (headers, rows) = ReadCsv(record.OriginalFileUrl);
+            (headers, rows) = ReadXlsx(record.OriginalFileUrl);
         }
         catch (Exception ex)
         {
@@ -164,7 +164,7 @@ public class BulkUploadService(
                 record.TotalCount = total;
                 record.SuccessCount = 0;
                 record.FailedCount = total;
-                record.ProcessedFileUrl = await WriteProcessedCsvAsync(record.Id, processed, cancellationToken);
+                record.ProcessedFileUrl = await WriteProcessedXlsxAsync(record.Id, processed, cancellationToken);
                 record.FinishedAt = DateTime.UtcNow;
                 record.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.BulkUploadRepository.Update(record);
@@ -214,7 +214,7 @@ public class BulkUploadService(
                 }
             }
 
-            var processedUrl = await WriteProcessedCsvAsync(record.Id, processedList, cancellationToken);
+            var processedUrl = await WriteProcessedXlsxAsync(record.Id, processedList, cancellationToken);
 
             record.TotalCount = totalRows;
             record.SuccessCount = success;
@@ -278,39 +278,38 @@ public class BulkUploadService(
             throw BulkUploadException.BadRequestException($"Unsupported module '{module}'.");
         }
 
-        var csv = TemplateCsv(moduleName);
-        return System.Text.Encoding.UTF8.GetBytes(csv);
+        return await Task.FromResult(XlsxHelper.BuildXlsx(TemplateRows(moduleName), "Template"));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // CSV reading / writing
+    // XLSX reading / writing
     // ─────────────────────────────────────────────────────────────────────────
 
-    private (List<string> headers, List<List<string>> rows) ReadCsv(string fileUrl)
+    private (List<string> headers, List<List<string>> rows) ReadXlsx(string fileUrl)
     {
         var localPath = ResolveLocalFilePath(fileUrl);
         if (!File.Exists(localPath))
         {
             throw BulkUploadException.BadRequestException(
-                $"Uploaded CSV file could not be found on the server ('{localPath}'). Please upload the file again via POST /api/upload/csv.");
+                $"Uploaded XLSX file could not be found on the server ('{localPath}'). Please upload the file again via POST /api/upload/xlsx.");
         }
 
-        var text = File.ReadAllText(localPath);
-        var rows = CsvHelper.Parse(text);
+        using var stream = new FileStream(localPath, FileMode.Open, FileAccess.Read);
+        var rows = XlsxHelper.ReadRows(stream);
 
         if (rows.Count < 2)
         {
             throw BulkUploadException.BadRequestException(
-                "The CSV file must contain a header row followed by at least one data row.");
+                "The XLSX file must contain a header row followed by at least one data row.");
         }
 
         return (rows[0], rows);
     }
 
-    private async Task<string> WriteProcessedCsvAsync(Guid bulkUploadId, List<List<string>> rows, CancellationToken cancellationToken)
+    private async Task<string> WriteProcessedXlsxAsync(Guid bulkUploadId, List<List<string>> rows, CancellationToken cancellationToken)
     {
-        var csvText = CsvHelper.BuildCsv(rows);
-        var fileName = $"bulk_processed_{bulkUploadId}.csv";
+        var xlsxBytes = XlsxHelper.BuildXlsx(rows, "Processed");
+        var fileName = $"bulk_processed_{bulkUploadId}.xlsx";
         var storagePath = GetStoragePath();
         var filePath = Path.Combine(storagePath, fileName);
 
@@ -319,7 +318,7 @@ public class BulkUploadService(
             Directory.CreateDirectory(storagePath);
         }
 
-        await File.WriteAllTextAsync(filePath, csvText, cancellationToken);
+        await File.WriteAllBytesAsync(filePath, xlsxBytes, cancellationToken);
 
         return BuildFileUrl(fileName);
     }
@@ -1015,7 +1014,7 @@ public class BulkUploadService(
     // Templates (headers + sample rows matching the create POST API exactly)
     // ─────────────────────────────────────────────────────────────────────────
 
-    private static string TemplateCsv(string module) => module.ToLowerInvariant() switch
+    private static List<List<string>> TemplateRows(string module) => module.ToLowerInvariant() switch
     {
         "apartments" => BuildTemplate(
             new[] { "BuildingName", "OwnerName", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" },
@@ -1045,16 +1044,15 @@ public class BulkUploadService(
             new[] { "BuildingName", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" },
             new[] { "Grand Plaza Towers", "Bulk Test Pump", "Pump", "Kirloskar", "KM-40", "SN-BULK-001", "2026-01-01", "2028-01-01", "Operational", "Bulk upload sample equipment", "" }),
 
-        _ => string.Empty
+        _ => new List<List<string>>()
     };
 
-    private static string BuildTemplate(string[] headers, string[] sampleRow)
+    private static List<List<string>> BuildTemplate(string[] headers, string[] sampleRow)
     {
-        var rows = new List<List<string>>
+        return new List<List<string>>
         {
             headers.ToList(),
             sampleRow.ToList()
         };
-        return CsvHelper.BuildCsv(rows);
     }
 }

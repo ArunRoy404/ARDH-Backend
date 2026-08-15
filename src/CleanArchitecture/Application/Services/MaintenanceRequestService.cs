@@ -150,7 +150,7 @@ public class MaintenanceRequestService(
         return new PaginatedList<MaintenanceRequestViewModel>(items, totalItems, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         MaintenanceStatus? status,
         MaintenancePriority? priority,
@@ -253,8 +253,7 @@ public class MaintenanceRequestService(
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     public async Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken)

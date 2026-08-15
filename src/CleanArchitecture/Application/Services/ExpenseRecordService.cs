@@ -543,7 +543,7 @@ public class ExpenseRecordService(
         }
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         ExpenseCategory? category,
         ExpenseStatus? status,
@@ -647,8 +647,7 @@ public class ExpenseRecordService(
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return System.Text.Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     /// <summary>

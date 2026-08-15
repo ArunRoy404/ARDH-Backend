@@ -12,7 +12,7 @@ public interface IOwnerService
     Task<PaginatedList<OwnerViewModel>> GetPaginated(int page, int pageSize, string? search, OwnerStatus? status, CancellationToken cancellationToken);
     Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken);
 
-    Task<byte[]> ExportToCsv(
+    Task<byte[]> ExportToXlsx(
         string? search,
         OwnerStatus? status,
         CancellationToken cancellationToken);

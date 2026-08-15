@@ -72,7 +72,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
         return new PaginatedList<OwnerViewModel>(items, totalCount, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         OwnerStatus? status,
         CancellationToken cancellationToken)
@@ -121,8 +121,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)

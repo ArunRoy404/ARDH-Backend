@@ -74,10 +74,10 @@ public class ReportsController(IReportService reportService) : BaseController
     }
 
     /// <summary>
-    /// [R-04] Exports income, expense, or combined report as a CSV file.
+    /// [R-04] Exports income, expense, or combined report as an XLSX file.
     /// </summary>
     [HttpGet("export")]
-    [SwaggerResponse(200, "CSV report exported and downloaded successfully.", typeof(FileResult))]
+    [SwaggerResponse(200, "XLSX report exported and downloaded successfully.", typeof(FileResult))]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(403, "Access denied.")]
     public async Task<IActionResult> ExportReport(
@@ -87,8 +87,8 @@ public class ReportsController(IReportService reportService) : BaseController
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _reportService.ExportReportToCsv(type, buildingId, startDate, endDate, cancellationToken);
-        var fileName = $"{type.Trim().ToLower()}_report.csv";
-        return File(bytes, "text/csv", fileName);
+        var bytes = await _reportService.ExportReportToXlsx(type, buildingId, startDate, endDate, cancellationToken);
+        var fileName = $"{type.Trim().ToLower()}_report.xlsx";
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, fileName);
     }
 }

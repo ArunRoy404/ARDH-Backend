@@ -164,12 +164,12 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
     }
 
     /// <summary>
-    /// [I-08] Exports all filtered income records to a CSV file.
+    /// [I-08] Exports all filtered income records to an XLSX file.
     /// </summary>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file exported and downloaded successfully.", typeof(FileResult))]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file exported and downloaded successfully.", typeof(FileResult))]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] IncomeType? incomeType = null,
         [FromQuery] IncomeStatus? status = null,
@@ -178,8 +178,8 @@ public class IncomeController(IIncomeRecordService incomeRecordService, IUnitOfW
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _incomeRecordService.ExportToCsv(
+        var bytes = await _incomeRecordService.ExportToXlsx(
             search, incomeType, status, buildingId, startDate, endDate, cancellationToken);
-        return File(bytes, "text/csv", "income_records.csv");
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "income_records.xlsx");
     }
 }

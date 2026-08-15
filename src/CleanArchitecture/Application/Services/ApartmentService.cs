@@ -122,7 +122,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         return new PaginatedList<ApartmentViewModel>(items, totalCount, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         Guid? buildingId,
         Guid? ownerId,
@@ -207,8 +207,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     public async Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken)

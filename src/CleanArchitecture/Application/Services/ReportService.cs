@@ -107,7 +107,7 @@ public class ReportService(
         };
     }
 
-    public async Task<byte[]> ExportReportToCsv(
+    public async Task<byte[]> ExportReportToXlsx(
         string type,
         Guid? buildingId,
         DateTime? startDate,
@@ -118,7 +118,7 @@ public class ReportService(
 
         if (typeLower == "income")
         {
-            return await _incomeRecordService.ExportToCsv(
+            return await _incomeRecordService.ExportToXlsx(
                 search: null,
                 incomeType: null,
                 status: null,
@@ -130,7 +130,7 @@ public class ReportService(
 
         if (typeLower == "expense")
         {
-            return await _expenseRecordService.ExportToCsv(
+            return await _expenseRecordService.ExportToXlsx(
                 search: null,
                 category: null,
                 status: null,
@@ -230,8 +230,7 @@ public class ReportService(
             });
         }
 
-        var csvText = CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows, "Report");
     }
 
     private class LedgerItem

@@ -38,18 +38,18 @@ public class OwnerController(IOwnerService ownerService, IUnitOfWork unitOfWork)
     }
 
     /// <summary>
-    /// [O-06] Exports owners to CSV with the same filters as the list endpoint.
+    /// [O-06] Exports owners to XLSX with the same filters as the list endpoint.
     /// </summary>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file containing filtered owners.")]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file containing filtered owners.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] OwnerStatus? status = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _ownerService.ExportToCsv(search, status, cancellationToken);
-        return File(bytes, "text/csv", "owners.csv");
+        var bytes = await _ownerService.ExportToXlsx(search, status, cancellationToken);
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "owners.xlsx");
     }
 
     /// <summary>
