@@ -72,25 +72,25 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
     }
 
     /// <summary>
-    /// [F-05] Upload CSV file (for bulk uploads)
+    /// [F-05] Upload XLSX file (for bulk uploads)
     /// </summary>
-    [HttpPost("csv")]
-    [SwaggerOperation(Summary = "[F-05] Upload CSV file (for bulk uploads)")]
-    [SwaggerResponse(200, "CSV file uploaded successfully.")]
-    [SwaggerResponse(400, "Invalid CSV format or size.")]
-    public async Task<IActionResult> UploadCsv(IFormFile file)
+    [HttpPost("xlsx")]
+    [SwaggerOperation(Summary = "[F-05] Upload XLSX file (for bulk uploads)")]
+    [SwaggerResponse(200, "XLSX file uploaded successfully.")]
+    [SwaggerResponse(400, "Invalid XLSX format or size.")]
+    public async Task<IActionResult> UploadXlsx(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {
             return BadRequest(new { message = "No file uploaded." });
         }
 
-        var allowedExtensions = new[] { ".csv" };
+        var allowedExtensions = new[] { ".xlsx" };
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
         if (!allowedExtensions.Contains(extension))
         {
-            return BadRequest(new { message = "Invalid file format. Only .csv files are allowed." });
+            return BadRequest(new { message = "Invalid file format. Only .xlsx files are allowed." });
         }
 
         var url = await SaveFileAsync(file, extension);

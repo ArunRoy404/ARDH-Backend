@@ -127,7 +127,7 @@ public class IncomeRecordService(
 
     public async Task<IncomeRecordViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;
@@ -570,7 +570,7 @@ public class IncomeRecordService(
         return System.Text.Encoding.UTF8.GetBytes(pdfContent);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         IncomeType? incomeType,
         IncomeStatus? status,
@@ -627,7 +627,7 @@ public class IncomeRecordService(
         var list = query.OrderByDescending(x => x.PaymentDate).ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "IncomeEntity", "IncomeType", "Amount", "BuildingId", "ApartmentId", "PaymentDate", "PaymentMethod", "TransactionReference", "Status", "Notes", "AttachmentUrl" };
+        var headers = new List<string> { "IncomeEntity", "IncomeType", "Amount", "BuildingName", "FlatNumber", "PaymentDate", "PaymentMethod", "TransactionReference", "Status", "Notes", "AttachmentUrl" };
         rows.Add(headers);
 
         foreach (var r in list)
@@ -637,8 +637,8 @@ public class IncomeRecordService(
                 r.IncomeEntity.ToString(),
                 r.IncomeType.ToString(),
                 r.Amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                r.BuildingId.HasValue ? r.BuildingId.Value.ToString() : string.Empty,
-                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var buildingName) ? buildingName : string.Empty,
+                r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var flatNumber) ? flatNumber : string.Empty,
                 r.PaymentDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
                 r.PaymentMethod.ToString(),
                 r.TransactionReference ?? string.Empty,
@@ -648,8 +648,7 @@ public class IncomeRecordService(
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     /// <summary>

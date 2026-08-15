@@ -150,7 +150,7 @@ public class MaintenanceRequestService(
         return new PaginatedList<MaintenanceRequestViewModel>(items, totalItems, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         MaintenanceStatus? status,
         MaintenancePriority? priority,
@@ -227,7 +227,7 @@ public class MaintenanceRequestService(
         var list = query.OrderByDescending(x => x.CreatedAt).ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "Title", "Description", "Category", "Priority", "BuildingId", "ApartmentId", "VendorId", "EquipmentId", "Status", "EstimatedCost", "AnnualCost", "ScheduledDate", "StartDate", "RecurrenceFrequency", "ReceiptAttachmentUrl", "Notes" };
+        var headers = new List<string> { "Title", "Description", "Category", "Priority", "BuildingName", "FlatNumber", "VendorName", "EquipmentName", "Status", "EstimatedCost", "AnnualCost", "ScheduledDate", "StartDate", "RecurrenceFrequency", "ReceiptAttachmentUrl", "Notes" };
         rows.Add(headers);
 
         foreach (var r in list)
@@ -238,10 +238,10 @@ public class MaintenanceRequestService(
                 r.Description ?? string.Empty,
                 r.Category ?? string.Empty,
                 r.Priority.ToString(),
-                r.BuildingId.ToString(),
-                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
-                r.VendorId.HasValue ? r.VendorId.Value.ToString() : string.Empty,
-                r.EquipmentId.HasValue ? r.EquipmentId.Value.ToString() : string.Empty,
+                buildingMap.TryGetValue(r.BuildingId, out var buildingName) ? buildingName : string.Empty,
+                r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var flatNumber) ? flatNumber : string.Empty,
+                r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var vendor) ? vendor.Name : string.Empty,
+                r.EquipmentId.HasValue && equipmentMap.TryGetValue(r.EquipmentId.Value, out var equipmentName) ? equipmentName : string.Empty,
                 r.Status.ToString(),
                 r.EstimatedCost.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 r.AnnualCost.ToString(System.Globalization.CultureInfo.InvariantCulture),
@@ -253,13 +253,12 @@ public class MaintenanceRequestService(
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     public async Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.BuildingId);

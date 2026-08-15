@@ -100,8 +100,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
 
     public async Task<UserViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
-            ?? throw UserException.BadRequestException("The specified user does not exist.");
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
+            ?? throw UserException.NotFoundException("The specified user does not exist.");
 
         var createdByUser = user.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == user.CreatedBy.Value) : null;
         var updatedByUser = user.UpdatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == user.UpdatedBy.Value) : null;
@@ -239,8 +239,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
 
     public async Task ToggleStatus(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id)
-            ?? throw UserException.BadRequestException("The specified user does not exist.");
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
+            ?? throw UserException.NotFoundException("The specified user does not exist.");
 
         user.IsActive = !user.IsActive;
         user.UpdatedAt = DateTime.UtcNow;

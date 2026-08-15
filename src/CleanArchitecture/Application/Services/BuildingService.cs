@@ -73,7 +73,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
     public async Task<BuildingViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
 
         var createdByUser = building.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == building.CreatedBy.Value) : null;
@@ -102,7 +102,8 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
     public async Task Create(BuildingCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName == request.BuildingName);
+        var normalizedName = request.BuildingName?.Trim().ToLowerInvariant() ?? string.Empty;
+        var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName.Trim().ToLower() == normalizedName);
         if (isNameExist)
         {
             throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");
@@ -138,9 +139,10 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.Id)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
 
-        if (building.BuildingName != request.BuildingName)
+        if (!string.Equals(building.BuildingName, request.BuildingName, StringComparison.OrdinalIgnoreCase))
         {
-            var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName == request.BuildingName && x.Id != request.Id);
+            var normalizedName = request.BuildingName?.Trim().ToLowerInvariant() ?? string.Empty;
+            var isNameExist = await _unitOfWork.BuildingRepository.AnyIncludingDeletedAsync(x => x.BuildingName.Trim().ToLower() == normalizedName && x.Id != request.Id);
             if (isNameExist)
             {
                 throw BuildingException.BadRequestException($"Building with name '{request.BuildingName}' already exists.");

@@ -24,7 +24,7 @@ public interface IMaintenanceRequestService
 
     Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken);
 
-    Task<byte[]> ExportToCsv(
+    Task<byte[]> ExportToXlsx(
         string? search,
         MaintenanceStatus? status,
         MaintenancePriority? priority,

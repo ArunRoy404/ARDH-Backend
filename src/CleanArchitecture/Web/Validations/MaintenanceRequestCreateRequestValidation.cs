@@ -25,14 +25,9 @@ public class MaintenanceRequestCreateRequestValidation : AbstractValidator<Maint
         RuleFor(x => x.BuildingId)
             .NotEmpty().WithMessage("Building ID is required.");
 
-        RuleFor(x => x.ApartmentId)
-            .NotEmpty().WithMessage("Apartment ID is required.");
-
-        RuleFor(x => x.VendorId)
-            .NotEmpty().WithMessage("Vendor ID is required.");
-
-        RuleFor(x => x.EquipmentId)
-            .NotEmpty().WithMessage("Equipment ID is required.");
+        // Apartment, vendor and equipment are optional: common-area (building-level) requests
+        // such as "Parking lot lights broken" have no apartment/vendor/equipment. This matches
+        // the service layer, the bulk-upload path, and the seeded demo data.
 
         RuleFor(x => x.Status)
             .NotNull().WithMessage("Status is required. Valid values: Open, InProgress, Complete, Cancelled.")

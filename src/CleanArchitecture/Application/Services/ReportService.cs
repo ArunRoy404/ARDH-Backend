@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Shared.Domain.Enums;
@@ -107,7 +108,7 @@ public class ReportService(
         };
     }
 
-    public async Task<byte[]> ExportReportToCsv(
+    public async Task<byte[]> ExportReportToXlsx(
         string type,
         Guid? buildingId,
         DateTime? startDate,
@@ -118,7 +119,7 @@ public class ReportService(
 
         if (typeLower == "income")
         {
-            return await _incomeRecordService.ExportToCsv(
+            return await _incomeRecordService.ExportToXlsx(
                 search: null,
                 incomeType: null,
                 status: null,
@@ -128,9 +129,9 @@ public class ReportService(
                 cancellationToken: cancellationToken);
         }
 
-        if (typeLower == "expense")
+        if (typeLower is "expense" or "expenses")
         {
-            return await _expenseRecordService.ExportToCsv(
+            return await _expenseRecordService.ExportToXlsx(
                 search: null,
                 category: null,
                 status: null,
@@ -140,6 +141,12 @@ public class ReportService(
                 startDate: startDate,
                 endDate: endDate,
                 cancellationToken: cancellationToken);
+        }
+
+        if (typeLower != "combined")
+        {
+            throw ReportException.BadRequestException(
+                $"Invalid report type '{type}'. Valid types: income, expenses, combined.");
         }
 
         // Combined transaction ledger merging income + expense into one dated feed — unique to
@@ -230,8 +237,7 @@ public class ReportService(
             });
         }
 
-        var csvText = CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows, "Report");
     }
 
     private class LedgerItem

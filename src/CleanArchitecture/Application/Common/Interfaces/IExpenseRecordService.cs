@@ -33,7 +33,7 @@ public interface IExpenseRecordService
 
     Task UpdateStatus(Guid id, ExpenseRecordStatusUpdateRequest request, CancellationToken cancellationToken);
 
-    Task<byte[]> ExportToCsv(
+    Task<byte[]> ExportToXlsx(
         string? search,
         ExpenseCategory? category,
         ExpenseStatus? status,

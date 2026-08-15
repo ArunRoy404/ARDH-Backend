@@ -20,7 +20,7 @@ public interface ITenantService
 
     Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken);
 
-    Task<byte[]> ExportToCsv(
+    Task<byte[]> ExportToXlsx(
         string? search,
         Guid? buildingId,
         Guid? apartmentId,

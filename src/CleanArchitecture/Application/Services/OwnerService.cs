@@ -72,7 +72,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
         return new PaginatedList<OwnerViewModel>(items, totalCount, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         OwnerStatus? status,
         CancellationToken cancellationToken)
@@ -121,13 +121,12 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
         var createdByUser = owner.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == owner.CreatedBy.Value) : null;
@@ -157,7 +156,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
 
     public async Task Create(OwnerCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName);
+        var normalizedName = request.FullName?.Trim().ToLowerInvariant() ?? string.Empty;
+        var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName.Trim().ToLower() == normalizedName);
         if (isNameExist)
         {
             throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
@@ -217,9 +217,10 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
-        if (owner.FullName != request.FullName)
+        if (!string.Equals(owner.FullName, request.FullName, StringComparison.OrdinalIgnoreCase))
         {
-            var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName && x.Id != id);
+            var normalizedName = request.FullName?.Trim().ToLowerInvariant() ?? string.Empty;
+            var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName.Trim().ToLower() == normalizedName && x.Id != id);
             if (isNameExist)
             {
                 throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");

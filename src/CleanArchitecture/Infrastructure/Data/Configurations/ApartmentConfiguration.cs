@@ -28,6 +28,9 @@ public class ApartmentConfiguration : IEntityTypeConfiguration<Apartment>
             .HasMaxLength(50)
             .IsRequired();
 
+        builder.HasIndex(e => e.NestawayId)
+            .IsUnique();
+
         builder.Property(e => e.FlatNumber)
             .HasColumnName("flat_number")
             .HasMaxLength(20)

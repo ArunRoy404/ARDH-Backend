@@ -169,7 +169,7 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     }
 
     /// <summary>
-    /// [EX-07] Exports all filtered expense records to a CSV file.
+    /// [EX-07] Exports all filtered expense records to an XLSX file.
     /// </summary>
     /// <remarks>
     /// Filter values (exact):
@@ -177,10 +177,10 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
     ///   status = Draft | PendingPayment | Paid
     ///   nature = Service | Material | Others
     /// </remarks>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file exported and downloaded successfully.", typeof(FileResult))]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file exported and downloaded successfully.", typeof(FileResult))]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] ExpenseCategory? category = null,
         [FromQuery] ExpenseStatus? status = null,
@@ -191,8 +191,8 @@ public class ExpensesController(IExpenseRecordService expenseRecordService, IUni
         [FromQuery] DateTime? endDate = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _expenseRecordService.ExportToCsv(
+        var bytes = await _expenseRecordService.ExportToXlsx(
             search, category, status, nature, buildingId, vendorId, startDate, endDate, cancellationToken);
-        return File(bytes, "text/csv", "expense_records.csv");
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "expense_records.xlsx");
     }
 }

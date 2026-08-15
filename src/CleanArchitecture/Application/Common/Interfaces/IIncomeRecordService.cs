@@ -33,7 +33,7 @@ public interface IIncomeRecordService
 
     Task<byte[]> GenerateReceiptPdf(Guid id, CancellationToken cancellationToken);
 
-    Task<byte[]> ExportToCsv(
+    Task<byte[]> ExportToXlsx(
         string? search,
         IncomeType? incomeType,
         IncomeStatus? status,

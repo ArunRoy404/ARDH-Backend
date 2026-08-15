@@ -102,7 +102,7 @@ public class EquipmentService(
         return new PaginatedList<EquipmentViewModel>(items, totalItems, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         Guid? buildingId,
         string? type,
@@ -147,14 +147,14 @@ public class EquipmentService(
         var list = query.OrderByDescending(x => x.CreatedAt).ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "BuildingId", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" };
+        var headers = new List<string> { "BuildingName", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" };
         rows.Add(headers);
 
         foreach (var e in list)
         {
             rows.Add(new List<string>
             {
-                e.BuildingId.ToString(),
+                buildingMap.TryGetValue(e.BuildingId, out var buildingName) ? buildingName : string.Empty,
                 e.Name ?? string.Empty,
                 e.Type ?? string.Empty,
                 e.Brand ?? string.Empty,
@@ -168,15 +168,14 @@ public class EquipmentService(
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
 
 
     public async Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);

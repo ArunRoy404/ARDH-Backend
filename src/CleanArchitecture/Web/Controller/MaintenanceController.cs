@@ -44,12 +44,12 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     }
 
     /// <summary>
-    /// [M-09] Exports maintenance requests to CSV with the same filters as the list endpoint.
+    /// [M-09] Exports maintenance requests to XLSX with the same filters as the list endpoint.
     /// </summary>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file containing filtered maintenance requests.")]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file containing filtered maintenance requests.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] MaintenanceStatus? status = null,
         [FromQuery] MaintenancePriority? priority = null,
@@ -60,9 +60,9 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
         [FromQuery] Guid? apartmentId = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _maintenanceRequestService.ExportToCsv(
+        var bytes = await _maintenanceRequestService.ExportToXlsx(
             search, status, priority, category, buildingId, vendorId, equipmentId, apartmentId, cancellationToken);
-        return File(bytes, "text/csv", "maintenance_requests.csv");
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "maintenance_requests.xlsx");
     }
 
     /// <summary>
@@ -94,8 +94,10 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// [M-03] Creates a new maintenance request.
     /// </summary>
     /// <remarks>
-    /// Mandatory fields: title, description, category, priority, status, buildingId, apartmentId, vendorId,
-    /// equipmentId, estimatedCost and scheduledDate. All other fields are optional.
+    /// Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost
+    /// and scheduledDate. All other fields are optional.
+    /// apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests
+    /// have none of them.
     /// category is a free-form string (any value, e.g. "Plumbing", "Electrical", "Lift").
     /// Valid enum values (exact):
     ///   priority = Low | Medium | High | Critical
@@ -118,8 +120,10 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// [M-04] Updates details of an existing maintenance request.
     /// </summary>
     /// <remarks>
-    /// Mandatory fields: title, description, category, priority, status, buildingId, apartmentId, vendorId,
-    /// equipmentId, estimatedCost and scheduledDate. All other fields are optional.
+    /// Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost
+    /// and scheduledDate. All other fields are optional.
+    /// apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests
+    /// have none of them.
     /// Valid enum values (exact):
     ///   priority = Low | Medium | High | Critical
     ///   status = Open | InProgress | Complete | Cancelled

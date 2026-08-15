@@ -126,8 +126,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
             }
             else if (path.StartsWith("/api/upload", StringComparison.OrdinalIgnoreCase))
             {
-                // File upload/delete (image, document, csv, id-proof) is a generic utility used
-                // across every module's forms (attaching receipts, id proofs, bulk-upload CSVs,
+                // File upload/delete (image, document, xlsx, id-proof) is a generic utility used
+                // across every module's forms (attaching receipts, id proofs, bulk-upload XLSXs,
                 // etc.), so it is open to any authenticated user regardless of permission. The
                 // viewer-role write block below still applies, since viewer is meant to be
                 // read-only.

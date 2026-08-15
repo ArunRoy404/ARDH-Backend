@@ -172,7 +172,19 @@ public class AuthService(
 
         _logger.LogInformation("Password reset OTP generated for {email}: {otp}", email, otp);
 
-        await _mailService.SendEmailAsync(email, subject, htmlMessage);
-        _logger.LogInformation("Password reset OTP sent by email to {email}", email);
+        // The OTP is already logged above (and persisted), so a failure to reach the email
+        // provider must not fail the whole forgot-password/resend-otp request — otherwise a
+        // misconfigured or temporarily down mail provider takes down the password-reset flow
+        // entirely. Log the failure instead and let the caller respond with the OTP-sent
+        // success message (the OTP remains visible in the server log for local/dev use).
+        try
+        {
+            await _mailService.SendEmailAsync(email, subject, htmlMessage);
+            _logger.LogInformation("Password reset OTP sent by email to {email}", email);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send password reset OTP email to {email}; the OTP was still generated and logged.", email);
+        }
     }
 }

@@ -38,20 +38,20 @@ public class EquipmentController(IEquipmentService equipmentService, IUnitOfWork
     }
 
     /// <summary>
-    /// [E-07] Exports equipment to CSV with the same filters as the list endpoint.
+    /// [E-07] Exports equipment to XLSX with the same filters as the list endpoint.
     /// </summary>
-    [HttpGet("download-csv")]
-    [SwaggerResponse(200, "CSV file containing filtered equipment.")]
+    [HttpGet("download-xlsx")]
+    [SwaggerResponse(200, "XLSX file containing filtered equipment.")]
     [SwaggerResponse(401, "Unauthorized access.")]
-    public async Task<IActionResult> DownloadCsv(
+    public async Task<IActionResult> DownloadXlsx(
         [FromQuery] string? search = null,
         [FromQuery] Guid? buildingId = null,
         [FromQuery] string? type = null,
         [FromQuery] string? status = null,
         CancellationToken cancellationToken = default)
     {
-        var bytes = await _equipmentService.ExportToCsv(search, buildingId, type, status, cancellationToken);
-        return File(bytes, "text/csv", "equipment.csv");
+        var bytes = await _equipmentService.ExportToXlsx(search, buildingId, type, status, cancellationToken);
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, "equipment.xlsx");
     }
 
     /// <summary>

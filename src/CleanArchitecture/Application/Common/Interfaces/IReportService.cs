@@ -32,7 +32,7 @@ public interface IReportService
         DateTime? endDate,
         CancellationToken cancellationToken);
 
-    Task<byte[]> ExportReportToCsv(
+    Task<byte[]> ExportReportToXlsx(
         string type,
         Guid? buildingId,
         DateTime? startDate,

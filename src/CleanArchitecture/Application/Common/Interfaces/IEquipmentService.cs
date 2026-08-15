@@ -19,7 +19,7 @@ public interface IEquipmentService
 
     Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken);
 
-    Task<byte[]> ExportToCsv(
+    Task<byte[]> ExportToXlsx(
         string? search,
         Guid? buildingId,
         string? type,

@@ -109,7 +109,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         return new PaginatedList<TenantViewModel>(items, totalCount, page, pageSize);
     }
 
-    public async Task<byte[]> ExportToCsv(
+    public async Task<byte[]> ExportToXlsx(
         string? search,
         Guid? buildingId,
         Guid? apartmentId,
@@ -156,15 +156,15 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         var list = query.ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "BuildingId", "ApartmentId", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" };
+        var headers = new List<string> { "BuildingName", "FlatNumber", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" };
         rows.Add(headers);
 
         foreach (var t in list)
         {
             rows.Add(new List<string>
             {
-                t.BuildingId.ToString(),
-                t.ApartmentId.ToString(),
+                buildingMap.TryGetValue(t.BuildingId, out var buildingName) ? buildingName : string.Empty,
+                apartmentMap.TryGetValue(t.ApartmentId, out var apartmentInfo) ? apartmentInfo.FlatNumber : string.Empty,
                 t.FullName ?? string.Empty,
                 t.Phone ?? string.Empty,
                 t.Email ?? string.Empty,
@@ -183,13 +183,12 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             });
         }
 
-        var csvText = CleanArchitecture.Application.Common.Utilities.CsvHelper.BuildCsv(rows);
-        return Encoding.UTF8.GetBytes(csvText);
+        return CleanArchitecture.Application.Common.Utilities.XlsxHelper.BuildXlsx(rows);
     }
 
     public async Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == tenant.BuildingId);

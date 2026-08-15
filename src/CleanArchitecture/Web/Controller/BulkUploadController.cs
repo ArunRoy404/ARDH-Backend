@@ -21,7 +21,7 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
 
     /// <summary>
     /// [BU-01] Starts a bulk upload for a module. The file must first be uploaded via
-    /// POST /api/upload/csv; pass the returned URL here. Processing happens in the background —
+    /// POST /api/upload/xlsx; pass the returned URL here. Processing happens in the background —
     /// poll the status endpoints for the result.
     /// </summary>
     [HttpPost]
@@ -89,11 +89,11 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
     }
 
     /// <summary>
-    /// [BU-04] Downloads a CSV template for the given module (headers + one sample row
+    /// [BU-04] Downloads an XLSX template for the given module (headers + one sample row
     /// matching the create API fields exactly).
     /// </summary>
     [HttpGet("template")]
-    [SwaggerResponse(200, "CSV template downloaded successfully.")]
+    [SwaggerResponse(200, "XLSX template downloaded successfully.")]
     [SwaggerResponse(400, "Invalid module.")]
     [SwaggerResponse(401, "Unauthorized access.")]
     [SwaggerResponse(403, "Access denied for this module.")]
@@ -107,7 +107,7 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
         }
 
         var bytes = await _bulkUploadService.GetTemplateAsync(module, cancellationToken);
-        return File(bytes, "text/csv", $"{module.ToString().ToLowerInvariant()}_bulk_upload_template.csv");
+        return File(bytes, CleanArchitecture.Application.Common.Utilities.XlsxHelper.ContentType, $"{module.ToString().ToLowerInvariant()}_bulk_upload_template.xlsx");
     }
 
     // ─────────────────────────────────────────────────────────────────────────
