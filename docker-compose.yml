@@ -28,9 +28,16 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: docker
       ConnectionStrings__DefaultConnection: "Server=db;Database=ArdhDb;User ID=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true;"
+      # Public URL used to build absolute file URLs (e.g. /image/... uploads).
+      # AppUrl stays as the internal localhost:8080 address - it's only used for
+      # the container's own self-ping health check, not shown to clients.
+      BaseURL: https://api.ardh.co.in
       Identity__Key: ${IDENTITY_KEY}
       MailConfigurations__ApiKey: ${RESEND_API_KEY}
       AdminSettings__Password: ${ADMIN_PANEL_PASSWORD}
+      # Leave unset for normal startup. Set to "reset" or "wipe" (see DEPLOYMENT.md)
+      # only for one-off maintenance restarts, then unset again.
+      SEED_MODE: ${SEED_MODE:-}
     ports:
       # Only bind to localhost - Nginx (installed on the host) reverse-proxies
       # to this port. The container is never exposed directly to the internet.
