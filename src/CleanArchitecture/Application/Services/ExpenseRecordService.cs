@@ -617,7 +617,7 @@ public class ExpenseRecordService(
         var list = query.OrderByDescending(x => x.ExpenseDate).ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "Category", "ExpenseHead", "SpecificItem", "VendorId", "Nature", "Amount", "Entity", "BuildingId", "ApartmentId", "ExpenseDate", "PaymentMethod", "Status", "Reference", "AttachmentUrl", "Description", "TankerNumber", "TimeOfDelivery", "DeliveryDriverName", "ManagerInAttendance", "LitersFilled" };
+        var headers = new List<string> { "Category", "ExpenseHead", "SpecificItem", "VendorName", "Nature", "Amount", "Entity", "BuildingName", "FlatNumber", "ExpenseDate", "PaymentMethod", "Status", "Reference", "AttachmentUrl", "Description", "TankerNumber", "TimeOfDelivery", "DeliveryDriverName", "ManagerInAttendance", "LitersFilled" };
         rows.Add(headers);
 
         foreach (var r in list)
@@ -627,12 +627,12 @@ public class ExpenseRecordService(
                 r.Category.ToString(),
                 r.ExpenseHead ?? string.Empty,
                 r.SpecificItem ?? string.Empty,
-                r.VendorId.HasValue ? r.VendorId.Value.ToString() : string.Empty,
+                r.VendorId.HasValue && vendorMap.TryGetValue(r.VendorId.Value, out var vendor) ? vendor.Name : string.Empty,
                 r.Nature.ToString(),
                 r.Amount.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 r.Entity.ToString(),
-                r.BuildingId.HasValue ? r.BuildingId.Value.ToString() : string.Empty,
-                r.ApartmentId.HasValue ? r.ApartmentId.Value.ToString() : string.Empty,
+                r.BuildingId.HasValue && buildingMap.TryGetValue(r.BuildingId.Value, out var buildingName) ? buildingName : string.Empty,
+                r.ApartmentId.HasValue && apartmentMap.TryGetValue(r.ApartmentId.Value, out var flatNumber) ? flatNumber : string.Empty,
                 r.ExpenseDate.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
                 r.PaymentMethod ?? string.Empty,
                 r.Status.ToString(),

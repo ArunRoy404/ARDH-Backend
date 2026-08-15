@@ -182,15 +182,15 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         var list = query.ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "BuildingId", "OwnerId", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" };
+        var headers = new List<string> { "BuildingName", "OwnerName", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" };
         rows.Add(headers);
 
         foreach (var a in list)
         {
             rows.Add(new List<string>
             {
-                a.BuildingId.ToString(),
-                a.OwnerId.ToString(),
+                buildingMap.TryGetValue(a.BuildingId, out var buildingName) ? buildingName : string.Empty,
+                ownerMap.TryGetValue(a.OwnerId, out var ownerName) ? ownerName : string.Empty,
                 a.NestawayId ?? string.Empty,
                 a.FlatNumber ?? string.Empty,
                 a.Floor.ToString(System.Globalization.CultureInfo.InvariantCulture),
@@ -313,6 +313,14 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
         }
 
+        // Validate unique Nestaway ID (case-insensitive)
+        var normalizedNestawayId = request.NestawayId?.Trim().ToLowerInvariant() ?? string.Empty;
+        var isNestawayExist = await _unitOfWork.ApartmentRepository.AnyIncludingDeletedAsync(x => x.NestawayId.Trim().ToLower() == normalizedNestawayId);
+        if (isNestawayExist)
+        {
+            throw ApartmentException.BadRequestException($"Nestaway ID '{request.NestawayId}' already exists.");
+        }
+
         var apartment = new Apartment
         {
             Id = Guid.NewGuid(),
@@ -370,6 +378,17 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             if (isFlatExist)
             {
                 throw ApartmentException.BadRequestException($"Flat number '{request.FlatNumber}' already exists in this building.");
+            }
+        }
+
+        // Validate Nestaway ID uniqueness if modified (case-insensitive)
+        if (!string.Equals(apartment.NestawayId, request.NestawayId, StringComparison.OrdinalIgnoreCase))
+        {
+            var normalizedNestawayId = request.NestawayId?.Trim().ToLowerInvariant() ?? string.Empty;
+            var isNestawayExist = await _unitOfWork.ApartmentRepository.AnyIncludingDeletedAsync(x => x.NestawayId.Trim().ToLower() == normalizedNestawayId && x.Id != id);
+            if (isNestawayExist)
+            {
+                throw ApartmentException.BadRequestException($"Nestaway ID '{request.NestawayId}' already exists.");
             }
         }
 

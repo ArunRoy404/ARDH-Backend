@@ -156,15 +156,15 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         var list = query.ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "BuildingId", "ApartmentId", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" };
+        var headers = new List<string> { "BuildingName", "FlatNumber", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" };
         rows.Add(headers);
 
         foreach (var t in list)
         {
             rows.Add(new List<string>
             {
-                t.BuildingId.ToString(),
-                t.ApartmentId.ToString(),
+                buildingMap.TryGetValue(t.BuildingId, out var buildingName) ? buildingName : string.Empty,
+                apartmentMap.TryGetValue(t.ApartmentId, out var apartmentInfo) ? apartmentInfo.FlatNumber : string.Empty,
                 t.FullName ?? string.Empty,
                 t.Phone ?? string.Empty,
                 t.Email ?? string.Empty,

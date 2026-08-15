@@ -147,14 +147,14 @@ public class EquipmentService(
         var list = query.OrderByDescending(x => x.CreatedAt).ToList();
 
         var rows = new List<List<string>>();
-        var headers = new List<string> { "BuildingId", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" };
+        var headers = new List<string> { "BuildingName", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" };
         rows.Add(headers);
 
         foreach (var e in list)
         {
             rows.Add(new List<string>
             {
-                e.BuildingId.ToString(),
+                buildingMap.TryGetValue(e.BuildingId, out var buildingName) ? buildingName : string.Empty,
                 e.Name ?? string.Empty,
                 e.Type ?? string.Empty,
                 e.Brand ?? string.Empty,

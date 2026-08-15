@@ -440,3 +440,6 @@ delete example (`3d60a25e-…`) are placeholder examples and are fine.
 | property_manager | `manager@gmail.com` | `P@ssw0rd` |
 | accountant | `accountant@gmail.com` | `P@ssw0rd` |
 | Admin delete-password (deletes / settings) | — | `adminpassword` (from `AdminSettings__Password` / `.env`) |
+
+
+Buildings/owners must pre-exist before an apartments upload (buildings isn't a bulk module) — same as today.

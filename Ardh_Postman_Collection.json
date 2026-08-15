@@ -6673,7 +6673,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nGET is open to all authenticated users (open-read module)."
+            "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -6722,7 +6722,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
+                "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
               },
               "status": "OK",
               "code": 200,
@@ -6738,8 +6738,8 @@
                 }
               ],
               "cookie": [],
-              "body": "BuildingId,OwnerId,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\nb1f7b822-29c4-52a8-ad29-c8be5d491f24,f1a3b822-29c4-52a8-ad29-c8be5d491f24,NST-7719,1204-B,12,3 BHK,1450,3,3,true,P-15,45000,3500,500,",
-              "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingId, OwnerId, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
+              "body": "BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\nGrand Plaza Towers,Amit Sharma,NST-7719,1204-B,12,3 BHK,1450,3,3,true,P-15,45000,3500,500,",
+              "description": "Exports all filtered apartments to a CSV file.\nColumns: BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
             }
           ]
         }
@@ -8017,7 +8017,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nGET is open to all authenticated users (open-read module)."
+            "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingName, FlatNumber, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -8061,7 +8061,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
+                "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingName, FlatNumber, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
               },
               "status": "OK",
               "code": 200,
@@ -8077,8 +8077,8 @@
                 }
               ],
               "cookie": [],
-              "body": "BuildingId,ApartmentId,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\nb1f7b822-29c4-52a8-ad29-c8be5d491f24,e2a3b822-29c4-52a8-ad29-c8be5d491f24,John Tenant,+15550199,john.t@gmail.com,Passport,Z1234567,https://example.com/uploads/idproof.pdf,2026-07-20,2026-07-20,2027-07-20,45000,90000,Jane Tenant,+15550200,Active,",
-              "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingId, ApartmentId, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
+              "body": "BuildingName,FlatNumber,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\nGrand Plaza Towers,1204-B,John Tenant,+15550199,john.t@gmail.com,Passport,Z1234567,https://example.com/uploads/idproof.pdf,2026-07-20,2026-07-20,2027-07-20,45000,90000,Jane Tenant,+15550200,Active,",
+              "description": "Exports all filtered tenants to a CSV file.\nColumns: BuildingName, FlatNumber, FullName, Phone, Email, IdType, IdNumber, IdProofAttachmentUrl, MoveInDate, LeaseStartDate, LeaseEndDate, MonthlyRent, SecurityDeposit, EmergencyContactName, EmergencyContactPhone, Status, Notes.\nRequires 'properties' permission."
             }
           ]
         }
@@ -9548,7 +9548,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nGET is open to all authenticated users (open-read module)."
+            "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingName, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -9592,7 +9592,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
+                "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingName, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
               },
               "status": "OK",
               "code": 200,
@@ -9608,8 +9608,8 @@
                 }
               ],
               "cookie": [],
-              "body": "BuildingId,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\nb1f7b822-29c4-52a8-ad29-c8be5d491f24,OTIS Elevator Block A,Lift,OTIS,Gen2,OTIS-55291-A,2024-01-15,2027-01-15,Operational,Working perfectly.,https://example.com/uploads/manual.pdf",
-              "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingId, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
+              "body": "BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\nGrand Plaza Towers,OTIS Elevator Block A,Lift,OTIS,Gen2,OTIS-55291-A,2024-01-15,2027-01-15,Operational,Working perfectly.,https://example.com/uploads/manual.pdf",
+              "description": "Exports all filtered equipment to a CSV file.\nColumns: BuildingName, Name, Type, Brand, Model, SerialNumber, InstallDate, WarrantyExpiryDate, Status, Notes, AttachmentUrl.\nRequires 'operations' permission."
             }
           ]
         }
@@ -11825,7 +11825,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nGET is open to all authenticated users (open-read module)."
+            "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingName, FlatNumber, VendorName, EquipmentName, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -11889,7 +11889,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
+                "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingName, FlatNumber, VendorName, EquipmentName, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
               },
               "status": "OK",
               "code": 200,
@@ -11905,8 +11905,8 @@
                 }
               ],
               "cookie": [],
-              "body": "Title,Description,Category,Priority,BuildingId,ApartmentId,VendorId,EquipmentId,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\nWater leakage in Flat 302,Ceiling leak in the master bathroom. Immediate attention required.,Plumbing,High,b1f7b822-29c4-52a8-ad29-c8be5d491f24,a1f3b822-29c4-52a8-ad29-c8be5d491f24,v1a3b822-29c4-52a8-ad29-c8be5d491f24,e1a3b822-29c4-52a8-ad29-c8be5d491f24,Open,15000,180000,2026-07-25,2026-07-20,Weekly,,Tenant reported leak on 18 July.",
-              "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingId, ApartmentId, VendorId, EquipmentId, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
+              "body": "Title,Description,Category,Priority,BuildingName,FlatNumber,VendorName,EquipmentName,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\nWater leakage in Flat 302,Ceiling leak in the master bathroom. Immediate attention required.,Plumbing,High,Grand Plaza Towers,302,Sunil Kumar,OTIS Elevator Block A,Open,15000,180000,2026-07-25,2026-07-20,Weekly,,Tenant reported leak on 18 July.",
+              "description": "Exports all filtered maintenance requests to a CSV file.\nColumns: Title, Description, Category, Priority, BuildingName, FlatNumber, VendorName, EquipmentName, Status, EstimatedCost, AnnualCost, ScheduledDate, StartDate, RecurrenceFrequency, ReceiptAttachmentUrl, Notes.\nRequires 'operations' permission."
             }
           ]
         }
@@ -13150,7 +13150,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nGET is open to all authenticated users (open-read module)."
+            "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingName, FlatNumber, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -13204,7 +13204,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
+                "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingName, FlatNumber, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
               },
               "status": "OK",
               "code": 200,
@@ -13220,8 +13220,8 @@
                 }
               ],
               "cookie": [],
-              "body": "IncomeEntity,IncomeType,Amount,BuildingId,ApartmentId,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\nApartmentWise,Rent,85000,b1f7b822-29c4-52a8-ad29-c8be5d491f24,a1f3b822-29c4-52a8-ad29-c8be5d491f24,2026-07-25,BankTransfer,TXN-88231,Paid,Rent for Flat 302.,https://example.com/uploads/receipt.pdf",
-              "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingId, ApartmentId, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
+              "body": "IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\nApartmentWise,Rent,85000,Grand Plaza Towers,302,2026-07-25,BankTransfer,TXN-88231,Paid,Rent for Flat 302.,https://example.com/uploads/receipt.pdf",
+              "description": "Exports all filtered income to a CSV file.\nColumns: IncomeEntity, IncomeType, Amount, BuildingName, FlatNumber, PaymentDate, PaymentMethod, TransactionReference, Status, Notes, AttachmentUrl.\nRequires 'finance' permission."
             }
           ]
         }
@@ -14547,7 +14547,7 @@
                 }
               ]
             },
-            "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nGET is open to all authenticated users (open-read module)."
+            "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorName, Nature, Amount, Entity, BuildingName, FlatNumber, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nGET is open to all authenticated users (open-read module)."
           },
           "response": [
             {
@@ -14611,7 +14611,7 @@
                     }
                   ]
                 },
-                "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
+                "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorName, Nature, Amount, Entity, BuildingName, FlatNumber, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
               },
               "status": "OK",
               "code": 200,
@@ -14627,8 +14627,8 @@
                 }
               ],
               "cookie": [],
-              "body": "Category,ExpenseHead,SpecificItem,VendorId,Nature,Amount,Entity,BuildingId,ApartmentId,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\nUtility,Electricity Bill,Common area lights,v4c7b822-29c4-52a8-ad29-c8be5d491f41,Service,12500,BuildingLevel,b1f7b822-29c4-52a8-ad29-c8be5d491f24,,2026-08-05,BankTransfer,Paid,TXN123456789,,April bill,,,,,0",
-              "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorId, Nature, Amount, Entity, BuildingId, ApartmentId, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
+              "body": "Category,ExpenseHead,SpecificItem,VendorName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\nUtility,Electricity Bill,Common area lights,BESCOM,Service,12500,BuildingLevel,Grand Plaza Towers,,2026-08-05,BankTransfer,Paid,TXN123456789,,April bill,,,,,0",
+              "description": "Exports all filtered expenses to a CSV file.\nColumns: Category, ExpenseHead, SpecificItem, VendorName, Nature, Amount, Entity, BuildingName, FlatNumber, ExpenseDate, PaymentMethod, Status, Reference, AttachmentUrl, Description, TankerNumber, TimeOfDelivery, DeliveryDriverName, ManagerInAttendance, LitersFilled.\nRequires 'finance' permission."
             }
           ]
         }
@@ -15850,7 +15850,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "BuildingId,OwnerId,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"f1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"NST-BULK-001\",\"999\",9,\"3 BHK\",1100,3,2,true,\"P-99\",45000,3000,500,\"Bulk upload sample apartment\""
+                  "body": "BuildingName,OwnerName,NestawayId,FlatNumber,Floor,ApartmentType,AreaSqft,Bedrooms,Bathrooms,HasBalcony,ParkingSlot,ExpectedRent,MaintenanceCharge,WaterCharge,Notes\n\"Grand Plaza Towers\",\"Rahul Verma\",\"NEST-BULK-001\",\"999\",9,\"3 BHK\",1100,3,2,true,\"P-99\",45000,3000,500,\"Bulk upload sample apartment\""
                 },
                 {
                   "name": "Error Example (403 - Empty Forbidden Response)",
@@ -16252,7 +16252,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "BuildingId,ApartmentId,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a5c7b822-29c4-52a8-ad29-c8be5d491f32\",\"Bulk Test Tenant\",\"+91 9000000000\",\"bulk.tenant@example.com\",\"Aadhar\",\"TENANT-BULK-001\",\"\",\"2026-09-01\",\"2026-09-01\",\"2027-08-31\",45000,90000,\"Emergency Contact\",\"+91 9000000001\",\"Active\",\"Bulk upload sample tenant\""
+                  "body": "BuildingName,FlatNumber,FullName,Phone,Email,IdType,IdNumber,IdProofAttachmentUrl,MoveInDate,LeaseStartDate,LeaseEndDate,MonthlyRent,SecurityDeposit,EmergencyContactName,EmergencyContactPhone,Status,Notes\n\"Grand Plaza Towers\",\"302\",\"Bulk Test Tenant\",\"+91 9000000000\",\"bulk.tenant@example.com\",\"Aadhar\",\"TENANT-BULK-001\",\"\",\"2026-09-01\",\"2026-09-01\",\"2027-08-31\",45000,90000,\"Emergency Contact\",\"+91 9000000001\",\"Active\",\"Bulk upload sample tenant\""
                 },
                 {
                   "name": "Error Example (403 - Empty Forbidden Response)",
@@ -17056,7 +17056,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "IncomeEntity,IncomeType,Amount,BuildingId,ApartmentId,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\n\"ApartmentWise\",\"Rent\",45000,\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"2026-09-05\",\"BankTransfer\",\"TRX-BULK-001\",\"Paid\",\"Bulk upload sample income\",\"\""
+                  "body": "IncomeEntity,IncomeType,Amount,BuildingName,FlatNumber,PaymentDate,PaymentMethod,TransactionReference,Status,Notes,AttachmentUrl\n\"ApartmentWise\",\"Rent\",45000,\"Grand Plaza Towers\",\"302\",\"2026-09-05\",\"BankTransfer\",\"TRX-BULK-001\",\"Paid\",\"Bulk upload sample income\",\"\""
                 },
                 {
                   "name": "Error Example (403 - Empty Forbidden Response)",
@@ -17458,7 +17458,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "Category,ExpenseHead,SpecificItem,VendorId,Nature,Amount,Entity,BuildingId,ApartmentId,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\n\"Utility\",\"Electricity\",\"Monthly bill\",\"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\"Service\",1250.50,\"General\",\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"\",\"2026-08-07\",\"BankTransfer\",\"Paid\",\"REF-BULK-001\",\"\",\"Bulk upload sample expense\",\"\",\"\",\"\",\"\",\"\""
+                  "body": "Category,ExpenseHead,SpecificItem,VendorName,Nature,Amount,Entity,BuildingName,FlatNumber,ExpenseDate,PaymentMethod,Status,Reference,AttachmentUrl,Description,TankerNumber,TimeOfDelivery,DeliveryDriverName,ManagerInAttendance,LitersFilled\n\"Utility\",\"Electricity\",\"Monthly bill\",\"BESCOM\",\"Service\",1250.50,\"General\",\"Grand Plaza Towers\",\"\",\"2026-08-07\",\"BankTransfer\",\"Paid\",\"REF-BULK-001\",\"\",\"Bulk upload sample expense\",\"\",\"\",\"\",\"\",\"\""
                 },
                 {
                   "name": "Error Example (403 - Empty Forbidden Response)",
@@ -17860,7 +17860,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "Title,Description,Category,Priority,BuildingId,ApartmentId,VendorId,EquipmentId,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\n\"Bulk test request\",\"Bulk upload sample maintenance request\",\"Plumbing\",\"High\",\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\"f7a3b822-29c4-52a8-ad29-c8be5d491f24\",\"e1a3b822-29c4-52a8-ad29-c8be5d491f24\",\"Open\",1500,18000,\"2026-08-10\",\"\",\"Monthly\",\"\",\"Bulk upload sample maintenance\""
+                  "body": "Title,Description,Category,Priority,BuildingName,FlatNumber,VendorName,EquipmentName,Status,EstimatedCost,AnnualCost,ScheduledDate,StartDate,RecurrenceFrequency,ReceiptAttachmentUrl,Notes\n\"Bulk test request\",\"Bulk upload sample maintenance request\",\"Plumbing\",\"High\",\"Grand Plaza Towers\",\"302\",\"Sunil Kumar\",\"Water Pump Block A\",\"Open\",1500,18000,\"2026-08-10\",\"\",\"Monthly\",\"\",\"Bulk upload sample maintenance\""
                 },
                 {
                   "name": "Error Example (403 - Empty Forbidden Response)",
@@ -18262,7 +18262,7 @@
                     }
                   ],
                   "cookie": [],
-                  "body": "BuildingId,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\n\"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\"Bulk Test Pump\",\"Pump\",\"Kirloskar\",\"KM-40\",\"SN-BULK-001\",\"2026-01-01\",\"2028-01-01\",\"Operational\",\"Bulk upload sample equipment\",\"\""
+                  "body": "BuildingName,Name,Type,Brand,Model,SerialNumber,InstallDate,WarrantyExpiryDate,Status,Notes,AttachmentUrl\n\"Grand Plaza Towers\",\"Bulk Test Pump\",\"Pump\",\"Kirloskar\",\"KM-40\",\"SN-BULK-001\",\"2026-01-01\",\"2028-01-01\",\"Operational\",\"Bulk upload sample equipment\",\"\""
                 },
                 {
                   "name": "Error Example (403 - Empty Forbidden Response)",

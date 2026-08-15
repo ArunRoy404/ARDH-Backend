@@ -172,6 +172,10 @@ public class BulkUploadService(
                 return;
             }
 
+            // Preload name->ID lookups once per job so rows can reference buildings,
+            // owners and apartments by name/number instead of GUIDs.
+            var lookup = await BuildLookupAsync(cancellationToken);
+
             var processedList = new List<List<string>> { headers.Concat(new[] { "status", "error" }).ToList() };
 
             var totalRows = 0;
@@ -188,7 +192,7 @@ public class BulkUploadService(
 
                 totalRows++;
 
-                var (request, errors) = ParseRow(record.Module, row, headerIndex);
+                var (request, errors) = ParseRow(record.Module, row, headerIndex, lookup);
 
                 if (request == null || errors.Count > 0)
                 {
@@ -346,26 +350,26 @@ public class BulkUploadService(
 
     private static string[] RequiredColumns(string module) => module.ToLowerInvariant() switch
     {
-        "apartments" => new[] { "buildingid", "ownerid", "nestawayid", "flatnumber", "apartmenttype" },
-        "tenants" => new[] { "buildingid", "apartmentid", "fullname", "phone", "idtype", "idnumber", "moveindate", "leasestartdate", "monthlyrent" },
+        "apartments" => new[] { "buildingname", "ownername", "nestawayid", "flatnumber", "apartmenttype" },
+        "tenants" => new[] { "buildingname", "flatnumber", "fullname", "phone", "idtype", "idnumber", "moveindate", "leasestartdate", "monthlyrent" },
         "owners" => new[] { "fullname", "phone", "email", "idtype", "idnumber", "bankname", "accountnumber", "ifsccode" },
         "income" => new[] { "incomeentity", "incometype", "amount", "paymentdate", "paymentmethod", "status" },
-        "expenses" => new[] { "category", "expensehead", "specificitem", "nature", "amount", "entity", "buildingid", "expensedate", "paymentmethod", "status" },
-        "maintenance" => new[] { "title", "description", "category", "priority", "buildingid", "status", "estimatedcost", "scheduleddate" },
-        "equipment" => new[] { "buildingid", "name", "type", "brand", "installdate", "status" },
+        "expenses" => new[] { "category", "expensehead", "specificitem", "nature", "amount", "entity", "buildingname", "expensedate", "paymentmethod", "status" },
+        "maintenance" => new[] { "title", "description", "category", "priority", "buildingname", "status", "estimatedcost", "scheduleddate" },
+        "equipment" => new[] { "buildingname", "name", "type", "brand", "installdate", "status" },
         _ => Array.Empty<string>()
     };
 
-    private (object? request, List<string> errors) ParseRow(string module, List<string> row, Dictionary<string, int> headerIndex)
+    private static (object? request, List<string> errors) ParseRow(string module, List<string> row, Dictionary<string, int> headerIndex, BulkLookup lookup)
         => module.ToLowerInvariant() switch
         {
-            "apartments" => ParseApartment(row, headerIndex),
-            "tenants" => ParseTenant(row, headerIndex),
+            "apartments" => ParseApartment(row, headerIndex, lookup),
+            "tenants" => ParseTenant(row, headerIndex, lookup),
             "owners" => ParseOwner(row, headerIndex),
-            "income" => ParseIncome(row, headerIndex),
-            "expenses" => ParseExpense(row, headerIndex),
-            "maintenance" => ParseMaintenance(row, headerIndex),
-            "equipment" => ParseEquipment(row, headerIndex),
+            "income" => ParseIncome(row, headerIndex, lookup),
+            "expenses" => ParseExpense(row, headerIndex, lookup),
+            "maintenance" => ParseMaintenance(row, headerIndex, lookup),
+            "equipment" => ParseEquipment(row, headerIndex, lookup),
             _ => (null, new List<string> { "Unsupported module." })
         };
 
@@ -384,13 +388,13 @@ public class BulkUploadService(
 
     // ── Apartments ──────────────────────────────────────────────────────────
 
-    private static (object?, List<string>) ParseApartment(List<string> row, Dictionary<string, int> h)
+    private static (object?, List<string>) ParseApartment(List<string> row, Dictionary<string, int> h, BulkLookup lookup)
     {
         var errors = new List<string>();
         var req = new ApartmentCreateRequest
         {
-            BuildingId = GetGuid(row, h, "BuildingId", "BuildingId", errors),
-            OwnerId = GetGuid(row, h, "OwnerId", "OwnerId", errors),
+            BuildingId = ResolveBuilding(row, h, lookup, errors),
+            OwnerId = ResolveOwner(row, h, lookup, errors),
             NestawayId = GetRequired(row, h, "NestawayId", "NestawayId", errors),
             FlatNumber = GetRequired(row, h, "FlatNumber", "FlatNumber", errors),
             ApartmentType = GetRequired(row, h, "ApartmentType", "ApartmentType", errors),
@@ -411,13 +415,13 @@ public class BulkUploadService(
 
     // ── Tenants ─────────────────────────────────────────────────────────────
 
-    private static (object?, List<string>) ParseTenant(List<string> row, Dictionary<string, int> h)
+    private static (object?, List<string>) ParseTenant(List<string> row, Dictionary<string, int> h, BulkLookup lookup)
     {
         var errors = new List<string>();
         var req = new TenantCreateRequest
         {
-            BuildingId = GetGuid(row, h, "BuildingId", "BuildingId", errors),
-            ApartmentId = GetGuid(row, h, "ApartmentId", "ApartmentId", errors),
+            BuildingId = ResolveBuilding(row, h, lookup, errors),
+            ApartmentId = ResolveApartment(row, h, lookup, errors),
             FullName = GetRequired(row, h, "FullName", "FullName", errors),
             Phone = GetRequired(row, h, "Phone", "Phone", errors),
             Email = GetOptional(row, h, "Email"),
@@ -464,18 +468,26 @@ public class BulkUploadService(
 
     // ── Income ──────────────────────────────────────────────────────────────
 
-    private static (object?, List<string>) ParseIncome(List<string> row, Dictionary<string, int> h)
+    private static (object?, List<string>) ParseIncome(List<string> row, Dictionary<string, int> h, BulkLookup lookup)
     {
         var errors = new List<string>();
         var entity = GetEnum<IncomeEntity>(row, h, "IncomeEntity", "IncomeEntity", errors);
+
+        Guid? buildingId = null;
+        Guid? apartmentId = null;
+        if (entity == IncomeEntity.ApartmentWise)
+        {
+            buildingId = ResolveBuilding(row, h, lookup, errors);
+            apartmentId = ResolveApartment(row, h, lookup, errors);
+        }
 
         var req = new IncomeRecordCreateRequest
         {
             IncomeEntity = entity,
             IncomeType = GetEnum<IncomeType>(row, h, "IncomeType", "IncomeType", errors),
             Amount = GetDecimal(row, h, "Amount", "Amount", errors),
-            BuildingId = GetNullableGuid(row, h, "BuildingId"),
-            ApartmentId = GetNullableGuid(row, h, "ApartmentId"),
+            BuildingId = buildingId,
+            ApartmentId = apartmentId,
             PaymentDate = GetDate(row, h, "PaymentDate", "PaymentDate", errors),
             PaymentMethod = GetEnum<IncomePaymentMethod>(row, h, "PaymentMethod", "PaymentMethod", errors),
             TransactionReference = GetOptional(row, h, "TransactionReference"),
@@ -484,24 +496,12 @@ public class BulkUploadService(
             AttachmentUrl = GetOptional(row, h, "AttachmentUrl")
         };
 
-        if (entity == IncomeEntity.ApartmentWise)
-        {
-            if (!req.BuildingId.HasValue)
-            {
-                errors.Add("BuildingId is required when IncomeEntity is ApartmentWise.");
-            }
-            if (!req.ApartmentId.HasValue)
-            {
-                errors.Add("ApartmentId is required when IncomeEntity is ApartmentWise.");
-            }
-        }
-
         return (errors.Count > 0 ? null : req, errors);
     }
 
     // ── Expenses ────────────────────────────────────────────────────────────
 
-    private static (object?, List<string>) ParseExpense(List<string> row, Dictionary<string, int> h)
+    private static (object?, List<string>) ParseExpense(List<string> row, Dictionary<string, int> h, BulkLookup lookup)
     {
         var errors = new List<string>();
         var req = new ExpenseRecordCreateRequest
@@ -509,12 +509,12 @@ public class BulkUploadService(
             Category = GetEnum<ExpenseCategory>(row, h, "Category", "Category", errors) ?? ExpenseCategory.Utility,
             ExpenseHead = GetRequired(row, h, "ExpenseHead", "ExpenseHead", errors),
             SpecificItem = GetRequired(row, h, "SpecificItem", "SpecificItem", errors),
-            VendorId = GetNullableGuid(row, h, "VendorId"),
+            VendorId = ResolveOptionalVendor(row, h, lookup, errors),
             Nature = GetEnum<ExpenseNature>(row, h, "Nature", "Nature", errors),
             Amount = GetDecimal(row, h, "Amount", "Amount", errors),
             Entity = GetEnum<ExpenseEntity>(row, h, "Entity", "Entity", errors),
-            BuildingId = GetNullableGuid(row, h, "BuildingId"),
-            ApartmentId = GetNullableGuid(row, h, "ApartmentId"),
+            BuildingId = ResolveBuilding(row, h, lookup, errors),
+            ApartmentId = ResolveOptionalApartment(row, h, lookup, errors),
             ExpenseDate = GetDate(row, h, "ExpenseDate", "ExpenseDate", errors),
             PaymentMethod = GetRequired(row, h, "PaymentMethod", "PaymentMethod", errors),
             Status = GetEnum<ExpenseStatus>(row, h, "Status", "Status", errors),
@@ -528,12 +528,17 @@ public class BulkUploadService(
             LitersFilled = GetInt(row, h, "LitersFilled", "LitersFilled", errors)
         };
 
+        if (req.Entity == ExpenseEntity.ApartmentSpecific && !req.ApartmentId.HasValue)
+        {
+            errors.Add("FlatNumber is required when Entity is ApartmentSpecific.");
+        }
+
         return (errors.Count > 0 ? null : req, errors);
     }
 
     // ── Maintenance ─────────────────────────────────────────────────────────
 
-    private static (object?, List<string>) ParseMaintenance(List<string> row, Dictionary<string, int> h)
+    private static (object?, List<string>) ParseMaintenance(List<string> row, Dictionary<string, int> h, BulkLookup lookup)
     {
         var errors = new List<string>();
         var req = new MaintenanceRequestCreateRequest
@@ -542,10 +547,10 @@ public class BulkUploadService(
             Description = GetRequired(row, h, "Description", "Description", errors),
             Category = GetRequired(row, h, "Category", "Category", errors),
             Priority = GetEnum<MaintenancePriority>(row, h, "Priority", "Priority", errors),
-            BuildingId = GetGuid(row, h, "BuildingId", "BuildingId", errors),
-            ApartmentId = GetNullableGuid(row, h, "ApartmentId"),
-            VendorId = GetNullableGuid(row, h, "VendorId"),
-            EquipmentId = GetNullableGuid(row, h, "EquipmentId"),
+            BuildingId = ResolveBuilding(row, h, lookup, errors),
+            ApartmentId = ResolveOptionalApartment(row, h, lookup, errors),
+            VendorId = ResolveOptionalVendor(row, h, lookup, errors),
+            EquipmentId = ResolveOptionalEquipment(row, h, lookup, errors),
             Status = GetEnum<MaintenanceStatus>(row, h, "Status", "Status", errors),
             EstimatedCost = GetDecimal(row, h, "EstimatedCost", "EstimatedCost", errors),
             AnnualCost = GetDecimal(row, h, "AnnualCost", "AnnualCost", 0m, errors),
@@ -561,12 +566,12 @@ public class BulkUploadService(
 
     // ── Equipment ───────────────────────────────────────────────────────────
 
-    private static (object?, List<string>) ParseEquipment(List<string> row, Dictionary<string, int> h)
+    private static (object?, List<string>) ParseEquipment(List<string> row, Dictionary<string, int> h, BulkLookup lookup)
     {
         var errors = new List<string>();
         var req = new EquipmentCreateRequest
         {
-            BuildingId = GetGuid(row, h, "BuildingId", "BuildingId", errors),
+            BuildingId = ResolveBuilding(row, h, lookup, errors),
             Name = GetRequired(row, h, "Name", "Name", errors),
             Type = GetRequired(row, h, "Type", "Type", errors),
             Brand = GetRequired(row, h, "Brand", "Brand", errors),
@@ -580,6 +585,198 @@ public class BulkUploadService(
         };
 
         return (errors.Count > 0 ? null : req, errors);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Name -> ID lookups (bulk uploads reference records by name/number, not GUIDs)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private sealed class BulkLookup
+    {
+        /// <summary>Building name (trimmed, case-insensitive) -> building id.</summary>
+        public Dictionary<string, Guid> Buildings { get; }
+
+        /// <summary>Owner full name (trimmed, case-insensitive) -> owner id.</summary>
+        public Dictionary<string, Guid> Owners { get; }
+
+        /// <summary>(building id, flat number) -> apartment id. Flat numbers are unique per building.</summary>
+        public Dictionary<(Guid BuildingId, string FlatNumber), Guid> Apartments { get; }
+
+        /// <summary>Vendor name (trimmed, case-insensitive) -> vendor id.</summary>
+        public Dictionary<string, Guid> Vendors { get; }
+
+        /// <summary>Equipment name (trimmed, case-insensitive) -> equipment id.</summary>
+        public Dictionary<string, Guid> Equipment { get; }
+
+        public BulkLookup(
+            Dictionary<string, Guid> buildings,
+            Dictionary<string, Guid> owners,
+            Dictionary<(Guid, string), Guid> apartments,
+            Dictionary<string, Guid> vendors,
+            Dictionary<string, Guid> equipment)
+        {
+            Buildings = buildings;
+            Owners = owners;
+            Apartments = apartments;
+            Vendors = vendors;
+            Equipment = equipment;
+        }
+    }
+
+    private async Task<BulkLookup> BuildLookupAsync(CancellationToken cancellationToken)
+    {
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
+        var equipment = await _unitOfWork.EquipmentRepository.GetAllAsync();
+
+        var buildingMap = new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase);
+        foreach (var b in buildings)
+        {
+            var key = NormalizeName(b.BuildingName);
+            if (!string.IsNullOrEmpty(key) && !buildingMap.ContainsKey(key))
+            {
+                buildingMap[key] = b.Id;
+            }
+        }
+
+        var ownerMap = new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase);
+        foreach (var o in owners)
+        {
+            var key = NormalizeName(o.FullName);
+            if (!string.IsNullOrEmpty(key) && !ownerMap.ContainsKey(key))
+            {
+                ownerMap[key] = o.Id;
+            }
+        }
+
+        var apartmentMap = new Dictionary<(Guid, string), Guid>();
+        foreach (var a in apartments)
+        {
+            var flatKey = NormalizeName(a.FlatNumber);
+            if (!string.IsNullOrEmpty(flatKey))
+            {
+                apartmentMap[(a.BuildingId, flatKey)] = a.Id;
+            }
+        }
+
+        var vendorMap = new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase);
+        foreach (var v in vendors)
+        {
+            var key = NormalizeName(v.Name);
+            if (!string.IsNullOrEmpty(key) && !vendorMap.ContainsKey(key))
+            {
+                vendorMap[key] = v.Id;
+            }
+        }
+
+        var equipmentMap = new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase);
+        foreach (var e in equipment)
+        {
+            var key = NormalizeName(e.Name);
+            if (!string.IsNullOrEmpty(key) && !equipmentMap.ContainsKey(key))
+            {
+                equipmentMap[key] = e.Id;
+            }
+        }
+
+        return new BulkLookup(buildingMap, ownerMap, apartmentMap, vendorMap, equipmentMap);
+    }
+
+    private static string NormalizeName(string? value) => value?.Trim().ToLowerInvariant() ?? string.Empty;
+
+    private static Guid ResolveBuilding(List<string> row, Dictionary<string, int> h, BulkLookup lookup, List<string> errors)
+    {
+        var name = CsvHelper.GetValue(row, h, "BuildingName");
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            errors.Add("BuildingName is required.");
+            return Guid.Empty;
+        }
+        if (lookup.Buildings.TryGetValue(NormalizeName(name), out var id))
+        {
+            return id;
+        }
+        errors.Add($"Building '{name}' was not found. The building must be created before it can be referenced.");
+        return Guid.Empty;
+    }
+
+    private static Guid ResolveOwner(List<string> row, Dictionary<string, int> h, BulkLookup lookup, List<string> errors)
+    {
+        var name = CsvHelper.GetValue(row, h, "OwnerName");
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            errors.Add("OwnerName is required.");
+            return Guid.Empty;
+        }
+        if (lookup.Owners.TryGetValue(NormalizeName(name), out var id))
+        {
+            return id;
+        }
+        errors.Add($"Owner '{name}' was not found. The owner must be created before it can be referenced.");
+        return Guid.Empty;
+    }
+
+    private static Guid ResolveApartment(List<string> row, Dictionary<string, int> h, BulkLookup lookup, List<string> errors)
+    {
+        var buildingName = CsvHelper.GetValue(row, h, "BuildingName");
+        var flatNumber = CsvHelper.GetValue(row, h, "FlatNumber");
+        if (string.IsNullOrWhiteSpace(buildingName) || string.IsNullOrWhiteSpace(flatNumber))
+        {
+            errors.Add("BuildingName and FlatNumber are required to identify the apartment.");
+            return Guid.Empty;
+        }
+        if (!lookup.Buildings.TryGetValue(NormalizeName(buildingName), out var buildingId))
+        {
+            errors.Add($"Building '{buildingName}' was not found. The building must be created before it can be referenced.");
+            return Guid.Empty;
+        }
+        if (lookup.Apartments.TryGetValue((buildingId, NormalizeName(flatNumber)), out var apartmentId))
+        {
+            return apartmentId;
+        }
+        errors.Add($"Apartment with flat number '{flatNumber}' was not found in building '{buildingName}'.");
+        return Guid.Empty;
+    }
+
+    private static Guid? ResolveOptionalApartment(List<string> row, Dictionary<string, int> h, BulkLookup lookup, List<string> errors)
+    {
+        if (CsvHelper.GetValue(row, h, "FlatNumber") is not { } flatNumber || string.IsNullOrWhiteSpace(flatNumber))
+        {
+            return null;
+        }
+        return ResolveApartment(row, h, lookup, errors);
+    }
+
+    private static Guid? ResolveOptionalVendor(List<string> row, Dictionary<string, int> h, BulkLookup lookup, List<string> errors)
+    {
+        var name = CsvHelper.GetValue(row, h, "VendorName");
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+        if (lookup.Vendors.TryGetValue(NormalizeName(name), out var id))
+        {
+            return id;
+        }
+        errors.Add($"Vendor '{name}' was not found. The vendor must be created before it can be referenced.");
+        return null;
+    }
+
+    private static Guid? ResolveOptionalEquipment(List<string> row, Dictionary<string, int> h, BulkLookup lookup, List<string> errors)
+    {
+        var name = CsvHelper.GetValue(row, h, "EquipmentName");
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+        if (lookup.Equipment.TryGetValue(NormalizeName(name), out var id))
+        {
+            return id;
+        }
+        errors.Add($"Equipment '{name}' was not found. The equipment must be created before it can be referenced.");
+        return null;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -612,12 +809,6 @@ public class BulkUploadService(
             return Guid.Empty;
         }
         return guid;
-    }
-
-    private static Guid? GetNullableGuid(List<string> row, Dictionary<string, int> h, string header)
-    {
-        var value = CsvHelper.GetValue(row, h, header);
-        return Guid.TryParse(value, out var guid) ? guid : null;
     }
 
     private static decimal GetDecimal(List<string> row, Dictionary<string, int> h, string header, string label, List<string> errors)
@@ -827,32 +1018,32 @@ public class BulkUploadService(
     private static string TemplateCsv(string module) => module.ToLowerInvariant() switch
     {
         "apartments" => BuildTemplate(
-            new[] { "BuildingId", "OwnerId", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" },
-            new[] { "b1f7b822-29c4-52a8-ad29-c8be5d491f24", "f1a3b822-29c4-52a8-ad29-c8be5d491f24", "NST-BULK-001", "999", "9", "3 BHK", "1100", "3", "2", "true", "P-99", "45000", "3000", "500", "Bulk upload sample apartment" }),
+            new[] { "BuildingName", "OwnerName", "NestawayId", "FlatNumber", "Floor", "ApartmentType", "AreaSqft", "Bedrooms", "Bathrooms", "HasBalcony", "ParkingSlot", "ExpectedRent", "MaintenanceCharge", "WaterCharge", "Notes" },
+            new[] { "Grand Plaza Towers", "Rahul Verma", "NEST-BULK-001", "999", "9", "3 BHK", "1100", "3", "2", "true", "P-99", "45000", "3000", "500", "Bulk upload sample apartment" }),
 
         "tenants" => BuildTemplate(
-            new[] { "BuildingId", "ApartmentId", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" },
-            new[] { "b1f7b822-29c4-52a8-ad29-c8be5d491f24", "a5c7b822-29c4-52a8-ad29-c8be5d491f32", "Bulk Test Tenant", "+91 9000000000", "bulk.tenant@example.com", "Aadhar", "TENANT-BULK-001", "", "2026-09-01", "2026-09-01", "2027-08-31", "45000", "90000", "Emergency Contact", "+91 9000000001", "Active", "Bulk upload sample tenant" }),
+            new[] { "BuildingName", "FlatNumber", "FullName", "Phone", "Email", "IdType", "IdNumber", "IdProofAttachmentUrl", "MoveInDate", "LeaseStartDate", "LeaseEndDate", "MonthlyRent", "SecurityDeposit", "EmergencyContactName", "EmergencyContactPhone", "Status", "Notes" },
+            new[] { "Grand Plaza Towers", "302", "Bulk Test Tenant", "+91 9000000000", "bulk.tenant@example.com", "Aadhar", "TENANT-BULK-001", "", "2026-09-01", "2026-09-01", "2027-08-31", "45000", "90000", "Emergency Contact", "+91 9000000001", "Active", "Bulk upload sample tenant" }),
 
         "owners" => BuildTemplate(
             new[] { "FullName", "Phone", "Email", "City", "Address", "IdType", "IdNumber", "BankName", "AccountNumber", "IfscCode", "Status", "Notes" },
             new[] { "Bulk Test Owner", "+91 9000000002", "bulk.owner@example.com", "Mumbai", "1, Test Street", "Aadhar", "OWNER-BULK-001", "HDFC Bank", "88888888888", "HDFC0000999", "Active", "Bulk upload sample owner" }),
 
         "income" => BuildTemplate(
-            new[] { "IncomeEntity", "IncomeType", "Amount", "BuildingId", "ApartmentId", "PaymentDate", "PaymentMethod", "TransactionReference", "Status", "Notes", "AttachmentUrl" },
-            new[] { "ApartmentWise", "Rent", "45000", "b1f7b822-29c4-52a8-ad29-c8be5d491f24", "a1f3b822-29c4-52a8-ad29-c8be5d491f24", "2026-09-05", "BankTransfer", "TRX-BULK-001", "Paid", "Bulk upload sample income", "" }),
+            new[] { "IncomeEntity", "IncomeType", "Amount", "BuildingName", "FlatNumber", "PaymentDate", "PaymentMethod", "TransactionReference", "Status", "Notes", "AttachmentUrl" },
+            new[] { "ApartmentWise", "Rent", "45000", "Grand Plaza Towers", "302", "2026-09-05", "BankTransfer", "TRX-BULK-001", "Paid", "Bulk upload sample income", "" }),
 
         "expenses" => BuildTemplate(
-            new[] { "Category", "ExpenseHead", "SpecificItem", "VendorId", "Nature", "Amount", "Entity", "BuildingId", "ApartmentId", "ExpenseDate", "PaymentMethod", "Status", "Reference", "AttachmentUrl", "Description", "TankerNumber", "TimeOfDelivery", "DeliveryDriverName", "ManagerInAttendance", "LitersFilled" },
-            new[] { "Utility", "Electricity", "Monthly bill", "f7c7b822-29c4-52a8-ad29-c8be5d491f41", "Service", "1250.50", "General", "b1f7b822-29c4-52a8-ad29-c8be5d491f24", "", "2026-08-07", "BankTransfer", "Paid", "REF-BULK-001", "", "Bulk upload sample expense", "", "", "", "", "" }),
+            new[] { "Category", "ExpenseHead", "SpecificItem", "VendorName", "Nature", "Amount", "Entity", "BuildingName", "FlatNumber", "ExpenseDate", "PaymentMethod", "Status", "Reference", "AttachmentUrl", "Description", "TankerNumber", "TimeOfDelivery", "DeliveryDriverName", "ManagerInAttendance", "LitersFilled" },
+            new[] { "Utility", "Electricity", "Monthly bill", "BESCOM", "Service", "1250.50", "General", "Grand Plaza Towers", "", "2026-08-07", "BankTransfer", "Paid", "REF-BULK-001", "", "Bulk upload sample expense", "", "", "", "", "" }),
 
         "maintenance" => BuildTemplate(
-            new[] { "Title", "Description", "Category", "Priority", "BuildingId", "ApartmentId", "VendorId", "EquipmentId", "Status", "EstimatedCost", "AnnualCost", "ScheduledDate", "StartDate", "RecurrenceFrequency", "ReceiptAttachmentUrl", "Notes" },
-            new[] { "Bulk test request", "Bulk upload sample maintenance request", "Plumbing", "High", "b1f7b822-29c4-52a8-ad29-c8be5d491f24", "a1f3b822-29c4-52a8-ad29-c8be5d491f24", "f7a3b822-29c4-52a8-ad29-c8be5d491f24", "e1a3b822-29c4-52a8-ad29-c8be5d491f24", "Open", "1500", "18000", "2026-08-10", "", "Monthly", "", "Bulk upload sample maintenance" }),
+            new[] { "Title", "Description", "Category", "Priority", "BuildingName", "FlatNumber", "VendorName", "EquipmentName", "Status", "EstimatedCost", "AnnualCost", "ScheduledDate", "StartDate", "RecurrenceFrequency", "ReceiptAttachmentUrl", "Notes" },
+            new[] { "Bulk test request", "Bulk upload sample maintenance request", "Plumbing", "High", "Grand Plaza Towers", "302", "Sunil Kumar", "Water Pump Block A", "Open", "1500", "18000", "2026-08-10", "", "Monthly", "", "Bulk upload sample maintenance" }),
 
         "equipment" => BuildTemplate(
-            new[] { "BuildingId", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" },
-            new[] { "b1f7b822-29c4-52a8-ad29-c8be5d491f24", "Bulk Test Pump", "Pump", "Kirloskar", "KM-40", "SN-BULK-001", "2026-01-01", "2028-01-01", "Operational", "Bulk upload sample equipment", "" }),
+            new[] { "BuildingName", "Name", "Type", "Brand", "Model", "SerialNumber", "InstallDate", "WarrantyExpiryDate", "Status", "Notes", "AttachmentUrl" },
+            new[] { "Grand Plaza Towers", "Bulk Test Pump", "Pump", "Kirloskar", "KM-40", "SN-BULK-001", "2026-01-01", "2028-01-01", "Operational", "Bulk upload sample equipment", "" }),
 
         _ => string.Empty
     };

@@ -157,7 +157,8 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
 
     public async Task Create(OwnerCreateRequest request, CancellationToken cancellationToken)
     {
-        var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName);
+        var normalizedName = request.FullName?.Trim().ToLowerInvariant() ?? string.Empty;
+        var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName.Trim().ToLower() == normalizedName);
         if (isNameExist)
         {
             throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
@@ -217,9 +218,10 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
         var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
-        if (owner.FullName != request.FullName)
+        if (!string.Equals(owner.FullName, request.FullName, StringComparison.OrdinalIgnoreCase))
         {
-            var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName == request.FullName && x.Id != id);
+            var normalizedName = request.FullName?.Trim().ToLowerInvariant() ?? string.Empty;
+            var isNameExist = await _unitOfWork.OwnerRepository.AnyIncludingDeletedAsync(x => x.FullName.Trim().ToLower() == normalizedName && x.Id != id);
             if (isNameExist)
             {
                 throw OwnerException.BadRequestException($"Owner with name '{request.FullName}' already exists.");
