@@ -212,7 +212,7 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
 
     public async Task<ApartmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw ApartmentException.NotFoundException("The specified apartment does not exist.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == apartment.BuildingId);

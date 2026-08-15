@@ -120,7 +120,7 @@ public class AmcContractService(
 
     public async Task<AmcContractViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var contract = await _unitOfWork.AmcContractRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw AmcContractException.NotFoundException($"AMC Contract with ID '{id}' was not found.");
 
         var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == contract.EquipmentId);

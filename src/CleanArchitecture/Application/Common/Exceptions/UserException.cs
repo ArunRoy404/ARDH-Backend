@@ -17,4 +17,7 @@ public static class UserException
 
     public static UserFriendlyException BadRequestException(string errorMessage)
         => new(ErrorCode.BadRequest, errorMessage, errorMessage);
+
+    public static UserFriendlyException NotFoundException(string errorMessage)
+        => new(ErrorCode.NotFound, errorMessage, errorMessage);
 }

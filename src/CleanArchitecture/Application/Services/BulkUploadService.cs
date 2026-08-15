@@ -398,7 +398,7 @@ public class BulkUploadService(
             FlatNumber = GetRequired(row, h, "FlatNumber", "FlatNumber", errors),
             ApartmentType = GetRequired(row, h, "ApartmentType", "ApartmentType", errors),
             Floor = GetInt(row, h, "Floor", "Floor", 0, errors) ?? 0,
-            AreaSqft = GetDecimal(row, h, "AreaSqft", "AreaSqft", errors),
+            AreaSqft = GetOptionalDecimal(row, h, "AreaSqft", "AreaSqft", errors),
             Bedrooms = GetInt(row, h, "Bedrooms", "Bedrooms", errors),
             Bathrooms = GetInt(row, h, "Bathrooms", "Bathrooms", errors),
             HasBalcony = GetBool(row, h, "HasBalcony", "HasBalcony", false, errors),
@@ -431,7 +431,7 @@ public class BulkUploadService(
             LeaseStartDate = GetDate(row, h, "LeaseStartDate", "LeaseStartDate", errors) ?? DateTime.UtcNow,
             LeaseEndDate = GetDate(row, h, "LeaseEndDate", "LeaseEndDate", errors),
             MonthlyRent = GetDecimal(row, h, "MonthlyRent", "MonthlyRent", 0m, errors),
-            SecurityDeposit = GetDecimal(row, h, "SecurityDeposit", "SecurityDeposit", errors),
+            SecurityDeposit = GetOptionalDecimal(row, h, "SecurityDeposit", "SecurityDeposit", errors),
             EmergencyContactName = GetOptional(row, h, "EmergencyContactName"),
             EmergencyContactPhone = GetOptional(row, h, "EmergencyContactPhone"),
             Status = GetEnum<TenantStatus>(row, h, "Status", "Status", errors),
@@ -822,6 +822,26 @@ public class BulkUploadService(
         {
             errors.Add($"{label} '{value}' is not a valid number.");
             return 0m;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Reads an optional decimal column: blank cells yield null (no error), matching the
+    /// create-API semantics where the field is optional (e.g. Apartment.AreaSqft,
+    /// Tenant.SecurityDeposit). Invalid non-blank values still produce a row error.
+    /// </summary>
+    private static decimal? GetOptionalDecimal(List<string> row, Dictionary<string, int> h, string header, string label, List<string> errors)
+    {
+        var value = CsvHelper.GetValue(row, h, header);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+        if (!decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
+        {
+            errors.Add($"{label} '{value}' is not a valid number.");
+            return null;
         }
         return result;
     }

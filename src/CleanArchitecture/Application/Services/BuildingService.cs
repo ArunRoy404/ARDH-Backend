@@ -73,7 +73,7 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
     public async Task<BuildingViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw BuildingException.NotFoundException("The specified building does not exist.");
 
         var createdByUser = building.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == building.CreatedBy.Value) : null;

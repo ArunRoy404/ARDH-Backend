@@ -153,7 +153,7 @@ public class ExpenseRecordService(
 
     public async Task<ExpenseRecordViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var record = await _unitOfWork.ExpenseRecordRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw ExpenseRecordException.NotFoundException($"Expense record with ID '{id}' was not found.");
 
         var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;

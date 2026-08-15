@@ -94,8 +94,10 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// [M-03] Creates a new maintenance request.
     /// </summary>
     /// <remarks>
-    /// Mandatory fields: title, description, category, priority, status, buildingId, apartmentId, vendorId,
-    /// equipmentId, estimatedCost and scheduledDate. All other fields are optional.
+    /// Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost
+    /// and scheduledDate. All other fields are optional.
+    /// apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests
+    /// have none of them.
     /// category is a free-form string (any value, e.g. "Plumbing", "Electrical", "Lift").
     /// Valid enum values (exact):
     ///   priority = Low | Medium | High | Critical
@@ -118,8 +120,10 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// [M-04] Updates details of an existing maintenance request.
     /// </summary>
     /// <remarks>
-    /// Mandatory fields: title, description, category, priority, status, buildingId, apartmentId, vendorId,
-    /// equipmentId, estimatedCost and scheduledDate. All other fields are optional.
+    /// Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost
+    /// and scheduledDate. All other fields are optional.
+    /// apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests
+    /// have none of them.
     /// Valid enum values (exact):
     ///   priority = Low | Medium | High | Critical
     ///   status = Open | InProgress | Complete | Cancelled

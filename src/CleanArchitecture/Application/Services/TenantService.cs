@@ -188,7 +188,7 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
     public async Task<TenantViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var tenant = await _unitOfWork.TenantRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw TenantException.NotFoundException("The specified tenant does not exist.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == tenant.BuildingId);

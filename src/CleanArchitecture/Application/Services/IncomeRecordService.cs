@@ -127,7 +127,7 @@ public class IncomeRecordService(
 
     public async Task<IncomeRecordViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var record = await _unitOfWork.IncomeRecordRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw IncomeRecordException.NotFoundException($"Income record with ID '{id}' was not found.");
 
         var building = record.BuildingId.HasValue ? await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == record.BuildingId.Value) : null;

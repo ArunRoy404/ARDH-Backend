@@ -258,7 +258,7 @@ public class MaintenanceRequestService(
 
     public async Task<MaintenanceRequestViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var request = await _unitOfWork.MaintenanceRequestRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw MaintenanceRequestException.NotFoundException($"Maintenance request with ID '{id}' was not found.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == request.BuildingId);

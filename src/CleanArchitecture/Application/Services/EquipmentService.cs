@@ -175,7 +175,7 @@ public class EquipmentService(
 
     public async Task<EquipmentViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var equipment = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw EquipmentException.NotFoundException($"Equipment with ID '{id}' was not found.");
 
         var building = await _unitOfWork.BuildingRepository.FirstOrDefaultAsync(x => x.Id == equipment.BuildingId);

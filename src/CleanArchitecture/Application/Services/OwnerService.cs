@@ -126,7 +126,7 @@ public class OwnerService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INot
 
     public async Task<OwnerViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var owner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw OwnerException.NotFoundException("The specified owner does not exist.");
 
         var createdByUser = owner.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == owner.CreatedBy.Value) : null;

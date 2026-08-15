@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Shared.Domain.Enums;
@@ -128,7 +129,7 @@ public class ReportService(
                 cancellationToken: cancellationToken);
         }
 
-        if (typeLower == "expense")
+        if (typeLower is "expense" or "expenses")
         {
             return await _expenseRecordService.ExportToXlsx(
                 search: null,
@@ -140,6 +141,12 @@ public class ReportService(
                 startDate: startDate,
                 endDate: endDate,
                 cancellationToken: cancellationToken);
+        }
+
+        if (typeLower != "combined")
+        {
+            throw ReportException.BadRequestException(
+                $"Invalid report type '{type}'. Valid types: income, expenses, combined.");
         }
 
         // Combined transaction ledger merging income + expense into one dated feed — unique to

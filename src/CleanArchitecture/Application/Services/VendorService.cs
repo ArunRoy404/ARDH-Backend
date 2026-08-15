@@ -72,7 +72,7 @@ public class VendorService(
 
     public async Task<VendorViewModel> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id)
+        var vendor = await _unitOfWork.VendorRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw VendorException.NotFoundException($"Vendor with ID '{id}' was not found.");
 
         var createdByUser = vendor.CreatedBy.HasValue ? await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == vendor.CreatedBy.Value) : null;
