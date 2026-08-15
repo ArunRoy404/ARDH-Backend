@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# local SQL Server backups produced by deploy/backup-db.sh
+backups/
+
 # captured dev console log
 server_log.txt
 

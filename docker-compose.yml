@@ -31,6 +31,9 @@ services:
       Identity__Key: ${IDENTITY_KEY}
       MailConfigurations__ApiKey: ${RESEND_API_KEY}
       AdminSettings__Password: ${ADMIN_PANEL_PASSWORD}
+      # Leave unset for normal startup. Set to "reset" or "wipe" (see DEPLOYMENT.md)
+      # only for one-off maintenance restarts, then unset again.
+      SEED_MODE: ${SEED_MODE:-}
     ports:
       # Only bind to localhost - Nginx (installed on the host) reverse-proxies
       # to this port. The container is never exposed directly to the internet.
