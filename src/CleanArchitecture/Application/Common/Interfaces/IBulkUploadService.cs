@@ -15,6 +15,13 @@ public interface IBulkUploadService
     /// <summary>Processes a bulk upload job: parses the XLSX, creates records, writes the processed XLSX.</summary>
     Task ProcessAsync(Guid bulkUploadId, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Returns the ids of bulk-upload jobs that are stuck in "Processing" (no FinishedAt) —
+    /// e.g. the server restarted or crashed mid-job. Used by the background service on startup
+    /// to re-queue them so they finish instead of staying stuck forever.
+    /// </summary>
+    Task<List<Guid>> GetInterruptedJobIdsAsync(CancellationToken cancellationToken);
+
     /// <summary>Returns all bulk uploads, optionally filtered by module (newest first).</summary>
     Task<List<BulkUploadViewModel>> GetStatusAsync(BulkUploadModule? module, CancellationToken cancellationToken);
 

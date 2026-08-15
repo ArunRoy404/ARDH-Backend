@@ -102,6 +102,13 @@ public class BulkUploadService(
     // Background processing
     // ─────────────────────────────────────────────────────────────────────────
 
+    public async Task<List<Guid>> GetInterruptedJobIdsAsync(CancellationToken cancellationToken)
+    {
+        var stuck = await _unitOfWork.BulkUploadRepository.GetAllAsync(
+            x => x.Status == BulkUploadStatus.Processing.ToString() && !x.FinishedAt.HasValue);
+        return stuck.Select(x => x.Id).ToList();
+    }
+
     public async Task ProcessAsync(Guid bulkUploadId, CancellationToken cancellationToken)
     {
         var record = await _unitOfWork.BulkUploadRepository.FirstOrDefaultAsync(x => x.Id == bulkUploadId);
