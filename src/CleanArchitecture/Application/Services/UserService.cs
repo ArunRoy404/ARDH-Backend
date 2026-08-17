@@ -136,8 +136,10 @@ public class UserService(
     private static readonly Dictionary<UserRole, UserPermission[]> DefaultRolePermissions = new()
     {
         [UserRole.admin] = Enum.GetValues<UserPermission>(),
-        // Viewer is read-only: gets every module for viewing but never admin.
-        [UserRole.viewer] = Enum.GetValues<UserPermission>().Where(p => p != UserPermission.admin).ToArray(),
+        // Viewer starts with no module access by default - an admin must explicitly grant
+        // each module via the Permissions field. Viewer is still hard-blocked from every
+        // mutating verb regardless of granted modules (see PermissionAuthorizationFilter).
+        [UserRole.viewer] = [],
         [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
         [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
     };

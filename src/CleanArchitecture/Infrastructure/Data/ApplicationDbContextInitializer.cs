@@ -171,7 +171,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     private static readonly Dictionary<UserRole, UserPermission[]> DefaultRolePermissionsForMigration = new()
     {
         [UserRole.admin] = Enum.GetValues<UserPermission>(),
-        [UserRole.viewer] = Enum.GetValues<UserPermission>().Where(p => p != UserPermission.admin).ToArray(),
+        [UserRole.viewer] = [],
         [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
         [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
     };
