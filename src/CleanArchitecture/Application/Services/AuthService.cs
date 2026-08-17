@@ -139,6 +139,30 @@ public class AuthService(
         return result;
     }
 
+    public async Task UpdatePassword(UpdatePasswordRequest request, CancellationToken token)
+    {
+        var userId = _currentUser.GetCurrentUserId();
+        if (userId == Guid.Empty)
+        {
+            throw UserException.UserUnauthorizedException();
+        }
+
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
+            ?? throw UserException.BadRequestException(UserErrorMessage.UserNotExist);
+
+        if (!StringHelper.Verify(request.CurrentPassword, user.PasswordHash))
+        {
+            throw UserException.BadRequestException("The current password you entered is incorrect.");
+        }
+
+        user.PasswordHash = request.NewPassword.Hash();
+        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = userId;
+
+        _unitOfWork.UserRepository.Update(user);
+        await _unitOfWork.SaveChangesAsync(token);
+    }
+
     public async Task ResendOtp(ResendOtpRequest request, CancellationToken token)
     {
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Email == request.Email)

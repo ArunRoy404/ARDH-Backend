@@ -1219,7 +1219,208 @@
           ]
         },
         {
-          "name": "3. Resend OTP",
+          "name": "3. Update Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/update-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "update-password"
+              ]
+            },
+            "description": "Updates the password of the currently signed-in user (cookie-based auth). Requires the correct current password.\nBody: currentPassword, newPassword, confirmNewPassword (must match, min 6 chars, must differ from currentPassword)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"currentPassword\": \"OldP@ss123\", // [REQUIRED] Your current password\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters, must differ from current password)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "Success Example (200)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/update-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "update-password"
+                  ]
+                },
+                "description": "Updates the password of the currently signed-in user (cookie-based auth). Requires the correct current password.\nBody: currentPassword, newPassword, confirmNewPassword (must match, min 6 chars, must differ from currentPassword)",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"currentPassword\": \"OldP@ss123\", // [REQUIRED] Your current password\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters, must differ from current password)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Password updated successfully.\",\n  \"data\": null\n}"
+            },
+            {
+              "name": "Error Example (401 - Not Authenticated)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/update-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "update-password"
+                  ]
+                },
+                "description": "Updates the password of the currently signed-in user (cookie-based auth). Requires the correct current password.\nBody: currentPassword, newPassword, confirmNewPassword (must match, min 6 chars, must differ from currentPassword)",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"currentPassword\": \"OldP@ss123\", // [REQUIRED] Your current password\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters, must differ from current password)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User is not logged in.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.unauthorized\",\n      \"message\": \"User is not logged in.\",\n      \"errorMessage\": \"User is not logged in.\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Incorrect Current Password)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/update-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "update-password"
+                  ]
+                },
+                "description": "Updates the password of the currently signed-in user (cookie-based auth). Requires the correct current password.\nBody: currentPassword, newPassword, confirmNewPassword (must match, min 6 chars, must differ from currentPassword)",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"currentPassword\": \"OldP@ss123\", // [REQUIRED] Your current password\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters, must differ from current password)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"The current password you entered is incorrect.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.bad_request\",\n      \"message\": \"The current password you entered is incorrect.\",\n      \"errorMessage\": \"The current password you entered is incorrect.\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Validation Failed)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/update-password",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "update-password"
+                  ]
+                },
+                "description": "Updates the password of the currently signed-in user (cookie-based auth). Requires the correct current password.\nBody: currentPassword, newPassword, confirmNewPassword (must match, min 6 chars, must differ from currentPassword)",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"currentPassword\": \"OldP@ss123\", // [REQUIRED] Your current password\n    \"newPassword\": \"NewP@ss123\", // [REQUIRED] New password (min 6 characters, must differ from current password)\n    \"confirmNewPassword\": \"NewP@ss123\", // [REQUIRED] Must exactly match newPassword\n}"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.bad_request\",\n      \"message\": \"Passwords do not match.\",\n      \"errorMessage\": \"Passwords do not match.\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "4. Resend OTP",
           "request": {
             "auth": {
               "type": "noauth"
@@ -1336,7 +1537,7 @@
           ]
         },
         {
-          "name": "4. Forgot Password (OTP)",
+          "name": "5. Forgot Password (OTP)",
           "request": {
             "auth": {
               "type": "noauth"
@@ -1453,7 +1654,7 @@
           ]
         },
         {
-          "name": "5. Verify OTP",
+          "name": "6. Verify OTP",
           "request": {
             "auth": {
               "type": "noauth"
@@ -1570,7 +1771,7 @@
           ]
         },
         {
-          "name": "6. Reset Password",
+          "name": "7. Reset Password",
           "request": {
             "auth": {
               "type": "noauth"
@@ -1729,7 +1930,7 @@
           ]
         },
         {
-          "name": "7. Logout",
+          "name": "8. Logout",
           "request": {
             "auth": {
               "type": "noauth"
