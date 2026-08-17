@@ -185,7 +185,7 @@ public class UserService(
 
         await _notificationService.CreateNotificationInternal("admin", "New User Created", $"User '{user.Name}' ({user.Role}) was created.", cancellationToken);
 
-        await SendAccountCreatedEmailAsync(user.Email, user.Name, request.Password);
+        await SendAccountCreatedEmailAsync(user.Email, user.Name, request.Password, user.Role);
     }
 
     public async Task Update(UserUpdateRequest request, CancellationToken cancellationToken)
@@ -305,19 +305,28 @@ public class UserService(
         }
     }
 
-    private async Task SendAccountCreatedEmailAsync(string email, string name, string password)
+    private static string FormatRole(UserRole role) => role switch
     {
-        var subject = "Ardh - Your Account Has Been Created";
-        var htmlMessage = $@"
-            <div style=""font-family:Arial, sans-serif; max-width:480px; margin:0 auto; padding:24px; border:1px solid #e5e7eb; border-radius:12px;"">
-                <h2 style=""margin:0 0 8px; color:#111827;"">Welcome, {name}</h2>
-                <p style=""margin:0 0 16px; color:#374151;"">An account has been created for you on Ardh Property Management. You can sign in using the credentials below.</p>
-                <div style=""padding:16px; background:#f3f4f6; border-radius:8px; color:#1f2937;"">
-                    <p style=""margin:0 0 8px;""><strong>Email:</strong> {email}</p>
-                    <p style=""margin:0;""><strong>Password:</strong> {password}</p>
-                </div>
-                <p style=""margin:16px 0 0; color:#6b7280; font-size:12px;"">For your security, please sign in and change your password as soon as possible.</p>
-            </div>";
+        UserRole.property_manager => "Property Manager",
+        _ => role.ToString()[..1].ToUpperInvariant() + role.ToString()[1..]
+    };
+
+    private async Task SendAccountCreatedEmailAsync(string email, string name, string password, UserRole role)
+    {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        var roleLabel = FormatRole(role);
+
+        var subject = $"Ardh - Your {roleLabel} Account Has Been Created";
+        var bodyContent = $@"
+            <h2 style=""margin:0 0 8px;color:#111827;font-size:20px;"">Welcome, {name}</h2>
+            <p style=""margin:0 0 20px;color:#4b5563;font-size:14px;line-height:1.6;"">An account has been created for you on Ardh Property Management with the <strong>{roleLabel}</strong> role. You can sign in using the credentials below.</p>
+            <div style=""padding:18px;background:#f9fafb;border:1px solid #f1f1f4;border-radius:10px;color:#1f2937;font-size:14px;"">
+                <p style=""margin:0 0 8px;""><strong>Role:</strong> {roleLabel}</p>
+                <p style=""margin:0 0 8px;""><strong>Email:</strong> {email}</p>
+                <p style=""margin:0;""><strong>Password:</strong> {password}</p>
+            </div>
+            <p style=""margin:20px 0 0;color:#9ca3af;font-size:12px;"">For your security, please sign in and change your password as soon as possible.</p>";
+        var htmlMessage = EmailTemplateBuilder.Build(setting?.Icon, setting?.CompanyName, bodyContent);
 
         try
         {
@@ -332,13 +341,14 @@ public class UserService(
 
     private async Task SendAccountDeactivatedEmailAsync(string email, string name)
     {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+
         var subject = "Ardh - Your Account Has Been Deactivated";
-        var htmlMessage = $@"
-            <div style=""font-family:Arial, sans-serif; max-width:480px; margin:0 auto; padding:24px; border:1px solid #e5e7eb; border-radius:12px;"">
-                <h2 style=""margin:0 0 8px; color:#111827;"">Account Deactivated</h2>
-                <p style=""margin:0 0 16px; color:#374151;"">Hi {name}, your Ardh Property Management account has been deactivated by an administrator. You will not be able to sign in until it is reactivated.</p>
-                <p style=""margin:16px 0 0; color:#6b7280; font-size:12px;"">If you believe this was a mistake, please contact your administrator.</p>
-            </div>";
+        var bodyContent = $@"
+            <h2 style=""margin:0 0 8px;color:#111827;font-size:20px;"">Account Deactivated</h2>
+            <p style=""margin:0 0 20px;color:#4b5563;font-size:14px;line-height:1.6;"">Hi {name}, your Ardh Property Management account has been deactivated by an administrator. You will not be able to sign in until it is reactivated.</p>
+            <p style=""margin:20px 0 0;color:#9ca3af;font-size:12px;"">If you believe this was a mistake, please contact your administrator.</p>";
+        var htmlMessage = EmailTemplateBuilder.Build(setting?.Icon, setting?.CompanyName, bodyContent);
 
         try
         {

@@ -161,14 +161,15 @@ public class AuthService(
 
     private async Task SendOtpEmailAsync(string email, string otp)
     {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+
         var subject = "Ardh - Password Reset OTP";
-        var htmlMessage = $@"
-            <div style=""font-family:Arial, sans-serif; max-width:480px; margin:0 auto; padding:24px; border:1px solid #e5e7eb; border-radius:12px;"">
-                <h2 style=""margin:0 0 8px; color:#111827;"">Password Reset Request</h2>
-                <p style=""margin:0 0 16px; color:#374151;"">Use the one-time code below to reset your password. It expires in 10 minutes.</p>
-                <div style=""padding:16px; background:#f3f4f6; border-radius:8px; text-align:center; font-size:32px; font-weight:bold; letter-spacing:8px; color:#1f2937;"">{otp}</div>
-                <p style=""margin:16px 0 0; color:#6b7280; font-size:12px;"">If you did not request this, you can safely ignore this email.</p>
-            </div>";
+        var bodyContent = $@"
+            <h2 style=""margin:0 0 8px;color:#111827;font-size:20px;"">Password Reset Request</h2>
+            <p style=""margin:0 0 20px;color:#4b5563;font-size:14px;line-height:1.6;"">Use the one-time code below to reset your password. It expires in 10 minutes.</p>
+            <div style=""padding:18px;background:#f5f3ff;border-radius:10px;text-align:center;font-size:32px;font-weight:700;letter-spacing:8px;color:#4f46e5;"">{otp}</div>
+            <p style=""margin:20px 0 0;color:#9ca3af;font-size:12px;"">If you did not request this, you can safely ignore this email.</p>";
+        var htmlMessage = EmailTemplateBuilder.Build(setting?.Icon, setting?.CompanyName, bodyContent);
 
         _logger.LogInformation("Password reset OTP generated for {email}: {otp}", email, otp);
 
