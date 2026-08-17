@@ -46,9 +46,17 @@ git commit -m "..."
 git push
 ```
 
-On the **server**:
+On the **server**, check Docker is actually up first if you haven't touched the box in
+a while:
+```bash
+docker --version && docker compose version
+sudo systemctl status docker --no-pager   # want "active (running)"
+```
+
+Then deploy:
 ```bash
 cd ~/ARDH-Backend
+docker compose ps        # see what's currently running before you change anything
 git pull
 docker compose up -d --build
 ```
@@ -59,13 +67,69 @@ on startup, same as local dev.
 
 **Verify:**
 ```bash
-docker compose ps
-docker compose logs -f api
+sleep 5 && docker compose ps          # want "Up X seconds", NOT "Restarting"
+docker compose logs api --tail 50     # no exception/stack trace
+curl -i https://api.ardh.co.in/api/settings/public   # want 200, not 502
 ```
-`Ctrl+C` to stop tailing logs (containers keep running).
+If `docker compose ps` shows `Restarting (139)` — that's an unhandled .NET exception
+crashing the process on every startup attempt, not necessarily a native crash despite
+the signal-like exit code. Go straight to `docker compose logs api --tail 100` and read
+the actual exception — see the Troubleshooting table (§7) for the two most common
+causes we've hit here.
 
 If you change `docker-compose.yml` or `.env` itself, the same `up -d --build` picks up
 the new values.
+
+### ⚠️ There are two different `.env` file formats — don't mix them up
+
+This project has **two separate `.env` files that look similar but use different key
+naming**, and confusing them is the single most common way to break a deploy:
+
+| | Local dev `.env` (repo root, your machine) | Server `.env` (`~/ARDH-Backend` on the VPS only) |
+| :--- | :--- | :--- |
+| Loaded by | `DotEnvExtension.LoadDotEnv()` — read directly as real env vars by the .NET app | `docker compose`, to substitute `${VAR}` placeholders in [docker-compose.yml](docker-compose.yml) |
+| Mail key format | `MailConfigurations__Host`, `MailConfigurations__Port`, `MailConfigurations__Username`, `MailConfigurations__Password`, `MailConfigurations__From`, `MailConfigurations__UseSsl` (double underscore = .NET config section separator) | `MAIL_SMTP_HOST`, `MAIL_SMTP_PORT`, `MAIL_SMTP_USERNAME`, `MAIL_SMTP_PASSWORD`, `MAIL_FROM`, `MAIL_SMTP_USE_SSL` |
+| Template | [.env.example](.env.example) | [deploy.env.example](deploy.env.example) |
+
+`docker-compose.yml` only recognizes the **`MAIL_SMTP_*`/`MAIL_FROM`** names on the
+server — it maps them internally to `MailConfigurations__*` for the container. If the
+server's `.env` has `MailConfigurations__Port=465` instead of `MAIL_SMTP_PORT=465`,
+`docker compose` won't recognize it, silently substitutes an empty string, and the app
+crashes on startup trying to parse `""` as an `int` (see §7). Same/other secrets
+(`MSSQL_SA_PASSWORD`, `IDENTITY_KEY`, `ADMIN_PANEL_PASSWORD`) use the same plain
+`UPPER_SNAKE_CASE` naming in both files, so only the mail block is a real trap.
+
+---
+
+## 2a. Full reset / fresh redeploy (wipes all data, reseeds demo dataset)
+
+Use this when the server has nothing worth keeping (fresh box, or you're intentionally
+starting over) — **not** for a server with real production data, that would delete it.
+
+```bash
+cd ~/ARDH-Backend
+git pull
+SEED_MODE=reset docker compose up -d --build
+docker compose logs -f api
+```
+Watch for `Database reset: all existing data removed.` early in the log, then the
+seeding steps completing with no exception. `Ctrl+C` once it looks stable.
+
+```bash
+docker compose up -d      # re-run WITHOUT SEED_MODE so it doesn't wipe again on next restart
+sleep 5 && docker compose ps
+curl -i https://api.ardh.co.in/api/settings/public
+```
+
+**Important gotcha:** the reset only actually happens if the container makes it past
+startup config-binding into `ApplicationDbContextInitializer.InitializeAsync()`. If the
+app crashes before that point (e.g. the mail-config `.env` mistake above), the reset
+*looks* like it ran (the command exits 0, containers report "Started") but nothing was
+actually wiped — you just get a crash loop instead. Once you fix the underlying crash
+and restart, a *normal* (non-reset) startup will then try to seed on top of the old
+leftover data and fail with a primary-key collision (see §7). If that happens, the fix
+is simply to re-run `SEED_MODE=reset docker compose up -d --build` again now that the
+real crash is fixed — don't try to manually patch around the collision.
 
 ---
 
@@ -172,6 +236,9 @@ swap the domain, `certbot --nginx -d <new-domain>`.
 | :--- | :--- |
 | `502 Bad Gateway` from the domain | `docker compose ps` — is `ardh-api` up? `docker compose logs api` for a crash. |
 | API container keeps restarting | `docker compose logs api` — usually a bad/missing value in `.env`, or the DB not healthy yet. |
+| `docker compose up`/`ps` prints `WARN[...] The "MAIL_SMTP_HOST" variable is not set` (or `_PORT`/`_USERNAME`/`_PASSWORD`/`_USE_SSL`/`MAIL_FROM`) | Server `.env` has the wrong mail key format — see the `.env` format warning in §2. Fix the names, then `docker compose up -d --build` again. |
+| Crash loop, `docker compose logs api` shows `Unhandled exception... Failed to convert configuration value at 'MailConfigurations:Port' to type 'System.Int32'` | Same root cause as above (an empty string can't parse as `int`) — the mail env vars aren't actually reaching the container. Fix `.env` naming, rebuild. |
+| Crash loop, `docker compose logs api` shows `Violation of PRIMARY KEY constraint` during a `Seed*` step | A previous `SEED_MODE=reset` attempt crashed before it could actually wipe the database (see the gotcha at the end of §2a), leaving old data that collides with the fixed demo IDs. Fix whatever crashed first, then re-run `SEED_MODE=reset docker compose up -d --build`. |
 | `db` container unhealthy | `docker compose logs db` — often means `MSSQL_SA_PASSWORD` doesn't meet SQL Server's complexity rules. |
 | DNS not resolving | `nslookup api.ardh.co.in` from your own machine, not the server. |
 | Cert renewal worried you | `sudo certbot certificates` shows expiry dates for everything currently issued. |
