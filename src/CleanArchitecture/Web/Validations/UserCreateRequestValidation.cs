@@ -52,6 +52,6 @@ public class UserCreateRequestValidation : AbstractValidator<UserCreateRequest>
 
         var parts = permissions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        return parts.All(p => Enum.TryParse<UserPermission>(p, out _));
+        return parts.All(p => Enum.TryParse<UserPermission>(p, true, out _));
     }
 }
