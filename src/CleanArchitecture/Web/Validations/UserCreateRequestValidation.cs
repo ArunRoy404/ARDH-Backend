@@ -38,7 +38,7 @@ public class UserCreateRequestValidation : AbstractValidator<UserCreateRequest>
             .IsInEnum().WithMessage("A valid role is required.");
 
         RuleFor(x => x.Permissions)
-            .Must(BeValidPermissions).WithMessage("Permissions must only contain: dashboard, properties, finance, operations, admin.");
+            .Must(BeValidPermissions).WithMessage($"Permissions must only contain: {string.Join(", ", Enum.GetNames<UserPermission>())}.");
 
         RuleFor(x => x.AvatarUrl)
             .NotEmpty().WithMessage("Avatar URL is required.")
