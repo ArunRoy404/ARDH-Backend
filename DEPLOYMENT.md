@@ -186,7 +186,9 @@ swap the domain, `certbot --nginx -d <new-domain>`.
 | :--- | :--- |
 | `MSSQL_SA_PASSWORD` | SQL Server `sa` login password |
 | `IDENTITY_KEY` | JWT signing key |
-| `RESEND_API_KEY` | Transactional email (Resend) |
+| `MAIL_SMTP_HOST` / `MAIL_SMTP_PORT` / `MAIL_SMTP_USE_SSL` | Hostinger SMTP server (default `smtp.hostinger.com:465`, SSL) |
+| `MAIL_SMTP_USERNAME` / `MAIL_SMTP_PASSWORD` | Hostinger mailbox credentials used to authenticate for sending |
+| `MAIL_FROM` | From address for outgoing email (usually same as `MAIL_SMTP_USERNAME`) |
 | `ADMIN_PANEL_PASSWORD` | Required for `X-Admin-Password`-gated admin endpoints |
 
 Rotating any of these: edit `.env`, then `docker compose up -d --build` to pick up the

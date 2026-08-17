@@ -33,7 +33,12 @@ services:
       # the container's own self-ping health check, not shown to clients.
       BaseURL: https://api.ardh.co.in
       Identity__Key: ${IDENTITY_KEY}
-      MailConfigurations__ApiKey: ${RESEND_API_KEY}
+      MailConfigurations__Host: ${MAIL_SMTP_HOST}
+      MailConfigurations__Port: ${MAIL_SMTP_PORT}
+      MailConfigurations__UseSsl: ${MAIL_SMTP_USE_SSL}
+      MailConfigurations__Username: ${MAIL_SMTP_USERNAME}
+      MailConfigurations__Password: ${MAIL_SMTP_PASSWORD}
+      MailConfigurations__From: ${MAIL_FROM}
       AdminSettings__Password: ${ADMIN_PANEL_PASSWORD}
       # Leave unset for normal startup. Set to "reset" or "wipe" (see DEPLOYMENT.md)
       # only for one-off maintenance restarts, then unset again.

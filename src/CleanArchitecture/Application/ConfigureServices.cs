@@ -4,7 +4,6 @@ using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Application.Services;
 using CleanArchitecture.Web.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Resend;
 
 namespace CleanArchitecture.Application;
 
@@ -13,7 +12,6 @@ public static class ConfigureServices
     public static IServiceCollection AddApplicationService(this IServiceCollection services, AppSettings appsettings)
     {
         services.AddTransient<IAuthService, AuthService>();
-        services.AddResend(options => options.ApiToken = appsettings.MailConfigurations?.ApiKey ?? string.Empty);
         services.AddTransient<IMailService, MailService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IBuildingService, BuildingService>();
