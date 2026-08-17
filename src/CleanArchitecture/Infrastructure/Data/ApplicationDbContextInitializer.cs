@@ -109,6 +109,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                 return;
             }
 
+            await MigrateLegacyPermissionsAsync();
             await SeedUsers();
             await SeedBuildings();
             await SeedOwners();
@@ -162,6 +163,60 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         _context.BulkUploads.RemoveRange(_context.BulkUploads.IgnoreQueryFilters());
         await _context.SaveChangesAsync();
         _logger.LogInformation("Database reset: all existing data removed.");
+    }
+
+    // Mirrors UserService's private DefaultRolePermissions. Duplicated here (rather than
+    // referencing UserService) because this runs at startup, before the DI-scoped service
+    // layer is relevant - it is only used to repair legacy data below.
+    private static readonly Dictionary<UserRole, UserPermission[]> DefaultRolePermissionsForMigration = new()
+    {
+        [UserRole.admin] = Enum.GetValues<UserPermission>(),
+        [UserRole.viewer] = Enum.GetValues<UserPermission>().Where(p => p != UserPermission.admin).ToArray(),
+        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
+        [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
+    };
+
+    /// <summary>
+    /// One-off repair for accounts created before the permissions model changed from 5 coarse
+    /// buckets (dashboard/properties/finance/operations/admin) to granular per-module
+    /// permissions. Drops any token that is no longer a valid UserPermission (e.g. the old
+    /// "properties"/"operations"/"finance" bucket words), re-unions with the user's current
+    /// role defaults, and only writes back rows whose resolved string actually changed - so on
+    /// every subsequent startup this is a cheap read with nothing left to update.
+    /// </summary>
+    private async Task MigrateLegacyPermissionsAsync()
+    {
+        var users = await _context.Users.IgnoreQueryFilters().Where(x => !x.IsDeleted).ToListAsync();
+        var updated = new List<User>();
+
+        foreach (var user in users)
+        {
+            var validTokens = (user.Permissions ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(p => Enum.TryParse<UserPermission>(p, true, out _))
+                .Select(p => Enum.Parse<UserPermission>(p, true));
+
+            var permissions = new HashSet<UserPermission>(
+                DefaultRolePermissionsForMigration.TryGetValue(user.Role, out var defaults) ? defaults : []);
+            permissions.UnionWith(validTokens);
+
+            var resolved = string.Join(",", Enum.GetValues<UserPermission>().Where(permissions.Contains));
+
+            if (resolved != (user.Permissions ?? string.Empty))
+            {
+                user.Permissions = resolved;
+                updated.Add(user);
+            }
+        }
+
+        if (updated.Count > 0)
+        {
+            _context.Users.UpdateRange(updated);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation(
+                "Migrated {count} user(s) from legacy bucket-based permissions to the new granular module permissions.",
+                updated.Count);
+        }
     }
 
     private static User CreateAdminUser() => new()
@@ -1007,10 +1062,14 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         }
     }
 
+    // Mirrors NotificationService.HasPermissionForType: notification 'type' is a coarse
+    // category (properties/operations/finance/dashboard) that maps to the fine-grained
+    // UserPermission modules underneath it. No role-based bypass for property_manager -
+    // their access is driven purely by their seeded Permissions string, like every other
+    // non-admin role.
     private static bool CanReceiveType(User user, string type)
     {
         var isAdmin = user.Role == UserRole.admin;
-        var isManager = user.Role == UserRole.property_manager;
         var permissions = (user.Permissions ?? string.Empty)
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(p => p.Trim().ToLowerInvariant())
@@ -1020,10 +1079,13 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
 
         return type.ToLowerInvariant() switch
         {
-            "operations" => isManager || permissions.Contains("operations"),
-            "finance" => isManager || permissions.Contains("finance"),
-            "properties" => isManager || permissions.Contains("properties"),
-            _ => isManager || permissions.Contains("dashboard")
+            "operations" => permissions.Contains("vendors") || permissions.Contains("equipment") ||
+                             permissions.Contains("amc_contracts") || permissions.Contains("maintenance"),
+            "finance" => permissions.Contains("income") || permissions.Contains("reports") ||
+                         permissions.Contains("expenses"),
+            "properties" => permissions.Contains("buildings") || permissions.Contains("owners") ||
+                             permissions.Contains("apartments") || permissions.Contains("tenants"),
+            _ => permissions.Contains("dashboard")
         };
     }
 

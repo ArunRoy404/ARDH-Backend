@@ -253,12 +253,17 @@ public class NotificationService(
         }
     }
 
+    // Notification 'type' stays a coarse category label (properties/operations/finance/dashboard/
+    // admin) for the frontend's notification tabs/filters. Underneath, each category maps to the
+    // fine-grained UserPermission modules that make it up - a user receives a notification for a
+    // category iff they hold ANY module permission under that category (or are admin). There is
+    // no role-based bypass here: property_manager's access is driven purely by their resolved
+    // Permissions claim, same as every other non-admin role.
     private static bool HasPermissionForType(User user, string type)
     {
         if (!user.IsActive) return false;
 
         var isAdminRole = user.Role == UserRole.admin;
-        var isPropertyManagerRole = user.Role == UserRole.property_manager;
         var permissionsList = (user.Permissions ?? string.Empty)
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(p => p.Trim().ToLowerInvariant())
@@ -270,11 +275,14 @@ public class NotificationService(
 
         return type.ToLowerInvariant() switch
         {
-            "operations" => isPropertyManagerRole || permissionsList.Contains("operations") || permissionsList.Contains("operation"),
-            "finance" => isPropertyManagerRole || permissionsList.Contains("finance"),
-            "properties" => isPropertyManagerRole || permissionsList.Contains("properties") || permissionsList.Contains("property"),
+            "operations" => permissionsList.Contains("vendors") || permissionsList.Contains("equipment") ||
+                             permissionsList.Contains("amc_contracts") || permissionsList.Contains("maintenance"),
+            "finance" => permissionsList.Contains("income") || permissionsList.Contains("reports") ||
+                         permissionsList.Contains("expenses"),
+            "properties" => permissionsList.Contains("buildings") || permissionsList.Contains("owners") ||
+                             permissionsList.Contains("apartments") || permissionsList.Contains("tenants"),
             "admin" => false, // Admin-only notifications; admin role / admin-permission users are already handled by the early return above
-            _ => isPropertyManagerRole || permissionsList.Contains("dashboard") // Default general / dashboard
+            _ => permissionsList.Contains("dashboard") // Default general / dashboard
         };
     }
 

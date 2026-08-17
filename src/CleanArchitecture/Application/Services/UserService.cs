@@ -138,8 +138,8 @@ public class UserService(
         [UserRole.admin] = Enum.GetValues<UserPermission>(),
         // Viewer is read-only: gets every module for viewing but never admin.
         [UserRole.viewer] = Enum.GetValues<UserPermission>().Where(p => p != UserPermission.admin).ToArray(),
-        [UserRole.property_manager] = [UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
-        [UserRole.accountant] = [UserPermission.income, UserPermission.reports, UserPermission.expenses],
+        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
+        [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
     };
 
     private static string ResolvePermissions(UserRole role, string? requestedPermissions)
