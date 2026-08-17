@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "9a38f321-4bcf-4f9e-a0e2-2a54b38dcd2b",
     "name": "Ardh Property Management API (Cookie Auth)",
-    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies — no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nSeeded users (SEED_MODE=reset on startup):\n  admin@gmail.com / P@ssw0rd (full access)\n  manager@gmail.com / P@ssw0rd (property manager)\n  accountant@gmail.com / P@ssw0rd (finance + dashboard)\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection match the seeded demo data, so requests work out of the box on a freshly seeded database.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' — change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nBuildings/Owners/Apartments/Tenants -> properties permission; Vendors/Equipment/AMC/Maintenance -> operations; Income/Reports -> finance; Expenses -> finance OR operations; Users/Settings/Deleted-history -> admin. GET on the data modules is open-read for any authenticated user. The admin + property_manager roles bypass all module gates.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
+    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies — no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nSeeded users (SEED_MODE=reset on startup):\n  admin@gmail.com / P@ssw0rd (full access)\n  manager@gmail.com / P@ssw0rd (property_manager: dashboard, vendors, equipment, amc_contracts, maintenance, expenses)\n  accountant@gmail.com / P@ssw0rd (accountant: dashboard, income, reports, expenses)\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection match the seeded demo data, so requests work out of the box on a freshly seeded database.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' — change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 13; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -116,7 +116,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'dashboard' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -227,7 +227,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'dashboard' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -338,7 +338,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'dashboard' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -479,7 +479,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'dashboard' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -620,7 +620,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'dashboard' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         }
@@ -2500,14 +2500,14 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+              "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "users",
-                "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
               ]
             },
             "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
@@ -2531,14 +2531,14 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "users",
-                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
                   ]
                 },
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
@@ -2573,14 +2573,14 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "users",
-                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
                   ]
                 },
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
@@ -2615,14 +2615,14 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "users",
-                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
                   ]
                 },
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
@@ -2641,10 +2641,52 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"User with ID '7ca6dfd0-bfd8-4f10-977b-608b8b4081c7' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"User with ID '7ca6dfd0-bfd8-4f10-977b-608b8b4081c7' was not found.\",\n            \"errorMessage\": \"User with ID '7ca6dfd0-bfd8-4f10-977b-608b8b4081c7' was not found.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\",\n            \"errorMessage\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\"\n        }\n    ]\n}"
             },
             {
               "name": "Error Example (403 - Access Denied)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
+                  ]
+                },
+                "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Admin permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Admin permission required for this route.\",\n            \"errorMessage\": \"Access denied. Admin permission required for this route.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Cannot Change Own Role)",
               "originalRequest": {
                 "auth": {
                   "type": "noauth"
@@ -2667,14 +2709,14 @@
                     "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
                   ]
                 },
-                "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
-                }
+                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+                },
+                "description": "Self-edit attempt: signed-in admin (id matches their own) tries to change their own role away from admin."
               },
-              "status": "Forbidden",
-              "code": 403,
+              "status": "Bad Request",
+              "code": 400,
               "_postman_previewlanguage": "json",
               "header": [
                 {
@@ -2683,7 +2725,91 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Admin permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Admin permission required for this route.\",\n            \"errorMessage\": \"Access denied. Admin permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"You cannot change your own role.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"You cannot change your own role.\",\n            \"errorMessage\": \"You cannot change your own role.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Cannot Change Own Active Status)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+                },
+                "description": "Self-edit attempt: signed-in admin sends isActive=false for their own account via Update User (role kept the same as their real role: admin)."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"You cannot change your own account's active status.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"You cannot change your own account's active status.\",\n            \"errorMessage\": \"You cannot change your own account's active status.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Cannot Change Own Permissions)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+                },
+                "description": "Self-edit attempt: signed-in admin tries to change their own granted permissions (role and isActive kept the same as their real values)."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"You cannot change your own permissions.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"You cannot change your own permissions.\",\n            \"errorMessage\": \"You cannot change your own permissions.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -2696,14 +2822,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=adminpassword",
+              "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "users",
-                "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
               ],
               "query": [
                 {
@@ -2725,14 +2851,14 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "users",
-                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
                   ],
                   "query": [
                     {
@@ -2765,14 +2891,14 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "users",
-                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
                   ],
                   "query": [
                     {
@@ -2805,14 +2931,14 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "api",
                     "users",
-                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                    "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
                   ],
                   "query": [
                     {
@@ -2834,7 +2960,47 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"User with ID '7ca6dfd0-bfd8-4f10-977b-608b8b4081c7' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"User with ID '7ca6dfd0-bfd8-4f10-977b-608b8b4081c7' was not found.\",\n            \"errorMessage\": \"User with ID '7ca6dfd0-bfd8-4f10-977b-608b8b4081c7' was not found.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\",\n            \"errorMessage\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Cannot Delete Own Account)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=adminpassword",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
+                  ],
+                  "query": [
+                    {
+                      "key": "password",
+                      "value": "adminpassword",
+                      "description": "Admin password (seeded value: adminpassword)"
+                    }
+                  ]
+                },
+                "description": "Self-delete attempt: the signed-in admin tries to delete their own account."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"You cannot delete your own account.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"You cannot delete your own account.\",\n            \"errorMessage\": \"You cannot delete your own account.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -2928,6 +3094,40 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": false,\n    \"message\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\",\n            \"errorMessage\": \"User with ID '8ca6dfd0-bfd8-4f10-977b-608b8b4081c8' was not found.\"\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (400 - Cannot Change Own Active Status)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "PATCH",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7/toggle-status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7",
+                    "toggle-status"
+                  ]
+                },
+                "description": "Self-toggle attempt: the signed-in admin tries to toggle their own active status."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"You cannot change your own account's active status.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.bad_request\",\n            \"message\": \"You cannot change your own account's active status.\",\n            \"errorMessage\": \"You cannot change your own account's active status.\"\n        }\n    ]\n}"
             }
           ]
         }
@@ -3317,7 +3517,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'buildings' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'buildings' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'buildings' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -3518,7 +3718,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'buildings' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'buildings' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'buildings' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -5727,7 +5927,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'owners' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'owners' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'owners' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -6585,7 +6785,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'apartments' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'apartments' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'apartments' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -7462,7 +7662,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Property permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Property permission required for this route.\",\n            \"errorMessage\": \"Access denied. Property permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'tenants' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'tenants' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'tenants' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -8709,7 +8909,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'vendors' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'vendors' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'vendors' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -9387,7 +9587,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'equipment' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'equipment' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'equipment' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -10363,7 +10563,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'amc_contracts' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'amc_contracts' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'amc_contracts' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -10583,7 +10783,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'amc_contracts' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'amc_contracts' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'amc_contracts' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -11241,7 +11441,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'maintenance' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'maintenance' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'maintenance' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -11506,7 +11706,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'maintenance' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'maintenance' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'maintenance' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -12697,7 +12897,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'income' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'income' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'income' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -12917,7 +13117,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'income' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'income' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'income' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -14117,7 +14317,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Finance or Operations permission required for this route.\",\n            \"errorMessage\": \"Access denied. Finance or Operations permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'expenses' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'expenses' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'expenses' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -15005,60 +15205,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4f3b822-29c4-52a8-ad29-c8be5d491f03\",\n                \"type\": \"finance\",\n                \"title\": \"Expense Paid\",\n                \"detail\": \"12,500 SAR paid for Common area lights at Grand Plaza Towers.\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"isRead\": false,\n                \"readAt\": null\n            },\n            {\n                \"id\": \"e4f3b822-29c4-52a8-ad29-c8be5d491f02\",\n                \"type\": \"operations\",\n                \"title\": \"AMC Expiring: Annual Elevator Comprehensive Maintenance 2026\",\n                \"detail\": \"AMC contract 'Annual Elevator Comprehensive Maintenance 2026' (AMC-2026-001) expires on 2026-12-31.\",\n                \"createdAt\": \"2026-07-20T11:00:00Z\",\n                \"isRead\": false,\n                \"readAt\": null\n            },\n            {\n                \"id\": \"e4f3b822-29c4-52a8-ad29-c8be5d491f01\",\n                \"type\": \"properties\",\n                \"title\": \"Lease Expiring: Arjun Mehta\",\n                \"detail\": \"Lease for Arjun Mehta is expiring on 2027-04-30. Flat: 302.\",\n                \"createdAt\": \"2026-07-20T10:00:00Z\",\n                \"isRead\": false,\n                \"readAt\": null\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/notifications?page=1&pageSize=10&type=operations&is_read=false",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "notifications"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "description": "Page number (default 1)"
-                    },
-                    {
-                      "key": "pageSize",
-                      "value": "10",
-                      "description": "Items per page (default 10)"
-                    },
-                    {
-                      "key": "type",
-                      "value": "operations",
-                      "description": "Filter by notification type. Exact values: operations | properties | finance | admin"
-                    },
-                    {
-                      "key": "is_read",
-                      "value": "false",
-                      "description": "Filter by read state: true | false"
-                    }
-                  ]
-                },
-                "description": "Lists the notifications delivered to the current user, newest first.\nNotification types: operations (AMC / maintenance), properties (buildings / tenants / lease expiry),\nfinance (income / expenses), admin (users / settings).\nQuery params: page, pageSize, type, is_read."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -15116,39 +15262,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"unreadCount\": 3,\n        \"totalCount\": 3\n    }\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/notifications/count",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "notifications",
-                    "count"
-                  ]
-                },
-                "description": "Returns the unread and total notification counts for the current user."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -15299,39 +15412,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"All notifications marked as read successfully.\",\n    \"data\": null\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "PATCH",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/notifications/read-all",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "notifications",
-                    "read-all"
-                  ]
-                },
-                "description": "Marks every notification of the current user as read. No body required."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         },
@@ -15479,39 +15559,6 @@
               ],
               "cookie": [],
               "body": "{\n    \"success\": true,\n    \"message\": \"All notifications cleared successfully.\",\n    \"data\": null\n}"
-            },
-            {
-              "name": "Error Example (403 - Access Denied)",
-              "originalRequest": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/notifications/clear-all",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "notifications",
-                    "clear-all"
-                  ]
-                },
-                "description": "Deletes all notifications of the current user. No body required."
-              },
-              "status": "Forbidden",
-              "code": 403,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         }
@@ -15654,7 +15701,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. Dashboard permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. Dashboard permission required for this route.\",\n            \"errorMessage\": \"Access denied. Dashboard permission required for this route.\"\n        }\n    ]\n}"
+              "body": "{\n    \"success\": false,\n    \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.unauthorized\",\n            \"message\": \"Access denied. 'dashboard' permission required for this route.\",\n            \"errorMessage\": \"Access denied. 'dashboard' permission required for this route.\"\n        }\n    ]\n}"
             }
           ]
         }
@@ -15792,7 +15839,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'apartments'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-apartments-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'.",
+                "description": "Starts a background bulk upload for 'apartments'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-apartments-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'apartments' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Apartments\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -15914,7 +15961,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'apartments' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'properties' permission or 'property'."
+                "description": "Returns all bulk-upload jobs for 'apartments' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'apartments' permission."
               },
               "response": [
                 {
@@ -16018,7 +16065,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'properties' permission or 'property'."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'apartments' permission."
               },
               "response": [
                 {
@@ -16083,7 +16130,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'apartments' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'properties' permission or 'property'."
+                "description": "Downloads an XLSX template for 'apartments' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'apartments' permission."
               },
               "response": [
                 {
@@ -16199,7 +16246,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'tenants'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-tenants-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'.",
+                "description": "Starts a background bulk upload for 'tenants'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-tenants-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'tenants' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Tenants\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -16321,7 +16368,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'tenants' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'properties' permission or 'property'."
+                "description": "Returns all bulk-upload jobs for 'tenants' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'tenants' permission."
               },
               "response": [
                 {
@@ -16425,7 +16472,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'properties' permission or 'property'."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'tenants' permission."
               },
               "response": [
                 {
@@ -16490,7 +16537,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'tenants' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'properties' permission or 'property'."
+                "description": "Downloads an XLSX template for 'tenants' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'tenants' permission."
               },
               "response": [
                 {
@@ -16606,7 +16653,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'owners'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-owners-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'properties' permission or 'property'.",
+                "description": "Starts a background bulk upload for 'owners'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-owners-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'owners' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Owners\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -16728,7 +16775,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'owners' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'properties' permission or 'property'."
+                "description": "Returns all bulk-upload jobs for 'owners' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'owners' permission."
               },
               "response": [
                 {
@@ -16832,7 +16879,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'properties' permission or 'property'."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'owners' permission."
               },
               "response": [
                 {
@@ -16897,7 +16944,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'owners' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'properties' permission or 'property'."
+                "description": "Downloads an XLSX template for 'owners' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'owners' permission."
               },
               "response": [
                 {
@@ -17013,7 +17060,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'income'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-income-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'finance' permission.",
+                "description": "Starts a background bulk upload for 'income'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-income-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'income' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Income\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -17135,7 +17182,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'income' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'finance' permission."
+                "description": "Returns all bulk-upload jobs for 'income' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'income' permission."
               },
               "response": [
                 {
@@ -17239,7 +17286,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'finance' permission."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'income' permission."
               },
               "response": [
                 {
@@ -17304,7 +17351,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'income' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'finance' permission."
+                "description": "Downloads an XLSX template for 'income' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'income' permission."
               },
               "response": [
                 {
@@ -17420,7 +17467,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'expenses'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-expenses-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'finance' permission or 'operations'.",
+                "description": "Starts a background bulk upload for 'expenses'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-expenses-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'expenses' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Expenses\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -17542,7 +17589,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'expenses' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'finance' permission or 'operations'."
+                "description": "Returns all bulk-upload jobs for 'expenses' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'expenses' permission."
               },
               "response": [
                 {
@@ -17646,7 +17693,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'finance' permission or 'operations'."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'expenses' permission."
               },
               "response": [
                 {
@@ -17711,7 +17758,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'expenses' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'finance' permission or 'operations'."
+                "description": "Downloads an XLSX template for 'expenses' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'expenses' permission."
               },
               "response": [
                 {
@@ -17827,7 +17874,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'maintenance'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-maintenance-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'.",
+                "description": "Starts a background bulk upload for 'maintenance'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-maintenance-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'maintenance' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Maintenance\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -17949,7 +17996,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'maintenance' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'operations' permission or 'operation'."
+                "description": "Returns all bulk-upload jobs for 'maintenance' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'maintenance' permission."
               },
               "response": [
                 {
@@ -18053,7 +18100,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'operations' permission or 'operation'."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'maintenance' permission."
               },
               "response": [
                 {
@@ -18118,7 +18165,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'maintenance' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'operations' permission or 'operation'."
+                "description": "Downloads an XLSX template for 'maintenance' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'maintenance' permission."
               },
               "response": [
                 {
@@ -18234,7 +18281,7 @@
                   ],
                   "query": []
                 },
-                "description": "Starts a background bulk upload for 'equipment'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-equipment-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'operations' permission or 'operation'.",
+                "description": "Starts a background bulk upload for 'equipment'. First upload the XLSX via POST /api/upload/xlsx, then pass the returned URL.\nProcessing runs in the background; poll BU-equipment-02/03 for the result.\nRequired columns are validated before any row is inserted; per-row results are written to a processed XLSX (original columns + 'status' + 'error').\nRequires 'equipment' permission.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n    \"module\": \"Equipment\", // [REQUIRED] Exact values: Apartments | Tenants | Owners | Income | Expenses | Maintenance | Equipment\n    \"fileUrl\": \"http://localhost:5240/image/<paste-file-id-from-BU-00>.xlsx\" // [REQUIRED] URL returned by POST /api/upload/xlsx (BU-00). Upload the XLSX first, then paste the returned URL here.\n}",
@@ -18356,7 +18403,7 @@
                     }
                   ]
                 },
-                "description": "Returns all bulk-upload jobs for 'equipment' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'operations' permission or 'operation'."
+                "description": "Returns all bulk-upload jobs for 'equipment' (newest first). Each item includes: id, module, status (Processing | Finished | Failed), originalFileUrl, processedFileUrl, totalCount, successCount, failedCount, globalError, startedAt, finishedAt, createdAt.\nRequires 'equipment' permission."
               },
               "response": [
                 {
@@ -18460,7 +18507,7 @@
                   ],
                   "query": []
                 },
-                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'operations' permission or 'operation'."
+                "description": "Returns a single bulk-upload job by ID with full details (status, counts, original + processed file URLs, global error if any).\nRequires 'equipment' permission."
               },
               "response": [
                 {
@@ -18525,7 +18572,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'equipment' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'operations' permission or 'operation'."
+                "description": "Downloads an XLSX template for 'equipment' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'equipment' permission."
               },
               "response": [
                 {
