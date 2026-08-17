@@ -111,10 +111,23 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Per-module permission check (mirrors the PermissionAuthorizationFilter)
-    // apartments/tenants/owners → properties; maintenance/equipment → operations;
-    // income/expenses → finance. Admin + property_manager bypass everything.
+    // Per-module permission check (mirrors the PermissionAuthorizationFilter).
+    // Each BulkUploadModule now maps 1:1 to its UserPermission module - no bucket
+    // grouping needed. Only admin bypasses; property_manager's access is driven
+    // purely by their resolved Permissions claim like every other non-admin role.
     // ─────────────────────────────────────────────────────────────────────────
+
+    private static string? ModulePermissionName(BulkUploadModule module) => module switch
+    {
+        BulkUploadModule.Apartments => "apartments",
+        BulkUploadModule.Tenants => "tenants",
+        BulkUploadModule.Owners => "owners",
+        BulkUploadModule.Income => "income",
+        BulkUploadModule.Expenses => "expenses",
+        BulkUploadModule.Maintenance => "maintenance",
+        BulkUploadModule.Equipment => "equipment",
+        _ => null
+    };
 
     private bool HasModulePermission(BulkUploadModule module)
     {
@@ -124,36 +137,21 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
             return false;
         }
 
-        var roleClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role || c.Type == "role")?.Value ?? string.Empty;
+        if (IsBypassUser())
+        {
+            return true;
+        }
+
         var permissionList = (user.Claims.FirstOrDefault(c => c.Type == "permissions")?.Value ?? string.Empty)
             .Split(',', StringSplitOptions.RemoveEmptyEntries)
             .Select(p => p.Trim().ToLowerInvariant())
             .ToList();
 
-        var isAdmin = user.IsInRole("admin") || roleClaim.Equals("admin", StringComparison.OrdinalIgnoreCase) || permissionList.Contains("admin");
-        var isPropertyManager = user.IsInRole("property_manager") || roleClaim.Equals("property_manager", StringComparison.OrdinalIgnoreCase);
-
-        if (isAdmin || isPropertyManager)
-        {
-            return true;
-        }
-
-        return module switch
-        {
-            BulkUploadModule.Apartments or BulkUploadModule.Tenants or BulkUploadModule.Owners =>
-                permissionList.Contains("properties") || permissionList.Contains("property"),
-            BulkUploadModule.Maintenance or BulkUploadModule.Equipment =>
-                permissionList.Contains("operations") || permissionList.Contains("operation"),
-            BulkUploadModule.Income =>
-                permissionList.Contains("finance"),
-            // Expenses allow finance OR operations — same as the existing /api/expenses gate.
-            BulkUploadModule.Expenses =>
-                permissionList.Contains("finance") || permissionList.Contains("operations") || permissionList.Contains("operation"),
-            _ => false
-        };
+        var permissionName = ModulePermissionName(module);
+        return permissionName != null && permissionList.Contains(permissionName);
     }
 
-    /// <summary>Admin / property_manager bypass per-module filtering.</summary>
+    /// <summary>Admin bypass for per-module filtering.</summary>
     private bool IsBypassUser()
     {
         var user = HttpContext.User;
@@ -168,8 +166,7 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
             .Select(p => p.Trim().ToLowerInvariant())
             .ToList();
 
-        return user.IsInRole("admin") || roleClaim.Equals("admin", StringComparison.OrdinalIgnoreCase) || permissionList.Contains("admin")
-            || user.IsInRole("property_manager") || roleClaim.Equals("property_manager", StringComparison.OrdinalIgnoreCase);
+        return user.IsInRole("admin") || roleClaim.Equals("admin", StringComparison.OrdinalIgnoreCase) || permissionList.Contains("admin");
     }
 
     /// <summary>Modules the current user may view, based on their permission claims.</summary>
@@ -187,25 +184,13 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
             .ToList();
 
         var modules = new HashSet<BulkUploadModule>();
-
-        if (permissionList.Contains("properties") || permissionList.Contains("property"))
+        foreach (var module in Enum.GetValues<BulkUploadModule>())
         {
-            modules.Add(BulkUploadModule.Apartments);
-            modules.Add(BulkUploadModule.Tenants);
-            modules.Add(BulkUploadModule.Owners);
-        }
-
-        if (permissionList.Contains("operations") || permissionList.Contains("operation"))
-        {
-            modules.Add(BulkUploadModule.Maintenance);
-            modules.Add(BulkUploadModule.Equipment);
-            modules.Add(BulkUploadModule.Expenses);
-        }
-
-        if (permissionList.Contains("finance"))
-        {
-            modules.Add(BulkUploadModule.Income);
-            modules.Add(BulkUploadModule.Expenses);
+            var permissionName = ModulePermissionName(module);
+            if (permissionName != null && permissionList.Contains(permissionName))
+            {
+                modules.Add(module);
+            }
         }
 
         return modules;

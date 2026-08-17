@@ -11,14 +11,22 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.User;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Application.Services;
 
-public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INotificationService notificationService) : IUserService
+public class UserService(
+    IUnitOfWork unitOfWork,
+    ICurrentUser currentUser,
+    INotificationService notificationService,
+    IMailService mailService,
+    ILogger<UserService> logger) : IUserService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurrentUser _currentUser = currentUser;
     private readonly INotificationService _notificationService = notificationService;
+    private readonly IMailService _mailService = mailService;
+    private readonly ILogger<UserService> _logger = logger;
 
     public async Task<List<UserViewModel>> Get(CancellationToken cancellationToken)
     {
@@ -128,10 +136,12 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
     private static readonly Dictionary<UserRole, UserPermission[]> DefaultRolePermissions = new()
     {
         [UserRole.admin] = Enum.GetValues<UserPermission>(),
-        // Viewer is read-only: gets all module permissions for viewing but never admin.
-        [UserRole.viewer] = [UserPermission.dashboard, UserPermission.properties, UserPermission.finance, UserPermission.operations],
-        [UserRole.property_manager] = [UserPermission.operations],
-        [UserRole.accountant] = [UserPermission.finance],
+        // Viewer starts with no module access by default - an admin must explicitly grant
+        // each module via the Permissions field. Viewer is still hard-blocked from every
+        // mutating verb regardless of granted modules (see PermissionAuthorizationFilter).
+        [UserRole.viewer] = [],
+        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
+        [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
     };
 
     private static string ResolvePermissions(UserRole role, string? requestedPermissions)
@@ -176,6 +186,8 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
         await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.UserRepository.AddAsync(user), cancellationToken);
 
         await _notificationService.CreateNotificationInternal("admin", "New User Created", $"User '{user.Name}' ({user.Role}) was created.", cancellationToken);
+
+        await SendAccountCreatedEmailAsync(user.Email, user.Name, request.Password, user.Role);
     }
 
     public async Task Update(UserUpdateRequest request, CancellationToken cancellationToken)
@@ -193,13 +205,35 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
             }
         }
 
+        var resolvedPermissions = ResolvePermissions(request.Role, request.Permissions);
+
+        if (user.Id == _currentUser.GetCurrentUserId())
+        {
+            if (request.IsActive != user.IsActive)
+            {
+                throw UserException.BadRequestException("You cannot change your own account's active status.");
+            }
+
+            if (request.Role != user.Role)
+            {
+                throw UserException.BadRequestException("You cannot change your own role.");
+            }
+
+            if (resolvedPermissions != user.Permissions)
+            {
+                throw UserException.BadRequestException("You cannot change your own permissions.");
+            }
+        }
+
+        var wasActive = user.IsActive;
+
         user.Name = request.Name;
         user.Email = request.Email;
         user.Phone = request.Phone;
         user.Address = request.Address;
         user.Role = request.Role;
         user.IsActive = request.IsActive;
-        user.Permissions = ResolvePermissions(request.Role, request.Permissions);
+        user.Permissions = resolvedPermissions;
         user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
         user.UpdatedBy = _currentUser.GetCurrentUserId();
@@ -208,10 +242,20 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _notificationService.CreateNotificationInternal("admin", "User Updated", $"User '{user.Name}' details were updated.", cancellationToken);
+
+        if (wasActive && !user.IsActive)
+        {
+            await SendAccountDeactivatedEmailAsync(user.Email, user.Name);
+        }
     }
 
     public async Task Delete(Guid userId, CancellationToken cancellationToken)
     {
+        if (userId == _currentUser.GetCurrentUserId())
+        {
+            throw UserException.BadRequestException("You cannot delete your own account.");
+        }
+
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
             ?? throw UserException.BadRequestException("The specified user does not exist.");
 
@@ -239,6 +283,11 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
 
     public async Task ToggleStatus(Guid id, CancellationToken cancellationToken)
     {
+        if (id == _currentUser.GetCurrentUserId())
+        {
+            throw UserException.BadRequestException("You cannot change your own account's active status.");
+        }
+
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted)
             ?? throw UserException.NotFoundException("The specified user does not exist.");
 
@@ -251,5 +300,66 @@ public class UserService(IUnitOfWork unitOfWork, ICurrentUser currentUser, INoti
 
         var statusText = user.IsActive ? "activated" : "deactivated";
         await _notificationService.CreateNotificationInternal("admin", "User Status Changed", $"User '{user.Name}' was {statusText}.", cancellationToken);
+
+        if (!user.IsActive)
+        {
+            await SendAccountDeactivatedEmailAsync(user.Email, user.Name);
+        }
+    }
+
+    private static string FormatRole(UserRole role) => role switch
+    {
+        UserRole.property_manager => "Property Manager",
+        _ => role.ToString()[..1].ToUpperInvariant() + role.ToString()[1..]
+    };
+
+    private async Task SendAccountCreatedEmailAsync(string email, string name, string password, UserRole role)
+    {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+        var roleLabel = FormatRole(role);
+
+        var subject = $"Ardh - Your {roleLabel} Account Has Been Created";
+        var bodyContent = $@"
+            <h2 style=""margin:0 0 8px;color:#111827;font-size:20px;"">Welcome, {name}</h2>
+            <p style=""margin:0 0 20px;color:#4b5563;font-size:14px;line-height:1.6;"">An account has been created for you on Ardh Property Management with the <strong>{roleLabel}</strong> role. You can sign in using the credentials below.</p>
+            <div style=""padding:18px;background:#f9fafb;border:1px solid #f1f1f4;border-radius:10px;color:#1f2937;font-size:14px;"">
+                <p style=""margin:0 0 8px;""><strong>Role:</strong> {roleLabel}</p>
+                <p style=""margin:0 0 8px;""><strong>Email:</strong> {email}</p>
+                <p style=""margin:0;""><strong>Password:</strong> {password}</p>
+            </div>
+            <p style=""margin:20px 0 0;color:#9ca3af;font-size:12px;"">For your security, please sign in and change your password as soon as possible.</p>";
+        var htmlMessage = EmailTemplateBuilder.Build(setting?.Icon, setting?.CompanyName, bodyContent);
+
+        try
+        {
+            await _mailService.SendEmailAsync(email, subject, htmlMessage);
+            _logger.LogInformation("Account-created email sent to {email}", email);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send account-created email to {email}; the user was still created.", email);
+        }
+    }
+
+    private async Task SendAccountDeactivatedEmailAsync(string email, string name)
+    {
+        var setting = await _unitOfWork.SettingRepository.FirstOrDefaultAsync(x => true);
+
+        var subject = "Ardh - Your Account Has Been Deactivated";
+        var bodyContent = $@"
+            <h2 style=""margin:0 0 8px;color:#111827;font-size:20px;"">Account Deactivated</h2>
+            <p style=""margin:0 0 20px;color:#4b5563;font-size:14px;line-height:1.6;"">Hi {name}, your Ardh Property Management account has been deactivated by an administrator. You will not be able to sign in until it is reactivated.</p>
+            <p style=""margin:20px 0 0;color:#9ca3af;font-size:12px;"">If you believe this was a mistake, please contact your administrator.</p>";
+        var htmlMessage = EmailTemplateBuilder.Build(setting?.Icon, setting?.CompanyName, bodyContent);
+
+        try
+        {
+            await _mailService.SendEmailAsync(email, subject, htmlMessage);
+            _logger.LogInformation("Account-deactivated email sent to {email}", email);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send account-deactivated email to {email}.", email);
+        }
     }
 }

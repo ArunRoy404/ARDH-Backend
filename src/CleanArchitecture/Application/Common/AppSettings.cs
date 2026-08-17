@@ -56,7 +56,13 @@ public class MailConfigurations
     public string From { get; set; }
     public string DisplayName { get; set; } = string.Empty;
     [Required]
-    public string ApiKey { get; set; }
+    public string Host { get; set; }
+    public int Port { get; set; } = 465;
+    [Required]
+    public string Username { get; set; }
+    [Required]
+    public string Password { get; set; }
+    public bool UseSsl { get; set; } = true;
 }
 
 public class AdminSettings

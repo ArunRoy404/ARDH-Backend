@@ -91,4 +91,18 @@ public class AuthController(IAuthService authService) : BaseController
     [SwaggerResponse(401, "User is not authorized.")]
     public async Task<IActionResult> GetProfile()
         => Ok(await _authService.GetProfile());
+
+    /// <summary>
+    /// Update the logged-in user's own password.
+    /// </summary>
+    [HttpPut("update-password")]
+    [Authorize]
+    [SwaggerResponse(200, "Password updated successfully.")]
+    [SwaggerResponse(400, "Invalid request or incorrect current password.")]
+    [SwaggerResponse(401, "User is not authorized.")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request, CancellationToken token)
+    {
+        await _authService.UpdatePassword(request, token);
+        return Ok(new { message = "Password updated successfully." });
+    }
 }

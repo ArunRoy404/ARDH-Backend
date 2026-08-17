@@ -30,7 +30,7 @@ public class UserUpdateRequestValidation : AbstractValidator<UserUpdateRequest>
             .IsInEnum().WithMessage("A valid role is required.");
 
         RuleFor(x => x.Permissions)
-            .Must(BeValidPermissions).WithMessage("Permissions must only contain: dashboard, properties, finance, operations, admin.");
+            .Must(BeValidPermissions).WithMessage($"Permissions must only contain: {string.Join(", ", Enum.GetNames<UserPermission>())}.");
 
         RuleFor(x => x.AvatarUrl)
             .NotEmpty().WithMessage("Avatar URL is required.")
@@ -44,6 +44,6 @@ public class UserUpdateRequestValidation : AbstractValidator<UserUpdateRequest>
 
         var parts = permissions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        return parts.All(p => Enum.TryParse<UserPermission>(p, out _));
+        return parts.All(p => Enum.TryParse<UserPermission>(p, true, out _));
     }
 }

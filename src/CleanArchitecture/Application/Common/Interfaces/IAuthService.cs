@@ -11,4 +11,5 @@ public interface IAuthService
     void Logout();
     Task ResendOtp(ResendOtpRequest request, CancellationToken token);
     Task<UserProfileResponse> GetProfile();
+    Task UpdatePassword(UpdatePasswordRequest request, CancellationToken token);
 }
