@@ -70,35 +70,22 @@ public class ReportService(
         DateTime? endDate,
         CancellationToken cancellationToken)
     {
-        // Only needs Amount/Status/BuildingId/date per record — no building/apartment/vendor
-        // name lookups, so a lean direct repository fetch stays leaner than routing through
-        // GetPaginated (which would build full ViewModels just to be summed and discarded).
-        var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
-        var expenses = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
+        var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
-        var incomeQuery = incomes.AsQueryable();
-        var expenseQuery = expenses.AsQueryable();
+        var incomes = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x =>
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            (!startDate.HasValue || x.PaymentDate >= startDate.Value) &&
+            (!endDate.HasValue || x.PaymentDate <= endDate.Value) &&
+            x.Status == IncomeStatus.Paid);
 
-        if (buildingId.HasValue)
-        {
-            incomeQuery = incomeQuery.Where(x => x.BuildingId == buildingId.Value);
-            expenseQuery = expenseQuery.Where(x => x.BuildingId == buildingId.Value);
-        }
+        var expenses = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x =>
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            (!startDate.HasValue || x.ExpenseDate >= startDate.Value) &&
+            (!endDate.HasValue || x.ExpenseDate <= endDate.Value) &&
+            x.Status == ExpenseStatus.Paid);
 
-        if (startDate.HasValue)
-        {
-            incomeQuery = incomeQuery.Where(x => x.PaymentDate >= startDate.Value);
-            expenseQuery = expenseQuery.Where(x => x.ExpenseDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            incomeQuery = incomeQuery.Where(x => x.PaymentDate <= endDate.Value);
-            expenseQuery = expenseQuery.Where(x => x.ExpenseDate <= endDate.Value);
-        }
-
-        var totalIncomes = incomeQuery.Where(x => x.Status == IncomeStatus.Paid).Sum(x => x.Amount);
-        var totalExpenses = expenseQuery.Where(x => x.Status == ExpenseStatus.Paid).Sum(x => x.Amount);
+        var totalIncomes = incomes.Sum(x => x.Amount);
+        var totalExpenses = expenses.Sum(x => x.Amount);
 
         return new ReportStatsViewModel
         {
