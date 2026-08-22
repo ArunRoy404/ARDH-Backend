@@ -37,27 +37,23 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             (string.IsNullOrWhiteSpace(status) || 
              (status.Trim().ToLower() == "occupied" ? x.CurrentTenantId != null :
               status.Trim().ToLower() == "vacant" ? x.CurrentTenantId == null : true)));
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
 
         var query = apartments.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(search))
         {
             var cleanSearch = search.Trim().ToLower();
+            var allBuildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+            var allOwners = await _unitOfWork.OwnerRepository.GetAllAsync();
+            var bMap = allBuildings.ToDictionary(b => b.Id, b => b.BuildingName);
+            var oMap = allOwners.ToDictionary(o => o.Id, o => o.FullName);
+
             query = query.Where(x =>
                 (x.NestawayId != null && x.NestawayId.ToLower().Contains(cleanSearch)) ||
                 (x.FlatNumber != null && x.FlatNumber.ToLower().Contains(cleanSearch)) ||
                 (x.ParkingSlot != null && x.ParkingSlot.ToLower().Contains(cleanSearch)) ||
-                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
-                (ownerMap.ContainsKey(x.OwnerId) && ownerMap[x.OwnerId].ToLower().Contains(cleanSearch))
+                (bMap.ContainsKey(x.BuildingId) && bMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
+                (oMap.ContainsKey(x.OwnerId) && oMap[x.OwnerId].ToLower().Contains(cleanSearch))
             );
         }
 
@@ -66,6 +62,22 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        // Scope lookup maps to page entities
+        var pageBuildingIds = pageEntities.Select(x => x.BuildingId).Distinct().ToList();
+        var pageOwnerIds = pageEntities.Select(x => x.OwnerId).Distinct().ToList();
+        var pageTenantIds = pageEntities.Where(x => x.CurrentTenantId.HasValue).Select(x => x.CurrentTenantId!.Value).Distinct().ToList();
+        var pageUserIds = pageEntities.SelectMany(x => new[] { x.CreatedBy, x.UpdatedBy }).Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
+
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => pageBuildingIds.Contains(x.Id));
+        var owners = await _unitOfWork.OwnerRepository.GetAllAsync(x => pageOwnerIds.Contains(x.Id));
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x => pageTenantIds.Contains(x.Id));
+        var users = await _unitOfWork.UserRepository.GetAllAsync(x => pageUserIds.Contains(x.Id));
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var ownerMap = owners.ToDictionary(o => o.Id, o => o.FullName);
+        var tenantMap = tenants.ToDictionary(t => t.Id, t => t.FullName);
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var items = pageEntities
             .Select(x => new ApartmentViewModel

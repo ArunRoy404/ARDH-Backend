@@ -40,7 +40,9 @@ public class TokenService(AppSettings appSettings, ICurrentTime time) : ITokenSe
 
     public ClaimsPrincipal ValidateToken(string token)
     {
+#if DEBUG
         IdentityModelEventSource.ShowPII = true;
+#endif
         TokenValidationParameters validationParameters = new()
         {
             ValidIssuer = _appSettings.Identity.Issuer,

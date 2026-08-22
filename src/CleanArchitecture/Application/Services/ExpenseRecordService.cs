@@ -53,15 +53,6 @@ public class ExpenseRecordService(
             (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
             (!startDate.HasValue || x.ExpenseDate >= startDate.Value) &&
             (!endDate.HasValue || x.ExpenseDate <= endDate.Value));
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
 
         var query = records.AsQueryable();
 
@@ -82,6 +73,22 @@ public class ExpenseRecordService(
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        // Scope lookup maps to page entities
+        var pageBuildingIds = pageEntities.Where(x => x.BuildingId.HasValue).Select(x => x.BuildingId!.Value).Distinct().ToList();
+        var pageApartmentIds = pageEntities.Where(x => x.ApartmentId.HasValue).Select(x => x.ApartmentId!.Value).Distinct().ToList();
+        var pageVendorIds = pageEntities.Where(x => x.VendorId.HasValue).Select(x => x.VendorId!.Value).Distinct().ToList();
+        var pageUserIds = pageEntities.SelectMany(x => new[] { x.CreatedBy, x.UpdatedBy }).Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
+
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => pageBuildingIds.Contains(x.Id));
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => pageApartmentIds.Contains(x.Id));
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => pageVendorIds.Contains(x.Id));
+        var users = await _unitOfWork.UserRepository.GetAllAsync(x => pageUserIds.Contains(x.Id));
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var items = pageEntities.Select(x => new ExpenseRecordViewModel
         {
