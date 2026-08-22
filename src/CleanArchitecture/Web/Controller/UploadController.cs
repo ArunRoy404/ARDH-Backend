@@ -137,6 +137,12 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             return BadRequest(new { message = "Invalid file ID." });
         }
 
+        var safeFileId = Path.GetFileName(fileId);
+        if (string.IsNullOrWhiteSpace(safeFileId))
+        {
+            return BadRequest(new { message = "Invalid file ID." });
+        }
+
         var folders = new[]
         {
             _appSettings.FileStorageSettings.ImagePath ?? "image",
@@ -154,7 +160,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
                 continue;
             }
 
-            var files = Directory.GetFiles(storagePath, $"{fileId}.*");
+            var files = Directory.GetFiles(storagePath, $"{safeFileId}.*");
             if (files.Length > 0)
             {
                 foreach (var filePath in files)
@@ -165,7 +171,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             }
             else
             {
-                var exactFile = Path.Combine(storagePath, fileId);
+                var exactFile = Path.Combine(storagePath, safeFileId);
                 if (System.IO.File.Exists(exactFile))
                 {
                     System.IO.File.Delete(exactFile);

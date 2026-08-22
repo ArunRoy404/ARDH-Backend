@@ -44,9 +44,11 @@ public class SettingController(ISettingService settingService) : BaseController
     /// [S-02] Update general settings.
     /// </summary>
     [HttpPut]
+    [Authorize(Roles = "Admin")]
     [SwaggerResponse(200, "Settings updated successfully.")]
     [SwaggerResponse(400, "Invalid request or incorrect password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(403, "Access denied. Admin role required.")]
     [SwaggerResponse(404, "Settings not found.")]
     public async Task<IActionResult> Update([FromBody] SettingUpdateRequest request, CancellationToken cancellationToken)
     {
@@ -58,9 +60,11 @@ public class SettingController(ISettingService settingService) : BaseController
     /// [S-03] Update system admin password.
     /// </summary>
     [HttpPut("password")]
+    [Authorize(Roles = "Admin")]
     [SwaggerResponse(200, "Admin password updated successfully.")]
     [SwaggerResponse(400, "Invalid request or incorrect current password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(403, "Access denied. Admin role required.")]
     [SwaggerResponse(404, "Settings not found.")]
     public async Task<IActionResult> UpdatePassword([FromBody] SettingUpdatePasswordRequest request, CancellationToken cancellationToken)
     {

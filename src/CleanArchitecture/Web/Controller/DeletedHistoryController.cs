@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Web.Controller;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/deleted-history")]
 public class DeletedHistoryController(IDeletedHistoryService deletedHistoryService, IUnitOfWork unitOfWork) : BaseController
 {

@@ -2036,7 +2036,7 @@
                 }
               ]
             },
-            "description": "Lists users with pagination and optional filters."
+            "description": "Lists users with pagination and optional filters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -2178,7 +2178,7 @@
                 "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
               ]
             },
-            "description": "Returns the full details of a single user.\nUse the seeded Super Admin ID below."
+            "description": "Returns the full details of a single user.\nUse the seeded Super Admin ID below.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -2272,7 +2272,7 @@
                 "users"
               ]
             },
-            "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
+            "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
@@ -2510,7 +2510,7 @@
                 "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
               ]
             },
-            "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
+            "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
@@ -2839,7 +2839,7 @@
                 }
               ]
             },
-            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3024,7 +3024,7 @@
                 "toggle-status"
               ]
             },
-            "description": "Toggles a user between active and inactive. No body required."
+            "description": "Toggles a user between active and inactive. No body required.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3989,7 +3989,7 @@
                 "settings"
               ]
             },
-            "description": "Returns the current application settings (company name, email, phone, address, icon, fav)."
+            "description": "Returns the current application settings (company name, email, phone, address, icon, fav).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4081,7 +4081,7 @@
                 "settings"
               ]
             },
-            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).",
+            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"adminpassword\" // [REQUIRED] Current admin password (seeded value: adminpassword)\n}"
@@ -4196,7 +4196,7 @@
                 "password"
               ]
             },
-            "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.",
+            "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
@@ -4350,7 +4350,7 @@
                 "public"
               ]
             },
-            "description": "Returns the public site branding (icon and fav). This endpoint is public (no authentication needed)."
+            "description": "Returns the public site branding (icon and fav). This endpoint is public (no authentication needed).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4443,7 +4443,7 @@
                 }
               ]
             },
-            "description": "Lists all soft-deleted records that can be restored or permanently deleted.\nQuery params: page, pageSize, search, entity_type, start_date, end_date."
+            "description": "Lists all soft-deleted records that can be restored or permanently deleted.\nQuery params: page, pageSize, search, entity_type, start_date, end_date.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4596,7 +4596,7 @@
                 "restore"
               ]
             },
-            "description": "Restores a soft-deleted record. The underlying entity (building, tenant, expense, etc.) becomes active again.\nUse the Deleted History ID from the DH-01 list response."
+            "description": "Restores a soft-deleted record. The underlying entity (building, tenant, expense, etc.) becomes active again.\nUse the Deleted History ID from the DH-01 list response.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4729,7 +4729,7 @@
                 }
               ]
             },
-            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4873,7 +4873,7 @@
                 "4da2b822-29c4-52a8-ad29-c8be5d491f24"
               ]
             },
-            "description": "Returns the full details of one deleted record, including restore/permanent-delete flags."
+            "description": "Returns the full details of one deleted record, including restore/permanent-delete flags.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
