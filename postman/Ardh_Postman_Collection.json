@@ -15810,6 +15810,24 @@
               "cookie": [],
               "body": "{\n  \"success\": false,\n  \"message\": \"Invalid file format. Only .xlsx files are allowed.\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid file format. Only .xlsx files are allowed.\",\n      \"errorMessage\": \"Invalid file format. Only .xlsx files are allowed.\"\n    }\n  ]\n}"
             }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var res = pm.response.json();",
+                  "    var url = res.fileUrl || res.url || (res.data && res.data.fileUrl);",
+                  "    if (url) {",
+                  "        pm.collectionVariables.set(\"uploadedFileUrl\", url);",
+                  "        console.log(\"Auto-set uploadedFileUrl variable:\", url);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
           ]
         },
         {
@@ -15932,6 +15950,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -16216,36 +16252,6 @@
                   "body": ""
                 }
               ]
-            },
-            {
-              "name": "BU-apartments-05. Track Bulk Upload Progress (SSE) (Apartments)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "bulk-upload",
-                    "track",
-                    "3f9c2a1e-0000-4000-8000-000000000001"
-                  ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Apartments' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
-              },
-              "response": []
             }
           ]
         },
@@ -16369,6 +16375,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -16653,36 +16677,6 @@
                   "body": ""
                 }
               ]
-            },
-            {
-              "name": "BU-tenants-05. Track Bulk Upload Progress (SSE) (Tenants)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "bulk-upload",
-                    "track",
-                    "3f9c2a1e-0000-4000-8000-000000000001"
-                  ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Tenants' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
-              },
-              "response": []
             }
           ]
         },
@@ -16806,6 +16800,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -17090,36 +17102,6 @@
                   "body": ""
                 }
               ]
-            },
-            {
-              "name": "BU-owners-05. Track Bulk Upload Progress (SSE) (Owners)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "bulk-upload",
-                    "track",
-                    "3f9c2a1e-0000-4000-8000-000000000001"
-                  ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Owners' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
-              },
-              "response": []
             }
           ]
         },
@@ -17243,6 +17225,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -17527,36 +17527,6 @@
                   "body": ""
                 }
               ]
-            },
-            {
-              "name": "BU-income-05. Track Bulk Upload Progress (SSE) (Income)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "bulk-upload",
-                    "track",
-                    "3f9c2a1e-0000-4000-8000-000000000001"
-                  ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Income' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
-              },
-              "response": []
             }
           ]
         },
@@ -17680,6 +17650,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -17964,36 +17952,6 @@
                   "body": ""
                 }
               ]
-            },
-            {
-              "name": "BU-expenses-05. Track Bulk Upload Progress (SSE) (Expenses)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "bulk-upload",
-                    "track",
-                    "3f9c2a1e-0000-4000-8000-000000000001"
-                  ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Expenses' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
-              },
-              "response": []
             }
           ]
         },
@@ -18117,6 +18075,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -18401,36 +18377,6 @@
                   "body": ""
                 }
               ]
-            },
-            {
-              "name": "BU-maintenance-05. Track Bulk Upload Progress (SSE) (Maintenance)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "bulk-upload",
-                    "track",
-                    "3f9c2a1e-0000-4000-8000-000000000001"
-                  ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Maintenance' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
-              },
-              "response": []
             }
           ]
         },
@@ -18554,6 +18500,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -18838,19 +18802,46 @@
                   "body": ""
                 }
               ]
+            }
+          ]
+        },
+        {
+          "name": "BU-05. Track Bulk Upload Progress (SSE)",
+          "request": {
+            "auth": {
+              "type": "noauth"
             },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bulk-upload/track/{{bulkTrackId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bulk-upload",
+                "track",
+                "{{bulkTrackId}}"
+              ]
+            },
+            "description": "Central Real-Time Server-Sent Events (SSE) tracking stream for bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
+          },
+          "response": [
             {
-              "name": "BU-equipment-05. Track Bulk Upload Progress (SSE) (Equipment)",
-              "request": {
-                "auth": {
-                  "type": "noauth"
-                },
+              "name": "200 OK - Progress Event Stream (45% In-Progress)",
+              "originalRequest": {
                 "method": "GET",
                 "header": [
                   {
                     "key": "Accept",
-                    "value": "text/event-stream",
-                    "type": "text"
+                    "value": "text/event-stream"
                   }
                 ],
                 "url": {
@@ -18864,10 +18855,113 @@
                     "track",
                     "3f9c2a1e-0000-4000-8000-000000000001"
                   ]
-                },
-                "description": "Real-Time Server-Sent Events (SSE) tracking stream for 'Equipment' bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
+                }
               },
-              "response": []
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-transform"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "event: progress\ndata: {\"trackId\":\"3f9c2a1e-0000-4000-8000-000000000001\",\"module\":\"Apartments\",\"status\":\"Processing\",\"totalCount\":100,\"processedCount\":45,\"successCount\":40,\"failedCount\":5,\"progressPercentage\":45,\"processedFileUrl\":null,\"globalError\":null}\n\n"
+            },
+            {
+              "name": "200 OK - Stream Completed (100% Finished)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "track",
+                    "3f9c2a1e-0000-4000-8000-000000000001"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-transform"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "event: complete\ndata: {\"trackId\":\"3f9c2a1e-0000-4000-8000-000000000001\",\"module\":\"Apartments\",\"status\":\"Finished\",\"totalCount\":100,\"processedCount\":100,\"successCount\":95,\"failedCount\":5,\"progressPercentage\":100,\"processedFileUrl\":\"http://localhost:5240/image/bulk_processed_3f9c2a1e.xlsx\",\"globalError\":null}\n\n"
+            },
+            {
+              "name": "200 OK - Stream Failed (Global Error)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "track",
+                    "3f9c2a1e-0000-4000-8000-000000000001"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-transform"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "event: complete\ndata: {\"trackId\":\"3f9c2a1e-0000-4000-8000-000000000001\",\"module\":\"Apartments\",\"status\":\"Failed\",\"totalCount\":100,\"processedCount\":0,\"successCount\":0,\"failedCount\":100,\"progressPercentage\":0,\"processedFileUrl\":null,\"globalError\":\"Missing required column(s): FlatNumber.\"\\}\n\n"
             }
           ]
         }
@@ -18878,6 +18972,16 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:5240",
+      "type": "string"
+    },
+    {
+      "key": "bulkTrackId",
+      "value": "3f9c2a1e-0000-4000-8000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "uploadedFileUrl",
+      "value": "http://localhost:5240/image/large_apartments_test.xlsx",
       "type": "string"
     }
   ]
