@@ -84,6 +84,18 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             if (_context.Database.IsRelational())
             {
                 await _context.Database.MigrateAsync();
+                try
+                {
+                    await _context.Database.ExecuteSqlRawAsync(@"
+                        IF EXISTS (SELECT * FROM sys.tables WHERE name = 'bulk_uploads')
+                        BEGIN
+                            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('bulk_uploads') AND name = 'progress_percentage')
+                            BEGIN
+                                ALTER TABLE bulk_uploads ADD progress_percentage int NOT NULL DEFAULT 0;
+                            END
+                        END");
+                }
+                catch { }
             }
 
             // Optional full wipe: set SEED_MODE=reset to remove all data and re-seed from scratch.

@@ -34,6 +34,7 @@ public static class ConfigureServices
 
         services.AddTransient<IBulkUploadService, BulkUploadService>();
         services.AddSingleton<IBulkUploadQueue, BulkUploadQueue>();
+        services.AddSingleton<IBulkUploadProgressBroadcaster, BulkUploadProgressBroadcaster>();
         services.AddHostedService<BulkUploadBackgroundService>();
 
         services.AddTransient<ICurrentTime, CurrentTime>();

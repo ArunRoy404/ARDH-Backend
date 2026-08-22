@@ -47,6 +47,11 @@ public class BulkUploadConfiguration : IEntityTypeConfiguration<BulkUpload>
             .HasColumnName("failed_count")
             .IsRequired();
 
+        builder.Property(x => x.ProgressPercentage)
+            .HasColumnName("progress_percentage")
+            .HasDefaultValue(0)
+            .IsRequired();
+
         builder.Property(x => x.GlobalError)
             .HasColumnName("global_error")
             .HasColumnType("nvarchar(max)");
