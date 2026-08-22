@@ -26,11 +26,6 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var query = buildings.AsQueryable();
 
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
         if (!string.IsNullOrEmpty(search))
         {
             var cleanSearch = search.Trim().ToLower();

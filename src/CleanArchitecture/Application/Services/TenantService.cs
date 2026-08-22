@@ -44,21 +44,6 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
 
         var query = tenants.AsQueryable();
 
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (apartmentId.HasValue)
-        {
-            query = query.Where(x => x.ApartmentId == apartmentId.Value);
-        }
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
         if (!string.IsNullOrWhiteSpace(search))
         {
             var cleanSearch = search.Trim().ToLower();

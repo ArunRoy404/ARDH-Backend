@@ -58,36 +58,6 @@ public class IncomeRecordService(
 
         var query = records.AsQueryable();
 
-        if (incomeType.HasValue)
-        {
-            query = query.Where(x => x.IncomeType == incomeType.Value);
-        }
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (apartmentId.HasValue)
-        {
-            query = query.Where(x => x.ApartmentId == apartmentId.Value);
-        }
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.PaymentDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.PaymentDate <= endDate.Value);
-        }
-
         if (!string.IsNullOrWhiteSpace(search))
         {
             var searchLower = search.Trim().ToLower();

@@ -65,46 +65,6 @@ public class ExpenseRecordService(
 
         var query = records.AsQueryable();
 
-        if (category.HasValue)
-        {
-            query = query.Where(x => x.Category == category.Value);
-        }
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
-        if (nature.HasValue)
-        {
-            query = query.Where(x => x.Nature == nature.Value);
-        }
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (vendorId.HasValue)
-        {
-            query = query.Where(x => x.VendorId == vendorId.Value);
-        }
-
-        if (apartmentId.HasValue)
-        {
-            query = query.Where(x => x.ApartmentId == apartmentId.Value);
-        }
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.ExpenseDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.ExpenseDate <= endDate.Value);
-        }
-
         if (!string.IsNullOrWhiteSpace(search))
         {
             var searchLower = search.Trim().ToLower();
