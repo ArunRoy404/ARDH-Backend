@@ -89,5 +89,8 @@ public class FileStorageSettings
 {
     public bool LocalStorage { get; set; } = true;
     [Required]
-    public string Path { get; set; }
+    public string Path { get; set; } = "image";
+    public string ImagePath { get; set; } = "image";
+    public string DocumentPath { get; set; } = "document";
+    public string BulkUploadPath { get; set; } = "bulk-upload";
 }

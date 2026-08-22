@@ -21,15 +21,10 @@ public class BuildingService(IUnitOfWork unitOfWork, ICurrentUser currentUser, I
 
     public async Task<PaginatedList<BuildingViewModel>> GetPaginated(int page, int pageSize, string? search, BuildingStatus? status, CancellationToken cancellationToken)
     {
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => !status.HasValue || x.Status == status.Value);
         var users = await _unitOfWork.UserRepository.GetAllAsync();
         var userMap = users.ToDictionary(u => u.Id, u => u.Name);
         var query = buildings.AsQueryable();
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
 
         if (!string.IsNullOrEmpty(search))
         {

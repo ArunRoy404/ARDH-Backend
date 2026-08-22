@@ -35,7 +35,8 @@ public class BulkUploadService(
     IIncomeRecordService incomeRecordService,
     IExpenseRecordService expenseRecordService,
     IMaintenanceRequestService maintenanceRequestService,
-    IEquipmentService equipmentService) : IBulkUploadService
+    IEquipmentService equipmentService,
+    IBulkUploadProgressBroadcaster progressBroadcaster) : IBulkUploadService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IBulkUploadQueue _bulkUploadQueue = bulkUploadQueue;
@@ -49,6 +50,7 @@ public class BulkUploadService(
     private readonly IExpenseRecordService _expenseRecordService = expenseRecordService;
     private readonly IMaintenanceRequestService _maintenanceRequestService = maintenanceRequestService;
     private readonly IEquipmentService _equipmentService = equipmentService;
+    private readonly IBulkUploadProgressBroadcaster _progressBroadcaster = progressBroadcaster;
 
     // ─────────────────────────────────────────────────────────────────────────
     // Start / enqueue
@@ -179,46 +181,79 @@ public class BulkUploadService(
                 return;
             }
 
+            var moduleEnum = ToModuleEnum(record.Module) ?? BulkUploadModule.Apartments;
+
             // Preload name->ID lookups once per job so rows can reference buildings,
             // owners and apartments by name/number instead of GUIDs.
             var lookup = await BuildLookupAsync(cancellationToken);
 
             var processedList = new List<List<string>> { headers.Concat(new[] { "status", "error" }).ToList() };
 
-            var totalRows = 0;
+            var validRows = rows.Skip(1).Where(r => !r.All(string.IsNullOrWhiteSpace)).ToList();
+            var totalRows = validRows.Count;
             var success = 0;
             var failed = 0;
+            var processedCount = 0;
 
-            // Skip the header row
-            foreach (var row in rows.Skip(1))
+            record.TotalCount = totalRows;
+            record.ProgressPercentage = 0;
+            _unitOfWork.BulkUploadRepository.Update(record);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _progressBroadcaster.PublishProgress(new BulkUploadProgressEvent
             {
-                if (row.All(string.IsNullOrWhiteSpace))
-                {
-                    continue;
-                }
+                TrackId = record.Id,
+                Module = moduleEnum,
+                Status = BulkUploadStatus.Processing,
+                TotalCount = totalRows,
+                ProcessedCount = 0,
+                SuccessCount = 0,
+                FailedCount = 0,
+                ProgressPercentage = 0
+            });
 
-                totalRows++;
-
+            foreach (var row in validRows)
+            {
                 var (request, errors) = ParseRow(record.Module, row, headerIndex, lookup);
 
                 if (request == null || errors.Count > 0)
                 {
                     failed++;
                     processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", string.Join("; ", errors)));
-                    continue;
+                }
+                else
+                {
+                    try
+                    {
+                        await CreateRecord(record.Module, request, lookup, cancellationToken);
+                        success++;
+                        processedList.Add(PadAndAppendStatus(row, headers.Count, "Success", string.Empty));
+                    }
+                    catch (Exception ex)
+                    {
+                        _unitOfWork.ClearChangeTracker();
+                        failed++;
+                        processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", ToReadableError(ex)));
+                    }
                 }
 
-                try
+                processedCount = success + failed;
+                var pct = totalRows > 0 ? (int)Math.Round((double)processedCount / totalRows * 100) : 100;
+                record.ProgressPercentage = Math.Min(pct, 99); // 100% is reserved for Finished state
+                record.SuccessCount = success;
+                record.FailedCount = failed;
+
+                _progressBroadcaster.PublishProgress(new BulkUploadProgressEvent
                 {
-                    await CreateRecord(record.Module, request, cancellationToken);
-                    success++;
-                    processedList.Add(PadAndAppendStatus(row, headers.Count, "Success", string.Empty));
-                }
-                catch (Exception ex)
-                {
-                    failed++;
-                    processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", ToReadableError(ex)));
-                }
+                    TrackId = record.Id,
+                    Module = moduleEnum,
+                    Status = BulkUploadStatus.Processing,
+                    TotalCount = totalRows,
+                    ProcessedCount = processedCount,
+                    SuccessCount = success,
+                    FailedCount = failed,
+                    ProgressPercentage = record.ProgressPercentage
+                });
             }
 
             var processedUrl = await WriteProcessedXlsxAsync(record.Id, processedList, cancellationToken);
@@ -226,21 +261,49 @@ public class BulkUploadService(
             record.TotalCount = totalRows;
             record.SuccessCount = success;
             record.FailedCount = failed;
+            record.ProgressPercentage = 100;
             record.ProcessedFileUrl = processedUrl;
             record.Status = BulkUploadStatus.Finished.ToString();
             record.FinishedAt = DateTime.UtcNow;
             record.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.BulkUploadRepository.Update(record);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _progressBroadcaster.PublishProgress(new BulkUploadProgressEvent
+            {
+                TrackId = record.Id,
+                Module = moduleEnum,
+                Status = BulkUploadStatus.Finished,
+                TotalCount = totalRows,
+                ProcessedCount = totalRows,
+                SuccessCount = success,
+                FailedCount = failed,
+                ProgressPercentage = 100,
+                ProcessedFileUrl = processedUrl
+            });
         }
         catch (Exception ex)
         {
+            var moduleEnum = ToModuleEnum(record.Module) ?? BulkUploadModule.Apartments;
             record.GlobalError = ToReadableError(ex);
             record.Status = BulkUploadStatus.Failed.ToString();
             record.FinishedAt = DateTime.UtcNow;
             record.UpdatedAt = DateTime.UtcNow;
             _unitOfWork.BulkUploadRepository.Update(record);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _progressBroadcaster.PublishProgress(new BulkUploadProgressEvent
+            {
+                TrackId = record.Id,
+                Module = moduleEnum,
+                Status = BulkUploadStatus.Failed,
+                TotalCount = record.TotalCount,
+                ProcessedCount = record.SuccessCount + record.FailedCount,
+                SuccessCount = record.SuccessCount,
+                FailedCount = record.FailedCount,
+                ProgressPercentage = record.ProgressPercentage,
+                GlobalError = record.GlobalError
+            });
         }
     }
 
@@ -317,7 +380,8 @@ public class BulkUploadService(
     {
         var xlsxBytes = XlsxHelper.BuildXlsx(rows, "Processed");
         var fileName = $"bulk_processed_{bulkUploadId}.xlsx";
-        var storagePath = GetStoragePath();
+        var bulkFolder = (_appSettings.FileStorageSettings.BulkUploadPath ?? "bulk-upload").Trim('/');
+        var storagePath = Path.Combine(_environment.ContentRootPath, bulkFolder);
         var filePath = Path.Combine(storagePath, fileName);
 
         if (!Directory.Exists(storagePath))
@@ -327,27 +391,47 @@ public class BulkUploadService(
 
         await File.WriteAllBytesAsync(filePath, xlsxBytes, cancellationToken);
 
-        return BuildFileUrl(fileName);
+        var baseUrl = !string.IsNullOrWhiteSpace(_appSettings.BaseURL)
+            ? _appSettings.BaseURL.TrimEnd('/')
+            : _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
+
+        return $"{baseUrl}/{bulkFolder}/{fileName}";
     }
 
     private string ResolveLocalFilePath(string fileUrl)
     {
-        var fileName = Path.GetFileName(new Uri(fileUrl).LocalPath);
-        return Path.Combine(GetStoragePath(), fileName);
-    }
+        string relativePath;
+        if (Uri.TryCreate(fileUrl, UriKind.Absolute, out var uri))
+        {
+            relativePath = uri.LocalPath.TrimStart('/');
+        }
+        else
+        {
+            relativePath = fileUrl.TrimStart('/');
+        }
 
-    private string GetStoragePath()
-    {
-        return Path.Combine(_environment.ContentRootPath, _appSettings.FileStorageSettings.Path);
-    }
+        var fullPath = Path.Combine(_environment.ContentRootPath, relativePath);
+        if (File.Exists(fullPath))
+        {
+            return fullPath;
+        }
 
-    private string BuildFileUrl(string fileName)
-    {
-        var baseUrl = !string.IsNullOrWhiteSpace(_appSettings.BaseURL)
-            ? _appSettings.BaseURL.TrimEnd('/')
-            : _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
-        var folderName = _appSettings.FileStorageSettings.Path.Trim('/');
-        return $"{baseUrl}/{folderName}/{fileName}";
+        var fileName = Path.GetFileName(relativePath);
+        var bulkFolder = (_appSettings.FileStorageSettings.BulkUploadPath ?? "bulk-upload").Trim('/');
+        var fallbackBulkPath = Path.Combine(_environment.ContentRootPath, bulkFolder, fileName);
+        if (File.Exists(fallbackBulkPath))
+        {
+            return fallbackBulkPath;
+        }
+
+        var imageFolder = (_appSettings.FileStorageSettings.ImagePath ?? "image").Trim('/');
+        var fallbackImagePath = Path.Combine(_environment.ContentRootPath, imageFolder, fileName);
+        if (File.Exists(fallbackImagePath))
+        {
+            return fallbackImagePath;
+        }
+
+        return fallbackBulkPath;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -379,18 +463,60 @@ public class BulkUploadService(
             _ => (null, new List<string> { "Unsupported module." })
         };
 
-    private Task CreateRecord(string module, object request, CancellationToken cancellationToken)
-        => module.ToLowerInvariant() switch
+    private async Task CreateRecord(string module, object request, BulkLookup lookup, CancellationToken cancellationToken)
+    {
+        switch (module.ToLowerInvariant())
         {
-            "apartments" => _apartmentService.Create((ApartmentCreateRequest)request, cancellationToken),
-            "tenants" => _tenantService.Create((TenantCreateRequest)request, cancellationToken),
-            "owners" => _ownerService.Create((OwnerCreateRequest)request, cancellationToken),
-            "income" => _incomeRecordService.Create((IncomeRecordCreateRequest)request, cancellationToken),
-            "expenses" => _expenseRecordService.Create((ExpenseRecordCreateRequest)request, cancellationToken),
-            "maintenance" => _maintenanceRequestService.Create((MaintenanceRequestCreateRequest)request, cancellationToken),
-            "equipment" => _equipmentService.Create((EquipmentCreateRequest)request, cancellationToken),
-            _ => throw BulkUploadException.BadRequestException("Unsupported module.")
-        };
+            case "apartments":
+                var aptReq = (ApartmentCreateRequest)request;
+                await _apartmentService.Create(aptReq, cancellationToken);
+                var createdApt = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(a => a.BuildingId == aptReq.BuildingId && a.FlatNumber == aptReq.FlatNumber);
+                if (createdApt != null)
+                {
+                    lookup.Apartments[(aptReq.BuildingId, NormalizeName(aptReq.FlatNumber))] = createdApt.Id;
+                }
+                break;
+
+            case "tenants":
+                await _tenantService.Create((TenantCreateRequest)request, cancellationToken);
+                break;
+
+            case "owners":
+                var ownerReq = (OwnerCreateRequest)request;
+                await _ownerService.Create(ownerReq, cancellationToken);
+                var createdOwner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(o => o.FullName == ownerReq.FullName);
+                if (createdOwner != null)
+                {
+                    lookup.Owners[NormalizeName(ownerReq.FullName)] = createdOwner.Id;
+                }
+                break;
+
+            case "income":
+                await _incomeRecordService.Create((IncomeRecordCreateRequest)request, cancellationToken);
+                break;
+
+            case "expenses":
+                await _expenseRecordService.Create((ExpenseRecordCreateRequest)request, cancellationToken);
+                break;
+
+            case "maintenance":
+                await _maintenanceRequestService.Create((MaintenanceRequestCreateRequest)request, cancellationToken);
+                break;
+
+            case "equipment":
+                var eqReq = (EquipmentCreateRequest)request;
+                await _equipmentService.Create(eqReq, cancellationToken);
+                var createdEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(e => e.BuildingId == eqReq.BuildingId && e.Name == eqReq.Name);
+                if (createdEq != null)
+                {
+                    lookup.Equipment[NormalizeName(eqReq.Name)] = createdEq.Id;
+                }
+                break;
+
+            default:
+                throw BulkUploadException.BadRequestException("Unsupported module.");
+        }
+    }
 
     // ── Apartments ──────────────────────────────────────────────────────────
 
@@ -1004,6 +1130,7 @@ public class BulkUploadService(
             TotalCount = bulkUpload.TotalCount,
             SuccessCount = bulkUpload.SuccessCount,
             FailedCount = bulkUpload.FailedCount,
+            ProgressPercentage = bulkUpload.ProgressPercentage,
             GlobalError = bulkUpload.GlobalError,
             StartedAt = bulkUpload.StartedAt,
             FinishedAt = bulkUpload.FinishedAt,

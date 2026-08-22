@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "9a38f321-4bcf-4f9e-a0e2-2a54b38dcd2b",
     "name": "Ardh Property Management API (Cookie Auth)",
-    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies — no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nSeeded users (SEED_MODE=reset on startup):\n  admin@gmail.com / P@ssw0rd (full access)\n  manager@gmail.com / P@ssw0rd (property_manager: dashboard, vendors, equipment, amc_contracts, maintenance, expenses)\n  accountant@gmail.com / P@ssw0rd (accountant: dashboard, income, reports, expenses)\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection match the seeded demo data, so requests work out of the box on a freshly seeded database.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' — change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 13; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
+    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies \u2014 no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nSeeded users (SEED_MODE=reset on startup):\n  admin@gmail.com / P@ssw0rd (full access)\n  manager@gmail.com / P@ssw0rd (property_manager: dashboard, vendors, equipment, amc_contracts, maintenance, expenses)\n  accountant@gmail.com / P@ssw0rd (accountant: dashboard, income, reports, expenses)\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection match the seeded demo data, so requests work out of the box on a freshly seeded database.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' \u2014 change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 13; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -570,7 +570,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"c1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"Water leakage in Flat 302\",\n                \"location\": \"Grand Plaza Towers \\u2022 302\",\n                \"priority\": \"High\",\n                \"status\": \"Open\"\n            },\n            {\n                \"id\": \"m2f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"AC not cooling\",\n                \"location\": \"Grand Plaza Towers \\u2022 101\",\n                \"priority\": \"Medium\",\n                \"status\": \"InProgress\"\n            },\n            {\n                \"id\": \"m3f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"Parking lot lights broken\",\n                \"location\": \"Grand Plaza Towers \\u2022 Common Area\",\n                \"priority\": \"Medium\",\n                \"status\": \"Open\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"c1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"Water leakage in Flat 302\",\n                \"location\": \"Grand Plaza Towers \\u2022 302\",\n                \"priority\": \"High\",\n                \"status\": \"Open\"\n            },\n            {\n                \"id\": \"c2f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"AC not cooling\",\n                \"location\": \"Grand Plaza Towers \\u2022 101\",\n                \"priority\": \"Medium\",\n                \"status\": \"InProgress\"\n            },\n            {\n                \"id\": \"c3f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"title\": \"Parking lot lights broken\",\n                \"location\": \"Grand Plaza Towers \\u2022 Common Area\",\n                \"priority\": \"Medium\",\n                \"status\": \"Open\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
             },
             {
               "name": "Error Example (403 - Access Denied)",
@@ -807,7 +807,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n                \"category\": \"Utility\",\n                \"expenseHead\": \"Electricity Bill\",\n                \"specificItem\": \"Common area lights\",\n                \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"vendorName\": \"BESCOM\",\n                \"vendorCompanyName\": \"Bangalore Electricity\",\n                \"nature\": \"Service\",\n                \"amount\": 12500.00,\n                \"entity\": \"BuildingLevel\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Sunrise Tower\",\n                \"apartmentId\": null,\n                \"flatNumber\": null,\n                \"expenseDate\": \"2026-05-10T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"status\": \"Paid\",\n                \"reference\": \"TXN123456789\",\n                \"description\": \"April bill\",\n                \"createdAt\": \"2026-05-10T15:00:00Z\",\n                \"updatedAt\": \"2026-05-10T15:00:00Z\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n                \"category\": \"Utility\",\n                \"expenseHead\": \"Electricity Bill\",\n                \"specificItem\": \"Common area lights\",\n                \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"vendorName\": \"BESCOM\",\n                \"vendorCompanyName\": \"Bangalore Electricity\",\n                \"nature\": \"Service\",\n                \"amount\": 12500.00,\n                \"entity\": \"BuildingLevel\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Sunrise Tower\",\n                \"apartmentId\": null,\n                \"flatNumber\": null,\n                \"expenseDate\": \"2026-05-10T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"status\": \"Paid\",\n                \"reference\": \"TXN123456789\",\n                \"description\": \"April bill\",\n                \"createdAt\": \"2026-05-10T15:00:00Z\",\n                \"updatedAt\": \"2026-05-10T15:00:00Z\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
             }
           ]
         },
@@ -922,7 +922,7 @@
                 }
               ]
             },
-            "description": "Exports a report as an XLSX workbook. type is required and validated.\n\nValid type values (exact):\n  income   - all filtered income records (same columns as I-08)\n  expenses - all filtered expense records (same columns as EX-07) — 'expense' also accepted\n  combined - dated transaction ledger merging income + expense into one feed (default)\n\nAny other type returns 400. Optional filters: buildingId, startDate, endDate.\nReturns an .xlsx file (application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)."
+            "description": "Exports a report as an XLSX workbook. type is required and validated.\n\nValid type values (exact):\n  income   - all filtered income records (same columns as I-08)\n  expenses - all filtered expense records (same columns as EX-07) \u2014 'expense' also accepted\n  combined - dated transaction ledger merging income + expense into one feed (default)\n\nAny other type returns 400. Optional filters: buildingId, startDate, endDate.\nReturns an .xlsx file (application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)."
           },
           "response": [
             {
@@ -958,7 +958,7 @@
                 }
               ],
               "cookie": [],
-              "body": "Binary XLSX file. Income/expense/combined report — download and open in Excel.\nIncome export rows: Date, Type, Category, Description, Amount, Status, BuildingName, FlatNumber."
+              "body": "Binary XLSX file. Income/expense/combined report \u2014 download and open in Excel.\nIncome export rows: Date, Type, Category, Description, Amount, Status, BuildingName, FlatNumber."
             },
             {
               "name": "Error Example (400 - Invalid type)",
@@ -2036,7 +2036,7 @@
                 }
               ]
             },
-            "description": "Lists users with pagination and optional filters."
+            "description": "Lists users with pagination and optional filters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -2178,7 +2178,7 @@
                 "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
               ]
             },
-            "description": "Returns the full details of a single user.\nUse the seeded Super Admin ID below."
+            "description": "Returns the full details of a single user.\nUse the seeded Super Admin ID below.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -2272,7 +2272,7 @@
                 "users"
               ]
             },
-            "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
+            "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
@@ -2510,7 +2510,7 @@
                 "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
               ]
             },
-            "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
+            "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
@@ -2839,7 +2839,7 @@
                 }
               ]
             },
-            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3024,7 +3024,7 @@
                 "toggle-status"
               ]
             },
-            "description": "Toggles a user between active and inactive. No body required."
+            "description": "Toggles a user between active and inactive. No body required.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3989,7 +3989,7 @@
                 "settings"
               ]
             },
-            "description": "Returns the current application settings (company name, email, phone, address, icon, fav)."
+            "description": "Returns the current application settings (company name, email, phone, address, icon, fav).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4081,7 +4081,7 @@
                 "settings"
               ]
             },
-            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).",
+            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"adminpassword\" // [REQUIRED] Current admin password (seeded value: adminpassword)\n}"
@@ -4196,7 +4196,7 @@
                 "password"
               ]
             },
-            "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.",
+            "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
@@ -4350,7 +4350,7 @@
                 "public"
               ]
             },
-            "description": "Returns the public site branding (icon and fav). This endpoint is public (no authentication needed)."
+            "description": "Returns the public site branding (icon and fav). This endpoint is public (no authentication needed).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4443,7 +4443,7 @@
                 }
               ]
             },
-            "description": "Lists all soft-deleted records that can be restored or permanently deleted.\nQuery params: page, pageSize, search, entity_type, start_date, end_date."
+            "description": "Lists all soft-deleted records that can be restored or permanently deleted.\nQuery params: page, pageSize, search, entity_type, start_date, end_date.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4596,7 +4596,7 @@
                 "restore"
               ]
             },
-            "description": "Restores a soft-deleted record. The underlying entity (building, tenant, expense, etc.) becomes active again.\nUse the Deleted History ID from the DH-01 list response."
+            "description": "Restores a soft-deleted record. The underlying entity (building, tenant, expense, etc.) becomes active again.\nUse the Deleted History ID from the DH-01 list response.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4729,7 +4729,7 @@
                 }
               ]
             },
-            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4873,7 +4873,7 @@
                 "4da2b822-29c4-52a8-ad29-c8be5d491f24"
               ]
             },
-            "description": "Returns the full details of one deleted record, including restore/permanent-delete flags."
+            "description": "Returns the full details of one deleted record, including restore/permanent-delete flags.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -5024,7 +5024,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"https://api.ardh.com/image/3d60a25e-6a9b-4878-ac7d-e71a56d4655f.png\"\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"http://localhost:5240/image/a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d.png\"\n  },\n  \"errors\": null\n}"
             },
             {
               "name": "Error Example (400 - Invalid Format)",
@@ -5191,7 +5191,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"https://api.ardh.com/image/e8b7a13c-9b3f-4d2e-8c5a-27f6a0b1c2d3.pdf\"\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"http://localhost:5240/document/b2c8a7e4-8f9d-4c3e-8b1a-9f8e7d6c5b4a.pdf\"\n  },\n  \"errors\": null\n}"
             },
             {
               "name": "Error Example (400 - Invalid Format)",
@@ -5358,7 +5358,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"https://api.ardh.com/image/c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f.jpg\"\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"url\": \"http://localhost:5240/document/c3d9b8f5-9a0e-5d4f-9c2b-0a9f8e7d6c5b.pdf\"\n  },\n  \"errors\": null\n}"
             },
             {
               "name": "Error Example (400 - Invalid Format)",
@@ -8664,7 +8664,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f7a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Sunil Kumar\",\n                \"companyName\": \"Sunil Plumbing Services\",\n                \"phone\": \"+919888776655\",\n                \"email\": \"sunil@plumbing.com\",\n                \"vendorType\": \"Plumbing\",\n                \"gstNumber\": \"27BBBBB2222B1Z2\",\n                \"address\": \"Shop 12, Market Road\",\n                \"status\": \"Active\",\n                \"notes\": \"Preferred plumber for all building units\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Rajesh Sharma\",\n                \"companyName\": \"Sharma Elevator Services\",\n                \"phone\": \"+919999888877\",\n                \"email\": \"rajesh@solutions.com\",\n                \"vendorType\": \"Elevator Service\",\n                \"gstNumber\": \"27AAAAA1111A1Z1\",\n                \"address\": \"Sector 5, Nerul\",\n                \"status\": \"Active\",\n                \"notes\": \"Preferred elevator vendor for all building units\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"name\": \"BESCOM\",\n                \"companyName\": \"Bangalore Electricity\",\n                \"phone\": \"+91 9876500112\",\n                \"email\": \"billing@bescom.example.com\",\n                \"vendorType\": \"Electricity\",\n                \"gstNumber\": \"29AAAAA1111A1Z2\",\n                \"address\": \"12 MG Road, Bangalore\",\n                \"status\": \"Active\",\n                \"notes\": \"Electricity supplier for common areas\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"f7a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Sunil Kumar\",\n                \"companyName\": \"Sunil Plumbing Services\",\n                \"phone\": \"+919888776655\",\n                \"email\": \"sunil@plumbing.com\",\n                \"vendorType\": \"Plumbing\",\n                \"gstNumber\": \"27BBBBB2222B1Z2\",\n                \"address\": \"Shop 12, Market Road\",\n                \"status\": \"Active\",\n                \"notes\": \"Preferred plumber for all building units\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"name\": \"Rajesh Sharma\",\n                \"companyName\": \"Sharma Elevator Services\",\n                \"phone\": \"+919999888877\",\n                \"email\": \"rajesh@solutions.com\",\n                \"vendorType\": \"Elevator Service\",\n                \"gstNumber\": \"27AAAAA1111A1Z1\",\n                \"address\": \"Sector 5, Nerul\",\n                \"status\": \"Active\",\n                \"notes\": \"Preferred elevator vendor for all building units\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            },\n            {\n                \"id\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"name\": \"BESCOM\",\n                \"companyName\": \"Bangalore Electricity\",\n                \"phone\": \"+91 9876500112\",\n                \"email\": \"billing@bescom.example.com\",\n                \"vendorType\": \"Electricity\",\n                \"gstNumber\": \"29AAAAA1111A1Z2\",\n                \"address\": \"12 MG Road, Bangalore\",\n                \"status\": \"Active\",\n                \"notes\": \"Electricity supplier for common areas\",\n                \"createdAt\": \"2026-07-20T12:00:00Z\",\n                \"updatedAt\": \"2026-07-21T18:00:00Z\",\n                \"createdBy\": \"Super Admin\",\n                \"updatedBy\": \"Super Admin\"\n            }\n        ],\n        \"totalCount\": 3,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
             }
           ]
         },
@@ -11280,7 +11280,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Immediate attention required.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value (e.g. Plumbing, Electrical, Lift, General)\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"Open\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID — provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID — provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID — provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 15000.00, // [REQUIRED] Estimated cost\n    \"scheduledDate\": \"2026-07-25T09:00:00Z\", // [REQUIRED] Scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle (required when recurrenceFrequency is set)\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly. nextMaintenanceDate = startDate + frequency interval\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
+              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Immediate attention required.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value (e.g. Plumbing, Electrical, Lift, General)\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"Open\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID \u2014 provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID \u2014 provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID \u2014 provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 15000.00, // [REQUIRED] Estimated cost\n    \"scheduledDate\": \"2026-07-25T09:00:00Z\", // [REQUIRED] Scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle (required when recurrenceFrequency is set)\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly. nextMaintenanceDate = startDate + frequency interval\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/maintenance",
@@ -11292,7 +11292,7 @@
                 "maintenance"
               ]
             },
-            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
+            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional \u2014 common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
           },
           "response": [
             {
@@ -11460,7 +11460,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Leak resolved, repainting scheduled.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"InProgress\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID — provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID — provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID — provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 16500.00, // [REQUIRED] Updated estimated cost\n    \"scheduledDate\": \"2026-07-26T09:00:00Z\", // [REQUIRED] Updated scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
+              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Leak resolved, repainting scheduled.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"InProgress\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID \u2014 provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID \u2014 provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID \u2014 provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 16500.00, // [REQUIRED] Updated estimated cost\n    \"scheduledDate\": \"2026-07-26T09:00:00Z\", // [REQUIRED] Updated scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/maintenance/c1f3b822-29c4-52a8-ad29-c8be5d491f24",
@@ -11480,7 +11480,7 @@
                 }
               ]
             },
-            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
+            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional \u2014 common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
           },
           "response": [
             {
@@ -13867,7 +13867,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n                \"category\": \"Utility\",\n                \"expenseHead\": \"Electricity Bill\",\n                \"specificItem\": \"Common area lights\",\n                \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"vendorName\": \"BESCOM\",\n                \"vendorCompanyName\": \"Bangalore Electricity\",\n                \"nature\": \"Service\",\n                \"amount\": 12500.0,\n                \"entity\": \"BuildingLevel\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": null,\n                \"flatNumber\": null,\n                \"expenseDate\": \"2026-08-05T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"status\": \"Paid\",\n                \"reference\": \"TXN123456789\",\n                \"attachmentUrl\": null,\n                \"description\": \"April bill\",\n                \"tankerNumber\": null,\n                \"timeOfDelivery\": null,\n                \"deliveryDriverName\": null,\n                \"managerInAttendance\": null,\n                \"litersFilled\": null,\n                \"createdAt\": \"2026-08-05T15:00:00Z\",\n                \"updatedAt\": \"2026-08-05T15:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n                \"category\": \"Utility\",\n                \"expenseHead\": \"Electricity Bill\",\n                \"specificItem\": \"Common area lights\",\n                \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\n                \"vendorName\": \"BESCOM\",\n                \"vendorCompanyName\": \"Bangalore Electricity\",\n                \"nature\": \"Service\",\n                \"amount\": 12500.0,\n                \"entity\": \"BuildingLevel\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"apartmentId\": null,\n                \"flatNumber\": null,\n                \"expenseDate\": \"2026-08-05T00:00:00Z\",\n                \"paymentMethod\": \"BankTransfer\",\n                \"status\": \"Paid\",\n                \"reference\": \"TXN123456789\",\n                \"attachmentUrl\": null,\n                \"description\": \"April bill\",\n                \"tankerNumber\": null,\n                \"timeOfDelivery\": null,\n                \"deliveryDriverName\": null,\n                \"managerInAttendance\": null,\n                \"litersFilled\": null,\n                \"createdAt\": \"2026-08-05T15:00:00Z\",\n                \"updatedAt\": \"2026-08-05T15:00:00Z\",\n                \"createdBy\": \"Admin\",\n                \"updatedBy\": \"Admin\"\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
             }
           ]
         },
@@ -13924,7 +13924,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n        \"category\": \"Utility\",\n        \"expenseHead\": \"Electricity Bill\",\n        \"specificItem\": \"Common area lights\",\n        \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n        \"vendorName\": \"BESCOM\",\n        \"vendorCompanyName\": \"Bangalore Electricity\",\n        \"vendor\": {\n            \"id\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\",\n            \"name\": \"BESCOM\",\n            \"companyName\": \"Bangalore Electricity\",\n            \"phone\": \"+91 98765 43210\",\n            \"email\": \"billing@bescom.example.com\",\n            \"vendorType\": \"Service Provider\",\n            \"gstNumber\": \"29ABCDE1234F1Z5\",\n            \"address\": \"12 MG Road, Bengaluru\",\n            \"status\": \"Active\",\n            \"notes\": null,\n            \"createdAt\": \"2026-01-10T09:00:00Z\",\n            \"updatedAt\": \"2026-01-10T09:00:00Z\",\n            \"createdBy\": \"Admin\",\n            \"updatedBy\": null\n        },\n        \"nature\": \"Service\",\n        \"amount\": 12500.0,\n        \"entity\": \"BuildingLevel\",\n        \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"building\": {\n            \"id\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"address\": \"42 Park Avenue, Riyadh\",\n            \"city\": \"Riyadh\",\n            \"state\": \"Riyadh Province\",\n            \"country\": \"Saudi Arabia\",\n            \"googleMapLink\": \"https://maps.example.com/sunrise-tower\",\n            \"totalFloors\": 10,\n            \"parkingDetails\": \"Basement parking, 2 levels\",\n            \"status\": \"active\",\n            \"description\": \"Residential tower\",\n            \"imageUrl\": null,\n            \"createdAt\": \"2026-01-01T08:00:00Z\",\n            \"updatedAt\": \"2026-01-01T08:00:00Z\",\n            \"createdBy\": \"Admin\",\n            \"updatedBy\": null\n        },\n        \"apartmentId\": null,\n        \"flatNumber\": null,\n        \"apartment\": null,\n        \"expenseDate\": \"2026-08-05T00:00:00Z\",\n        \"paymentMethod\": \"BankTransfer\",\n        \"status\": \"Paid\",\n        \"reference\": \"TXN123456789\",\n        \"attachmentUrl\": null,\n        \"description\": \"April bill\",\n        \"tankerNumber\": null,\n        \"timeOfDelivery\": null,\n        \"deliveryDriverName\": null,\n        \"managerInAttendance\": null,\n        \"litersFilled\": null,\n        \"createdAt\": \"2026-08-05T15:00:00Z\",\n        \"updatedAt\": \"2026-08-05T15:00:00Z\",\n        \"createdBy\": \"Admin\",\n        \"updatedBy\": null\n    }\n}"
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\",\n        \"category\": \"Utility\",\n        \"expenseHead\": \"Electricity Bill\",\n        \"specificItem\": \"Common area lights\",\n        \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\n        \"vendorName\": \"BESCOM\",\n        \"vendorCompanyName\": \"Bangalore Electricity\",\n        \"vendor\": {\n            \"id\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\",\n            \"name\": \"BESCOM\",\n            \"companyName\": \"Bangalore Electricity\",\n            \"phone\": \"+91 98765 43210\",\n            \"email\": \"billing@bescom.example.com\",\n            \"vendorType\": \"Service Provider\",\n            \"gstNumber\": \"29ABCDE1234F1Z5\",\n            \"address\": \"12 MG Road, Bengaluru\",\n            \"status\": \"Active\",\n            \"notes\": null,\n            \"createdAt\": \"2026-01-10T09:00:00Z\",\n            \"updatedAt\": \"2026-01-10T09:00:00Z\",\n            \"createdBy\": \"Admin\",\n            \"updatedBy\": null\n        },\n        \"nature\": \"Service\",\n        \"amount\": 12500.0,\n        \"entity\": \"BuildingLevel\",\n        \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n        \"buildingName\": \"Grand Plaza Towers\",\n        \"building\": {\n            \"id\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n            \"buildingName\": \"Grand Plaza Towers\",\n            \"address\": \"42 Park Avenue, Riyadh\",\n            \"city\": \"Riyadh\",\n            \"state\": \"Riyadh Province\",\n            \"country\": \"Saudi Arabia\",\n            \"googleMapLink\": \"https://maps.example.com/sunrise-tower\",\n            \"totalFloors\": 10,\n            \"parkingDetails\": \"Basement parking, 2 levels\",\n            \"status\": \"active\",\n            \"description\": \"Residential tower\",\n            \"imageUrl\": null,\n            \"createdAt\": \"2026-01-01T08:00:00Z\",\n            \"updatedAt\": \"2026-01-01T08:00:00Z\",\n            \"createdBy\": \"Admin\",\n            \"updatedBy\": null\n        },\n        \"apartmentId\": null,\n        \"flatNumber\": null,\n        \"apartment\": null,\n        \"expenseDate\": \"2026-08-05T00:00:00Z\",\n        \"paymentMethod\": \"BankTransfer\",\n        \"status\": \"Paid\",\n        \"reference\": \"TXN123456789\",\n        \"attachmentUrl\": null,\n        \"description\": \"April bill\",\n        \"tankerNumber\": null,\n        \"timeOfDelivery\": null,\n        \"deliveryDriverName\": null,\n        \"managerInAttendance\": null,\n        \"litersFilled\": null,\n        \"createdAt\": \"2026-08-05T15:00:00Z\",\n        \"updatedAt\": \"2026-08-05T15:00:00Z\",\n        \"createdBy\": \"Admin\",\n        \"updatedBy\": null\n    }\n}"
             },
             {
               "name": "Error Example (404 - Record Not Found)",
@@ -13987,7 +13987,7 @@
             "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to require the tankerNumber/timeOfDelivery/deliveryDriverName/managerInAttendance/litersFilled fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"13:31\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 12000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] Internal description\n}"
+              "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to require the tankerNumber/timeOfDelivery/deliveryDriverName/managerInAttendance/litersFilled fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"13:31\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 12000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] Internal description\n}"
             }
           },
           "response": [
@@ -14017,7 +14017,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "OK",
@@ -14058,7 +14058,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"2026-08-05T09:30:00Z\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 12000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"2026-08-05T09:30:00Z\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 12000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] Internal description\n}"
                 }
               },
               "status": "OK",
@@ -14099,7 +14099,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14140,7 +14140,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14181,7 +14181,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14222,7 +14222,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"2026-08-05T09:30:00Z\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 12000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"2026-08-05T09:30:00Z\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 12000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14263,7 +14263,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] NOTE: tanker fields are missing on purpose\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] NOTE: tanker fields are missing on purpose\n}"
                 }
               },
               "status": "Bad Request",
@@ -14304,7 +14304,7 @@
                 "description": "Creates a new expense record.\nMandatory fields: expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Forbidden",
@@ -14348,7 +14348,7 @@
             "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f42\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to require the tankerNumber/timeOfDelivery/deliveryDriverName/managerInAttendance/litersFilled fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"13:31\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 13000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"Monthly water tanker for Grand Plaza Towers - liters corrected after redelivery.\" // [optional] Internal description\n}"
+              "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f42\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to require the tankerNumber/timeOfDelivery/deliveryDriverName/managerInAttendance/litersFilled fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"13:31\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 13000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"Monthly water tanker for Grand Plaza Towers - liters corrected after redelivery.\" // [optional] Internal description\n}"
             }
           },
           "response": [
@@ -14379,7 +14379,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "OK",
@@ -14421,7 +14421,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f42\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"2026-08-05T09:30:00Z\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 13000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"description\": \"Monthly water tanker for Grand Plaza Towers - liters corrected after redelivery.\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f42\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Set to \"Water Tanker\" (case-insensitive) to trigger the tanker fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"tankerNumber\": \"KA-09-1234\", // [REQUIRED for water tank] Tanker vehicle / challan number\n    \"timeOfDelivery\": \"2026-08-05T09:30:00Z\", // [REQUIRED for water tank] Bare time (e.g. \"13:31\", combined with expenseDate) or full ISO date-time\n    \"deliveryDriverName\": \"Ramesh\", // [REQUIRED for water tank] Driver name\n    \"managerInAttendance\": \"Arun Roy\", // [REQUIRED for water tank] Manager who received the delivery\n    \"litersFilled\": 13000, // [REQUIRED for water tank] Quantity in liters, must be greater than 0\n    \"description\": \"Monthly water tanker for Grand Plaza Towers - liters corrected after redelivery.\" // [optional] Internal description\n}"
                 }
               },
               "status": "OK",
@@ -14463,7 +14463,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14505,7 +14505,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14547,7 +14547,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Bad Request",
@@ -14589,7 +14589,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f42\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Changing specificItem to \"Water Tanker\" now requires the tanker fields below\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] NOTE: tanker fields are missing on purpose\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f42\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Water Tank Supply\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Water Tanker\", // [REQUIRED] Changing specificItem to \"Water Tanker\" now requires the tanker fields below\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 900.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"Cash\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"description\": \"Monthly water tanker for Grand Plaza Towers.\" // [optional] NOTE: tanker fields are missing on purpose\n}"
                 }
               },
               "status": "Bad Request",
@@ -14631,7 +14631,7 @@
                 "description": "Updates an existing expense record.\nMandatory fields: id, expenseHead, specificItem, nature, amount, entity, buildingId, expenseDate, paymentMethod and status.\nFor ApartmentSpecific entity, apartmentId is also mandatory.\nEnum values must use the exact spellings below (single words, no spaces, no dashes):\ncategory = Utility | Operational | Maintenance | Tax | Capital (optional)\nnature = Service | Material | Others\nentity = General | ApartmentSpecific | BuildingLevel\nstatus = Draft | PendingPayment | Paid\npaymentMethod is free-form text - any value works, for example: Cash, BankTransfer, Cheque, UPI, Card, Online.\nRules:\n- Amount must be greater than 0.\n- Expense date cannot be in the future (today or earlier).\n- A duplicate entry (same amount + expense date + expense head + specific item + nature) is rejected.\n- When specificItem is \"Water Tanker\" (case-insensitive), tankerNumber, timeOfDelivery, deliveryDriverName, managerInAttendance\n  and litersFilled become required, and the same tanker number at the same delivery time is rejected.\n- timeOfDelivery accepts either a bare time (e.g. \"13:31\", \"01:31 PM\" - combined with expenseDate) or a full ISO date-time.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"v4c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
+                  "raw": "{\n    \"id\": \"e4c7b822-29c4-52a8-ad29-c8be5d491f40\", // [REQUIRED] Expense record UUID\n    \"category\": \"Utility\", // [optional] Exact values: Utility | Operational | Maintenance | Tax | Capital\n    \"expenseHead\": \"Electricity Bill\", // [REQUIRED] Expense head (e.g. Electricity Bill, Water Tank Supply, Housekeeping)\n    \"specificItem\": \"Common area lights\", // [REQUIRED] Specific item / description of the expense\n    \"vendorId\": \"f7c7b822-29c4-52a8-ad29-c8be5d491f41\", // [optional] Vendor UUID\n    \"nature\": \"Service\", // [REQUIRED] Exact values: Service | Material | Others\n    \"amount\": 12500.00, // [REQUIRED] Amount must be greater than 0\n    \"entity\": \"BuildingLevel\", // [REQUIRED] Exact values: General | ApartmentSpecific | BuildingLevel\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED for ApartmentSpecific] Apartment UUID\n    \"expenseDate\": \"2026-08-05T00:00:00Z\", // [REQUIRED] Expense date - must be today or earlier (not in the future)\n    \"paymentMethod\": \"BankTransfer\", // [REQUIRED] Free text: Cash, BankTransfer, Cheque, UPI, Card, Online, ...\n    \"status\": \"Paid\", // [REQUIRED] Exact values: Draft | PendingPayment | Paid\n    \"reference\": \"TXN123456789\", // [optional] Payment / invoice reference\n    \"attachmentUrl\": \"https://example.com/uploads/invoice.pdf\", // [optional] Invoice / document URL\n    \"description\": \"April bill\" // [optional] Internal description\n}"
                 }
               },
               "status": "Not Found",
@@ -15810,6 +15810,24 @@
               "cookie": [],
               "body": "{\n  \"success\": false,\n  \"message\": \"Invalid file format. Only .xlsx files are allowed.\",\n  \"errors\": [\n    {\n      \"message\": \"Invalid file format. Only .xlsx files are allowed.\",\n      \"errorMessage\": \"Invalid file format. Only .xlsx files are allowed.\"\n    }\n  ]\n}"
             }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var res = pm.response.json();",
+                  "    var url = res.fileUrl || res.url || (res.data && res.data.fileUrl);",
+                  "    if (url) {",
+                  "        pm.collectionVariables.set(\"uploadedFileUrl\", url);",
+                  "        console.log(\"Auto-set uploadedFileUrl variable:\", url);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
           ]
         },
         {
@@ -15932,6 +15950,24 @@
                   ],
                   "cookie": [],
                   "body": ""
+                }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
                 }
               ]
             },
@@ -16130,7 +16166,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'apartments' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'apartments' permission."
+                "description": "Downloads an XLSX template for 'apartments' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'apartments' permission."
               },
               "response": [
                 {
@@ -16340,6 +16376,24 @@
                   "cookie": [],
                   "body": ""
                 }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
               ]
             },
             {
@@ -16537,7 +16591,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'tenants' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'tenants' permission."
+                "description": "Downloads an XLSX template for 'tenants' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'tenants' permission."
               },
               "response": [
                 {
@@ -16747,6 +16801,24 @@
                   "cookie": [],
                   "body": ""
                 }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
               ]
             },
             {
@@ -16944,7 +17016,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'owners' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'owners' permission."
+                "description": "Downloads an XLSX template for 'owners' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'owners' permission."
               },
               "response": [
                 {
@@ -17154,6 +17226,24 @@
                   "cookie": [],
                   "body": ""
                 }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
               ]
             },
             {
@@ -17351,7 +17441,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'income' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'income' permission."
+                "description": "Downloads an XLSX template for 'income' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'income' permission."
               },
               "response": [
                 {
@@ -17561,6 +17651,24 @@
                   "cookie": [],
                   "body": ""
                 }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
               ]
             },
             {
@@ -17758,7 +17866,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'expenses' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'expenses' permission."
+                "description": "Downloads an XLSX template for 'expenses' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'expenses' permission."
               },
               "response": [
                 {
@@ -17968,6 +18076,24 @@
                   "cookie": [],
                   "body": ""
                 }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
               ]
             },
             {
@@ -18165,7 +18291,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'maintenance' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'maintenance' permission."
+                "description": "Downloads an XLSX template for 'maintenance' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'maintenance' permission."
               },
               "response": [
                 {
@@ -18375,6 +18501,24 @@
                   "cookie": [],
                   "body": ""
                 }
+              ],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var res = pm.response.json();",
+                      "    var trackId = res.trackId || res.id || (res.data && (res.data.trackId || res.data.id));",
+                      "    if (trackId) {",
+                      "        pm.collectionVariables.set(\"bulkTrackId\", trackId);",
+                      "        console.log(\"Auto-set bulkTrackId variable:\", trackId);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
               ]
             },
             {
@@ -18572,7 +18716,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'equipment' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'equipment' permission."
+                "description": "Downloads an XLSX template for 'equipment' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'equipment' permission."
               },
               "response": [
                 {
@@ -18660,6 +18804,166 @@
               ]
             }
           ]
+        },
+        {
+          "name": "BU-05. Track Bulk Upload Progress (SSE)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/event-stream",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bulk-upload/track/{{bulkTrackId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "bulk-upload",
+                "track",
+                "{{bulkTrackId}}"
+              ]
+            },
+            "description": "Central Real-Time Server-Sent Events (SSE) tracking stream for bulk upload processing.\nStreams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion."
+          },
+          "response": [
+            {
+              "name": "200 OK - Progress Event Stream (45% In-Progress)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "track",
+                    "3f9c2a1e-0000-4000-8000-000000000001"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-transform"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "event: progress\ndata: {\"trackId\":\"3f9c2a1e-0000-4000-8000-000000000001\",\"module\":\"Apartments\",\"status\":\"Processing\",\"totalCount\":100,\"processedCount\":45,\"successCount\":40,\"failedCount\":5,\"progressPercentage\":45,\"processedFileUrl\":null,\"globalError\":null}\n\n"
+            },
+            {
+              "name": "200 OK - Stream Completed (100% Finished)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "track",
+                    "3f9c2a1e-0000-4000-8000-000000000001"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-transform"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "event: complete\ndata: {\"trackId\":\"3f9c2a1e-0000-4000-8000-000000000001\",\"module\":\"Apartments\",\"status\":\"Finished\",\"totalCount\":100,\"processedCount\":100,\"successCount\":95,\"failedCount\":5,\"progressPercentage\":100,\"processedFileUrl\":\"http://localhost:5240/image/bulk_processed_3f9c2a1e.xlsx\",\"globalError\":null}\n\n"
+            },
+            {
+              "name": "200 OK - Stream Failed (Global Error)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/event-stream"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/bulk-upload/track/3f9c2a1e-0000-4000-8000-000000000001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "bulk-upload",
+                    "track",
+                    "3f9c2a1e-0000-4000-8000-000000000001"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/event-stream"
+                },
+                {
+                  "key": "Cache-Control",
+                  "value": "no-cache, no-transform"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "event: complete\ndata: {\"trackId\":\"3f9c2a1e-0000-4000-8000-000000000001\",\"module\":\"Apartments\",\"status\":\"Failed\",\"totalCount\":100,\"processedCount\":0,\"successCount\":0,\"failedCount\":100,\"progressPercentage\":0,\"processedFileUrl\":null,\"globalError\":\"Missing required column(s): FlatNumber.\"\\}\n\n"
+            }
+          ]
         }
       ]
     }
@@ -18668,6 +18972,16 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:5240",
+      "type": "string"
+    },
+    {
+      "key": "bulkTrackId",
+      "value": "3f9c2a1e-0000-4000-8000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "uploadedFileUrl",
+      "value": "http://localhost:5240/bulk-upload/large_apartments_test.xlsx",
       "type": "string"
     }
   ]

@@ -30,42 +30,28 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         TenantStatus? status,
         CancellationToken cancellationToken)
     {
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var apartmentMap = apartments.ToDictionary(a => a.Id, a => (a.FlatNumber, a.NestawayId));
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x =>
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
+            (!status.HasValue || x.Status == status.Value));
 
         var query = tenants.AsQueryable();
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (apartmentId.HasValue)
-        {
-            query = query.Where(x => x.ApartmentId == apartmentId.Value);
-        }
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
 
         if (!string.IsNullOrWhiteSpace(search))
         {
             var cleanSearch = search.Trim().ToLower();
+            var allBuildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+            var allApartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+            var bMap = allBuildings.ToDictionary(b => b.Id, b => b.BuildingName);
+            var aMap = allApartments.ToDictionary(a => a.Id, a => (a.FlatNumber, a.NestawayId));
+
             query = query.Where(x =>
                 x.FullName.ToLower().Contains(cleanSearch) ||
                 x.Phone.ToLower().Contains(cleanSearch) ||
                 x.Email.ToLower().Contains(cleanSearch) ||
                 x.IdNumber.ToLower().Contains(cleanSearch) ||
-                (buildingMap.ContainsKey(x.BuildingId) && buildingMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
-                (apartmentMap.ContainsKey(x.ApartmentId) && apartmentMap[x.ApartmentId].FlatNumber.ToLower().Contains(cleanSearch))
+                (bMap.ContainsKey(x.BuildingId) && bMap[x.BuildingId].ToLower().Contains(cleanSearch)) ||
+                (aMap.ContainsKey(x.ApartmentId) && aMap[x.ApartmentId].FlatNumber.ToLower().Contains(cleanSearch))
             );
         }
 
@@ -74,6 +60,19 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        // Scope lookup maps to page entities
+        var pageBuildingIds = pageEntities.Select(x => x.BuildingId).Distinct().ToList();
+        var pageApartmentIds = pageEntities.Select(x => x.ApartmentId).Distinct().ToList();
+        var pageUserIds = pageEntities.SelectMany(x => new[] { x.CreatedBy, x.UpdatedBy }).Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
+
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => pageBuildingIds.Contains(x.Id));
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => pageApartmentIds.Contains(x.Id));
+        var users = await _unitOfWork.UserRepository.GetAllAsync(x => pageUserIds.Contains(x.Id));
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => (a.FlatNumber, a.NestawayId));
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var items = pageEntities
             .Select(x => new TenantViewModel

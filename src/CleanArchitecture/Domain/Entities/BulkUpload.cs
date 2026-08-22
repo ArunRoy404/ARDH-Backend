@@ -12,6 +12,7 @@ public class BulkUpload
     public int TotalCount { get; set; }
     public int SuccessCount { get; set; }
     public int FailedCount { get; set; }
+    public int ProgressPercentage { get; set; } = 0;
     public string? GlobalError { get; set; }
     public DateTime StartedAt { get; set; }
     public DateTime? FinishedAt { get; set; }

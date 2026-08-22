@@ -23,57 +23,41 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
             ? (await _unitOfWork.BuildingRepository.AnyAsync(x => x.Id == buildingId!.Value) ? 1 : 0)
             : await _unitOfWork.BuildingRepository.CountAsync();
 
-        // 2. Apartments
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var totalApartments = apartments.Count;
+        // 2. Apartments count
+        var totalApartments = await _unitOfWork.ApartmentRepository.CountAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
 
-        // 3. Active tenants & maintenance requests for occupancy logic
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var activeTenants = tenants.Where(t => t.Status == TenantStatus.Active).ToList();
-
-        var maintenanceRequests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var activeMaintenance = maintenanceRequests.Where(m => m.Status == MaintenanceStatus.Open || m.Status == MaintenanceStatus.InProgress).ToList();
-
-        var occupied = 0;
-        var vacant = 0;
-
-        foreach (var a in apartments)
-        {
-            var isOccupied = (a.CurrentTenantId != null && a.CurrentTenantId != Guid.Empty) 
-                || activeTenants.Any(t => t.ApartmentId == a.Id && t.LeaseStartDate <= DateTime.UtcNow);
-
-            if (isOccupied)
-            {
-                occupied++;
-            }
-            else
-            {
-                vacant++;
-            }
-        }
+        // 3. Occupancy
+        var occupied = await _unitOfWork.ApartmentRepository.CountAsync(a => 
+            (!hasBuildingFilter || a.BuildingId == buildingId!.Value) &&
+            a.CurrentTenantId != null && a.CurrentTenantId != Guid.Empty);
+        var vacant = Math.Max(0, totalApartments - occupied);
 
         // 4. Financial metrics for the current calendar month
         var now = DateTime.UtcNow;
         var currentYear = now.Year;
         var currentMonth = now.Month;
 
-        var incomeRecords = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var expenseRecords = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
+        var incomeRecords = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => 
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            x.Status == IncomeStatus.Paid &&
+            x.PaymentDate.Month == currentMonth && x.PaymentDate.Year == currentYear);
+        var monthlyIncome = incomeRecords.Sum(x => x.Amount);
 
-        var monthlyIncome = incomeRecords
-            .Where(x => x.Status == IncomeStatus.Paid && x.PaymentDate.Month == currentMonth && x.PaymentDate.Year == currentYear)
-            .Sum(x => x.Amount);
-
-        var monthlyExpense = expenseRecords
-            .Where(x => x.Status == ExpenseStatus.Paid && x.ExpenseDate.Month == currentMonth && x.ExpenseDate.Year == currentYear)
-            .Sum(x => x.Amount);
+        var expenseRecords = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x => 
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            x.Status == ExpenseStatus.Paid &&
+            x.ExpenseDate.Month == currentMonth && x.ExpenseDate.Year == currentYear);
+        var monthlyExpense = expenseRecords.Sum(x => x.Amount);
 
         // 5. Pending Payments
-        var pendingPaymentsCount = incomeRecords
-            .Count(x => x.Status == IncomeStatus.Pending || x.Status == IncomeStatus.Overdue);
+        var pendingPaymentsCount = await _unitOfWork.IncomeRecordRepository.CountAsync(x => 
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            (x.Status == IncomeStatus.Pending || x.Status == IncomeStatus.Overdue));
 
         // 6. Open Maintenance Requests
-        var openMaintenanceCount = activeMaintenance.Count;
+        var openMaintenanceCount = await _unitOfWork.MaintenanceRequestRepository.CountAsync(x => 
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            (x.Status == MaintenanceStatus.Open || x.Status == MaintenanceStatus.InProgress));
 
         return new DashboardStatsViewModel
         {
@@ -92,40 +76,22 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
     {
         var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var activeTenants = tenants.Where(t => t.Status == TenantStatus.Active).ToList();
+        var totalApartments = await _unitOfWork.ApartmentRepository.CountAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
+        var occupied = await _unitOfWork.ApartmentRepository.CountAsync(a => 
+            (!hasBuildingFilter || a.BuildingId == buildingId!.Value) &&
+            a.CurrentTenantId != null && a.CurrentTenantId != Guid.Empty);
 
-        var maintenanceRequests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
-        var activeMaintenance = maintenanceRequests.Where(m => m.Status == MaintenanceStatus.Open || m.Status == MaintenanceStatus.InProgress).ToList();
+        var maintenanceCount = await _unitOfWork.MaintenanceRequestRepository.CountAsync(m => 
+            (!hasBuildingFilter || m.BuildingId == buildingId!.Value) &&
+            m.ApartmentId != null &&
+            (m.Status == MaintenanceStatus.Open || m.Status == MaintenanceStatus.InProgress));
 
-        var occupied = 0;
-        var vacant = 0;
-        var maintenanceCount = 0;
-        var reserved = 0;
+        var reserved = await _unitOfWork.TenantRepository.CountAsync(t => 
+            (!hasBuildingFilter || t.BuildingId == buildingId!.Value) &&
+            t.Status == TenantStatus.Active &&
+            t.LeaseStartDate > DateTime.UtcNow);
 
-        foreach (var a in apartments)
-        {
-            var isOccupied = (a.CurrentTenantId != null && a.CurrentTenantId != Guid.Empty) 
-                || activeTenants.Any(t => t.ApartmentId == a.Id && t.LeaseStartDate <= DateTime.UtcNow);
-
-            if (isOccupied)
-            {
-                occupied++;
-            }
-            else if (activeTenants.Any(t => t.ApartmentId == a.Id && t.LeaseStartDate > DateTime.UtcNow))
-            {
-                reserved++;
-            }
-            else if (activeMaintenance.Any(m => m.ApartmentId == a.Id))
-            {
-                maintenanceCount++;
-            }
-            else
-            {
-                vacant++;
-            }
-        }
+        var vacant = Math.Max(0, totalApartments - occupied - maintenanceCount - reserved);
 
         return new OccupancyOverviewViewModel
         {
@@ -133,7 +99,7 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
             Vacant = vacant,
             Maintenance = maintenanceCount,
             Reserved = reserved,
-            Total = apartments.Count
+            Total = totalApartments
         };
     }
 
@@ -165,31 +131,28 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
 
         var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
-        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
+        var totalItems = await _unitOfWork.IncomeRecordRepository.CountAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
+        var pageRecords = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x => !hasBuildingFilter || x.BuildingId == buildingId!.Value);
+
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
 
-        var query = records.AsQueryable();
-        var totalItems = query.Count();
-
-        var pageRecords = query
+        var items = pageRecords
             .OrderByDescending(x => x.PaymentDate)
             .ThenByDescending(x => x.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToList();
-
-        var items = pageRecords.Select(x => new DashboardRecentPaymentViewModel
-        {
-            FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var flat) ? flat : null,
-            BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
-            IncomeType = x.IncomeType.ToString(),
-            PaymentDate = x.PaymentDate,
-            Amount = x.Amount,
-            Status = x.Status.ToString()
-        }).ToList();
+            .Select(x => new DashboardRecentPaymentViewModel
+            {
+                FlatNumber = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var flat) ? flat : null,
+                BuildingName = x.BuildingId.HasValue && buildingMap.TryGetValue(x.BuildingId.Value, out var bName) ? bName : null,
+                IncomeType = x.IncomeType.ToString(),
+                PaymentDate = x.PaymentDate,
+                Amount = x.Amount,
+                Status = x.Status.ToString()
+            }).ToList();
 
         return new PaginatedList<DashboardRecentPaymentViewModel>(items, totalItems, page, pageSize);
     }
@@ -201,6 +164,10 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
 
         var hasBuildingFilter = buildingId.HasValue && buildingId.Value != Guid.Empty;
 
+        var totalItems = await _unitOfWork.MaintenanceRequestRepository.CountAsync(x => 
+            (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
+            (x.Status == MaintenanceStatus.Open || x.Status == MaintenanceStatus.InProgress));
+
         var requests = await _unitOfWork.MaintenanceRequestRepository.GetAllAsync(x => 
             (!hasBuildingFilter || x.BuildingId == buildingId!.Value) &&
             (x.Status == MaintenanceStatus.Open || x.Status == MaintenanceStatus.InProgress));
@@ -211,28 +178,23 @@ public class DashboardService(IUnitOfWork unitOfWork) : IDashboardService
         var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
         var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
 
-        var query = requests.AsQueryable();
-        var totalItems = query.Count();
-
-        var pageRequests = query
+        var items = requests
             .OrderBy(x => x.Priority == MaintenancePriority.High ? 1 : x.Priority == MaintenancePriority.Medium ? 2 : 3)
             .ThenByDescending(x => x.CreatedAt)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .ToList();
-
-        var items = pageRequests.Select(x => {
-            var bName = x.BuildingId != Guid.Empty && buildingMap.TryGetValue(x.BuildingId, out var b) ? b : "Unknown Building";
-            var flat = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var f) ? f : "Common Area";
-            return new DashboardOpenMaintenanceViewModel
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Location = $"{bName} • {flat}",
-                Priority = x.Priority.ToString(),
-                Status = x.Status.ToString()
-            };
-        }).ToList();
+            .Select(x => {
+                var bName = x.BuildingId != Guid.Empty && buildingMap.TryGetValue(x.BuildingId, out var b) ? b : "Unknown Building";
+                var flat = x.ApartmentId.HasValue && apartmentMap.TryGetValue(x.ApartmentId.Value, out var f) ? f : "Common Area";
+                return new DashboardOpenMaintenanceViewModel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Location = $"{bName} • {flat}",
+                    Priority = x.Priority.ToString(),
+                    Status = x.Status.ToString()
+                };
+            }).ToList();
 
         return new PaginatedList<DashboardOpenMaintenanceViewModel>(items, totalItems, page, pageSize);
     }

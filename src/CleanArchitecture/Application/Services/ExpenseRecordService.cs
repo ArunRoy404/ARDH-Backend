@@ -44,58 +44,17 @@ public class ExpenseRecordService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
-        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
+        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x =>
+            (!category.HasValue || x.Category == category.Value) &&
+            (!status.HasValue || x.Status == status.Value) &&
+            (!nature.HasValue || x.Nature == nature.Value) &&
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!vendorId.HasValue || x.VendorId == vendorId.Value) &&
+            (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
+            (!startDate.HasValue || x.ExpenseDate >= startDate.Value) &&
+            (!endDate.HasValue || x.ExpenseDate <= endDate.Value));
 
         var query = records.AsQueryable();
-
-        if (category.HasValue)
-        {
-            query = query.Where(x => x.Category == category.Value);
-        }
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
-        if (nature.HasValue)
-        {
-            query = query.Where(x => x.Nature == nature.Value);
-        }
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (vendorId.HasValue)
-        {
-            query = query.Where(x => x.VendorId == vendorId.Value);
-        }
-
-        if (apartmentId.HasValue)
-        {
-            query = query.Where(x => x.ApartmentId == apartmentId.Value);
-        }
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.ExpenseDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.ExpenseDate <= endDate.Value);
-        }
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -114,6 +73,22 @@ public class ExpenseRecordService(
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        // Scope lookup maps to page entities
+        var pageBuildingIds = pageEntities.Where(x => x.BuildingId.HasValue).Select(x => x.BuildingId!.Value).Distinct().ToList();
+        var pageApartmentIds = pageEntities.Where(x => x.ApartmentId.HasValue).Select(x => x.ApartmentId!.Value).Distinct().ToList();
+        var pageVendorIds = pageEntities.Where(x => x.VendorId.HasValue).Select(x => x.VendorId!.Value).Distinct().ToList();
+        var pageUserIds = pageEntities.SelectMany(x => new[] { x.CreatedBy, x.UpdatedBy }).Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
+
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => pageBuildingIds.Contains(x.Id));
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => pageApartmentIds.Contains(x.Id));
+        var vendors = await _unitOfWork.VendorRepository.GetAllAsync(x => pageVendorIds.Contains(x.Id));
+        var users = await _unitOfWork.UserRepository.GetAllAsync(x => pageUserIds.Contains(x.Id));
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+        var vendorMap = vendors.ToDictionary(v => v.Id, v => (v.Name, v.CompanyName));
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var items = pageEntities.Select(x => new ExpenseRecordViewModel
         {

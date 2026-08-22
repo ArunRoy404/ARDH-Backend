@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Web.Controller;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/users")]
 public class UserController(IUserService userService, IUnitOfWork unitOfWork) : BaseController
 {

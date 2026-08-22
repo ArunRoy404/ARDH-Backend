@@ -11,10 +11,22 @@ public class LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> 
     public async Task InvokeAsync(HttpContext context)
     {
         context.Request.EnableBuffering();
-        if (await IsApiRequest(context))
+
+        // Bypass response stream buffering for Server-Sent Events (SSE) streaming endpoints to allow real-time flushing
+        var isSseStream = context.Request.Path.Value?.Contains("/track/", StringComparison.OrdinalIgnoreCase) == true
+            || context.Request.Headers.Accept.Any(h => h != null && h.Contains("text/event-stream", StringComparison.OrdinalIgnoreCase));
+
+        if (IsApiRequest(context))
         {
             await LogRequest(context);
-            await LogResponse(context);
+            if (isSseStream)
+            {
+                await _next(context);
+            }
+            else
+            {
+                await LogResponse(context);
+            }
         }
         else
         {
@@ -22,9 +34,9 @@ public class LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> 
         }
     }
 
-    private async Task<bool> IsApiRequest(HttpContext context)
-        => context.Request.Path.Value.StartsWith("/api", StringComparison.OrdinalIgnoreCase)
-            || context.Request.Headers.Accept.Any(h => h.Contains("application/json", StringComparison.OrdinalIgnoreCase));
+    private static bool IsApiRequest(HttpContext context)
+        => (context.Request.Path.Value != null && context.Request.Path.Value.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
+            || context.Request.Headers.Accept.Any(h => h != null && h.Contains("application/json", StringComparison.OrdinalIgnoreCase));
 
     private async Task LogRequest(HttpContext context)
     {

@@ -41,55 +41,29 @@ public class IncomeRecordService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
-        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
-        var users = await _unitOfWork.UserRepository.GetAllAsync();
-        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
-
-        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
-        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x =>
+            (!incomeType.HasValue || x.IncomeType == incomeType.Value) &&
+            (!status.HasValue || x.Status == status.Value) &&
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
+            (!startDate.HasValue || x.PaymentDate >= startDate.Value) &&
+            (!endDate.HasValue || x.PaymentDate <= endDate.Value));
 
         var query = records.AsQueryable();
-
-        if (incomeType.HasValue)
-        {
-            query = query.Where(x => x.IncomeType == incomeType.Value);
-        }
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
-        if (buildingId.HasValue)
-        {
-            query = query.Where(x => x.BuildingId == buildingId.Value);
-        }
-
-        if (apartmentId.HasValue)
-        {
-            query = query.Where(x => x.ApartmentId == apartmentId.Value);
-        }
-
-        if (startDate.HasValue)
-        {
-            query = query.Where(x => x.PaymentDate >= startDate.Value);
-        }
-
-        if (endDate.HasValue)
-        {
-            query = query.Where(x => x.PaymentDate <= endDate.Value);
-        }
 
         if (!string.IsNullOrWhiteSpace(search))
         {
             var searchLower = search.Trim().ToLower();
+            var allBuildings = await _unitOfWork.BuildingRepository.GetAllAsync();
+            var allApartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+            var bMap = allBuildings.ToDictionary(b => b.Id, b => b.BuildingName);
+            var aMap = allApartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+
             query = query.Where(x =>
                 (x.Notes != null && x.Notes.ToLower().Contains(searchLower)) ||
                 (x.TransactionReference != null && x.TransactionReference.ToLower().Contains(searchLower)) ||
-                (x.BuildingId.HasValue && buildingMap.ContainsKey(x.BuildingId.Value) && buildingMap[x.BuildingId.Value].ToLower().Contains(searchLower)) ||
-                (x.ApartmentId.HasValue && apartmentMap.ContainsKey(x.ApartmentId.Value) && apartmentMap[x.ApartmentId.Value].ToLower().Contains(searchLower))
+                (x.BuildingId.HasValue && bMap.ContainsKey(x.BuildingId.Value) && bMap[x.BuildingId.Value].ToLower().Contains(searchLower)) ||
+                (x.ApartmentId.HasValue && aMap.ContainsKey(x.ApartmentId.Value) && aMap[x.ApartmentId.Value].ToLower().Contains(searchLower))
             );
         }
 
@@ -99,6 +73,19 @@ public class IncomeRecordService(
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        // Scope lookup maps to page entities
+        var pageBuildingIds = pageEntities.Where(x => x.BuildingId.HasValue).Select(x => x.BuildingId!.Value).Distinct().ToList();
+        var pageApartmentIds = pageEntities.Where(x => x.ApartmentId.HasValue).Select(x => x.ApartmentId!.Value).Distinct().ToList();
+        var pageUserIds = pageEntities.SelectMany(x => new[] { x.CreatedBy, x.UpdatedBy }).Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
+
+        var buildings = await _unitOfWork.BuildingRepository.GetAllAsync(x => pageBuildingIds.Contains(x.Id));
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x => pageApartmentIds.Contains(x.Id));
+        var users = await _unitOfWork.UserRepository.GetAllAsync(x => pageUserIds.Contains(x.Id));
+
+        var buildingMap = buildings.ToDictionary(b => b.Id, b => b.BuildingName);
+        var apartmentMap = apartments.ToDictionary(a => a.Id, a => a.FlatNumber);
+        var userMap = users.ToDictionary(u => u.Id, u => u.Name);
 
         var items = pageEntities.Select(x => new IncomeRecordViewModel
         {

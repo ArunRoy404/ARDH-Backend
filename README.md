@@ -315,7 +315,29 @@ These endpoints manage user sessions, profile details, and password recovery.
 
 For quick deployment and local testing, the following default accounts are seeded upon starting the database:
 
-| Full Name | Email Address | Role | Password |
-| :--- | :--- | :--- | :--- |
 | **Admin** | `admin@gmail.com` | `admin` | `P@ssw0rd` |
 | **Property Manager** | `manager@gmail.com` | `property_manager` | `P@ssw0rd` |
+
+---
+
+## 📁 Project Directory & Documentation Structure
+
+The repository structure has been organized into clear, dedicated directories:
+
+```
+ARDH-Backend/
+├── src/                          # Application source code
+│   ├── CleanArchitecture/        # API Controllers, Domain logic, Infrastructure, Services
+│   └── CleanArchitecture.Shared/ # Shared DTOs, Request/Response models, Enums
+├── docs/                         # Project documentation, guides, and reports
+│   ├── guides/                   # Operational guides (DATABASE_GUIDE, DEPLOYMENT, WINDOWS/LINUX setup)
+│   ├── reports/                  # Audit reports & analysis logs (PROJECT_ANALYSIS, ARDH_DEEP_ANALYSIS)
+│   └── notes/                    # Environment & configuration note files
+├── deploy/                       # Deployment scripts & Nginx configuration examples
+├── postman/                      # Postman API Collection & environment files
+│   └── Ardh_Postman_Collection.json
+├── tools/                        # Helper executables and tools (nuget.exe)
+├── CleanArchitecture.sln         # Visual Studio / .NET Solution
+└── README.md                     # Main API documentation
+```
+

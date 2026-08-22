@@ -15,9 +15,12 @@ namespace CleanArchitecture.Web.Controller;
 
 [Authorize]
 [Route("api/bulk-upload")]
-public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseController
+public class BulkUploadController(
+    IBulkUploadService bulkUploadService,
+    IBulkUploadProgressBroadcaster broadcaster) : BaseController
 {
     private readonly IBulkUploadService _bulkUploadService = bulkUploadService;
+    private readonly IBulkUploadProgressBroadcaster _broadcaster = broadcaster;
 
     /// <summary>
     /// [BU-01] Starts a bulk upload for a module. The file must first be uploaded via
@@ -58,11 +61,14 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
 
         var result = await _bulkUploadService.GetStatusAsync(module, cancellationToken);
 
-        // Non-admin users only see the modules they have permission for.
+        // Non-admin users only see jobs for modules they have permission for and created by themselves.
         if (!IsBypassUser())
         {
             var allowed = PermittedModules();
-            result = result.Where(x => allowed.Contains(x.Module)).ToList();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid" || c.Type == "sub")?.Value;
+            Guid.TryParse(userIdClaim, out var currentUserId);
+
+            result = result.Where(x => allowed.Contains(x.Module) && (!x.CreatedBy.HasValue || x.CreatedBy == currentUserId)).ToList();
         }
 
         return Ok(result);
@@ -79,13 +85,97 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
     {
         var result = await _bulkUploadService.GetStatusByIdAsync(id, cancellationToken);
 
-        // Per-module permission applies to the job's module as well.
-        if (!IsBypassUser() && !HasModulePermission(result.Module))
+        // Per-module permission applies to the job's module as well, and non-admin users can only view their own jobs.
+        if (!IsBypassUser())
         {
-            return Forbid();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid" || c.Type == "sub")?.Value;
+            Guid.TryParse(userIdClaim, out var currentUserId);
+
+            if (!HasModulePermission(result.Module) || (result.CreatedBy.HasValue && result.CreatedBy != currentUserId))
+            {
+                return Forbid();
+            }
         }
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// [BU-05] Real-Time Server-Sent Events (SSE) tracking stream for a bulk upload job.
+    /// Streams live progress updates (percentage 0-100%, status, row counts) and closes gracefully upon completion.
+    /// </summary>
+    [HttpGet("track/{trackId:guid}")]
+    [SwaggerResponse(200, "Server-Sent Events real-time stream established.")]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(403, "Access denied.")]
+    [SwaggerResponse(404, "Bulk upload job not found.")]
+    public async Task TrackProgress(Guid trackId, CancellationToken cancellationToken)
+    {
+        BulkUploadViewModel job;
+        try
+        {
+            job = await _bulkUploadService.GetStatusByIdAsync(trackId, cancellationToken);
+        }
+        catch (Exception)
+        {
+            Response.StatusCode = 404;
+            return;
+        }
+
+        if (!IsBypassUser())
+        {
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid" || c.Type == "sub")?.Value;
+            Guid.TryParse(userIdClaim, out var currentUserId);
+
+            if (!HasModulePermission(job.Module) || (job.CreatedBy.HasValue && job.CreatedBy != currentUserId))
+            {
+                Response.StatusCode = 403;
+                return;
+            }
+        }
+
+        Response.ContentType = "text/event-stream";
+        Response.Headers["Cache-Control"] = "no-cache, no-transform";
+        Response.Headers["Connection"] = "keep-alive";
+        Response.Headers["X-Accel-Buffering"] = "no";
+
+        // Emit initial snapshot
+        var initialJson = System.Text.Json.JsonSerializer.Serialize(new BulkUploadProgressEvent
+        {
+            TrackId = job.Id,
+            Module = job.Module,
+            Status = job.Status,
+            TotalCount = job.TotalCount,
+            ProcessedCount = job.SuccessCount + job.FailedCount,
+            SuccessCount = job.SuccessCount,
+            FailedCount = job.FailedCount,
+            ProgressPercentage = job.ProgressPercentage,
+            ProcessedFileUrl = job.ProcessedFileUrl,
+            GlobalError = job.GlobalError
+        });
+
+        var initialEventName = job.Status is BulkUploadStatus.Finished or BulkUploadStatus.Failed ? "complete" : "progress";
+        await Response.WriteAsync($"event: {initialEventName}\ndata: {initialJson}\n\n", cancellationToken);
+        await Response.Body.FlushAsync(cancellationToken);
+
+        if (job.Status is BulkUploadStatus.Finished or BulkUploadStatus.Failed)
+        {
+            return;
+        }
+
+        await foreach (var progressEvent in _broadcaster.SubscribeAsync(trackId, cancellationToken))
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(progressEvent);
+            var eventName = progressEvent.Status is BulkUploadStatus.Finished or BulkUploadStatus.Failed ? "complete" : "progress";
+
+            await Response.WriteAsync($"event: {eventName}\ndata: {json}\n\n", cancellationToken);
+            await Response.Body.FlushAsync(cancellationToken);
+
+            if (progressEvent.Status is BulkUploadStatus.Finished or BulkUploadStatus.Failed)
+            {
+                break;
+            }
+        }
     }
 
     /// <summary>
