@@ -99,12 +99,7 @@ public static class XlsxHelper
 
         if (value.IsText)
         {
-            return value.GetText();
-        }
-
-        if (value.IsNumber)
-        {
-            return value.GetNumber().ToString(CultureInfo.InvariantCulture);
+            return value.GetText().Trim();
         }
 
         if (value.IsDateTime)
@@ -113,6 +108,17 @@ public static class XlsxHelper
             return dateTime.TimeOfDay == TimeSpan.Zero
                 ? dateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
                 : dateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        if (value.IsNumber)
+        {
+            var num = value.GetNumber();
+            // Handle integer numbers (e.g. phone numbers, IDs, flat numbers) without scientific notation or trailing decimals
+            if (num % 1 == 0 && num >= long.MinValue && num <= long.MaxValue)
+            {
+                return Convert.ToInt64(num).ToString(CultureInfo.InvariantCulture);
+            }
+            return num.ToString(CultureInfo.InvariantCulture);
         }
 
         if (value.IsBoolean)
@@ -125,6 +131,7 @@ public static class XlsxHelper
             return value.GetTimeSpan().ToString();
         }
 
-        return value.ToString() ?? string.Empty;
+        var formatted = cell.GetFormattedString();
+        return !string.IsNullOrWhiteSpace(formatted) ? formatted.Trim() : (value.ToString() ?? string.Empty).Trim();
     }
 }

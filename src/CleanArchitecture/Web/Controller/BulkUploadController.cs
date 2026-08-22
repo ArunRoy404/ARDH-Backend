@@ -58,11 +58,14 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
 
         var result = await _bulkUploadService.GetStatusAsync(module, cancellationToken);
 
-        // Non-admin users only see the modules they have permission for.
+        // Non-admin users only see jobs for modules they have permission for and created by themselves.
         if (!IsBypassUser())
         {
             var allowed = PermittedModules();
-            result = result.Where(x => allowed.Contains(x.Module)).ToList();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid" || c.Type == "sub")?.Value;
+            Guid.TryParse(userIdClaim, out var currentUserId);
+
+            result = result.Where(x => allowed.Contains(x.Module) && (!x.CreatedBy.HasValue || x.CreatedBy == currentUserId)).ToList();
         }
 
         return Ok(result);
@@ -79,10 +82,16 @@ public class BulkUploadController(IBulkUploadService bulkUploadService) : BaseCo
     {
         var result = await _bulkUploadService.GetStatusByIdAsync(id, cancellationToken);
 
-        // Per-module permission applies to the job's module as well.
-        if (!IsBypassUser() && !HasModulePermission(result.Module))
+        // Per-module permission applies to the job's module as well, and non-admin users can only view their own jobs.
+        if (!IsBypassUser())
         {
-            return Forbid();
+            var userIdClaim = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid" || c.Type == "sub")?.Value;
+            Guid.TryParse(userIdClaim, out var currentUserId);
+
+            if (!HasModulePermission(result.Module) || (result.CreatedBy.HasValue && result.CreatedBy != currentUserId))
+            {
+                return Forbid();
+            }
         }
 
         return Ok(result);

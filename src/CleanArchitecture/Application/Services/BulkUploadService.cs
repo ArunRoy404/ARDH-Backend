@@ -210,12 +210,13 @@ public class BulkUploadService(
 
                 try
                 {
-                    await CreateRecord(record.Module, request, cancellationToken);
+                    await CreateRecord(record.Module, request, lookup, cancellationToken);
                     success++;
                     processedList.Add(PadAndAppendStatus(row, headers.Count, "Success", string.Empty));
                 }
                 catch (Exception ex)
                 {
+                    _unitOfWork.ClearChangeTracker();
                     failed++;
                     processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", ToReadableError(ex)));
                 }
@@ -332,7 +333,15 @@ public class BulkUploadService(
 
     private string ResolveLocalFilePath(string fileUrl)
     {
-        var fileName = Path.GetFileName(new Uri(fileUrl).LocalPath);
+        string fileName;
+        if (Uri.TryCreate(fileUrl, UriKind.Absolute, out var uri))
+        {
+            fileName = Path.GetFileName(uri.LocalPath);
+        }
+        else
+        {
+            fileName = Path.GetFileName(fileUrl);
+        }
         return Path.Combine(GetStoragePath(), fileName);
     }
 
@@ -379,18 +388,60 @@ public class BulkUploadService(
             _ => (null, new List<string> { "Unsupported module." })
         };
 
-    private Task CreateRecord(string module, object request, CancellationToken cancellationToken)
-        => module.ToLowerInvariant() switch
+    private async Task CreateRecord(string module, object request, BulkLookup lookup, CancellationToken cancellationToken)
+    {
+        switch (module.ToLowerInvariant())
         {
-            "apartments" => _apartmentService.Create((ApartmentCreateRequest)request, cancellationToken),
-            "tenants" => _tenantService.Create((TenantCreateRequest)request, cancellationToken),
-            "owners" => _ownerService.Create((OwnerCreateRequest)request, cancellationToken),
-            "income" => _incomeRecordService.Create((IncomeRecordCreateRequest)request, cancellationToken),
-            "expenses" => _expenseRecordService.Create((ExpenseRecordCreateRequest)request, cancellationToken),
-            "maintenance" => _maintenanceRequestService.Create((MaintenanceRequestCreateRequest)request, cancellationToken),
-            "equipment" => _equipmentService.Create((EquipmentCreateRequest)request, cancellationToken),
-            _ => throw BulkUploadException.BadRequestException("Unsupported module.")
-        };
+            case "apartments":
+                var aptReq = (ApartmentCreateRequest)request;
+                await _apartmentService.Create(aptReq, cancellationToken);
+                var createdApt = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(a => a.BuildingId == aptReq.BuildingId && a.FlatNumber == aptReq.FlatNumber);
+                if (createdApt != null)
+                {
+                    lookup.Apartments[(aptReq.BuildingId, NormalizeName(aptReq.FlatNumber))] = createdApt.Id;
+                }
+                break;
+
+            case "tenants":
+                await _tenantService.Create((TenantCreateRequest)request, cancellationToken);
+                break;
+
+            case "owners":
+                var ownerReq = (OwnerCreateRequest)request;
+                await _ownerService.Create(ownerReq, cancellationToken);
+                var createdOwner = await _unitOfWork.OwnerRepository.FirstOrDefaultAsync(o => o.FullName == ownerReq.FullName);
+                if (createdOwner != null)
+                {
+                    lookup.Owners[NormalizeName(ownerReq.FullName)] = createdOwner.Id;
+                }
+                break;
+
+            case "income":
+                await _incomeRecordService.Create((IncomeRecordCreateRequest)request, cancellationToken);
+                break;
+
+            case "expenses":
+                await _expenseRecordService.Create((ExpenseRecordCreateRequest)request, cancellationToken);
+                break;
+
+            case "maintenance":
+                await _maintenanceRequestService.Create((MaintenanceRequestCreateRequest)request, cancellationToken);
+                break;
+
+            case "equipment":
+                var eqReq = (EquipmentCreateRequest)request;
+                await _equipmentService.Create(eqReq, cancellationToken);
+                var createdEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(e => e.BuildingId == eqReq.BuildingId && e.Name == eqReq.Name);
+                if (createdEq != null)
+                {
+                    lookup.Equipment[NormalizeName(eqReq.Name)] = createdEq.Id;
+                }
+                break;
+
+            default:
+                throw BulkUploadException.BadRequestException("Unsupported module.");
+        }
+    }
 
     // ── Apartments ──────────────────────────────────────────────────────────
 

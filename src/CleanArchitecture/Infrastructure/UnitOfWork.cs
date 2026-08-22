@@ -60,6 +60,9 @@ public class UnitOfWork : IUnitOfWork
     public async Task SaveChangesAsync(CancellationToken token)
         => await _context.SaveChangesAsync(token);
 
+    public void ClearChangeTracker()
+        => _context.ChangeTracker.Clear();
+
     public async Task ExecuteTransactionAsync(Action action, CancellationToken token)
     {
         using var transaction = await _context.Database.BeginTransactionAsync(token);

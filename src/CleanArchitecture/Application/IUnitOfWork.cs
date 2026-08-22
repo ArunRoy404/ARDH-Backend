@@ -24,6 +24,7 @@ public interface IUnitOfWork
     IActivityRepository ActivityRepository { get; }
     IBulkUploadRepository BulkUploadRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
+    void ClearChangeTracker();
     Task ExecuteTransactionAsync(Action action, CancellationToken token);
     Task ExecuteTransactionAsync(Func<Task> action, CancellationToken token);
 }
