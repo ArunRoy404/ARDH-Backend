@@ -30,7 +30,13 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         string? status,
         CancellationToken cancellationToken)
     {
-        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
+        var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync(x =>
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!ownerId.HasValue || x.OwnerId == ownerId.Value) &&
+            (string.IsNullOrWhiteSpace(apartmentType) || x.ApartmentType == apartmentType.Trim()) &&
+            (string.IsNullOrWhiteSpace(status) || 
+             (status.Trim().ToLower() == "occupied" ? x.CurrentTenantId != null :
+              status.Trim().ToLower() == "vacant" ? x.CurrentTenantId == null : true)));
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var owners = await _unitOfWork.OwnerRepository.GetAllAsync();
         var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
