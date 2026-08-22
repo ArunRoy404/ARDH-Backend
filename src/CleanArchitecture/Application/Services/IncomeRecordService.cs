@@ -41,7 +41,13 @@ public class IncomeRecordService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync();
+        var records = await _unitOfWork.IncomeRecordRepository.GetAllAsync(x =>
+            (!incomeType.HasValue || x.IncomeType == incomeType.Value) &&
+            (!status.HasValue || x.Status == status.Value) &&
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
+            (!startDate.HasValue || x.PaymentDate >= startDate.Value) &&
+            (!endDate.HasValue || x.PaymentDate <= endDate.Value));
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var users = await _unitOfWork.UserRepository.GetAllAsync();

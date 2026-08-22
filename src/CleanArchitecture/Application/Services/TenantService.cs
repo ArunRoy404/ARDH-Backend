@@ -30,7 +30,10 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         TenantStatus? status,
         CancellationToken cancellationToken)
     {
-        var tenants = await _unitOfWork.TenantRepository.GetAllAsync();
+        var tenants = await _unitOfWork.TenantRepository.GetAllAsync(x =>
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
+            (!status.HasValue || x.Status == status.Value));
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var users = await _unitOfWork.UserRepository.GetAllAsync();

@@ -44,7 +44,15 @@ public class ExpenseRecordService(
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync();
+        var records = await _unitOfWork.ExpenseRecordRepository.GetAllAsync(x =>
+            (!category.HasValue || x.Category == category.Value) &&
+            (!status.HasValue || x.Status == status.Value) &&
+            (!nature.HasValue || x.Nature == nature.Value) &&
+            (!buildingId.HasValue || x.BuildingId == buildingId.Value) &&
+            (!vendorId.HasValue || x.VendorId == vendorId.Value) &&
+            (!apartmentId.HasValue || x.ApartmentId == apartmentId.Value) &&
+            (!startDate.HasValue || x.ExpenseDate >= startDate.Value) &&
+            (!endDate.HasValue || x.ExpenseDate <= endDate.Value));
         var buildings = await _unitOfWork.BuildingRepository.GetAllAsync();
         var apartments = await _unitOfWork.ApartmentRepository.GetAllAsync();
         var vendors = await _unitOfWork.VendorRepository.GetAllAsync();
