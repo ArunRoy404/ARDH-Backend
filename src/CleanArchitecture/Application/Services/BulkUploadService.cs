@@ -380,7 +380,8 @@ public class BulkUploadService(
     {
         var xlsxBytes = XlsxHelper.BuildXlsx(rows, "Processed");
         var fileName = $"bulk_processed_{bulkUploadId}.xlsx";
-        var storagePath = GetStoragePath();
+        var bulkFolder = (_appSettings.FileStorageSettings.BulkUploadPath ?? "bulk-upload").Trim('/');
+        var storagePath = Path.Combine(_environment.ContentRootPath, bulkFolder);
         var filePath = Path.Combine(storagePath, fileName);
 
         if (!Directory.Exists(storagePath))
@@ -390,35 +391,47 @@ public class BulkUploadService(
 
         await File.WriteAllBytesAsync(filePath, xlsxBytes, cancellationToken);
 
-        return BuildFileUrl(fileName);
+        var baseUrl = !string.IsNullOrWhiteSpace(_appSettings.BaseURL)
+            ? _appSettings.BaseURL.TrimEnd('/')
+            : _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
+
+        return $"{baseUrl}/{bulkFolder}/{fileName}";
     }
 
     private string ResolveLocalFilePath(string fileUrl)
     {
-        string fileName;
+        string relativePath;
         if (Uri.TryCreate(fileUrl, UriKind.Absolute, out var uri))
         {
-            fileName = Path.GetFileName(uri.LocalPath);
+            relativePath = uri.LocalPath.TrimStart('/');
         }
         else
         {
-            fileName = Path.GetFileName(fileUrl);
+            relativePath = fileUrl.TrimStart('/');
         }
-        return Path.Combine(GetStoragePath(), fileName);
-    }
 
-    private string GetStoragePath()
-    {
-        return Path.Combine(_environment.ContentRootPath, _appSettings.FileStorageSettings.Path);
-    }
+        var fullPath = Path.Combine(_environment.ContentRootPath, relativePath);
+        if (File.Exists(fullPath))
+        {
+            return fullPath;
+        }
 
-    private string BuildFileUrl(string fileName)
-    {
-        var baseUrl = !string.IsNullOrWhiteSpace(_appSettings.BaseURL)
-            ? _appSettings.BaseURL.TrimEnd('/')
-            : _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
-        var folderName = _appSettings.FileStorageSettings.Path.Trim('/');
-        return $"{baseUrl}/{folderName}/{fileName}";
+        var fileName = Path.GetFileName(relativePath);
+        var bulkFolder = (_appSettings.FileStorageSettings.BulkUploadPath ?? "bulk-upload").Trim('/');
+        var fallbackBulkPath = Path.Combine(_environment.ContentRootPath, bulkFolder, fileName);
+        if (File.Exists(fallbackBulkPath))
+        {
+            return fallbackBulkPath;
+        }
+
+        var imageFolder = (_appSettings.FileStorageSettings.ImagePath ?? "image").Trim('/');
+        var fallbackImagePath = Path.Combine(_environment.ContentRootPath, imageFolder, fileName);
+        if (File.Exists(fallbackImagePath))
+        {
+            return fallbackImagePath;
+        }
+
+        return fallbackBulkPath;
     }
 
     // ─────────────────────────────────────────────────────────────────────────

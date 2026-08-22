@@ -41,7 +41,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             return BadRequest(new { message = $"Invalid image format. Allowed formats: {string.Join(", ", allowedExtensions)}" });
         }
 
-        var url = await SaveFileAsync(file, extension);
+        var url = await SaveFileAsync(file, extension, _appSettings.FileStorageSettings.ImagePath ?? "image");
         return Ok(new { url });
     }
 
@@ -67,7 +67,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             return BadRequest(new { message = $"Invalid document format. Allowed formats: {string.Join(", ", allowedExtensions)}" });
         }
 
-        var url = await SaveFileAsync(file, extension);
+        var url = await SaveFileAsync(file, extension, _appSettings.FileStorageSettings.DocumentPath ?? "document");
         return Ok(new { url });
     }
 
@@ -93,7 +93,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             return BadRequest(new { message = "Invalid file format. Only .xlsx files are allowed." });
         }
 
-        var url = await SaveFileAsync(file, extension);
+        var url = await SaveFileAsync(file, extension, _appSettings.FileStorageSettings.BulkUploadPath ?? "bulk-upload");
         return Ok(new { url });
     }
 
@@ -119,7 +119,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             return BadRequest(new { message = $"Invalid document format. Allowed formats: {string.Join(", ", allowedExtensions)}" });
         }
 
-        var url = await SaveFileAsync(file, extension);
+        var url = await SaveFileAsync(file, extension, _appSettings.FileStorageSettings.DocumentPath ?? "document");
         return Ok(new { url });
     }
 
@@ -137,40 +137,57 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
             return BadRequest(new { message = "Invalid file ID." });
         }
 
-        var storagePath = Path.Combine(_environment.ContentRootPath, _appSettings.FileStorageSettings.Path);
-        if (!Directory.Exists(storagePath))
+        var folders = new[]
         {
-            return NotFound(new { message = "File not found." });
-        }
+            _appSettings.FileStorageSettings.ImagePath ?? "image",
+            _appSettings.FileStorageSettings.DocumentPath ?? "document",
+            _appSettings.FileStorageSettings.BulkUploadPath ?? "bulk-upload",
+            _appSettings.FileStorageSettings.Path ?? "image"
+        };
 
-        // Find file starting with fileId
-        var files = Directory.GetFiles(storagePath, $"{fileId}.*");
-        if (files.Length == 0)
+        var deleted = false;
+        foreach (var folder in folders.Distinct())
         {
-            // Also search for exact file if fileId includes extension
-            var exactFile = Path.Combine(storagePath, fileId);
-            if (System.IO.File.Exists(exactFile))
+            var storagePath = Path.Combine(_environment.ContentRootPath, folder.Trim('/'));
+            if (!Directory.Exists(storagePath))
             {
-                System.IO.File.Delete(exactFile);
-                return Ok(new { message = "File deleted successfully." });
+                continue;
             }
 
-            return NotFound(new { message = "File not found." });
+            var files = Directory.GetFiles(storagePath, $"{fileId}.*");
+            if (files.Length > 0)
+            {
+                foreach (var filePath in files)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                deleted = true;
+            }
+            else
+            {
+                var exactFile = Path.Combine(storagePath, fileId);
+                if (System.IO.File.Exists(exactFile))
+                {
+                    System.IO.File.Delete(exactFile);
+                    deleted = true;
+                }
+            }
         }
 
-        foreach (var filePath in files)
+        if (deleted)
         {
-            System.IO.File.Delete(filePath);
+            return Ok(new { message = "File deleted successfully." });
         }
 
-        return Ok(new { message = "File deleted successfully." });
+        return NotFound(new { message = "File not found." });
     }
 
-    private async Task<string> SaveFileAsync(IFormFile file, string extension)
+    private async Task<string> SaveFileAsync(IFormFile file, string extension, string folderName)
     {
         var fileId = Guid.NewGuid().ToString();
         var fileName = $"{fileId}{extension}";
-        var storagePath = Path.Combine(_environment.ContentRootPath, _appSettings.FileStorageSettings.Path);
+        var cleanFolder = folderName.Trim('/');
+        var storagePath = Path.Combine(_environment.ContentRootPath, cleanFolder);
 
         if (!Directory.Exists(storagePath))
         {
@@ -186,7 +203,7 @@ public class UploadController(AppSettings appSettings, IWebHostEnvironment envir
         var baseUrl = !string.IsNullOrWhiteSpace(_appSettings.BaseURL)
             ? _appSettings.BaseURL.TrimEnd('/')
             : _appSettings.AppUrl?.TrimEnd('/') ?? string.Empty;
-        var folderName = _appSettings.FileStorageSettings.Path.Trim('/');
-        return $"{baseUrl}/{folderName}/{fileName}";
+
+        return $"{baseUrl}/{cleanFolder}/{fileName}";
     }
 }

@@ -47,16 +47,27 @@ public static class HostingExtensions
         app.UseMiddleware<PerformanceMiddleware>();
         app.UseHttpsRedirection();
 
-        var storagePath = System.IO.Path.Combine(app.Environment.ContentRootPath, appsettings.FileStorageSettings.Path);
-        if (!System.IO.Directory.Exists(storagePath))
+        var storageFolders = new[]
         {
-            System.IO.Directory.CreateDirectory(storagePath);
+            string.IsNullOrWhiteSpace(appsettings.FileStorageSettings.ImagePath) ? "image" : appsettings.FileStorageSettings.ImagePath,
+            string.IsNullOrWhiteSpace(appsettings.FileStorageSettings.DocumentPath) ? "document" : appsettings.FileStorageSettings.DocumentPath,
+            string.IsNullOrWhiteSpace(appsettings.FileStorageSettings.BulkUploadPath) ? "bulk-upload" : appsettings.FileStorageSettings.BulkUploadPath
+        };
+
+        foreach (var folder in storageFolders.Distinct())
+        {
+            var folderName = folder.Trim('/');
+            var folderPath = System.IO.Path.Combine(app.Environment.ContentRootPath, folderName);
+            if (!System.IO.Directory.Exists(folderPath))
+            {
+                System.IO.Directory.CreateDirectory(folderPath);
+            }
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(folderPath),
+                RequestPath = "/" + folderName
+            });
         }
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(storagePath),
-            RequestPath = "/" + appsettings.FileStorageSettings.Path.TrimStart('/')
-        });
 
         app.UseCors("AllowSpecificOrigin");
         app.UseSwagger(appsettings);

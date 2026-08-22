@@ -18981,7 +18981,7 @@
     },
     {
       "key": "uploadedFileUrl",
-      "value": "http://localhost:5240/image/large_apartments_test.xlsx",
+      "value": "http://localhost:5240/bulk-upload/large_apartments_test.xlsx",
       "type": "string"
     }
   ]
