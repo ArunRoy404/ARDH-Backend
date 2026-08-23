@@ -44,7 +44,7 @@ public class SettingController(ISettingService settingService) : BaseController
     /// [S-02] Update general settings.
     /// </summary>
     [HttpPut]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin")]
     [SwaggerResponse(200, "Settings updated successfully.")]
     [SwaggerResponse(400, "Invalid request or incorrect password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
@@ -60,7 +60,7 @@ public class SettingController(ISettingService settingService) : BaseController
     /// [S-03] Update system admin password.
     /// </summary>
     [HttpPut("password")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "admin")]
     [SwaggerResponse(200, "Admin password updated successfully.")]
     [SwaggerResponse(400, "Invalid request or incorrect current password.")]
     [SwaggerResponse(401, "Unauthorized access.")]
