@@ -1,3 +1,0 @@
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=ArdhDb;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true;"
-  },
