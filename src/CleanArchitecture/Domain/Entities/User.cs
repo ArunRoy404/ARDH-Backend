@@ -15,6 +15,7 @@ public class User
     public string? Permissions { get; set; }
     public string? AvatarUrl { get; set; }
     public bool IsActive { get; set; } = true;
+    public bool ReceiveEmailNotifications { get; set; } = true;
     public DateTime? LastLoginAt { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

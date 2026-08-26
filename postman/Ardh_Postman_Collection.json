@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "9a38f321-4bcf-4f9e-a0e2-2a54b38dcd2b",
     "name": "Ardh Property Management API (Cookie Auth)",
-    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies \u2014 no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nSeeded users (SEED_MODE=reset on startup):\n  admin@gmail.com / P@ssw0rd (full access)\n  manager@gmail.com / P@ssw0rd (property_manager: dashboard, vendors, equipment, amc_contracts, maintenance, expenses)\n  accountant@gmail.com / P@ssw0rd (accountant: dashboard, income, reports, expenses)\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection match the seeded demo data, so requests work out of the box on a freshly seeded database.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' \u2014 change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 13; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
+    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies — no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nSeeded users (SEED_MODE=reset on startup):\n  admin@gmail.com / P@ssw0rd (full access)\n  manager@gmail.com / P@ssw0rd (property_manager: dashboard, vendors, equipment, amc_contracts, maintenance, expenses)\n  accountant@gmail.com / P@ssw0rd (accountant: dashboard, income, reports, expenses)\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection match the seeded demo data, so requests work out of the box on a freshly seeded database.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' — change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 13; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -922,7 +922,7 @@
                 }
               ]
             },
-            "description": "Exports a report as an XLSX workbook. type is required and validated.\n\nValid type values (exact):\n  income   - all filtered income records (same columns as I-08)\n  expenses - all filtered expense records (same columns as EX-07) \u2014 'expense' also accepted\n  combined - dated transaction ledger merging income + expense into one feed (default)\n\nAny other type returns 400. Optional filters: buildingId, startDate, endDate.\nReturns an .xlsx file (application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)."
+            "description": "Exports a report as an XLSX workbook. type is required and validated.\n\nValid type values (exact):\n  income   - all filtered income records (same columns as I-08)\n  expenses - all filtered expense records (same columns as EX-07) — 'expense' also accepted\n  combined - dated transaction ledger merging income + expense into one feed (default)\n\nAny other type returns 400. Optional filters: buildingId, startDate, endDate.\nReturns an .xlsx file (application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)."
           },
           "response": [
             {
@@ -958,7 +958,7 @@
                 }
               ],
               "cookie": [],
-              "body": "Binary XLSX file. Income/expense/combined report \u2014 download and open in Excel.\nIncome export rows: Date, Type, Category, Description, Amount, Status, BuildingName, FlatNumber."
+              "body": "Binary XLSX file. Income/expense/combined report — download and open in Excel.\nIncome export rows: Date, Type, Category, Description, Amount, Status, BuildingName, FlatNumber."
             },
             {
               "name": "Error Example (400 - Invalid type)",
@@ -1214,7 +1214,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"admin\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"city\": \"123 Main St\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings,owners,apartments,tenants,vendors,equipment,amc_contracts,maintenance,income,reports,expenses,admin\",\n    \"lastLoginAt\": \"2026-08-07T09:30:00Z\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\"\n  }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"admin\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"city\": \"123 Main St\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings,owners,apartments,tenants,vendors,equipment,amc_contracts,maintenance,income,reports,expenses,admin\",\n    \"lastLoginAt\": \"2026-08-07T09:30:00Z\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"receiveEmailNotifications\": true\n  }\n}"
             }
           ]
         },
@@ -2036,7 +2036,7 @@
                 }
               ]
             },
-            "description": "Lists users with pagination and optional filters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Lists users with pagination and optional filters.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -2178,7 +2178,7 @@
                 "7ca6dfd0-bfd8-4f10-977b-608b8b4081c7"
               ]
             },
-            "description": "Returns the full details of a single user.\nUse the seeded Super Admin ID below.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Returns the full details of a single user.\nUse the seeded Super Admin ID below.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -2212,7 +2212,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n        \"name\": \"Super Admin\",\n        \"email\": \"admin@gmail.com\",\n        \"phone\": \"+1234567890\",\n        \"address\": \"123 Main St\",\n        \"role\": \"admin\",\n        \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n        \"city\": \"123 Main St\",\n        \"isActive\": true,\n        \"permissions\": \"dashboard,buildings,owners,apartments,tenants,vendors,equipment,amc_contracts,maintenance,income,reports,expenses,admin\",\n        \"lastLoginAt\": \"2026-08-07T09:30:00Z\",\n        \"createdAt\": \"2026-07-20T12:00:00Z\",\n        \"updatedAt\": \"2026-07-21T18:00:00Z\",\n        \"createdBy\": null,\n        \"updatedBy\": null\n    }\n}"
+              "body": "{\n  \"success\": true,\n  \"message\": \"Request processed successfully.\",\n  \"data\": {\n    \"id\": \"7ca6dfd0-bfd8-4f10-977b-608b8b4081c7\",\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"admin\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\",\n    \"city\": \"123 Main St\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings,owners,apartments,tenants,vendors,equipment,amc_contracts,maintenance,income,reports,expenses,admin\",\n    \"lastLoginAt\": \"2026-08-07T09:30:00Z\",\n    \"createdAt\": \"2026-07-20T12:00:00Z\",\n    \"updatedAt\": \"2026-07-21T18:00:00Z\",\n    \"createdBy\": null,\n    \"updatedBy\": null,\n    \"receiveEmailNotifications\": true\n  }\n}"
             },
             {
               "name": "Error Example (404 - Not Found)",
@@ -2272,10 +2272,10 @@
                 "users"
               ]
             },
-            "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
+            "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+              "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
             }
           },
           "response": [
@@ -2305,7 +2305,7 @@
                 "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "OK",
@@ -2346,7 +2346,7 @@
                 "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Bad Request",
@@ -2387,7 +2387,7 @@
                 "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Bad Request",
@@ -2428,7 +2428,7 @@
                 "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Bad Request",
@@ -2469,7 +2469,7 @@
                 "description": "Creates a new user. Mandatory fields: name, email, phone, password, confirmPassword, address, role, avatarURL.\nRoles: admin | property_manager | accountant | viewer\nPermissions (optional, comma separated - individual modules): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\nThe email must be unique. Passwords must match and be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"password\": \"P@ssw0rd\", // [REQUIRED] Min 6 characters\n    \"confirmPassword\": \"P@ssw0rd\", // [REQUIRED] Must match password\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"permissions\": \"vendors,equipment\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Forbidden",
@@ -2510,10 +2510,10 @@
                 "8ca6dfd0-bfd8-4f10-977b-608b8b4081c8"
               ]
             },
-            "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
+            "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+              "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
             }
           },
           "response": [
@@ -2544,7 +2544,7 @@
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "OK",
@@ -2586,7 +2586,7 @@
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Bad Request",
@@ -2628,7 +2628,7 @@
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Not Found",
@@ -2670,7 +2670,7 @@
                 "description": "Updates an existing user. Mandatory fields: name, email, phone, address, role, isActive, avatarURL.\nThe email must remain unique (cannot reuse another user's email).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
+                  "raw": "{\n    \"name\": \"Front Desk Executive\", // [REQUIRED] Full name\n    \"email\": \"frontdesk@gmail.com\", // [REQUIRED] Unique email\n    \"phone\": \"+91 9000011111\", // [REQUIRED] Phone number\n    \"address\": \"Lobby, Grand Plaza Towers\", // [REQUIRED] Address\n    \"role\": \"viewer\", // [REQUIRED] Exact values: admin | property_manager | accountant | viewer\n    \"isActive\": true, // [REQUIRED] true or false\n    \"permissions\": \"dashboard,buildings\", // [optional] Comma separated individual modules (on top of role defaults). Exact values: dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, admin\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\" // [REQUIRED] Profile image URL\n}"
                 }
               },
               "status": "Forbidden",
@@ -2711,7 +2711,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
                 },
                 "description": "Self-edit attempt: signed-in admin (id matches their own) tries to change their own role away from admin."
               },
@@ -2753,7 +2753,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
                 },
                 "description": "Self-edit attempt: signed-in admin sends isActive=false for their own account via Update User (role kept the same as their real role: admin)."
               },
@@ -2795,7 +2795,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
+                  "raw": "{\n    \"name\": \"Super Admin\",\n    \"email\": \"admin@gmail.com\",\n    \"phone\": \"+1234567890\",\n    \"address\": \"123 Main St\",\n    \"role\": \"viewer\",\n    \"isActive\": true,\n    \"permissions\": \"dashboard,buildings\",\n    \"receiveEmailNotifications\": true, // [optional] true by default, controls automated email reminders\n    \"avatarURL\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\"\n}"
                 },
                 "description": "Self-edit attempt: signed-in admin tries to change their own granted permissions (role and isActive kept the same as their real values)."
               },
@@ -2839,7 +2839,7 @@
                 }
               ]
             },
-            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3024,7 +3024,7 @@
                 "toggle-status"
               ]
             },
-            "description": "Toggles a user between active and inactive. No body required.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Toggles a user between active and inactive. No body required.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3989,7 +3989,7 @@
                 "settings"
               ]
             },
-            "description": "Returns the current application settings (company name, email, phone, address, icon, fav).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Returns the current application settings (company name, email, phone, address, icon, fav).\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4081,7 +4081,7 @@
                 "settings"
               ]
             },
-            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
+            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"adminpassword\" // [REQUIRED] Current admin password (seeded value: adminpassword)\n}"
@@ -4196,7 +4196,7 @@
                 "password"
               ]
             },
-            "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint.",
+            "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
               "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
@@ -4350,7 +4350,7 @@
                 "public"
               ]
             },
-            "description": "Returns the public site branding (icon and fav). This endpoint is public (no authentication needed).\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Returns the public site branding (icon and fav). This endpoint is public (no authentication needed).\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4443,7 +4443,7 @@
                 }
               ]
             },
-            "description": "Lists all soft-deleted records that can be restored or permanently deleted.\nQuery params: page, pageSize, search, entity_type, start_date, end_date.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Lists all soft-deleted records that can be restored or permanently deleted.\nQuery params: page, pageSize, search, entity_type, start_date, end_date.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4596,7 +4596,7 @@
                 "restore"
               ]
             },
-            "description": "Restores a soft-deleted record. The underlying entity (building, tenant, expense, etc.) becomes active again.\nUse the Deleted History ID from the DH-01 list response.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Restores a soft-deleted record. The underlying entity (building, tenant, expense, etc.) becomes active again.\nUse the Deleted History ID from the DH-01 list response.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4729,7 +4729,7 @@
                 }
               ]
             },
-            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -4873,7 +4873,7 @@
                 "4da2b822-29c4-52a8-ad29-c8be5d491f24"
               ]
             },
-            "description": "Returns the full details of one deleted record, including restore/permanent-delete flags.\n\n\ud83d\udd12 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Returns the full details of one deleted record, including restore/permanent-delete flags.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -11280,7 +11280,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Immediate attention required.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value (e.g. Plumbing, Electrical, Lift, General)\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"Open\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID \u2014 provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID \u2014 provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID \u2014 provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 15000.00, // [REQUIRED] Estimated cost\n    \"scheduledDate\": \"2026-07-25T09:00:00Z\", // [REQUIRED] Scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle (required when recurrenceFrequency is set)\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly. nextMaintenanceDate = startDate + frequency interval\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
+              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Immediate attention required.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value (e.g. Plumbing, Electrical, Lift, General)\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"Open\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID — provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID — provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID — provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 15000.00, // [REQUIRED] Estimated cost\n    \"scheduledDate\": \"2026-07-25T09:00:00Z\", // [REQUIRED] Scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle (required when recurrenceFrequency is set)\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly. nextMaintenanceDate = startDate + frequency interval\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/maintenance",
@@ -11292,7 +11292,7 @@
                 "maintenance"
               ]
             },
-            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional \u2014 common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
+            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
           },
           "response": [
             {
@@ -11460,7 +11460,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Leak resolved, repainting scheduled.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"InProgress\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID \u2014 provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID \u2014 provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID \u2014 provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 16500.00, // [REQUIRED] Updated estimated cost\n    \"scheduledDate\": \"2026-07-26T09:00:00Z\", // [REQUIRED] Updated scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
+              "raw": "{\n    \"title\": \"Water leakage in Flat 302\", // [REQUIRED] Title of the request\n    \"description\": \"Ceiling leak in the master bathroom. Leak resolved, repainting scheduled.\", // [REQUIRED] Detailed description\n    \"category\": \"Plumbing\", // [REQUIRED] Free-form string, any value\n    \"priority\": \"High\", // [REQUIRED] Exact values: Low | Medium | High | Critical\n    \"status\": \"InProgress\", // [REQUIRED] Exact values: Open | InProgress | Complete | Cancelled\n    \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\", // [REQUIRED] Building UUID\n    \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Apartment UUID — provide only for apartment-specific work; omit for common-area (building-level) requests\n    \"vendorId\": \"d1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Vendor UUID — provide only for vendor-specific work; omit for common-area (building-level) requests\n    \"equipmentId\": \"e1a3b822-29c4-52a8-ad29-c8be5d491f24\", // [optional] Equipment UUID — provide only for equipment-specific work; omit for common-area (building-level) requests\n    \"estimatedCost\": 16500.00, // [REQUIRED] Updated estimated cost\n    \"scheduledDate\": \"2026-07-26T09:00:00Z\", // [REQUIRED] Updated scheduled date (ISO 8601)\n    \"annualCost\": 180000.00, // [optional] Annualised cost\n    \"startDate\": \"2026-07-20T09:00:00Z\", // [optional] Start date of the maintenance cycle\n    \"recurrenceFrequency\": \"Weekly\", // [optional] Exact values: Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\n    \"receiptAttachmentUrl\": \"https://example.com/uploads/receipt.pdf\", // [optional] Receipt/document URL\n    \"notes\": \"Tenant reported leak on 18 July.\" // [optional] Internal notes\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/maintenance/c1f3b822-29c4-52a8-ad29-c8be5d491f24",
@@ -11480,7 +11480,7 @@
                 }
               ]
             },
-            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional \u2014 common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
+            "description": "Mandatory fields: title, description, category, priority, status, buildingId, estimatedCost and scheduledDate. All other fields are optional. apartmentId, vendorId and equipmentId are optional — common-area (building-level) requests have none of them.\n\nValid enum values (exact):\n  priority = Low | Medium | High | Critical\n  status = Open | InProgress | Complete | Cancelled\n  recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly\nWhen recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed as startDate + frequency interval."
           },
           "response": [
             {
@@ -16166,7 +16166,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'apartments' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'apartments' permission."
+                "description": "Downloads an XLSX template for 'apartments' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'apartments' permission."
               },
               "response": [
                 {
@@ -16591,7 +16591,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'tenants' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'tenants' permission."
+                "description": "Downloads an XLSX template for 'tenants' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'tenants' permission."
               },
               "response": [
                 {
@@ -17016,7 +17016,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'owners' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'owners' permission."
+                "description": "Downloads an XLSX template for 'owners' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'owners' permission."
               },
               "response": [
                 {
@@ -17441,7 +17441,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'income' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'income' permission."
+                "description": "Downloads an XLSX template for 'income' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'income' permission."
               },
               "response": [
                 {
@@ -17866,7 +17866,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'expenses' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'expenses' permission."
+                "description": "Downloads an XLSX template for 'expenses' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'expenses' permission."
               },
               "response": [
                 {
@@ -18291,7 +18291,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'maintenance' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'maintenance' permission."
+                "description": "Downloads an XLSX template for 'maintenance' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'maintenance' permission."
               },
               "response": [
                 {
@@ -18716,7 +18716,7 @@
                     }
                   ]
                 },
-                "description": "Downloads an XLSX template for 'equipment' \u2014 header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'equipment' permission."
+                "description": "Downloads an XLSX template for 'equipment' — header row + one sample row that exactly matches the create-POST API fields (enum values use the exact names, e.g. 'Rent', 'Paid', 'Aadhar', 'Active').\nUse this file as the base for your bulk upload data.\nRequires 'equipment' permission."
               },
               "response": [
                 {

@@ -138,9 +138,10 @@ public class MaintenanceRequestService(
             ScheduledDate = x.ScheduledDate,
             StartDate = x.StartDate,
             RecurrenceFrequency = x.RecurrenceFrequency,
-            NextMaintenanceDate = GetNextMaintenanceDate(x.StartDate, x.RecurrenceFrequency),
+            NextMaintenanceDate = GetNextMaintenanceDate(x.StartDate, x.RecurrenceFrequency, x.LastCompletedDate),
             ReceiptAttachmentUrl = x.ReceiptAttachmentUrl,
             Notes = x.Notes,
+            LastCompletedDate = x.LastCompletedDate,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
@@ -369,9 +370,10 @@ public class MaintenanceRequestService(
             ScheduledDate = request.ScheduledDate,
             StartDate = request.StartDate,
             RecurrenceFrequency = request.RecurrenceFrequency,
-            NextMaintenanceDate = GetNextMaintenanceDate(request.StartDate, request.RecurrenceFrequency),
+            NextMaintenanceDate = GetNextMaintenanceDate(request.StartDate, request.RecurrenceFrequency, request.LastCompletedDate),
             ReceiptAttachmentUrl = request.ReceiptAttachmentUrl,
             Notes = request.Notes,
+            LastCompletedDate = request.LastCompletedDate,
             CreatedAt = request.CreatedAt,
             UpdatedAt = request.UpdatedAt,
             CreatedBy = request.CreatedBy.HasValue && userMap.TryGetValue(request.CreatedBy.Value, out var rcb) ? rcb : null,
@@ -546,6 +548,12 @@ public class MaintenanceRequestService(
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
 
+        // Track last completion for recurring maintenance scheduling
+        if (maintenanceRequest.Status == MaintenanceStatus.Complete && oldStatus != MaintenanceStatus.Complete)
+        {
+            maintenanceRequest.LastCompletedDate = DateTime.UtcNow;
+        }
+
         if (oldEquipmentId != request.EquipmentId)
         {
             if (oldEquipmentId.HasValue)
@@ -662,6 +670,12 @@ public class MaintenanceRequestService(
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
 
+        // Track last completion for recurring maintenance scheduling
+        if (maintenanceRequest.Status == MaintenanceStatus.Complete)
+        {
+            maintenanceRequest.LastCompletedDate = DateTime.UtcNow;
+        }
+
         if (maintenanceRequest.EquipmentId.HasValue)
         {
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
@@ -734,7 +748,7 @@ public class MaintenanceRequestService(
     /// StartDate + the number of days defined by the recurrence frequency.
     /// Returns null when either the start date or the frequency is not set.
     /// </summary>
-    private static DateTime? GetNextMaintenanceDate(DateTime? startDate, MaintenanceRecurrenceFrequency? frequency)
+    private static DateTime? GetNextMaintenanceDate(DateTime? startDate, MaintenanceRecurrenceFrequency? frequency, DateTime? lastCompletedDate = null)
     {
         if (!startDate.HasValue || !frequency.HasValue)
         {
@@ -755,6 +769,8 @@ public class MaintenanceRequestService(
             _ => 0
         };
 
-        return startDate.Value.AddDays(days);
+        // Use the last completion date if available for more accurate recurrence tracking
+        var baseDate = lastCompletedDate ?? startDate.Value;
+        return baseDate.AddDays(days);
     }
 }

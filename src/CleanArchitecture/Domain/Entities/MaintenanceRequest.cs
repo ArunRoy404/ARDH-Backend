@@ -22,6 +22,7 @@ public class MaintenanceRequest
     public MaintenanceRecurrenceFrequency? RecurrenceFrequency { get; set; }
     public string? ReceiptAttachmentUrl { get; set; }
     public string? Notes { get; set; }
+    public DateTime? LastCompletedDate { get; set; }
     
     // Audit Fields
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

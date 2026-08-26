@@ -17,6 +17,7 @@ public class UserProfileResponse
     public string? City => Address;
     public bool IsActive { get; set; }
     public string? Permissions { get; set; }
+    public bool ReceiveEmailNotifications { get; set; }
     public DateTime? LastLoginAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

@@ -30,6 +30,8 @@ public class UserUpdateRequest
 
     public string? Permissions { get; set; }
 
+    public bool ReceiveEmailNotifications { get; set; } = true;
+
     [Required]
     [JsonPropertyName("avatarURL")]
     public string AvatarUrl { get; set; } = string.Empty;
