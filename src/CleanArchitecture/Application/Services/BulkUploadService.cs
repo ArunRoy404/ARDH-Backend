@@ -20,6 +20,7 @@ using CleanArchitecture.Shared.Models.Maintenance;
 using CleanArchitecture.Shared.Models.Owner;
 using CleanArchitecture.Shared.Models.Tenant;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Application.Services;
 
@@ -36,7 +37,8 @@ public class BulkUploadService(
     IExpenseRecordService expenseRecordService,
     IMaintenanceRequestService maintenanceRequestService,
     IEquipmentService equipmentService,
-    IBulkUploadProgressBroadcaster progressBroadcaster) : IBulkUploadService
+    IBulkUploadProgressBroadcaster progressBroadcaster,
+    ILogger<BulkUploadService> logger) : IBulkUploadService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IBulkUploadQueue _bulkUploadQueue = bulkUploadQueue;
@@ -51,6 +53,7 @@ public class BulkUploadService(
     private readonly IMaintenanceRequestService _maintenanceRequestService = maintenanceRequestService;
     private readonly IEquipmentService _equipmentService = equipmentService;
     private readonly IBulkUploadProgressBroadcaster _progressBroadcaster = progressBroadcaster;
+    private readonly ILogger<BulkUploadService> _logger = logger;
 
     // ─────────────────────────────────────────────────────────────────────────
     // Start / enqueue
@@ -119,6 +122,15 @@ public class BulkUploadService(
             return;
         }
 
+        // The background job runs in its own DI scope with no HttpContext, so ICurrentUser can't
+        // resolve a user from claims. Since ICurrentUser is scoped and shared by every service
+        // resolved in this job's scope, overriding it here makes every record created below
+        // (Apartment/Tenant/Owner/etc.) attribute CreatedBy to the user who started the upload.
+        if (record.CreatedBy.HasValue && record.CreatedBy.Value != Guid.Empty)
+        {
+            _currentUser.SetCurrentUserId(record.CreatedBy.Value);
+        }
+
         record.Status = BulkUploadStatus.Processing.ToString();
         record.StartedAt = DateTime.UtcNow;
         record.UpdatedAt = DateTime.UtcNow;
@@ -134,6 +146,7 @@ public class BulkUploadService(
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Bulk upload {BulkUploadId} ({Module}) failed while reading the uploaded file.", record.Id, record.Module);
             record.GlobalError = ToReadableError(ex);
             record.Status = BulkUploadStatus.Failed.ToString();
             record.FinishedAt = DateTime.UtcNow;
@@ -212,8 +225,10 @@ public class BulkUploadService(
                 ProgressPercentage = 0
             });
 
+            var rowNumber = 1; // header is row 1, so data rows start at 2
             foreach (var row in validRows)
             {
+                rowNumber++;
                 var (request, errors) = ParseRow(record.Module, row, headerIndex, lookup);
 
                 if (request == null || errors.Count > 0)
@@ -231,6 +246,10 @@ public class BulkUploadService(
                     }
                     catch (Exception ex)
                     {
+                        // Log the full exception (not the row's raw field values - those can hold
+                        // PII like phone/ID/bank numbers) so the real cause is recoverable from
+                        // server logs even when ToReadableError falls back to a generic message.
+                        _logger.LogError(ex, "Bulk upload {BulkUploadId} ({Module}) row {RowNumber} failed.", record.Id, record.Module, rowNumber);
                         _unitOfWork.ClearChangeTracker();
                         failed++;
                         processedList.Add(PadAndAppendStatus(row, headers.Count, "Failed", ToReadableError(ex)));
@@ -285,6 +304,7 @@ public class BulkUploadService(
         catch (Exception ex)
         {
             var moduleEnum = ToModuleEnum(record.Module) ?? BulkUploadModule.Apartments;
+            _logger.LogError(ex, "Bulk upload {BulkUploadId} ({Module}) failed.", record.Id, record.Module);
             record.GlobalError = ToReadableError(ex);
             record.Status = BulkUploadStatus.Failed.ToString();
             record.FinishedAt = DateTime.UtcNow;
@@ -1141,14 +1161,28 @@ public class BulkUploadService(
 
     private static string ToReadableError(Exception ex)
     {
-        if (ex is UserFriendlyException friendly)
+        var current = ex;
+        while (current != null)
         {
-            return friendly.Message;
+            if (current is UserFriendlyException friendly)
+            {
+                return friendly.Message;
+            }
+
+            if (current is AggregateException aggregate)
+            {
+                foreach (var inner in aggregate.Flatten().InnerExceptions)
+                {
+                    if (inner is UserFriendlyException innerFriendly)
+                    {
+                        return innerFriendly.Message;
+                    }
+                }
+            }
+
+            current = current.InnerException;
         }
-        if (ex.InnerException is UserFriendlyException innerFriendly)
-        {
-            return innerFriendly.Message;
-        }
+
         return "An unexpected error occurred while processing this row. Please check the values and try again.";
     }
 

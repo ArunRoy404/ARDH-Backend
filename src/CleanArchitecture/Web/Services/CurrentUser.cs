@@ -10,9 +10,17 @@ namespace CleanArchitecture.Web.Services;
 public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private Guid? _overrideUserId;
+
+    public void SetCurrentUserId(Guid userId) => _overrideUserId = userId;
 
     public Guid GetCurrentUserId()
     {
+        if (_overrideUserId.HasValue)
+        {
+            return _overrideUserId.Value;
+        }
+
         var userIdStr = GetCurrentStringUserId();
         return Guid.TryParse(userIdStr, out var userId) ? userId : Guid.Empty;
     }
