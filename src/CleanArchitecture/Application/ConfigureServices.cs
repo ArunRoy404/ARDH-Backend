@@ -31,6 +31,7 @@ public static class ConfigureServices
         services.AddTransient<IActivityService, ActivityService>();
         services.AddTransient<IDashboardService, DashboardService>();
         services.AddTransient<IReportService, ReportService>();
+        services.AddTransient<IOccupancyReportService, OccupancyReportService>();
 
         services.AddTransient<IBulkUploadService, BulkUploadService>();
         services.AddSingleton<IBulkUploadQueue, BulkUploadQueue>();
