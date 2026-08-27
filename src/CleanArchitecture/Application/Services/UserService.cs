@@ -238,7 +238,7 @@ public class UserService(
         user.Role = request.Role;
         user.IsActive = request.IsActive;
         user.Permissions = resolvedPermissions;
-        user.ReceiveEmailNotifications = request.ReceiveEmailNotifications;
+        user.ReceiveEmailNotifications = request.ReceiveEmailNotifications ?? user.ReceiveEmailNotifications;
         user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
         user.UpdatedBy = _currentUser.GetCurrentUserId();

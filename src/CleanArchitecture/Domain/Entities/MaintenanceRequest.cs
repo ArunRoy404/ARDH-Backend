@@ -23,7 +23,14 @@ public class MaintenanceRequest
     public string? ReceiptAttachmentUrl { get; set; }
     public string? Notes { get; set; }
     public DateTime? LastCompletedDate { get; set; }
-    
+
+    /// <summary>
+    /// Set once the recurring reminder job has already spawned this request's successor, so the
+    /// nightly scan doesn't keep re-evaluating (and re-checking for duplicates against) the same
+    /// completed occurrence forever.
+    /// </summary>
+    public bool NextCycleGenerated { get; set; } = false;
+
     // Audit Fields
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

@@ -88,6 +88,10 @@ public class MaintenanceRequestConfiguration : IEntityTypeConfiguration<Maintena
         builder.Property(x => x.LastCompletedDate)
             .HasColumnName("last_completed_date");
 
+        builder.Property(x => x.NextCycleGenerated)
+            .HasColumnName("next_cycle_generated")
+            .HasDefaultValue(false);
+
         builder.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();
