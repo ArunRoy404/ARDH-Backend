@@ -1000,6 +1000,312 @@
       ]
     },
     {
+      "name": "Occupancy Reports",
+      "item": [
+        {
+          "name": "OR-01. GET Occupancy Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/occupancy-reports?fromDate=2026-01-01&toDate=2026-12-31&buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24&page=1&pageSize=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "occupancy-reports"
+              ],
+              "query": [
+                {
+                  "key": "fromDate",
+                  "value": "2026-01-01",
+                  "description": "Required. Report window start date (YYYY-MM-DD)."
+                },
+                {
+                  "key": "toDate",
+                  "value": "2026-12-31",
+                  "description": "Required. Report window end date (YYYY-MM-DD). Clamped to today if it lies in the future - the report never calculates future occupancy."
+                },
+                {
+                  "key": "buildingId",
+                  "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                  "description": "Optional building UUID filter. If omitted, reports across all buildings."
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (defaults to 1)"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Number of items per page (defaults to 10)"
+                }
+              ]
+            },
+            "description": "Per-apartment occupancy report for a date range: occupied/vacant days (and calendar-accurate month/day display), plus rent figures using the rent that actually applied during each historical period - not today's rent. If a rent change happened mid-lease it is split into the correct sub-periods automatically. Vacant gaps between two known leases are valued at the preceding lease's rate; open-ended/never-let vacancy is valued at the apartment's current ExpectedRent. toDate is clamped to today; a fromDate after today returns 400."
+          },
+          "response": [
+            {
+              "name": "Success Example (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/occupancy-reports?fromDate=2026-01-01&toDate=2026-12-31&buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24&page=1&pageSize=10",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "occupancy-reports"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromDate",
+                      "value": "2026-01-01",
+                      "description": "Required. Report window start date (YYYY-MM-DD)."
+                    },
+                    {
+                      "key": "toDate",
+                      "value": "2026-12-31",
+                      "description": "Required. Report window end date (YYYY-MM-DD). Clamped to today if it lies in the future - the report never calculates future occupancy."
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                      "description": "Optional building UUID filter. If omitted, reports across all buildings."
+                    },
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "description": "Page number (defaults to 1)"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "10",
+                      "description": "Number of items per page (defaults to 10)"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"items\": [\n            {\n                \"apartmentId\": \"a1f3b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"flatNumber\": \"302\",\n                \"buildingId\": \"b1f7b822-29c4-52a8-ad29-c8be5d491f24\",\n                \"buildingName\": \"Grand Plaza Towers\",\n                \"totalReportDays\": 365,\n                \"occupiedDays\": 244,\n                \"vacantDays\": 121,\n                \"occupiedDurationDisplay\": \"8 months, 1 day\",\n                \"vacantDurationDisplay\": \"3 months, 30 days\",\n                \"expectedOccupiedRent\": 692000,\n                \"vacancyRentValue\": 342833.33,\n                \"totalPotentialRent\": 1034833.33\n            }\n        ],\n        \"totalCount\": 1,\n        \"page\": 1,\n        \"pageSize\": 10\n    }\n}"
+            },
+            {
+              "name": "Error Example (400 - From-date in the future)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/occupancy-reports?fromDate=2027-01-01&toDate=2027-12-31",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "occupancy-reports"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromDate",
+                      "value": "2027-01-01"
+                    },
+                    {
+                      "key": "toDate",
+                      "value": "2027-12-31"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"The report's from-date cannot be after today - occupancy cannot be calculated for the future.\",\n  \"errors\": [\n    {\n      \"code\": \"CleanArchitecture.bad_request\",\n      \"message\": \"The report's from-date cannot be after today - occupancy cannot be calculated for the future.\",\n      \"errorMessage\": \"The report's from-date cannot be after today - occupancy cannot be calculated for the future.\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "OR-02. GET Occupancy Report Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/occupancy-reports/summary?fromDate=2026-01-01&toDate=2026-12-31&buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "occupancy-reports",
+                "summary"
+              ],
+              "query": [
+                {
+                  "key": "fromDate",
+                  "value": "2026-01-01",
+                  "description": "Required. Report window start date (YYYY-MM-DD)."
+                },
+                {
+                  "key": "toDate",
+                  "value": "2026-12-31",
+                  "description": "Required. Report window end date (YYYY-MM-DD). Clamped to today if in the future."
+                },
+                {
+                  "key": "buildingId",
+                  "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                  "description": "Optional building UUID filter."
+                }
+              ]
+            },
+            "description": "Portfolio-wide occupancy totals for the same date range and filters as OR-01 - total occupied/vacant days and the three rent figures summed across every matching apartment."
+          },
+          "response": [
+            {
+              "name": "Success Example (200)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/occupancy-reports/summary?fromDate=2026-01-01&toDate=2026-12-31&buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "occupancy-reports",
+                    "summary"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromDate",
+                      "value": "2026-01-01",
+                      "description": "Required. Report window start date (YYYY-MM-DD)."
+                    },
+                    {
+                      "key": "toDate",
+                      "value": "2026-12-31",
+                      "description": "Required. Report window end date (YYYY-MM-DD). Clamped to today if in the future."
+                    },
+                    {
+                      "key": "buildingId",
+                      "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                      "description": "Optional building UUID filter."
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": {\n        \"apartmentCount\": 42,\n        \"totalReportDays\": 365,\n        \"totalOccupiedDays\": 10248,\n        \"totalVacantDays\": 4082,\n        \"totalExpectedOccupiedRent\": 29060000,\n        \"totalVacancyRentValue\": 11530416.5,\n        \"totalPotentialRent\": 40590416.5\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "OR-03. GET Export Occupancy Report XLSX",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/occupancy-reports/export?fromDate=2026-01-01&toDate=2026-12-31&buildingId=b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "occupancy-reports",
+                "export"
+              ],
+              "query": [
+                {
+                  "key": "fromDate",
+                  "value": "2026-01-01",
+                  "description": "Required. Report window start date (YYYY-MM-DD)."
+                },
+                {
+                  "key": "toDate",
+                  "value": "2026-12-31",
+                  "description": "Required. Report window end date (YYYY-MM-DD)."
+                },
+                {
+                  "key": "buildingId",
+                  "value": "b1f7b822-29c4-52a8-ad29-c8be5d491f24",
+                  "description": "Optional building UUID filter."
+                }
+              ]
+            },
+            "description": "Exports the same per-apartment occupancy report as OR-01 as an XLSX workbook. Columns: BuildingName, FlatNumber, TotalReportDays, OccupiedDays, VacantDays, OccupiedDuration, VacantDuration, ExpectedOccupiedRent, VacancyRentValue, TotalPotentialRent."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - XLSX report)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/occupancy-reports/export?fromDate=2026-01-01&toDate=2026-12-31",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "occupancy-reports",
+                    "export"
+                  ],
+                  "query": [
+                    {
+                      "key": "fromDate",
+                      "value": "2026-01-01"
+                    },
+                    {
+                      "key": "toDate",
+                      "value": "2026-12-31"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                }
+              ],
+              "cookie": [],
+              "body": "Binary XLSX file. Occupancy report - download and open in Excel."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Authentication",
       "item": [
         {
