@@ -45,8 +45,11 @@ public class TenantMoveOutService(IUnitOfWork unitOfWork, ICurrentUser currentUs
             CreatedBy = _currentUser.GetCurrentUserId()
         };
 
-        // Update tenant status to MovedOut
+        // Update tenant status to MovedOut and close the lease on the actual move-out date, so
+        // occupancy history (e.g. the occupancy report) doesn't keep treating this lease as
+        // ongoing through today just because it was never explicitly end-dated.
         tenant.Status = TenantStatus.MovedOut;
+        tenant.LeaseEndDate = request.MoveOutDate;
         tenant.UpdatedAt = DateTime.UtcNow;
 
         var apartment = await _unitOfWork.ApartmentRepository.FirstOrDefaultAsync(x => x.Id == tenant.ApartmentId);
