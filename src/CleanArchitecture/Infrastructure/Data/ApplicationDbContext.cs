@@ -26,6 +26,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Activity> Activities { get; set; }
     public DbSet<BulkUpload> BulkUploads { get; set; }
     public DbSet<EmailReminderLog> EmailReminderLogs { get; set; }
+    public DbSet<TenantRentHistory> TenantRentHistories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -143,7 +143,7 @@ public class UserService(
         // each module via the Permissions field. Viewer is still hard-blocked from every
         // mutating verb regardless of granted modules (see PermissionAuthorizationFilter).
         [UserRole.viewer] = [],
-        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
+        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses, UserPermission.occupancy_reports],
         [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
     };
 

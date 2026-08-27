@@ -120,5 +120,8 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .WithMany()
             .HasForeignKey(x => x.ApartmentId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Speeds up the occupancy report's per-apartment lease-overlap queries
+        builder.HasIndex(x => new { x.ApartmentId, x.LeaseStartDate, x.LeaseEndDate });
     }
 }
