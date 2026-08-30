@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -6,8 +7,10 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
+using CleanArchitecture.Shared.Models.ApartmentChargeHistory;
 using CleanArchitecture.Shared.Models.Building;
 using CleanArchitecture.Shared.Models.Owner;
 
@@ -333,7 +336,46 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             CreatedBy = _currentUser.GetCurrentUserId()
         };
 
-        await _unitOfWork.ExecuteTransactionAsync(async () => await _unitOfWork.ApartmentRepository.AddAsync(apartment), cancellationToken);
+        var chargeHistoryEffectiveFrom = apartment.CreatedAt.Date;
+        var initialChargeHistory = new List<ApartmentChargeHistory>
+        {
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ApartmentId = apartment.Id,
+                ChargeType = ApartmentChargeType.Rent,
+                Amount = apartment.ExpectedRent,
+                EffectiveFrom = chargeHistoryEffectiveFrom,
+                EffectiveTo = null,
+                CreatedAt = DateTime.UtcNow
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ApartmentId = apartment.Id,
+                ChargeType = ApartmentChargeType.Maintenance,
+                Amount = apartment.MaintenanceCharge,
+                EffectiveFrom = chargeHistoryEffectiveFrom,
+                EffectiveTo = null,
+                CreatedAt = DateTime.UtcNow
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                ApartmentId = apartment.Id,
+                ChargeType = ApartmentChargeType.Water,
+                Amount = apartment.WaterCharge,
+                EffectiveFrom = chargeHistoryEffectiveFrom,
+                EffectiveTo = null,
+                CreatedAt = DateTime.UtcNow
+            }
+        };
+
+        await _unitOfWork.ExecuteTransactionAsync(async () =>
+        {
+            await _unitOfWork.ApartmentRepository.AddAsync(apartment);
+            await _unitOfWork.ApartmentChargeHistoryRepository.AddRangeAsync(initialChargeHistory);
+        }, cancellationToken);
 
         await _activityService.CreateActivity("Create", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' added to building.", cancellationToken);
 
@@ -381,6 +423,10 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
             }
         }
 
+        var oldExpectedRent = apartment.ExpectedRent;
+        var oldMaintenanceCharge = apartment.MaintenanceCharge;
+        var oldWaterCharge = apartment.WaterCharge;
+
         apartment.BuildingId = request.BuildingId;
         apartment.OwnerId = request.OwnerId;
         apartment.NestawayId = request.NestawayId.Trim();
@@ -402,6 +448,11 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
         apartment.UpdatedBy = _currentUser.GetCurrentUserId();
 
         _unitOfWork.ApartmentRepository.Update(apartment);
+
+        await ApplyChargeHistoryChangeAsync(apartment, ApartmentChargeType.Rent, oldExpectedRent, apartment.ExpectedRent, cancellationToken);
+        await ApplyChargeHistoryChangeAsync(apartment, ApartmentChargeType.Maintenance, oldMaintenanceCharge, apartment.MaintenanceCharge, cancellationToken);
+        await ApplyChargeHistoryChangeAsync(apartment, ApartmentChargeType.Water, oldWaterCharge, apartment.WaterCharge, cancellationToken);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         await _activityService.CreateActivity("Update", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' details were updated.", cancellationToken);
@@ -433,5 +484,79 @@ public class ApartmentService(IUnitOfWork unitOfWork, ICurrentUser currentUser, 
 
         await _activityService.CreateActivity("Delete", "Apartment", apartment.Id, apartment.BuildingId, $"Apartment '{apartment.FlatNumber}' was deleted.", cancellationToken);
         await _notificationService.CreateNotificationInternal("properties", "Apartment Deleted", $"Apartment '{apartment.FlatNumber}' was deleted.", cancellationToken);
+    }
+
+    /// <summary>
+    /// Keeps the ApartmentChargeHistory timeline for one charge type in sync with a possible
+    /// change to the apartment's live value: closes the currently-open segment and opens a new
+    /// one dated today, unless the open segment hasn't taken effect yet (future-dated) - in which
+    /// case it's just mutated in place - or no history row exists yet for a pre-feature apartment.
+    /// No-op if the value didn't actually change.
+    /// </summary>
+    private async Task ApplyChargeHistoryChangeAsync(Apartment apartment, ApartmentChargeType chargeType, decimal oldAmount, decimal newAmount, CancellationToken cancellationToken)
+    {
+        if (oldAmount == newAmount) return;
+
+        var today = DateTime.UtcNow.Date;
+        var openSegment = await _unitOfWork.ApartmentChargeHistoryRepository.FirstOrDefaultAsync(x => x.ApartmentId == apartment.Id && x.ChargeType == chargeType && x.EffectiveTo == null);
+
+        if (openSegment == null)
+        {
+            await _unitOfWork.ApartmentChargeHistoryRepository.AddAsync(new ApartmentChargeHistory
+            {
+                Id = Guid.NewGuid(),
+                ApartmentId = apartment.Id,
+                ChargeType = chargeType,
+                Amount = newAmount,
+                EffectiveFrom = apartment.CreatedAt.Date,
+                EffectiveTo = null,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
+        else if (openSegment.EffectiveFrom >= today)
+        {
+            openSegment.Amount = newAmount;
+            _unitOfWork.ApartmentChargeHistoryRepository.Update(openSegment);
+        }
+        else
+        {
+            openSegment.EffectiveTo = today.AddDays(-1);
+            _unitOfWork.ApartmentChargeHistoryRepository.Update(openSegment);
+
+            await _unitOfWork.ApartmentChargeHistoryRepository.AddAsync(new ApartmentChargeHistory
+            {
+                Id = Guid.NewGuid(),
+                ApartmentId = apartment.Id,
+                ChargeType = chargeType,
+                Amount = newAmount,
+                EffectiveFrom = today,
+                EffectiveTo = null,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
+    }
+
+    public async Task<List<ApartmentChargeHistoryViewModel>> GetChargeHistory(Guid apartmentId, CancellationToken cancellationToken)
+    {
+        var apartmentExists = await _unitOfWork.ApartmentRepository.AnyAsync(x => x.Id == apartmentId);
+        if (!apartmentExists)
+        {
+            throw ApartmentException.NotFoundException("The specified apartment does not exist.");
+        }
+
+        var history = await _unitOfWork.ApartmentChargeHistoryRepository.GetAllAsync(x => x.ApartmentId == apartmentId);
+
+        return history
+            .OrderBy(x => x.ChargeType)
+            .ThenBy(x => x.EffectiveFrom)
+            .Select(x => new ApartmentChargeHistoryViewModel
+            {
+                ChargeType = x.ChargeType,
+                Amount = x.Amount,
+                EffectiveFrom = x.EffectiveFrom,
+                EffectiveTo = x.EffectiveTo,
+                IsCurrent = x.EffectiveTo == null
+            })
+            .ToList();
     }
 }

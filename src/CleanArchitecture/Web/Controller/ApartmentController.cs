@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Utilities;
+using System.Collections.Generic;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
+using CleanArchitecture.Shared.Models.ApartmentChargeHistory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -68,6 +70,19 @@ public class ApartmentController(IApartmentService apartmentService, IUnitOfWork
     {
         var apartment = await _apartmentService.GetById(id, cancellationToken);
         return Ok(apartment);
+    }
+
+    /// <summary>
+    /// [AP-07] Retrieves the rent/maintenance/water charge history timeline for an apartment.
+    /// </summary>
+    [HttpGet("{id}/charge-history")]
+    [SwaggerResponse(200, "Apartment charge history retrieved successfully.", typeof(List<ApartmentChargeHistoryViewModel>))]
+    [SwaggerResponse(401, "Unauthorized access.")]
+    [SwaggerResponse(404, "Apartment not found.")]
+    public async Task<ActionResult<List<ApartmentChargeHistoryViewModel>>> GetChargeHistory(Guid id, CancellationToken cancellationToken)
+    {
+        var history = await _apartmentService.GetChargeHistory(id, cancellationToken);
+        return Ok(history);
     }
 
     /// <summary>
