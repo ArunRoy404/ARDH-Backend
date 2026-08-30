@@ -7520,6 +7520,99 @@
               "description": "Exports all filtered apartments to an XLSX file.\nColumns: BuildingName, OwnerName, NestawayId, FlatNumber, Floor, ApartmentType, AreaSqft, Bedrooms, Bathrooms, HasBalcony, ParkingSlot, ExpectedRent, MaintenanceCharge, WaterCharge, Notes.\nRequires 'properties' permission."
             }
           ]
+        },
+        {
+          "name": "AP-07. Get Apartment Charge History",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24/charge-history",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "apartments",
+                "a1f3b822-29c4-52a8-ad29-c8be5d491f24",
+                "charge-history"
+              ]
+            },
+            "description": "Returns the full rent/maintenance/water charge-history timeline for one apartment - every segment shows the amount and the date range (effectiveFrom/effectiveTo) it applied for, with effectiveTo: null marking the currently active segment (isCurrent: true).\nUse the seeded Flat 302 ID below, which demonstrates a real maintenance-charge change (4,000 -> 4,500 on 2026-08-15)."
+          },
+          "response": [
+            {
+              "name": "Success Example (200 - Charge History)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24/charge-history",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "apartments",
+                    "a1f3b822-29c4-52a8-ad29-c8be5d491f24",
+                    "charge-history"
+                  ]
+                },
+                "description": "Returns the full rent/maintenance/water charge-history timeline for one apartment - every segment shows the amount and the date range (effectiveFrom/effectiveTo) it applied for, with effectiveTo: null marking the currently active segment (isCurrent: true).\nUse the seeded Flat 302 ID below, which demonstrates a real maintenance-charge change (4,000 -> 4,500 on 2026-08-15)."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Request processed successfully.\",\n    \"data\": [\n        {\n            \"chargeType\": \"Rent\",\n            \"amount\": 85000,\n            \"effectiveFrom\": \"2026-07-20T00:00:00\",\n            \"isCurrent\": true\n        },\n        {\n            \"chargeType\": \"Maintenance\",\n            \"amount\": 4000,\n            \"effectiveFrom\": \"2026-07-20T00:00:00\",\n            \"effectiveTo\": \"2026-08-14T00:00:00\",\n            \"isCurrent\": false\n        },\n        {\n            \"chargeType\": \"Maintenance\",\n            \"amount\": 4500,\n            \"effectiveFrom\": \"2026-08-15T00:00:00\",\n            \"isCurrent\": true\n        },\n        {\n            \"chargeType\": \"Water\",\n            \"amount\": 800,\n            \"effectiveFrom\": \"2026-07-20T00:00:00\",\n            \"isCurrent\": true\n        }\n    ]\n}"
+            },
+            {
+              "name": "Error Example (404 - Not Found)",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24/charge-history",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "apartments",
+                    "a1f3b822-29c4-52a8-ad29-c8be5d491f24",
+                    "charge-history"
+                  ]
+                },
+                "description": "Returns the full rent/maintenance/water charge-history timeline for one apartment - every segment shows the amount and the date range (effectiveFrom/effectiveTo) it applied for, with effectiveTo: null marking the currently active segment (isCurrent: true).\nUse the seeded Flat 302 ID below, which demonstrates a real maintenance-charge change (4,000 -> 4,500 on 2026-08-15)."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"The specified apartment does not exist.\",\n    \"errors\": [\n        {\n            \"code\": \"CleanArchitecture.not_found\",\n            \"message\": \"The specified apartment does not exist.\",\n            \"errorMessage\": \"The specified apartment does not exist.\"\n        }\n    ]\n}"
+            }
+          ]
         }
       ]
     },
