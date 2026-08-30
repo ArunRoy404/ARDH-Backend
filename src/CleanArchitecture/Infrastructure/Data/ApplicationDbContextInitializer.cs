@@ -45,6 +45,10 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     private static readonly Guid TenantArjunId = Guid.Parse("a3f3b822-29c4-52a8-ad29-c8be5d491f24");  // Arjun Mehta
     private static readonly Guid TenantJohnId = Guid.Parse("c1f7b822-29c4-52a8-ad29-c8be5d491f24");   // John Tenant
 
+    private static readonly Guid RentHistoryArjunOldId = Guid.Parse("a4f3b822-29c4-52a8-ad29-c8be5d491f24"); // Arjun @ 80,000 (May-Jul)
+    private static readonly Guid RentHistoryArjunNewId = Guid.Parse("a4f3b822-29c4-52a8-ad29-c8be5d491f25"); // Arjun @ 85,000 (Aug onward)
+    private static readonly Guid RentHistoryJohnId = Guid.Parse("a4f3b822-29c4-52a8-ad29-c8be5d491f26");     // John @ 45,000 (whole lease)
+
     private static readonly Guid VendorSunilId = Guid.Parse("f7a3b822-29c4-52a8-ad29-c8be5d491f24");  // Sunil Plumbing
     private static readonly Guid VendorRajeshId = Guid.Parse("d1a3b822-29c4-52a8-ad29-c8be5d491f24"); // Sharma Elevator
     private static readonly Guid VendorBescomId = Guid.Parse("f7c7b822-29c4-52a8-ad29-c8be5d491f41"); // BESCOM
@@ -58,6 +62,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     private static readonly Guid MaintLeakId = Guid.Parse("c1f3b822-29c4-52a8-ad29-c8be5d491f24");
     private static readonly Guid MaintAcId = Guid.Parse("c2f3b822-29c4-52a8-ad29-c8be5d491f24");
     private static readonly Guid MaintParkingId = Guid.Parse("c3f3b822-29c4-52a8-ad29-c8be5d491f24");
+    private static readonly Guid MaintElevatorServiceId = Guid.Parse("c4f3b822-29c4-52a8-ad29-c8be5d491f24"); // recurring, completed once - due to auto-roll to its next cycle
 
     private static readonly Guid Income302Id = Guid.Parse("f4b3b822-29c4-52a8-ad29-c8be5d491f24");
     private static readonly Guid DeletedHistoryBuildingId = Guid.Parse("4da2b822-29c4-52a8-ad29-c8be5d491f24");
@@ -128,6 +133,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             await SeedVendors();
             await SeedApartments();
             await SeedTenants();
+            await SeedTenantRentHistory();
             await SeedMoveOuts();
             await SeedEquipment();
             await SeedAmcContracts();
@@ -159,6 +165,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         _context.Activities.RemoveRange(_context.Activities.IgnoreQueryFilters());
         _context.DeletedHistories.RemoveRange(_context.DeletedHistories.IgnoreQueryFilters());
         _context.TenantMoveOutRecords.RemoveRange(_context.TenantMoveOutRecords.IgnoreQueryFilters());
+        _context.TenantRentHistories.RemoveRange(_context.TenantRentHistories.IgnoreQueryFilters());
         _context.IncomeRecords.RemoveRange(_context.IncomeRecords.IgnoreQueryFilters());
         _context.ExpenseRecords.RemoveRange(_context.ExpenseRecords.IgnoreQueryFilters());
         _context.MaintenanceRequests.RemoveRange(_context.MaintenanceRequests.IgnoreQueryFilters());
@@ -240,9 +247,10 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         PasswordHash = "P@ssw0rd".Hash(),
         Role = UserRole.admin,
         Address = "123 Main St",
-        Permissions = "dashboard,buildings,owners,apartments,tenants,vendors,equipment,amc_contracts,maintenance,income,reports,expenses,admin",
+        Permissions = "dashboard,buildings,owners,apartments,tenants,vendors,equipment,amc_contracts,maintenance,income,reports,expenses,occupancy_reports,admin",
         AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
         IsActive = true,
+        ReceiveEmailNotifications = true,
         CreatedAt = T0,
         UpdatedAt = T0
     };
@@ -273,9 +281,10 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     PasswordHash = "P@ssw0rd".Hash(),
                     Role = UserRole.property_manager,
                     Address = "Property Manager Office",
-                    Permissions = "dashboard,vendors,equipment,amc_contracts,maintenance,expenses",
+                    Permissions = "dashboard,vendors,equipment,amc_contracts,maintenance,expenses,occupancy_reports",
                     AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
                     IsActive = true,
+                    ReceiveEmailNotifications = true,
                     CreatedAt = T0,
                     UpdatedAt = T0
                 },
@@ -291,6 +300,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     Permissions = "dashboard,income,reports,expenses",
                     AvatarUrl = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde",
                     IsActive = true,
+                    ReceiveEmailNotifications = false,
                     CreatedAt = T0,
                     UpdatedAt = T0
                 }
@@ -508,7 +518,6 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     ExpectedRent = 45000,
                     MaintenanceCharge = 3500,
                     WaterCharge = 500,
-                    CurrentTenantId = TenantJohnId,
                     CreatedAt = T0,
                     UpdatedAt = T0,
                     CreatedBy = AdminUserId,
@@ -634,12 +643,57 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     SecurityDeposit = 90000,
                     EmergencyContactName = "Jane Tenant",
                     EmergencyContactPhone = "+15550200",
-                    Status = TenantStatus.Active,
+                    Status = TenantStatus.MovedOut,
                     Notes = "Responsible tenant",
                     CreatedAt = T0,
                     UpdatedAt = T0,
                     CreatedBy = AdminUserId,
                     UpdatedBy = AdminUserId
+                }
+            });
+        await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Seeds the rent-history timeline the occupancy report reads. Arjun's lease demonstrates a
+    /// mid-lease rent change (80,000 through July, 85,000 from August onward - matching his
+    /// current MonthlyRent); John's is a single flat-rate segment for his whole lease. These rows
+    /// are NOT auto-created for seed data: the migration's backfill only covers tenants that
+    /// existed in the database when it ran, not ones inserted afterward by this seeder.
+    /// </summary>
+    private async Task SeedTenantRentHistory()
+    {
+        if (await _context.TenantRentHistories.AnyAsync()) return;
+
+        await _context.TenantRentHistories.AddRangeAsync(
+            new List<TenantRentHistory>
+            {
+                new()
+                {
+                    Id = RentHistoryArjunOldId,
+                    TenantId = TenantArjunId,
+                    MonthlyRent = 80000,
+                    EffectiveFrom = new DateTime(2026, 5, 1, 0, 0, 0, DateTimeKind.Utc),
+                    EffectiveTo = new DateTime(2026, 7, 31, 0, 0, 0, DateTimeKind.Utc),
+                    CreatedAt = T0
+                },
+                new()
+                {
+                    Id = RentHistoryArjunNewId,
+                    TenantId = TenantArjunId,
+                    MonthlyRent = 85000,
+                    EffectiveFrom = new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc),
+                    EffectiveTo = null,
+                    CreatedAt = T0
+                },
+                new()
+                {
+                    Id = RentHistoryJohnId,
+                    TenantId = TenantJohnId,
+                    MonthlyRent = 45000,
+                    EffectiveFrom = T0,
+                    EffectiveTo = null,
+                    CreatedAt = T0
                 }
             });
         await _context.SaveChangesAsync();
@@ -827,6 +881,34 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     EstimatedCost = 4500,
                     ScheduledDate = new DateTime(2026, 7, 30, 9, 0, 0, DateTimeKind.Utc),
                     Notes = "Common area issue.",
+                    CreatedAt = T0,
+                    UpdatedAt = T0,
+                    CreatedBy = AdminUserId,
+                    UpdatedBy = AdminUserId
+                },
+                new()
+                {
+                    // Completed once, recurring monthly, NextCycleGenerated still false - lets the
+                    // reminder background service demonstrate its full rollover pipeline (spawn the
+                    // next cycle as a new Open request once its due date arrives, then mark this one
+                    // as rolled over) against seed data rather than only against freshly-created ones.
+                    Id = MaintElevatorServiceId,
+                    Title = "Monthly Elevator Service",
+                    Description = "Routine monthly inspection and lubrication of the passenger elevator.",
+                    Category = "Mechanical",
+                    Priority = MaintenancePriority.Low,
+                    Status = MaintenanceStatus.Complete,
+                    VendorId = VendorRajeshId,
+                    EquipmentId = EquipLiftId,
+                    BuildingId = BuildingGptId,
+                    EstimatedCost = 3000,
+                    AnnualCost = 36000,
+                    ScheduledDate = new DateTime(2026, 7, 1, 9, 0, 0, DateTimeKind.Utc),
+                    StartDate = new DateTime(2026, 7, 1, 9, 0, 0, DateTimeKind.Utc),
+                    RecurrenceFrequency = MaintenanceRecurrenceFrequency.Monthly,
+                    LastCompletedDate = new DateTime(2026, 7, 1, 9, 0, 0, DateTimeKind.Utc),
+                    NextCycleGenerated = false,
+                    Notes = "Completed on schedule. Next service due August.",
                     CreatedAt = T0,
                     UpdatedAt = T0,
                     CreatedBy = AdminUserId,
