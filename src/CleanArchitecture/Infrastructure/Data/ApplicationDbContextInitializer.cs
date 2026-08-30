@@ -132,6 +132,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             await SeedOwners();
             await SeedVendors();
             await SeedApartments();
+            await SeedApartmentChargeHistory();
             await SeedTenants();
             await SeedTenantRentHistory();
             await SeedMoveOuts();
@@ -166,6 +167,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         _context.DeletedHistories.RemoveRange(_context.DeletedHistories.IgnoreQueryFilters());
         _context.TenantMoveOutRecords.RemoveRange(_context.TenantMoveOutRecords.IgnoreQueryFilters());
         _context.TenantRentHistories.RemoveRange(_context.TenantRentHistories.IgnoreQueryFilters());
+        _context.ApartmentChargeHistories.RemoveRange(_context.ApartmentChargeHistories.IgnoreQueryFilters());
         _context.IncomeRecords.RemoveRange(_context.IncomeRecords.IgnoreQueryFilters());
         _context.ExpenseRecords.RemoveRange(_context.ExpenseRecords.IgnoreQueryFilters());
         _context.MaintenanceRequests.RemoveRange(_context.MaintenanceRequests.IgnoreQueryFilters());
@@ -590,6 +592,47 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
                     UpdatedBy = AdminUserId
                 }
             });
+        await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Seeds the charge-history timeline the new AP-07 endpoint reads. Apartment 302 demonstrates
+    /// a real mid-way maintenance-charge increase (4,000 -> 4,500, matching its current
+    /// MaintenanceCharge); every other apartment gets a single flat-rate segment per charge type
+    /// matching its current ExpectedRent/MaintenanceCharge/WaterCharge. Row IDs aren't referenced
+    /// anywhere else (no by-ID lookup exists for this table), so they're generated fresh rather
+    /// than fixed like other seed entities.
+    /// </summary>
+    private async Task SeedApartmentChargeHistory()
+    {
+        if (await _context.ApartmentChargeHistories.AnyAsync()) return;
+
+        var maintenanceChangeDate = new DateTime(2026, 8, 15, 0, 0, 0, DateTimeKind.Utc);
+
+        var history = new List<ApartmentChargeHistory>
+        {
+            new() { Id = Guid.NewGuid(), ApartmentId = Apt302Id, ChargeType = ApartmentChargeType.Rent, Amount = 85000, EffectiveFrom = T0, EffectiveTo = null, CreatedAt = T0 },
+            new() { Id = Guid.NewGuid(), ApartmentId = Apt302Id, ChargeType = ApartmentChargeType.Maintenance, Amount = 4000, EffectiveFrom = T0, EffectiveTo = maintenanceChangeDate.AddDays(-1), CreatedAt = T0 },
+            new() { Id = Guid.NewGuid(), ApartmentId = Apt302Id, ChargeType = ApartmentChargeType.Maintenance, Amount = 4500, EffectiveFrom = maintenanceChangeDate, EffectiveTo = null, CreatedAt = T0 },
+            new() { Id = Guid.NewGuid(), ApartmentId = Apt302Id, ChargeType = ApartmentChargeType.Water, Amount = 800, EffectiveFrom = T0, EffectiveTo = null, CreatedAt = T0 }
+        };
+
+        var flatRateApartments = new (Guid ApartmentId, decimal Rent, decimal Maintenance, decimal Water)[]
+        {
+            (Apt1204Id, 45000m, 3500m, 500m),
+            (Apt101Id, 20000m, 1500m, 300m),
+            (AptOak301Id, 32000m, 2200m, 400m),
+            (AptOak102Id, 18000m, 1200m, 250m)
+        };
+
+        foreach (var (apartmentId, rent, maintenance, water) in flatRateApartments)
+        {
+            history.Add(new ApartmentChargeHistory { Id = Guid.NewGuid(), ApartmentId = apartmentId, ChargeType = ApartmentChargeType.Rent, Amount = rent, EffectiveFrom = T0, EffectiveTo = null, CreatedAt = T0 });
+            history.Add(new ApartmentChargeHistory { Id = Guid.NewGuid(), ApartmentId = apartmentId, ChargeType = ApartmentChargeType.Maintenance, Amount = maintenance, EffectiveFrom = T0, EffectiveTo = null, CreatedAt = T0 });
+            history.Add(new ApartmentChargeHistory { Id = Guid.NewGuid(), ApartmentId = apartmentId, ChargeType = ApartmentChargeType.Water, Amount = water, EffectiveFrom = T0, EffectiveTo = null, CreatedAt = T0 });
+        }
+
+        await _context.ApartmentChargeHistories.AddRangeAsync(history);
         await _context.SaveChangesAsync();
     }
 
