@@ -163,6 +163,27 @@ public class AuthService(
         await _unitOfWork.SaveChangesAsync(token);
     }
 
+    public async Task<UserProfileResponse> UpdateProfilePicture(UpdateProfilePictureRequest request, CancellationToken token)
+    {
+        var userId = _currentUser.GetCurrentUserId();
+        if (userId == Guid.Empty)
+        {
+            throw UserException.UserUnauthorizedException();
+        }
+
+        var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Id == userId)
+            ?? throw UserException.BadRequestException(UserErrorMessage.UserNotExist);
+
+        user.AvatarUrl = request.AvatarUrl;
+        user.UpdatedAt = DateTime.UtcNow;
+        user.UpdatedBy = userId;
+
+        _unitOfWork.UserRepository.Update(user);
+        await _unitOfWork.SaveChangesAsync(token);
+
+        return _mapper.Map<UserProfileResponse>(user);
+    }
+
     public async Task ResendOtp(ResendOtpRequest request, CancellationToken token)
     {
         var user = await _unitOfWork.UserRepository.FirstOrDefaultAsync(x => x.Email == request.Email)
