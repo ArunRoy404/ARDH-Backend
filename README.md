@@ -87,7 +87,7 @@ These endpoints manage user sessions, profile details, and password recovery.
 *   **Request Body (`UserSignInRequest`)**:
     ```json
     {
-      "email": "admin@gmail.com",
+      "email": "admin@admin.com",
       "password": "P@ssw0rd",
       "rememberMe": true
     }
@@ -97,7 +97,7 @@ These endpoints manage user sessions, profile details, and password recovery.
     {
       "id": "a3f5b721-39c4-42b8-bd29-c8be5d491f24",
       "name": "Super Admin",
-      "email": "admin@gmail.com",
+      "email": "admin@admin.com",
       "role": "Admin",
       "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     }
@@ -112,7 +112,7 @@ These endpoints manage user sessions, profile details, and password recovery.
     {
       "id": "a3f5b721-39c4-42b8-bd29-c8be5d491f24",
       "name": "Super Admin",
-      "email": "admin@gmail.com",
+      "email": "admin@admin.com",
       "phone": "+1234567890",
       "role": "Admin",
       "address": "123 Main St",
@@ -315,7 +315,7 @@ These endpoints manage user sessions, profile details, and password recovery.
 
 For quick deployment and local testing, the following default accounts are seeded upon starting the database:
 
-| **Admin** | `admin@gmail.com` | `admin` | `P@ssw0rd` |
+| **Admin** | `admin@admin.com` | `admin` | `P@ssw0rd` |
 | **Property Manager** | `manager@gmail.com` | `property_manager` | `P@ssw0rd` |
 
 ---

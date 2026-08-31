@@ -125,7 +125,7 @@ GET /api/buildings?page=1&pageSize=10&search=Grand&status=active
 
 | Role | Email | Password | Admin Setting Password |
 | :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin@gmail.com` | `P@ssw0rd` | `adminpassword` |
+| **Super Admin** | `admin@admin.com` | `P@ssw0rd` | `adminpassword` |
 | **Property Manager** | `manager@gmail.com` | `P@ssw0rd` | N/A |
 | **Accountant** | `accountant@gmail.com` | `P@ssw0rd` | N/A |
 

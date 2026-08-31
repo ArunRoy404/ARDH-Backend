@@ -105,4 +105,15 @@ public class AuthController(IAuthService authService) : BaseController
         await _authService.UpdatePassword(request, token);
         return Ok(new { message = "Password updated successfully." });
     }
+
+    /// <summary>
+    /// Update the logged-in user's own profile picture.
+    /// </summary>
+    [HttpPut("update-profile-picture")]
+    [Authorize]
+    [SwaggerResponse(200, "Profile picture updated successfully.", typeof(UserProfileResponse))]
+    [SwaggerResponse(400, "Invalid request.")]
+    [SwaggerResponse(401, "User is not authorized.")]
+    public async Task<IActionResult> UpdateProfilePicture([FromBody] UpdateProfilePictureRequest request, CancellationToken token)
+        => Ok(await _authService.UpdateProfilePicture(request, token));
 }

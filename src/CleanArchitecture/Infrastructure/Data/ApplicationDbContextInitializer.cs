@@ -244,7 +244,7 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
     {
         Id = AdminUserId,
         Name = "Super Admin",
-        Email = "admin@gmail.com",
+        Email = "admin@admin.com",
         Phone = "+1234567890",
         PasswordHash = "P@ssw0rd".Hash(),
         Role = UserRole.admin,
