@@ -44,6 +44,7 @@ public class UserService(
             AvatarUrl = x.AvatarUrl,
             IsActive = x.IsActive,
             Permissions = x.Permissions,
+            ReceiveEmailNotifications = x.ReceiveEmailNotifications,
             LastLoginAt = x.LastLoginAt,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
@@ -95,6 +96,7 @@ public class UserService(
                 AvatarUrl = x.AvatarUrl ?? string.Empty,
                 IsActive = x.IsActive,
                 Permissions = x.Permissions ?? string.Empty,
+                ReceiveEmailNotifications = x.ReceiveEmailNotifications,
                 LastLoginAt = x.LastLoginAt,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
@@ -125,6 +127,7 @@ public class UserService(
             AvatarUrl = user.AvatarUrl ?? string.Empty,
             IsActive = user.IsActive,
             Permissions = user.Permissions ?? string.Empty,
+            ReceiveEmailNotifications = user.ReceiveEmailNotifications,
             LastLoginAt = user.LastLoginAt,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt,
@@ -140,7 +143,7 @@ public class UserService(
         // each module via the Permissions field. Viewer is still hard-blocked from every
         // mutating verb regardless of granted modules (see PermissionAuthorizationFilter).
         [UserRole.viewer] = [],
-        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses],
+        [UserRole.property_manager] = [UserPermission.dashboard, UserPermission.vendors, UserPermission.equipment, UserPermission.amc_contracts, UserPermission.maintenance, UserPermission.expenses, UserPermission.occupancy_reports],
         [UserRole.accountant] = [UserPermission.dashboard, UserPermission.income, UserPermission.reports, UserPermission.expenses],
     };
 
@@ -177,6 +180,7 @@ public class UserService(
             Role = request.Role,
             Permissions = ResolvePermissions(request.Role, request.Permissions),
             AvatarUrl = request.AvatarUrl,
+            ReceiveEmailNotifications = request.ReceiveEmailNotifications,
             IsActive = true,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -234,6 +238,7 @@ public class UserService(
         user.Role = request.Role;
         user.IsActive = request.IsActive;
         user.Permissions = resolvedPermissions;
+        user.ReceiveEmailNotifications = request.ReceiveEmailNotifications ?? user.ReceiveEmailNotifications;
         user.AvatarUrl = request.AvatarUrl;
         user.UpdatedAt = DateTime.UtcNow;
         user.UpdatedBy = _currentUser.GetCurrentUserId();

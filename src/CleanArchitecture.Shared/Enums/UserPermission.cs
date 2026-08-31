@@ -25,6 +25,7 @@ public enum UserPermission
     income,
     reports,
     expenses,
+    occupancy_reports,
 
     // Full admin access: /api/users, /api/settings, /api/deleted-history
     admin

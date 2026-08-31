@@ -30,8 +30,8 @@ public class MaintenanceRequestCreateRequestValidation : AbstractValidator<Maint
         // the service layer, the bulk-upload path, and the seeded demo data.
 
         RuleFor(x => x.Status)
-            .NotNull().WithMessage("Status is required. Valid values: Open, InProgress, Complete, Cancelled.")
-            .IsInEnum().WithMessage("Status is invalid. Valid values: Open, InProgress, Complete, Cancelled.");
+            .NotNull().WithMessage("Status is required. Valid values: Open, Pending, InProgress, Complete, Cancelled.")
+            .IsInEnum().WithMessage("Status is invalid. Valid values: Open, Pending, InProgress, Complete, Cancelled.");
 
         RuleFor(x => x.EstimatedCost)
             .NotNull().WithMessage("Estimated cost is required.")

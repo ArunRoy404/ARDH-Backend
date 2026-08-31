@@ -32,7 +32,10 @@ public class UnitOfWork : IUnitOfWork
     public INotificationRecipientRepository NotificationRecipientRepository { get; }
     public IActivityRepository ActivityRepository { get; }
     public IBulkUploadRepository BulkUploadRepository { get; }
- 
+    public IEmailReminderLogRepository EmailReminderLogRepository { get; }
+    public ITenantRentHistoryRepository TenantRentHistoryRepository { get; }
+    public IApartmentChargeHistoryRepository ApartmentChargeHistoryRepository { get; }
+
     public UnitOfWork(ApplicationDbContext dbContext)
     {
         _context = dbContext;
@@ -55,6 +58,9 @@ public class UnitOfWork : IUnitOfWork
         NotificationRecipientRepository = new NotificationRecipientRepository(_context);
         ActivityRepository = new ActivityRepository(_context);
         BulkUploadRepository = new BulkUploadRepository(_context);
+        EmailReminderLogRepository = new EmailReminderLogRepository(_context);
+        TenantRentHistoryRepository = new TenantRentHistoryRepository(_context);
+        ApartmentChargeHistoryRepository = new ApartmentChargeHistoryRepository(_context);
     }
 
     public async Task SaveChangesAsync(CancellationToken token)

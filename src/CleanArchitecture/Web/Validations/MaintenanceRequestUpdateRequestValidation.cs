@@ -23,8 +23,8 @@ public class MaintenanceRequestUpdateRequestValidation : AbstractValidator<Maint
             .IsInEnum().WithMessage("Priority is invalid. Valid values: Low, Medium, High, Critical.");
 
         RuleFor(x => x.Status)
-            .NotNull().WithMessage("Status is required. Valid values: Open, InProgress, Complete, Cancelled.")
-            .IsInEnum().WithMessage("Status is invalid. Valid values: Open, InProgress, Complete, Cancelled.");
+            .NotNull().WithMessage("Status is required. Valid values: Open, Pending, InProgress, Complete, Cancelled.")
+            .IsInEnum().WithMessage("Status is invalid. Valid values: Open, Pending, InProgress, Complete, Cancelled.");
 
         RuleFor(x => x.BuildingId)
             .NotEmpty().WithMessage("Building ID is required.");

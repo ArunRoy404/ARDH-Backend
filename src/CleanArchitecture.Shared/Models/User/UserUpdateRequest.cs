@@ -30,6 +30,12 @@ public class UserUpdateRequest
 
     public string? Permissions { get; set; }
 
+    /// <summary>
+    /// Null means "leave unchanged" — a client that omits this field will not silently reset the
+    /// user's opt-out. Only an explicit true/false in the request body changes it.
+    /// </summary>
+    public bool? ReceiveEmailNotifications { get; set; }
+
     [Required]
     [JsonPropertyName("avatarURL")]
     public string AvatarUrl { get; set; } = string.Empty;

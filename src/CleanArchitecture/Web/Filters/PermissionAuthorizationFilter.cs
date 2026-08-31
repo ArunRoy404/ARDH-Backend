@@ -69,7 +69,8 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                                     path.StartsWith("/api/maintenance", StringComparison.OrdinalIgnoreCase) ||
                                     path.StartsWith("/api/income", StringComparison.OrdinalIgnoreCase) ||
                                     path.StartsWith("/api/reports", StringComparison.OrdinalIgnoreCase) ||
-                                    path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase);
+                                    path.StartsWith("/api/expenses", StringComparison.OrdinalIgnoreCase) ||
+                                    path.StartsWith("/api/occupancy-reports", StringComparison.OrdinalIgnoreCase);
 
             var skipModulePermissionCheck = isGetMethod && isOpenReadModule;
 
@@ -172,6 +173,14 @@ public class PermissionAuthorizationFilter : IAsyncActionFilter
                 if (!skipModulePermissionCheck && !HasModule("expenses"))
                 {
                     context.Result = CreateForbiddenResult("Access denied. 'expenses' permission required for this route.");
+                    return;
+                }
+            }
+            else if (path.StartsWith("/api/occupancy-reports", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!skipModulePermissionCheck && !HasModule("occupancy_reports"))
+                {
+                    context.Result = CreateForbiddenResult("Access denied. 'occupancy_reports' permission required for this route.");
                     return;
                 }
             }

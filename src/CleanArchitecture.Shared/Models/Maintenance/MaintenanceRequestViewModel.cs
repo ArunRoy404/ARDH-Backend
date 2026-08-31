@@ -36,6 +36,7 @@ public class MaintenanceRequestViewModel
     public DateTime? NextMaintenanceDate { get; set; }
     public string? ReceiptAttachmentUrl { get; set; }
     public string? Notes { get; set; }
+    public DateTime? LastCompletedDate { get; set; }
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

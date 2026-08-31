@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using CleanArchitecture.Shared.Models;
 using CleanArchitecture.Shared.Models.Apartment;
+using CleanArchitecture.Shared.Models.ApartmentChargeHistory;
 
 namespace CleanArchitecture.Application.Common.Interfaces;
 
@@ -31,4 +33,6 @@ public interface IApartmentService
     Task Create(ApartmentCreateRequest request, CancellationToken cancellationToken);
     Task Update(Guid id, ApartmentUpdateRequest request, CancellationToken cancellationToken);
     Task Delete(Guid id, CancellationToken cancellationToken);
+
+    Task<List<ApartmentChargeHistoryViewModel>> GetChargeHistory(Guid apartmentId, CancellationToken cancellationToken);
 }

@@ -286,10 +286,22 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             throw TenantException.BadRequestException("The specified apartment does not exist.");
         }
 
-        // Validate apartment occupancy - a new tenant can only be assigned to a vacant apartment
-        if (apartment.CurrentTenantId.HasValue)
+        // Validate apartment occupancy - reject only if this lease's own dates actually overlap
+        // another active lease for the same apartment (not just "any current tenant"), so a
+        // historical/backdated lease for an already-vacant period can still be recorded.
+        var newTenantStatus = request.Status ?? TenantStatus.Active;
+        if (newTenantStatus == TenantStatus.Active)
         {
-            throw TenantException.BadRequestException($"Apartment '{apartment.FlatNumber}' is already occupied by another tenant. Please move out the current tenant before assigning a new one.");
+            var hasOverlappingActiveLease = await _unitOfWork.TenantRepository.AnyAsync(x =>
+                x.ApartmentId == request.ApartmentId &&
+                x.Status == TenantStatus.Active &&
+                x.LeaseStartDate <= (request.LeaseEndDate ?? DateTime.MaxValue) &&
+                (x.LeaseEndDate == null || x.LeaseEndDate >= request.LeaseStartDate));
+
+            if (hasOverlappingActiveLease)
+            {
+                throw TenantException.BadRequestException($"Apartment '{apartment.FlatNumber}' already has an active lease overlapping these dates. Please end the current tenancy before assigning a new one for this period.");
+            }
         }
 
         // Validate Email uniqueness (only when provided)
@@ -327,19 +339,33 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
             SecurityDeposit = request.SecurityDeposit ?? 0,
             EmergencyContactName = request.EmergencyContactName?.Trim(),
             EmergencyContactPhone = request.EmergencyContactPhone?.Trim(),
-            Status = request.Status ?? TenantStatus.Active,
+            Status = newTenantStatus,
             Notes = request.Notes?.Trim(),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             CreatedBy = _currentUser.GetCurrentUserId()
         };
 
-        apartment.CurrentTenantId = tenant.Id;
-        apartment.UpdatedAt = DateTime.UtcNow;
+        var rentHistory = new TenantRentHistory
+        {
+            Id = Guid.NewGuid(),
+            TenantId = tenant.Id,
+            MonthlyRent = tenant.MonthlyRent,
+            EffectiveFrom = tenant.LeaseStartDate,
+            EffectiveTo = null,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        if (newTenantStatus == TenantStatus.Active)
+        {
+            apartment.CurrentTenantId = tenant.Id;
+            apartment.UpdatedAt = DateTime.UtcNow;
+        }
 
         await _unitOfWork.ExecuteTransactionAsync(async () =>
         {
             await _unitOfWork.TenantRepository.AddAsync(tenant);
+            await _unitOfWork.TenantRentHistoryRepository.AddAsync(rentHistory);
             _unitOfWork.ApartmentRepository.Update(apartment);
         }, cancellationToken);
 
@@ -388,14 +414,25 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
         var oldStatus = tenant.Status;
         var newStatus = request.Status ?? oldStatus;
 
-        // Validate apartment occupancy before applying any changes - a tenant can only become
-        // Active on an apartment (whether by moving apartment or by re-activating in place)
-        // if that apartment is currently vacant or already occupied by this same tenant.
-        var becomingActiveHere = newStatus == TenantStatus.Active && (oldApartmentId != request.ApartmentId || oldStatus != TenantStatus.Active);
-        if (becomingActiveHere && requestedApartment.CurrentTenantId.HasValue && requestedApartment.CurrentTenantId != tenant.Id)
+        // Validate apartment occupancy before applying any changes - reject only if this lease's
+        // own dates actually overlap another active lease for the same apartment, not just
+        // "any current tenant" (mirrors the same check in Create).
+        if (newStatus == TenantStatus.Active)
         {
-            throw TenantException.BadRequestException($"Apartment '{requestedApartment.FlatNumber}' is already occupied by another tenant. Please move out the current tenant before assigning a new one.");
+            var hasOverlappingActiveLease = await _unitOfWork.TenantRepository.AnyAsync(x =>
+                x.Id != tenant.Id &&
+                x.ApartmentId == request.ApartmentId &&
+                x.Status == TenantStatus.Active &&
+                x.LeaseStartDate <= (request.LeaseEndDate ?? DateTime.MaxValue) &&
+                (x.LeaseEndDate == null || x.LeaseEndDate >= request.LeaseStartDate));
+
+            if (hasOverlappingActiveLease)
+            {
+                throw TenantException.BadRequestException($"Apartment '{requestedApartment.FlatNumber}' already has an active lease overlapping these dates. Please end the current tenancy before assigning a new one for this period.");
+            }
         }
+
+        var oldMonthlyRent = tenant.MonthlyRent;
 
         tenant.BuildingId = request.BuildingId;
         tenant.ApartmentId = request.ApartmentId;
@@ -450,6 +487,48 @@ public class TenantService(IUnitOfWork unitOfWork, ICurrentUser currentUser, IAc
                 requestedApartment.CurrentTenantId = tenant.Id;
                 requestedApartment.UpdatedAt = DateTime.UtcNow;
                 _unitOfWork.ApartmentRepository.Update(requestedApartment);
+            }
+        }
+
+        if (tenant.MonthlyRent != oldMonthlyRent)
+        {
+            var today = DateTime.UtcNow.Date;
+            var openRentSegment = await _unitOfWork.TenantRentHistoryRepository.FirstOrDefaultAsync(x => x.TenantId == tenant.Id && x.EffectiveTo == null);
+
+            if (openRentSegment == null)
+            {
+                // No history row exists yet (tenant predates this feature) - seed one from the lease's own start date.
+                await _unitOfWork.TenantRentHistoryRepository.AddAsync(new TenantRentHistory
+                {
+                    Id = Guid.NewGuid(),
+                    TenantId = tenant.Id,
+                    MonthlyRent = tenant.MonthlyRent,
+                    EffectiveFrom = tenant.LeaseStartDate,
+                    EffectiveTo = null,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+            else if (openRentSegment.EffectiveFrom >= today)
+            {
+                // The current segment hasn't taken effect yet (future-dated lease) - nothing
+                // historical to preserve, just update its rate in place.
+                openRentSegment.MonthlyRent = tenant.MonthlyRent;
+                _unitOfWork.TenantRentHistoryRepository.Update(openRentSegment);
+            }
+            else
+            {
+                openRentSegment.EffectiveTo = today.AddDays(-1);
+                _unitOfWork.TenantRentHistoryRepository.Update(openRentSegment);
+
+                await _unitOfWork.TenantRentHistoryRepository.AddAsync(new TenantRentHistory
+                {
+                    Id = Guid.NewGuid(),
+                    TenantId = tenant.Id,
+                    MonthlyRent = tenant.MonthlyRent,
+                    EffectiveFrom = today,
+                    EffectiveTo = null,
+                    CreatedAt = DateTime.UtcNow
+                });
             }
         }
 

@@ -138,9 +138,10 @@ public class MaintenanceRequestService(
             ScheduledDate = x.ScheduledDate,
             StartDate = x.StartDate,
             RecurrenceFrequency = x.RecurrenceFrequency,
-            NextMaintenanceDate = GetNextMaintenanceDate(x.StartDate, x.RecurrenceFrequency),
+            NextMaintenanceDate = Common.Utilities.MaintenanceRecurrenceHelper.GetNextOccurrence(x.LastCompletedDate ?? x.StartDate, x.RecurrenceFrequency),
             ReceiptAttachmentUrl = x.ReceiptAttachmentUrl,
             Notes = x.Notes,
+            LastCompletedDate = x.LastCompletedDate,
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
             CreatedBy = x.CreatedBy.HasValue && userMap.TryGetValue(x.CreatedBy.Value, out var cb) ? cb : null,
@@ -369,9 +370,10 @@ public class MaintenanceRequestService(
             ScheduledDate = request.ScheduledDate,
             StartDate = request.StartDate,
             RecurrenceFrequency = request.RecurrenceFrequency,
-            NextMaintenanceDate = GetNextMaintenanceDate(request.StartDate, request.RecurrenceFrequency),
+            NextMaintenanceDate = Common.Utilities.MaintenanceRecurrenceHelper.GetNextOccurrence(request.LastCompletedDate ?? request.StartDate, request.RecurrenceFrequency),
             ReceiptAttachmentUrl = request.ReceiptAttachmentUrl,
             Notes = request.Notes,
+            LastCompletedDate = request.LastCompletedDate,
             CreatedAt = request.CreatedAt,
             UpdatedAt = request.UpdatedAt,
             CreatedBy = request.CreatedBy.HasValue && userMap.TryGetValue(request.CreatedBy.Value, out var rcb) ? rcb : null,
@@ -442,7 +444,7 @@ public class MaintenanceRequestService(
 
         Equipment? equipmentToUpdate = null;
         if (maintenanceRequest.EquipmentId.HasValue &&
-            (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress))
+            (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress || maintenanceRequest.Status == MaintenanceStatus.Pending))
         {
             equipmentToUpdate = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
             if (equipmentToUpdate != null)
@@ -546,6 +548,12 @@ public class MaintenanceRequestService(
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
 
+        // Track last completion for recurring maintenance scheduling
+        if (maintenanceRequest.Status == MaintenanceStatus.Complete && oldStatus != MaintenanceStatus.Complete)
+        {
+            maintenanceRequest.LastCompletedDate = DateTime.UtcNow;
+        }
+
         if (oldEquipmentId != request.EquipmentId)
         {
             if (oldEquipmentId.HasValue)
@@ -564,7 +572,7 @@ public class MaintenanceRequestService(
                 var newEq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value);
                 if (newEq != null)
                 {
-                    newEq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress)
+                    newEq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress || maintenanceRequest.Status == MaintenanceStatus.Pending)
                         ? "UnderMaintenance"
                         : "Operational";
                     newEq.UpdatedAt = DateTime.UtcNow;
@@ -577,7 +585,7 @@ public class MaintenanceRequestService(
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == request.EquipmentId.Value);
             if (eq != null)
             {
-                eq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress)
+                eq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress || maintenanceRequest.Status == MaintenanceStatus.Pending)
                     ? "UnderMaintenance"
                     : "Operational";
                 eq.UpdatedAt = DateTime.UtcNow;
@@ -620,7 +628,7 @@ public class MaintenanceRequestService(
         var userId = _currentUser.GetCurrentUserId();
 
         if (maintenanceRequest.EquipmentId.HasValue &&
-            (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress))
+            (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress || maintenanceRequest.Status == MaintenanceStatus.Pending))
         {
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
             if (eq != null)
@@ -662,12 +670,18 @@ public class MaintenanceRequestService(
         maintenanceRequest.UpdatedAt = DateTime.UtcNow;
         maintenanceRequest.UpdatedBy = userId;
 
+        // Track last completion for recurring maintenance scheduling
+        if (maintenanceRequest.Status == MaintenanceStatus.Complete)
+        {
+            maintenanceRequest.LastCompletedDate = DateTime.UtcNow;
+        }
+
         if (maintenanceRequest.EquipmentId.HasValue)
         {
             var eq = await _unitOfWork.EquipmentRepository.FirstOrDefaultAsync(x => x.Id == maintenanceRequest.EquipmentId.Value);
             if (eq != null)
             {
-                eq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress)
+                eq.Status = (maintenanceRequest.Status == MaintenanceStatus.Open || maintenanceRequest.Status == MaintenanceStatus.InProgress || maintenanceRequest.Status == MaintenanceStatus.Pending)
                     ? "UnderMaintenance"
                     : "Operational";
                 eq.UpdatedAt = DateTime.UtcNow;
@@ -727,34 +741,4 @@ public class MaintenanceRequestService(
         };
     }
 
-
-
-    /// <summary>
-    /// Computes the date of the next recurring maintenance occurrence:
-    /// StartDate + the number of days defined by the recurrence frequency.
-    /// Returns null when either the start date or the frequency is not set.
-    /// </summary>
-    private static DateTime? GetNextMaintenanceDate(DateTime? startDate, MaintenanceRecurrenceFrequency? frequency)
-    {
-        if (!startDate.HasValue || !frequency.HasValue)
-        {
-            return null;
-        }
-
-        var days = frequency.Value switch
-        {
-            MaintenanceRecurrenceFrequency.Daily => 1,
-            MaintenanceRecurrenceFrequency.Weekly => 7,
-            MaintenanceRecurrenceFrequency.BiWeekly => 14,
-            MaintenanceRecurrenceFrequency.Monthly => 30,
-            MaintenanceRecurrenceFrequency.BiMonthly => 60,
-            MaintenanceRecurrenceFrequency.Quarterly => 90,
-            MaintenanceRecurrenceFrequency.HalfYearly => 182,
-            MaintenanceRecurrenceFrequency.Yearly => 365,
-            MaintenanceRecurrenceFrequency.BiYearly => 730,
-            _ => 0
-        };
-
-        return startDate.Value.AddDays(days);
-    }
 }

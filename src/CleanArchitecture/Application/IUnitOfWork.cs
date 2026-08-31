@@ -23,6 +23,9 @@ public interface IUnitOfWork
     INotificationRecipientRepository NotificationRecipientRepository { get; }
     IActivityRepository ActivityRepository { get; }
     IBulkUploadRepository BulkUploadRepository { get; }
+    IEmailReminderLogRepository EmailReminderLogRepository { get; }
+    ITenantRentHistoryRepository TenantRentHistoryRepository { get; }
+    IApartmentChargeHistoryRepository ApartmentChargeHistoryRepository { get; }
     Task SaveChangesAsync(CancellationToken token);
     void ClearChangeTracker();
     Task ExecuteTransactionAsync(Action action, CancellationToken token);

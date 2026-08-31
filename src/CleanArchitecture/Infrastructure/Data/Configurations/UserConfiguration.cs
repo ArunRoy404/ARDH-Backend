@@ -48,6 +48,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.IsActive)
             .HasDefaultValue(true);
 
+        builder.Property(x => x.ReceiveEmailNotifications)
+            .HasColumnName("receive_email_notifications")
+            .HasDefaultValue(true);
+
         builder.Property(x => x.CreatedBy);
         builder.Property(x => x.UpdatedBy);
     }

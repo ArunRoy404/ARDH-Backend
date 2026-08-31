@@ -101,10 +101,13 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// category is a free-form string (any value, e.g. "Plumbing", "Electrical", "Lift").
     /// Valid enum values (exact):
     ///   priority = Low | Medium | High | Critical
-    ///   status = Open | InProgress | Complete | Cancelled
+    ///   status = Open | Pending | InProgress | Complete | Cancelled (Pending is set automatically by the reminder job for recurring requests coming due; setting it manually is allowed but not required)
     ///   recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly
     /// When recurrenceFrequency is set, startDate is required and nextMaintenanceDate is computed
-    /// as startDate + frequency interval.
+    /// as (lastCompletedDate or startDate) advanced by one calendar interval of the frequency
+    /// (e.g. Monthly = +1 calendar month, not a fixed day count). A background job auto-creates the
+    /// next occurrence when a completed recurring request's cycle comes due, and flips it to
+    /// Pending status with a daily email/notification reminder until it's actioned.
     /// </remarks>
     [HttpPost]
     [SwaggerResponse(200, "Maintenance request created successfully.")]
@@ -126,7 +129,7 @@ public class MaintenanceController(IMaintenanceRequestService maintenanceRequest
     /// have none of them.
     /// Valid enum values (exact):
     ///   priority = Low | Medium | High | Critical
-    ///   status = Open | InProgress | Complete | Cancelled
+    ///   status = Open | Pending | InProgress | Complete | Cancelled (Pending is set automatically by the reminder job for recurring requests coming due; setting it manually is allowed but not required)
     ///   recurrenceFrequency (optional) = Daily | Weekly | BiWeekly | Monthly | BiMonthly | Quarterly | HalfYearly | Yearly | BiYearly
     /// </remarks>
     [HttpPut("{id:guid}")]
