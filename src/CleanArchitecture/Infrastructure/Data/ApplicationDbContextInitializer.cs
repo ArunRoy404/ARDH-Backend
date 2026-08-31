@@ -127,24 +127,34 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
             }
 
             await MigrateLegacyPermissionsAsync();
-            await SeedUsers();
-            await SeedBuildings();
-            await SeedOwners();
-            await SeedVendors();
-            await SeedApartments();
-            await SeedApartmentChargeHistory();
-            await SeedTenants();
-            await SeedTenantRentHistory();
-            await SeedMoveOuts();
-            await SeedEquipment();
-            await SeedAmcContracts();
-            await SeedMaintenanceRequests();
-            await SeedIncomeRecords();
-            await SeedExpenseRecords();
+
+            // Gate the whole demo dataset on "no users exist yet" rather than letting each
+            // SeedX() method decide independently off its own table. Otherwise, after a
+            // SEED_MODE=wipe (which deletes everything except the admin user), the very next
+            // restart without SEED_MODE would see every other table empty and re-seed the full
+            // demo dataset right back in, even though the wipe was meant to leave it empty.
+            if (!await _context.Users.AnyAsync())
+            {
+                await SeedUsers();
+                await SeedBuildings();
+                await SeedOwners();
+                await SeedVendors();
+                await SeedApartments();
+                await SeedApartmentChargeHistory();
+                await SeedTenants();
+                await SeedTenantRentHistory();
+                await SeedMoveOuts();
+                await SeedEquipment();
+                await SeedAmcContracts();
+                await SeedMaintenanceRequests();
+                await SeedIncomeRecords();
+                await SeedExpenseRecords();
+                await SeedNotifications();
+                await SeedActivities();
+                await SeedDeletedHistory();
+            }
+
             await SeedSettings();
-            await SeedNotifications();
-            await SeedActivities();
-            await SeedDeletedHistory();
         }
         catch (Exception exception)
         {
