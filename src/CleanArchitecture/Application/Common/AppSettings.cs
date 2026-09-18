@@ -68,6 +68,11 @@ public class MailConfigurations
 public class AdminSettings
 {
     public string Password { get; set; } = string.Empty;
+
+    // Only used to bootstrap the first admin login on a brand-new empty database.
+    // Set via env vars in production; these compiled-in values are local-dev-only fallbacks.
+    public string BootstrapEmail { get; set; } = "admin@example.com";
+    public string BootstrapPassword { get; set; } = "ChangeMe123!";
 }
 
 public class RequestResponse

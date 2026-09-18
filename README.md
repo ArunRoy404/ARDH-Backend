@@ -311,12 +311,9 @@ These endpoints manage user sessions, profile details, and password recovery.
 
 ---
 
-## 🛡️ Default Seed Credentials
+## 🛡️ Default Admin Bootstrap
 
-For quick deployment and local testing, the following default accounts are seeded upon starting the database:
-
-| **Admin** | `admin@admin.com` | `admin` | `P@ssw0rd` |
-| **Property Manager** | `manager@gmail.com` | `property_manager` | `P@ssw0rd` |
+On a brand-new empty database (no users exist yet), startup automatically creates a single admin account from the `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` env vars (see `deploy.env.example`) - no other demo/sample data is seeded. Falls back to `admin@example.com` / `ChangeMe123!` only in local dev when those vars are unset.
 
 ---
 

@@ -121,13 +121,9 @@ GET /api/buildings?page=1&pageSize=10&search=Grand&status=active
 
 ---
 
-## 🧪 5. Pre-Seeded Default Accounts
+## 🧪 5. Default Admin Bootstrap
 
-| Role | Email | Password | Admin Setting Password |
-| :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin@admin.com` | `P@ssw0rd` | `adminpassword` |
-| **Property Manager** | `manager@gmail.com` | `P@ssw0rd` | N/A |
-| **Accountant** | `accountant@gmail.com` | `P@ssw0rd` | N/A |
+A brand-new empty database only auto-creates a single admin account on first startup - no other demo/sample data is seeded. Credentials come from the `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` env vars (see `deploy.env.example`); the admin-setting delete password comes from `ADMIN_PANEL_PASSWORD`. Local dev without those vars set falls back to `admin@example.com` / `ChangeMe123!` / `adminpassword`.
 
 ---
 
