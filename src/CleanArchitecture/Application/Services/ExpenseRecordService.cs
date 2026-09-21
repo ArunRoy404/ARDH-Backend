@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Application.Common.Utilities;
+using CleanArchitecture.Domain.Constants;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
@@ -314,14 +315,14 @@ public class ExpenseRecordService(
             "ExpenseRecord",
             record.Id,
             record.BuildingId,
-            $"{record.Amount:N0} SAR {verb} {itemName} at {buildingName}.",
+            $"{record.Amount:N0} {ApplicationConstants.CurrencyCode} {verb} {itemName} at {buildingName}.",
             cancellationToken);
 
         var createTitle = record.Status == ExpenseStatus.Paid ? "Expense Paid" : "Expense Recorded";
         await _notificationService.CreateNotificationInternal(
             "finance",
             createTitle,
-            $"{record.Amount:N0} SAR {verb} {itemName} at {buildingName}.",
+            $"{record.Amount:N0} {ApplicationConstants.CurrencyCode} {verb} {itemName} at {buildingName}.",
             cancellationToken);
     }
 
@@ -427,13 +428,13 @@ public class ExpenseRecordService(
                 "ExpenseRecord",
                 record.Id,
                 record.BuildingId,
-                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                $"{record.Amount:N0} {ApplicationConstants.CurrencyCode} paid for {itemName} at {buildingName}.",
                 cancellationToken);
 
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Expense Paid",
-                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                $"{record.Amount:N0} {ApplicationConstants.CurrencyCode} paid for {itemName} at {buildingName}.",
                 cancellationToken);
         }
     }
@@ -455,7 +456,7 @@ public class ExpenseRecordService(
             Id = Guid.NewGuid(),
             EntityType = "ExpenseRecord",
             EntityId = record.Id,
-            EntityTitle = $"{record.Category} ({record.Amount:F2} SAR)",
+            EntityTitle = $"{record.Category} ({record.Amount:F2} {ApplicationConstants.CurrencyCode})",
             DeletedBy = userId,
             DeletedAt = now
         };
@@ -468,13 +469,13 @@ public class ExpenseRecordService(
             "ExpenseRecord",
             record.Id,
             record.BuildingId,
-            $"Expense record of {record.Amount:N0} SAR deleted.",
+            $"Expense record of {record.Amount:N0} {ApplicationConstants.CurrencyCode} deleted.",
             cancellationToken);
 
         await _notificationService.CreateNotificationInternal(
             "finance",
             "Expense Record Deleted",
-            $"Expense record of {record.Amount:N0} SAR deleted.",
+            $"Expense record of {record.Amount:N0} {ApplicationConstants.CurrencyCode} deleted.",
             cancellationToken);
     }
 
@@ -507,13 +508,13 @@ public class ExpenseRecordService(
                 "ExpenseRecord",
                 record.Id,
                 record.BuildingId,
-                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                $"{record.Amount:N0} {ApplicationConstants.CurrencyCode} paid for {itemName} at {buildingName}.",
                 cancellationToken);
 
             await _notificationService.CreateNotificationInternal(
                 "finance",
                 "Expense Paid",
-                $"{record.Amount:N0} SAR paid for {itemName} at {buildingName}.",
+                $"{record.Amount:N0} {ApplicationConstants.CurrencyCode} paid for {itemName} at {buildingName}.",
                 cancellationToken);
         }
     }
@@ -660,7 +661,7 @@ public class ExpenseRecordService(
         if (exists)
         {
             throw ExpenseRecordException.BadRequestException(
-                $"An expense entry with amount {amountValue:N2} SAR, expense date {date:yyyy-MM-dd}, " +
+                $"An expense entry with amount {amountValue:N2} {ApplicationConstants.CurrencyCode}, expense date {date:yyyy-MM-dd}, " +
                 $"expense head '{expenseHead.Trim()}', specific item '{specificItem.Trim()}' and " +
                 $"nature '{natureValue}' already exists. Duplicate expense entries are not allowed.");
         }

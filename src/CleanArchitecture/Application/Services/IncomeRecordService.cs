@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Common.Exceptions;
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Domain.Constants;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using CleanArchitecture.Shared.Models;
@@ -403,7 +404,7 @@ public class IncomeRecordService(
             Id = Guid.NewGuid(),
             EntityType = "IncomeRecord",
             EntityId = record.Id,
-            EntityTitle = $"{record.IncomeType} ({record.Amount:F2} SAR)",
+            EntityTitle = $"{record.IncomeType} ({record.Amount:F2} {ApplicationConstants.CurrencyCode})",
             DeletedBy = userId,
             DeletedAt = now
         };
@@ -520,7 +521,7 @@ public class IncomeRecordService(
             "0 -20 Td\n" +
             $"(Income Type: {record.IncomeType}) Tj\n" +
             "0 -20 Td\n" +
-            $"(Amount: {record.Amount:F2} SAR) Tj\n" +
+            $"(Amount: {record.Amount:F2} {ApplicationConstants.CurrencyCode}) Tj\n" +
             "0 -20 Td\n" +
             $"(Building: {buildingName}) Tj\n" +
             "0 -20 Td\n" +
@@ -671,7 +672,7 @@ public class IncomeRecordService(
             var flat = apartment?.FlatNumber ?? "this apartment";
 
             throw IncomeRecordException.BadRequestException(
-                $"A {incomeType} entry of {amount:N2} SAR for Flat {flat} already exists for {monthStart:MMMM yyyy}. Duplicate income entries are not allowed.");
+                $"A {incomeType} entry of {amount:N2} {ApplicationConstants.CurrencyCode} for Flat {flat} already exists for {monthStart:MMMM yyyy}. Duplicate income entries are not allowed.");
         }
     }
 
