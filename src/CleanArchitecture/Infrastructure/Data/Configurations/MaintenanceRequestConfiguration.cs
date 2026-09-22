@@ -67,10 +67,12 @@ public class MaintenanceRequestConfiguration : IEntityTypeConfiguration<Maintena
             .IsRequired();
 
         builder.Property(x => x.ScheduledDate)
-            .HasColumnName("scheduled_date");
+            .HasColumnName("scheduled_date")
+            .HasColumnType("date");
 
         builder.Property(x => x.StartDate)
-            .HasColumnName("start_date");
+            .HasColumnName("start_date")
+            .HasColumnType("date");
 
         builder.Property(x => x.RecurrenceFrequency)
             .HasColumnName("recurrence_frequency")
@@ -86,7 +88,8 @@ public class MaintenanceRequestConfiguration : IEntityTypeConfiguration<Maintena
             .HasColumnType("nvarchar(max)");
 
         builder.Property(x => x.LastCompletedDate)
-            .HasColumnName("last_completed_date");
+            .HasColumnName("last_completed_date")
+            .HasColumnType("date");
 
         builder.Property(x => x.NextCycleGenerated)
             .HasColumnName("next_cycle_generated")
