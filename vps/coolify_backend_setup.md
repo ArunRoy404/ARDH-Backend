@@ -6,6 +6,8 @@
 
 Goal: deploy the backend to a subdomain via Coolify to validate the setup, without touching the live `ardh.co.in` / `api.ardh.co.in` / `ardh-frontend` / `ardh-api` / `ardh-db` stack in any way. This was done before the frontend test deployment (see `coolify_frontend_setup.md`).
 
+> **Update (Sep 22, 2026):** The admin-bootstrap mechanism described below (`AdminSettings.BootstrapEmail`/`BootstrapPassword`, `BOOTSTRAP_ADMIN_EMAIL`/`BOOTSTRAP_ADMIN_PASSWORD`, `ADMIN_PANEL_PASSWORD`, and the local-dev fallback added later) has since been **removed entirely**. Startup no longer auto-creates any user, admin account, or Settings row under any circumstance — the database is expected to already have its data via migration/restore, since production is now migrated from an existing real database rather than bootstrapped fresh. This section is kept as a historical record of that deployment, not as current behavior.
+
 ---
 
 ## Repo changes (backend repo)

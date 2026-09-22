@@ -151,7 +151,7 @@ These endpoints manage user sessions, profile details, and password recovery.
     > [!NOTE]
     > The OTP is randomly generated per request. For local development it is also logged to the backend console and sent via SMTP through a Hostinger mailbox (see `MailConfigurations` in `appsettings.Development.json` / `.env`). Emails are sent from the address configured under `MailConfigurations:From`, using the mailbox credentials in `MailConfigurations:Username`/`Password` — replace them with your own Hostinger mailbox to send to real recipients.
     >
-    > **Secrets live in a gitignored `.env` file at the repo root** and are loaded at startup by `DotEnvExtension.LoadDotEnv()` using .NET env-var naming. See `.env.example` for the full list — currently `MailConfigurations__Host/Port/UseSsl/Username/Password/From` (Hostinger SMTP), `ConnectionStrings__DefaultConnection`, `Identity__Key` (JWT signing key), `AdminSettings__Password` (seeded admin panel password) and `BaseURL`. In production, set the same variables as real environment variables instead. Docker deployments must also supply `ConnectionStrings__DefaultConnection` and `Identity__Key` via the container environment since the docker appsettings file no longer contains them.
+    > **Secrets live in a gitignored `.env` file at the repo root** and are loaded at startup by `DotEnvExtension.LoadDotEnv()` using .NET env-var naming. See `.env.example` for the full list — currently `MailConfigurations__Host/Port/UseSsl/Username/Password/From` (Hostinger SMTP), `ConnectionStrings__DefaultConnection`, `Identity__Key` (JWT signing key), and `BaseURL`. In production, set the same variables as real environment variables instead. Docker deployments must also supply `ConnectionStrings__DefaultConnection` and `Identity__Key` via the container environment since the docker appsettings file no longer contains them.
 
 #### 5. Verify OTP
 *   **Route**: `POST /api/auth/verify-otp`
@@ -311,9 +311,9 @@ These endpoints manage user sessions, profile details, and password recovery.
 
 ---
 
-## 🛡️ Default Admin Bootstrap
+## 🛡️ No Seed Data / No Auto-Created Accounts
 
-On a brand-new empty database (no users exist yet), startup automatically creates a single admin account from the `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` env vars (see `deploy.env.example`) - no other demo/sample data is seeded. Falls back to `admin@example.com` / `ChangeMe123!` only in local dev when those vars are unset.
+Startup only applies EF Core migrations - it never creates a user, admin account, or any other record automatically, and no demo/sample data is seeded. A database must already contain its users (via migration/restore) before the app can be logged into.
 
 ---
 

@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "9a38f321-4bcf-4f9e-a0e2-2a54b38dcd2b",
     "name": "Ardh Property Management API (Cookie Auth)",
-    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies — no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nDefault admin bootstrap (auto-created only on a brand-new empty database, from the BOOTSTRAP_ADMIN_EMAIL / BOOTSTRAP_ADMIN_PASSWORD env vars - see deploy.env.example): full access.\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection are illustrative only - no demo data is seeded, so create your own records first (or restore a database backup) before replaying these requests as-is.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'adminpassword' — change it to whatever AdminSettings.Password is configured to.\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, occupancy_reports, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 14; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses, occupancy_reports; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
+    "description": "Postman Collection for the ARDH Property Management Backend API.\n\n## Authentication\nAuth relies strictly on HTTP-only cookies — no Bearer tokens. Run '1. Sign In (Login)' first; the response sets the session cookie, which Postman stores in its cookie jar and sends automatically on every subsequent request. '7. Logout' clears it.\n\nNo account is auto-created - the database must already contain its users (via migration/restore) before these requests can authenticate.\n\n## Setup\nSet the collection variable baseUrl to your API origin, e.g. http://localhost:5240 (no trailing slash). Example IDs throughout the collection are illustrative only - no demo data is seeded, so create your own records first (or restore a database backup) before replaying these requests as-is.\n\n## Delete endpoints\nSoft-delete endpoints require the system admin password, passed as the password query parameter (or the X-Admin-Password header). The default value is 'YOUR_ADMIN_PASSWORD' — change it to whatever the admin password is currently configured to in Settings (set via the Settings API - PUT /api/settings).\n\n## Permission model\nPermissions are granular per module now (not the old 5 buckets): dashboard, buildings, owners, apartments, tenants, vendors, equipment, amc_contracts, maintenance, income, reports, expenses, occupancy_reports, admin. A role's Permissions field is resolved as (role defaults) UNION (whatever extra modules were explicitly granted) - it can only add on top of the role's defaults, never remove from them.\n\nRole defaults: admin -> all 14; viewer -> none (an admin must explicitly grant each module); property_manager -> dashboard, vendors, equipment, amc_contracts, maintenance, expenses, occupancy_reports; accountant -> dashboard, income, reports, expenses.\n\nRoute -> required module: /api/buildings -> buildings; /api/owners -> owners; /api/apartments -> apartments; /api/tenants -> tenants; /api/vendors -> vendors; /api/equipment -> equipment; /api/amc-contracts -> amc_contracts; /api/maintenance -> maintenance; /api/income -> income; /api/reports -> reports; /api/expenses -> expenses; /api/dashboard + /api/activities -> dashboard; /api/users + /api/settings + /api/deleted-history -> admin (unsplit). /api/notifications and /api/upload are open to any authenticated user regardless of permission.\n\nGET on the 11 resource modules (buildings through expenses) is open-read for any authenticated user - only mutating verbs (POST/PUT/PATCH/DELETE) require the specific module permission. There is no role-based bypass for property_manager or any other non-admin role; access is driven strictly by the resolved Permissions claim. viewer additionally can never call a mutating verb on anything, regardless of granted modules.\n\n## Bulk upload\nBulk upload is fully asynchronous: (1) BU-00 upload the XLSX -> returns a URL, (2) BU-XX-01 start the job with module + fileUrl -> returns the job id instantly, (3) poll BU-XX-03 status until Finished/Failed, (4) download the processed XLSX (each row carries status/error columns). If the server restarts mid-job, the job is automatically recovered on startup.\n\nDownload endpoints (O-06, AP-06, T-06, E-07, M-09, I-08, EX-07, R-04) return XLSX workbooks; I-07 returns a PDF receipt.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -3287,7 +3287,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
+              "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3299,12 +3299,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -3316,7 +3316,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -3328,12 +3328,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -3356,7 +3356,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -3368,12 +3368,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -3396,7 +3396,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/8ca6dfd0-bfd8-4f10-977b-608b8b4081c8?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -3408,12 +3408,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a user (IsActive = false) and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -3436,7 +3436,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/users/7ca6dfd0-bfd8-4f10-977b-608b8b4081c7?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -3448,8 +3448,8 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
@@ -4196,7 +4196,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4208,12 +4208,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
           },
           "response": [
             {
@@ -4225,7 +4225,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -4237,12 +4237,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -4265,7 +4265,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -4277,12 +4277,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -4305,7 +4305,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/buildings/b1f7b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -4317,12 +4317,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a building and records it in the Deleted History.\nQuery param: password = the admin password set in Settings (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -4546,10 +4546,10 @@
                 "settings"
               ]
             },
-            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
+            "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (set via the Settings API).\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"adminpassword\" // [REQUIRED] Current admin password (seeded value: adminpassword)\n}"
+              "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"YOUR_ADMIN_PASSWORD\" // [REQUIRED] Current admin password (set via the Settings API)\n}"
             }
           },
           "response": [
@@ -4576,10 +4576,10 @@
                     "settings"
                   ]
                 },
-                "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).",
+                "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (set via the Settings API).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"adminpassword\" // [REQUIRED] Current admin password (seeded value: adminpassword)\n}"
+                  "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"YOUR_ADMIN_PASSWORD\" // [REQUIRED] Current admin password (set via the Settings API)\n}"
                 }
               },
               "status": "OK",
@@ -4617,10 +4617,10 @@
                     "settings"
                   ]
                 },
-                "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (seeded value: adminpassword).",
+                "description": "Updates the application settings. The current admin password must be provided to authorize the change.\nThe admin password is the one configured in Settings (set via the Settings API).",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"adminpassword\" // [REQUIRED] Current admin password (seeded value: adminpassword)\n}"
+                  "raw": "{\n    \"companyName\": \"Ardh Property Management\", // [REQUIRED] Company / society name\n    \"companyEmail\": \"info@ardh.com\", // [REQUIRED] Valid company email\n    \"phone\": \"+91 1234567890\", // [REQUIRED] Contact phone\n    \"address\": \"123 Main Street, Bangalore, India\", // [REQUIRED] Address\n    \"icon\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Site icon URL\n    \"fav\": \"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde\", // [REQUIRED] Favicon URL\n    \"adminPassword\": \"YOUR_ADMIN_PASSWORD\" // [REQUIRED] Current admin password (set via the Settings API)\n}"
                 }
               },
               "status": "Bad Request",
@@ -4664,7 +4664,7 @@
             "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint.",
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
+              "raw": "{\n    \"currentPassword\": \"YOUR_ADMIN_PASSWORD\", // [REQUIRED] Current admin password (set via the Settings API)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
             }
           },
           "response": [
@@ -4695,7 +4695,7 @@
                 "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
+                  "raw": "{\n    \"currentPassword\": \"YOUR_ADMIN_PASSWORD\", // [REQUIRED] Current admin password (set via the Settings API)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
                 }
               },
               "status": "OK",
@@ -4737,7 +4737,7 @@
                 "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
+                  "raw": "{\n    \"currentPassword\": \"YOUR_ADMIN_PASSWORD\", // [REQUIRED] Current admin password (set via the Settings API)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
                 }
               },
               "status": "Bad Request",
@@ -4779,7 +4779,7 @@
                 "description": "Changes the admin password used to authorize deletes and settings updates.\nYou must provide the current password. New password must be at least 6 characters.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"currentPassword\": \"adminpassword\", // [REQUIRED] Current admin password (seeded value: adminpassword)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
+                  "raw": "{\n    \"currentPassword\": \"YOUR_ADMIN_PASSWORD\", // [REQUIRED] Current admin password (set via the Settings API)\n    \"newPassword\": \"NewAdmin@123\", // [REQUIRED] New password (min 6 characters)\n    \"confirmNewPassword\": \"NewAdmin@123\", // [REQUIRED] Must match newPassword\n}"
                 }
               },
               "status": "Bad Request",
@@ -5177,7 +5177,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -5189,12 +5189,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
+            "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead.\n\n🔒 **Security**: Admin role (`Admin`) required for this endpoint."
           },
           "response": [
             {
@@ -5206,7 +5206,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -5218,12 +5218,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -5246,7 +5246,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -5258,12 +5258,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -5286,7 +5286,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/deleted-history/4da2b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -5298,12 +5298,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Permanently deletes the history record AND its underlying entity from the database (cannot be undone).\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -6564,7 +6564,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -6576,12 +6576,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
           },
           "response": [
             {
@@ -6593,7 +6593,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6605,12 +6605,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -6633,7 +6633,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6645,12 +6645,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -6673,7 +6673,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/owners/b3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -6685,12 +6685,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes an owner and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -7422,7 +7422,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -7434,12 +7434,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
           },
           "response": [
             {
@@ -7451,7 +7451,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -7463,12 +7463,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -7491,7 +7491,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -7503,12 +7503,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -7531,7 +7531,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/apartments/a1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -7543,12 +7543,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes an apartment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -8392,7 +8392,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -8404,12 +8404,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
           },
           "response": [
             {
@@ -8421,7 +8421,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -8433,12 +8433,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -8461,7 +8461,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -8473,12 +8473,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -8501,7 +8501,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/tenants/a3f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -8513,12 +8513,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a tenant, frees their apartment, and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -9597,7 +9597,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -9609,12 +9609,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
           },
           "response": [
             {
@@ -9626,7 +9626,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -9638,12 +9638,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -9666,7 +9666,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -9678,12 +9678,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -9706,7 +9706,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/vendors/f7a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -9718,12 +9718,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes a vendor and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -10275,7 +10275,7 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -10287,12 +10287,12 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
-                  "description": "Admin password (seeded value: adminpassword)"
+                  "value": "YOUR_ADMIN_PASSWORD",
+                  "description": "Admin password (set via the Settings API)"
                 }
               ]
             },
-            "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+            "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
           },
           "response": [
             {
@@ -10304,7 +10304,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10316,12 +10316,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "OK",
               "code": 200,
@@ -10344,7 +10344,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10356,12 +10356,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Bad Request",
               "code": 400,
@@ -10384,7 +10384,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/equipment/e1a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -10396,12 +10396,12 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
-                      "description": "Admin password (seeded value: adminpassword)"
+                      "value": "YOUR_ADMIN_PASSWORD",
+                      "description": "Admin password (set via the Settings API)"
                     }
                   ]
                 },
-                "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (seeded value: adminpassword).\nYou may also send the admin password in the X-Admin-Password header instead."
+                "description": "Soft-deletes equipment and records it in the Deleted History.\nQuery param: password = admin password (set via the Settings API).\nYou may also send the admin password in the X-Admin-Password header instead."
               },
               "status": "Not Found",
               "code": 404,
@@ -11355,12 +11355,12 @@
             "header": [
               {
                 "key": "X-Admin-Password",
-                "value": "adminpassword",
+                "value": "YOUR_ADMIN_PASSWORD",
                 "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/amc-contracts/f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/amc-contracts/f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -11372,7 +11372,7 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
+                  "value": "YOUR_ADMIN_PASSWORD",
                   "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                 }
               ],
@@ -11397,12 +11397,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11414,7 +11414,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -11450,12 +11450,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11467,7 +11467,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -11503,12 +11503,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}f2a3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -11520,7 +11520,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -12278,12 +12278,12 @@
             "header": [
               {
                 "key": "X-Admin-Password",
-                "value": "adminpassword",
+                "value": "YOUR_ADMIN_PASSWORD",
                 "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/maintenance/c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/maintenance/c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -12295,7 +12295,7 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
+                  "value": "YOUR_ADMIN_PASSWORD",
                   "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                 }
               ],
@@ -12320,12 +12320,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12337,7 +12337,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -12373,12 +12373,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12390,7 +12390,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -12426,12 +12426,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}c1f3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -12443,7 +12443,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -13689,12 +13689,12 @@
             "header": [
               {
                 "key": "X-Admin-Password",
-                "value": "adminpassword",
+                "value": "YOUR_ADMIN_PASSWORD",
                 "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+              "raw": "{{baseUrl}}/api/income/f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -13706,7 +13706,7 @@
               "query": [
                 {
                   "key": "password",
-                  "value": "adminpassword",
+                  "value": "YOUR_ADMIN_PASSWORD",
                   "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                 }
               ],
@@ -13731,12 +13731,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13748,7 +13748,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -13784,12 +13784,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13801,7 +13801,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -13837,12 +13837,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=adminpassword",
+                  "raw": "{{baseUrl}}f4b3b822-29c4-52a8-ad29-c8be5d491f24?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -13854,7 +13854,7 @@
                   "query": [
                     {
                       "key": "password",
-                      "value": "adminpassword",
+                      "value": "YOUR_ADMIN_PASSWORD",
                       "description": "Admin password query parameter to verify deletion (alternative to the X-Admin-Password header)"
                     }
                   ],
@@ -15216,12 +15216,12 @@
             "header": [
               {
                 "key": "X-Admin-Password",
-                "value": "adminpassword",
+                "value": "YOUR_ADMIN_PASSWORD",
                 "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=adminpassword",
+              "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=YOUR_ADMIN_PASSWORD",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -15244,12 +15244,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -15283,12 +15283,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -15322,12 +15322,12 @@
                 "header": [
                   {
                     "key": "X-Admin-Password",
-                    "value": "adminpassword",
+                    "value": "YOUR_ADMIN_PASSWORD",
                     "description": "Header to supply admin password for deletion (alternative to ?password= query parameter)"
                   }
                 ],
                 "url": {
-                  "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=adminpassword",
+                  "raw": "{{baseUrl}}/api/expenses/e4c7b822-29c4-52a8-ad29-c8be5d491f40?password=YOUR_ADMIN_PASSWORD",
                   "host": [
                     "{{baseUrl}}"
                   ],

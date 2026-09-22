@@ -121,9 +121,9 @@ GET /api/buildings?page=1&pageSize=10&search=Grand&status=active
 
 ---
 
-## 🧪 5. Default Admin Bootstrap
+## 🧪 5. No Seed Data / No Auto-Created Accounts
 
-A brand-new empty database only auto-creates a single admin account on first startup - no other demo/sample data is seeded. Credentials come from the `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` env vars (see `deploy.env.example`); the admin-setting delete password comes from `ADMIN_PANEL_PASSWORD`. Local dev without those vars set falls back to `admin@example.com` / `ChangeMe123!` / `adminpassword`.
+Startup only applies EF Core migrations - no user, admin account, Settings row, or any other data is auto-created. A database must already contain its users and Settings row (via migration/restore, or created through the app itself after first deploy) before the app can be used.
 
 ---
 
