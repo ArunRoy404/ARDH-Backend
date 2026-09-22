@@ -7,6 +7,7 @@ using CleanArchitecture.Application.Common.Utilities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Shared.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Infrastructure.Data;
@@ -15,13 +16,15 @@ namespace CleanArchitecture.Infrastructure.Data;
 /// Applies migrations and, on a brand-new empty database, bootstraps the single
 /// admin account needed to log in for the first time. No demo/sample data.
 /// </summary>
-public class ApplicationDbContextInitializer(ApplicationDbContext context, ILoggerFactory logger, AppSettings appSettings)
+public class ApplicationDbContextInitializer(ApplicationDbContext context, ILoggerFactory logger, AppSettings appSettings, IHostEnvironment environment)
 {
     private readonly ApplicationDbContext _context = context;
     private readonly ILogger _logger = logger.CreateLogger<ApplicationDbContextInitializer>();
     private readonly AppSettings _appSettings = appSettings;
+    private readonly IHostEnvironment _environment = environment;
 
     private static readonly Guid AdminUserId = Guid.Parse("7ca6dfd0-bfd8-4f10-977b-608b8b4081c7");
+    private static readonly Guid DevBootstrapUserId = Guid.Parse("7ca6dfd0-bfd8-4f10-977b-608b8b4081c8");
     private static readonly Guid SettingId = Guid.Parse("3ea2b822-29c4-52a8-ad29-c8be5d491f24");
 
     private static readonly DateTime T0 = new(2026, 7, 20, 12, 0, 0, DateTimeKind.Utc);
@@ -52,8 +55,22 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
 
             if (!await _context.Users.AnyAsync())
             {
-                await _context.Users.AddAsync(CreateAdminUser());
+                await _context.Users.AddAsync(CreateAdminUser(AdminUserId));
                 await _context.SaveChangesAsync();
+            }
+            else if (_environment.IsDevelopment())
+            {
+                // Local dev only: restoring a real DB backup locally means no known password is
+                // available for any existing user. Guarantee one known login without touching or
+                // resetting any restored account - only ever creates, never overwrites, and is
+                // strictly gated to Development so this can never run against prod or the Coolify
+                // test deployment (both run under ASPNETCORE_ENVIRONMENT=docker).
+                var devEmail = _appSettings.AdminSettings?.BootstrapEmail is { Length: > 0 } e ? e : "admin@example.com";
+                if (!await _context.Users.AnyAsync(u => u.Email == devEmail))
+                {
+                    await _context.Users.AddAsync(CreateAdminUser(DevBootstrapUserId));
+                    await _context.SaveChangesAsync();
+                }
             }
 
             await SeedSettings();
@@ -119,9 +136,9 @@ public class ApplicationDbContextInitializer(ApplicationDbContext context, ILogg
         }
     }
 
-    private User CreateAdminUser() => new()
+    private User CreateAdminUser(Guid id) => new()
     {
-        Id = AdminUserId,
+        Id = id,
         Name = "Super Admin",
         Email = _appSettings.AdminSettings?.BootstrapEmail is { Length: > 0 } email ? email : "admin@example.com",
         Phone = "+1234567890",
