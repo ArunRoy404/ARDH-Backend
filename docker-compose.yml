@@ -39,11 +39,6 @@ services:
       MailConfigurations__Username: ${MAIL_SMTP_USERNAME}
       MailConfigurations__Password: ${MAIL_SMTP_PASSWORD}
       MailConfigurations__From: ${MAIL_FROM}
-      AdminSettings__Password: ${ADMIN_PANEL_PASSWORD}
-      # Bootstraps the first admin login only if the database is completely empty
-      # (no users exist yet). Ignored once any user exists.
-      AdminSettings__BootstrapEmail: ${BOOTSTRAP_ADMIN_EMAIL}
-      AdminSettings__BootstrapPassword: ${BOOTSTRAP_ADMIN_PASSWORD}
     ports:
       # Only bind to localhost - Nginx (installed on the host) reverse-proxies
       # to this port. The container is never exposed directly to the internet.
