@@ -53,10 +53,12 @@ public class AmcContractConfiguration : IEntityTypeConfiguration<AmcContract>
 
         builder.Property(x => x.StartDate)
             .HasColumnName("start_date")
+            .HasColumnType("date")
             .IsRequired();
 
         builder.Property(x => x.EndDate)
             .HasColumnName("end_date")
+            .HasColumnType("date")
             .IsRequired();
 
         builder.Property(x => x.ContractAmount)

@@ -11,7 +11,6 @@ public class AppSettings
     public ConnectionStrings ConnectionStrings { get; set; }
     public Identity Identity { get; set; }
     public MailConfigurations MailConfigurations { get; set; }
-    public AdminSettings AdminSettings { get; set; }
     public FileStorageSettings FileStorageSettings { get; set; }
     public CloudinarySettings Cloudinary { get; set; }
     public bool UseInMemoryDatabase { get; set; }
@@ -63,11 +62,6 @@ public class MailConfigurations
     [Required]
     public string Password { get; set; }
     public bool UseSsl { get; set; } = true;
-}
-
-public class AdminSettings
-{
-    public string Password { get; set; } = string.Empty;
 }
 
 public class RequestResponse

@@ -1,7 +1,7 @@
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: ardh-db
+    container_name: ${DB_CONTAINER_NAME:-ardh-db}
     restart: unless-stopped
     environment:
       ACCEPT_EULA: "Y"
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ardh-api
+    container_name: ${API_CONTAINER_NAME:-ardh-api}
     restart: unless-stopped
     depends_on:
       db:
@@ -31,7 +31,7 @@ services:
       # Public URL used to build absolute file URLs (e.g. /image/... uploads).
       # AppUrl stays as the internal localhost:8080 address - it's only used for
       # the container's own self-ping health check, not shown to clients.
-      BaseURL: https://api.ardh.co.in
+      BaseURL: ${BASE_URL:-https://api.ardh.co.in}
       Identity__Key: ${IDENTITY_KEY}
       MailConfigurations__Host: ${MAIL_SMTP_HOST}
       MailConfigurations__Port: ${MAIL_SMTP_PORT}
@@ -39,14 +39,10 @@ services:
       MailConfigurations__Username: ${MAIL_SMTP_USERNAME}
       MailConfigurations__Password: ${MAIL_SMTP_PASSWORD}
       MailConfigurations__From: ${MAIL_FROM}
-      AdminSettings__Password: ${ADMIN_PANEL_PASSWORD}
-      # Leave unset for normal startup. Set to "reset" or "wipe" (see DEPLOYMENT.md)
-      # only for one-off maintenance restarts, then unset again.
-      SEED_MODE: ${SEED_MODE:-}
     ports:
       # Only bind to localhost - Nginx (installed on the host) reverse-proxies
       # to this port. The container is never exposed directly to the internet.
-      - "127.0.0.1:8080:8080"
+      - "${API_HOST_PORT:-127.0.0.1:8080}:8080"
     volumes:
       - api-uploads:/app/image
 

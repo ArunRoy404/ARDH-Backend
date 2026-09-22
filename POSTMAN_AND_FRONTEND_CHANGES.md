@@ -121,13 +121,9 @@ GET /api/buildings?page=1&pageSize=10&search=Grand&status=active
 
 ---
 
-## 🧪 5. Pre-Seeded Default Accounts
+## 🧪 5. No Seed Data / No Auto-Created Accounts
 
-| Role | Email | Password | Admin Setting Password |
-| :--- | :--- | :--- | :--- |
-| **Super Admin** | `admin@admin.com` | `P@ssw0rd` | `adminpassword` |
-| **Property Manager** | `manager@gmail.com` | `P@ssw0rd` | N/A |
-| **Accountant** | `accountant@gmail.com` | `P@ssw0rd` | N/A |
+Startup only applies EF Core migrations - no user, admin account, Settings row, or any other data is auto-created. A database must already contain its users and Settings row (via migration/restore, or created through the app itself after first deploy) before the app can be used.
 
 ---
 

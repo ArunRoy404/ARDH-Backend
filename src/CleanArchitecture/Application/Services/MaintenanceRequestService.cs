@@ -551,7 +551,7 @@ public class MaintenanceRequestService(
         // Track last completion for recurring maintenance scheduling
         if (maintenanceRequest.Status == MaintenanceStatus.Complete && oldStatus != MaintenanceStatus.Complete)
         {
-            maintenanceRequest.LastCompletedDate = DateTime.UtcNow;
+            maintenanceRequest.LastCompletedDate = DateTime.UtcNow.Date;
         }
 
         if (oldEquipmentId != request.EquipmentId)
@@ -673,7 +673,7 @@ public class MaintenanceRequestService(
         // Track last completion for recurring maintenance scheduling
         if (maintenanceRequest.Status == MaintenanceStatus.Complete)
         {
-            maintenanceRequest.LastCompletedDate = DateTime.UtcNow;
+            maintenanceRequest.LastCompletedDate = DateTime.UtcNow.Date;
         }
 
         if (maintenanceRequest.EquipmentId.HasValue)

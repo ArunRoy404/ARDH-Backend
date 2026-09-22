@@ -45,10 +45,12 @@ public class EquipmentConfiguration : IEntityTypeConfiguration<Equipment>
 
         builder.Property(x => x.InstallDate)
             .HasColumnName("install_date")
+            .HasColumnType("date")
             .IsRequired();
 
         builder.Property(x => x.WarrantyExpiryDate)
-            .HasColumnName("warranty_expiry_date");
+            .HasColumnName("warranty_expiry_date")
+            .HasColumnType("date");
 
         builder.Property(x => x.Status)
             .HasColumnName("status")

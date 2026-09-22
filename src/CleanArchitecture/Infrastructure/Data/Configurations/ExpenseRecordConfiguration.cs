@@ -58,6 +58,7 @@ public class ExpenseRecordConfiguration : IEntityTypeConfiguration<ExpenseRecord
 
         builder.Property(x => x.ExpenseDate)
             .HasColumnName("expense_date")
+            .HasColumnType("date")
             .IsRequired();
 
         builder.Property(x => x.PaymentMethod)

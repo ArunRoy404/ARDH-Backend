@@ -41,6 +41,7 @@ public class IncomeRecordConfiguration : IEntityTypeConfiguration<IncomeRecord>
 
         builder.Property(x => x.PaymentDate)
             .HasColumnName("payment_date")
+            .HasColumnType("date")
             .IsRequired();
 
         builder.Property(x => x.PaymentMethod)

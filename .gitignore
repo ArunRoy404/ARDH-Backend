@@ -9,6 +9,10 @@
 # local SQL Server backups produced by deploy/backup-db.sh
 backups/
 
+# local database backups downloaded for local testing (may contain real prod data)
+db_backup/
+*.bak
+
 # captured dev console log
 server_log.txt
 
@@ -492,3 +496,4 @@ $RECYCLE.BIN/
 
 coverage/
 src/CleanArchitecture/image/
+src/CleanArchitecture/document/
