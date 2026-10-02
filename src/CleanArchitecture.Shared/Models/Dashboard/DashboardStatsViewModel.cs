@@ -8,8 +8,6 @@ public class DashboardStatsViewModel
     public int TotalApartments { get; set; }
     public int OccupiedCount { get; set; }
     public int VacantCount { get; set; }
-    public decimal MonthlyIncome { get; set; }
-    public decimal MonthlyExpense { get; set; }
     public int PendingPaymentsCount { get; set; }
     public int OpenMaintenanceCount { get; set; }
 }
